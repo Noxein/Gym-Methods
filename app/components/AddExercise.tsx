@@ -29,7 +29,7 @@ export const AddExercise = () => {
     submitBtnText="Zakończ ćwiczenie"
     buttonFunc={ResetLocalStorage}
     >
-        <DisplayCurrentSeries currentSeries={series}/>
+        <DisplayCurrentSeries currentSeries={series} setSeries={setSeries}/>
 
         <div className='flex flex-col'>
             <label>Ciężar</label>
