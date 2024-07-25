@@ -59,10 +59,3 @@ export const ComparePasswords = async (password:string,hasedPassword:string) => 
     const isCorrect = await compare(password,hasedPassword)
     return isCorrect
 }
-
-const authfunc = async () => {
-    const user = await auth()
-    console.log(user)
-}
-
-authfunc()
