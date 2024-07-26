@@ -5,10 +5,8 @@ import { auth } from '@/auth'
 
 
 export default async function AddExercisePage(){
-    const session = await auth()
+
     return(
-        <CenterComponent>
-           <ExerciseListMapped />
-        </CenterComponent>
+        <ExerciseListMapped />
     )
 }
