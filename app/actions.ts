@@ -4,6 +4,7 @@ import { compare, hash } from 'bcryptjs'
 import z from 'zod'
 import { RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
+import { redirect } from "next/navigation";
 type State = {
     succes?: boolean
 }
@@ -14,7 +15,7 @@ export const Login = async (prevState:State,formData:FormData) => {
         console.log(e)
     }
     
-    return {succes: true}
+    redirect('/home')
 }
 
 type RegisterState = {

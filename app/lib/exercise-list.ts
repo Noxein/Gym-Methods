@@ -1,4 +1,4 @@
-const exerciseList = {
+export const exerciseList = {
     wielostawowe:{
         gora:[
             "Wyciskanie sztangi na ławce poziomej",
@@ -13,8 +13,10 @@ const exerciseList = {
         ]
     },
     izolacyjne:{
-        ramiona:[],
-        przedramiona:[],
+        ramiona:[
+            'a','b','c'
+        ],
+        przedramiona:['d','e','f'],
         biceps:[],
         triceps:[],
         klata:[],
