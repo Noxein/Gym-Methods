@@ -5,6 +5,7 @@ import z from 'zod'
 import { RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
+import net from "net";
 type State = {
     succes?: boolean
 }

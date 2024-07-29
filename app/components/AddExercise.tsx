@@ -3,14 +3,15 @@ import React, { useEffect, useState } from 'react'
 import { FormWrapper } from './FormWrapper'
 import { Series } from '../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
+import { useRouter } from 'next/navigation'
 
-export const AddExercise = () => {
+export const AddExercise = ({name}:{name:string}) => {
     const[series,setSeries] = useState<Series[]>([])
     const[weight,setWeight] = useState<number>(0)
     const[repeat,setRepeat] = useState<number>(0)
-
+    const router = useRouter()
     useEffect(()=>{
-        const data = localStorage.getItem('series')
+        const data = localStorage.getItem(name)
         if(data){
             const parsedData = JSON.parse(data)
             setSeries(parsedData as Series[])
@@ -18,14 +19,15 @@ export const AddExercise = () => {
     },[])
     const AddSeries = () => {
         setSeries([...series,{weight,repeat}])
-        localStorage.setItem('series',JSON.stringify([...series,{weight,repeat}]))
+        localStorage.setItem(name,JSON.stringify([...series,{weight,repeat}]))
     }
     const ResetLocalStorage = () => {
-        localStorage.removeItem('series')
+        localStorage.removeItem(name)
+        router.push('/home/add-exercise')
     }
   return (
     <FormWrapper
-    headerLabel="Dodaj ćwiczenie"
+    headerLabel={name}
     submitBtnText="Zakończ ćwiczenie"
     buttonFunc={ResetLocalStorage}
     >

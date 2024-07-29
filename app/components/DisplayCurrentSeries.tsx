@@ -10,7 +10,7 @@ export const DisplayCurrentSeries = ({currentSeries,setSeries}:{currentSeries:Se
   return (
     <div>
         {currentSeries.map((series,index)=>(
-            <div className='flex justify-between'>
+            <div className='flex justify-between' key={series.weight + series.repeat + index}>
                 <div>{series.weight}</div> <span>-</span> <div>x{series.repeat} <button onClick={e=>deleteSet(e,index)}>usun</button></div>
             </div>
         ))}
