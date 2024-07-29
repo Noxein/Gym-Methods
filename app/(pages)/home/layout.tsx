@@ -5,6 +5,9 @@ export default function HomeLayout({children}:{children:React.ReactNode}){
         <div>
             <Nav />
             <div className="mt-20">{children}</div>
+            <div className="hidden pl-4 bg-blue-700"></div>
+            <div className="hidden pl-8"></div>
+            <div className="hidden pl-12"></div>
         </div>
     )
 }

@@ -1,6 +1,6 @@
 export const exerciseList = {
-    wielostawowe:{
-        gora:[
+    Wielostawowe:{
+        Gora:[
             "Wyciskanie sztangi na ławce poziomej",
             "Wyciskanie sztangi na ławce skośnej",
             "Wyciskanie sztangi na ławce skośnej(ujemny)",
@@ -23,7 +23,7 @@ export const exerciseList = {
             "Face pulle",
 
         ],
-        doł:[
+        Doł:[
             "Martwy ciąg klasyczny",
             "Martwy ciąg sumo",
             "Martwy ciąg na prostych nogach",
@@ -43,21 +43,21 @@ export const exerciseList = {
             
         ]
     },
-    izolacyjne:{
+    Izolacyjne:{
         
-        ramiona:[
+        Ramiona:[
             "Wznosy bokiem",
             "Wyciskanie nad głowę na maszynie",
             "Wznosy bokiem w opadzie" 
         ],
 
-        przedramiona:[
+        Przedramiona:[
             " 'Skręcanie' ciężaru na lince",
             "Zginanie nadgarstków z obciążeniem",
             "Zginanie nadgarstków z obciążeniem tyłem" 
         ],
 
-        biceps:[
+        Biceps:[
             "Uginanie ramion ze sztangą",
             "Uginanie ramion z hantlami", 
             "Ściąganie wyciągu dolnego", 
@@ -66,7 +66,7 @@ export const exerciseList = {
             "Uginanie ramion z hantlami młotkowo" 
         ],
 
-        triceps:[
+        Triceps:[
             "Ściąganie wyciągu warkoczem przodem",
             "Ściąganie wyciągu uchwytem prostym przodem", 
             "Ściąganie wyciągu warkoczem zza głowy", 
@@ -76,29 +76,29 @@ export const exerciseList = {
             "Wyciskanie hantla nad głowę",
             ],
 
-        klata:[
+        Klata:[
             "Rozpiętki hantlami",
             "Maszyna 'Smigolowska' na klatkę",
             "Wyciskanie stojąc na maszynie",
             "Rozpiętki na wyciągu",
             ],
 
-        plecy:[
+        Plecy:[
             "Maszyna 'Smigolowska' na plecy",
             "Wiosłowanie na maszynie oburącz siedząc",
             "Wiosłowanie na maszynie jednorącz siedząc",
             ],
 
-        dwugłowe:[
+        Dwugłowe:[
             "Hamstring curl",
             "Uginanie nóg leżąc na maszynie"
             ],
 
-        czworogłowe:[
+        Czworogłowe:[
             "Prostowanie nóg na maszynie",
             ],
 
-        brzuch:[
+        Brzuch:[
             "Allahy",
             "Leg Raises",
             "Brzuszki",
@@ -107,12 +107,12 @@ export const exerciseList = {
             "Maszyna na prosty brzucha",
             ],
 
-        posladki:[
+        Posladki:[
             "Hip thrusty",
             "Wymachy nóg do tyłu na wyciągu",
             ],
 
-        lydki:[
+        Lydki:[
             "Wspięcia na palce na maszynie",
             "Wspięcia na palce na Smithie",
             "Wspięcia na palce z obciążeniem stojąc",
