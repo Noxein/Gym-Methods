@@ -120,7 +120,7 @@ export const exerciseList = {
     }
 }
 
-export let exercisesArr:string[] =
+export const exercisesArr:string[] =
 [
     "Wznosy bokiem",
     "Wyciskanie nad głowę na maszynie",
@@ -197,14 +197,14 @@ export let exercisesArr:string[] =
     "Wykroki z hantlami",
     "Wykroki ze sztangą",
     "Unoszenie nóg w zwisie"
-]
+] as const
 
-function FillArray(){
-    exercisesArr = []
-    for (const [key, value] of Object.entries(exerciseList.Izolacyjne)) {
-        exercisesArr = [...exercisesArr, ...value]
-      }
-    for (const [key, value] of Object.entries(exerciseList.Wielostawowe)) {
-        exercisesArr = [...exercisesArr, ...value]
-      }
-}
+// function FillArray(){
+//     exercisesArr = []
+//     for (const [key, value] of Object.entries(exerciseList.Izolacyjne)) {
+//         exercisesArr = [...exercisesArr, ...value]
+//       }
+//     for (const [key, value] of Object.entries(exerciseList.Wielostawowe)) {
+//         exercisesArr = [...exercisesArr, ...value]
+//       }
+// }

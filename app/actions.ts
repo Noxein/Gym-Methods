@@ -2,9 +2,10 @@
 import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import z from 'zod'
-import { RegisterUserZodSchema } from "@/app/lib/schemas";
+import { AddExerciseZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
+import { Series } from "./types";
 
 type State = {
     succes?: boolean
@@ -60,4 +61,43 @@ export const Register = async (prevState:RegisterState,formData:FormData) => {
 export const ComparePasswords = async (password:string,hasedPassword:string) => {
     const isCorrect = await compare(password,hasedPassword)
     return isCorrect
+}
+
+export const AddExerciseAction = async (exercicename:string,sets:Series[],diffucultyLevel:string,ispartoftraining:boolean) => {
+    //TODO fetch user id in auth
+    const userID = '353539e9-238c-4552-927b-1660eefbfd2b'
+    const stringDate = JSON.stringify(new Date())
+    const setsObject = {
+        sets,
+        diffucultyLevel
+    }
+    const validData = AddExerciseZodSchema.safeParse({
+        exercicename,
+        sets,
+        diffucultyLevel,
+        ispartoftraining,
+    })
+    if(!validData.success) {
+        console.log('WRONG DATA!', validData.error.flatten().fieldErrors)
+        if(validData.error.flatten().fieldErrors.sets){
+            return {
+                errors: validData.error.flatten().fieldErrors.sets![0]
+            }
+        }
+        return {
+            errors: 'Coś poszło nie tak'
+        }
+    }
+
+    try{
+        await sql`
+        INSERT INTO gymexercises (userid,exercicename,date,sets,ispartoftraining) VALUES (${userID},${exercicename},${stringDate},${JSON.stringify(setsObject)},${ispartoftraining})
+        `
+    }catch(e){
+        console.log('Error occured: ',e)
+        return {
+            errors: 'Coś poszło nie tak'
+        }
+    }
+    redirect('/home/add-exercise')
 }

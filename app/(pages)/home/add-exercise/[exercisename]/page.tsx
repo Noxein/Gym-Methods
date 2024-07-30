@@ -10,7 +10,7 @@ export default function page({params}:{params:{exercisename:string}}){
 
   if(!isExerciseInTheList) return <ExerciseNotFound />
   return (
-    <div className='mt-20'>
+    <div>
       <AddExercise name={exerciseName} />
     </div>
   )
