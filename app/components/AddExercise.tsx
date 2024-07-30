@@ -1,15 +1,18 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { FormWrapper } from './FormWrapper'
 import { Series } from '../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
-import { useRouter } from 'next/navigation'
+import { AddExerciseAction } from '../actions'
+import { usePathname } from 'next/navigation'
 
 export const AddExercise = ({name}:{name:string}) => {
     const[series,setSeries] = useState<Series[]>([])
     const[weight,setWeight] = useState<number>(0)
     const[repeat,setRepeat] = useState<number>(0)
-    const router = useRouter()
+    const[error,setError] = useState<string>('')
+    const[difficultyLevel,setDifficultyLevel] = useState<string>('easy')
+    const pathname = usePathname()
+
     useEffect(()=>{
         const data = localStorage.getItem(name)
         if(data){
@@ -23,25 +26,32 @@ export const AddExercise = ({name}:{name:string}) => {
     }
     const ResetLocalStorage = () => {
         localStorage.removeItem(name)
-        router.push('/home/add-exercise')
+    }
+    const FinishTraining = async () => {
+        ResetLocalStorage()
+
+        const possibleError = await AddExerciseAction(name,series,difficultyLevel,pathname.includes('training'))
+        if(possibleError) {
+            setError(possibleError.errors)
+        }
     }
   return (
-    <FormWrapper
-    headerLabel={name}
-    submitBtnText="Zakończ ćwiczenie"
-    buttonFunc={ResetLocalStorage}
-    >
+    <div>
         <DisplayCurrentSeries currentSeries={series} setSeries={setSeries}/>
 
         <div className='flex flex-col'>
             <label>Ciężar</label>
             <input type="number" onChange={e=>setWeight(Number(e.target.value))} className='text-black' value={weight}/>
-    
+
             <label>Powtórzenia</label>
             <input type="number" onChange={e=>setRepeat(Number(e.target.value))} className='text-black' value={repeat}/>
 
             <button onClick={e=>{e.preventDefault();AddSeries()}}>Dodaj serie</button>
         </div>
-    </FormWrapper>
-  )
+        {error && <div>
+            {error}
+            </div>}
+        <button onClick={FinishTraining}>Zakończ trening</button>
+    </div>
+    )
 }
