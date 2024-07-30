@@ -1,10 +1,13 @@
+'use client'
+import { ThemeContext } from '@/app/context/ThemeContext'
 import { PlusIcon, ProfileIcon, SettingsIcon, StartWorkoutIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
-import React from 'react'
+import React, { useContext } from 'react'
 
 export const BottomMenu = () => {
+    const theme = useContext(ThemeContext)
   return (
-    <nav className='flex fixed bottom-0 z-20 w-screen bg-blue-500 py-6 border-t-blue-400 border-2'>
+    <nav className={`flex fixed bottom-0 z-20 w-screen bg-[${theme?.colorPallete.secondary}] py-6 border-t-blue-400 border-2`}>
         <MenuBtn hrefTo={'/home/profile'}>
             <ProfileIcon />
         </MenuBtn>
