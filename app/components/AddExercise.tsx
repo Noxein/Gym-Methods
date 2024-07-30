@@ -37,8 +37,7 @@ export const AddExercise = ({name}:{name:string}) => {
     }
   return (
     <div>
-        <DisplayCurrentSeries currentSeries={series} setSeries={setSeries}/>
-
+        
         <div className='flex flex-col'>
             <label>Ciężar</label>
             <input type="number" onChange={e=>setWeight(Number(e.target.value))} className='text-black' value={weight}/>
@@ -48,10 +47,13 @@ export const AddExercise = ({name}:{name:string}) => {
 
             <button onClick={e=>{e.preventDefault();AddSeries()}}>Dodaj serie</button>
         </div>
+
+        <DisplayCurrentSeries currentSeries={series} setSeries={setSeries}/>
+
         {error && <div>
             {error}
             </div>}
-        <button onClick={FinishTraining}>Zakończ trening</button>
+        <button onClick={FinishTraining} className='bottom-0 fixed mb-20 py-6 text-center w-full'>Zakończ trening</button>
     </div>
     )
 }

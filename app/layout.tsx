@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeContextProvider } from "./context/ThemeContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} flex flex-col bg-white min-h-screen`}>{children}</body>
+      <ThemeContextProvider>
+        <body className={`${inter.className} flex flex-col bg-white min-h-screen`}>{children}</body>
+      </ThemeContextProvider>
     </html>
   );
 }
