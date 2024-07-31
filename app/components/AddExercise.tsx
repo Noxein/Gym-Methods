@@ -1,16 +1,25 @@
 'use client'
-import React, { useEffect, useState, useContext } from 'react'
-import { Series } from '../types'
+import React, { useEffect, useState, useContext, useReducer } from 'react'
+import { ActionTypes, AddExerciceReducerType, Series } from '../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
 import { AddExerciseAction } from '../actions'
 import { usePathname } from 'next/navigation'
 import { ThemeContext } from '../context/ThemeContext'
+import { AddExerciceReducer } from '../lib/reducers'
+import { ReducerWithoutAction} from 'react'
 
 export const AddExercise = ({name}:{name:string}) => {
-    const[series,setSeries] = useState<Series[]>([])
-    const[weight,setWeight] = useState<number>(0)
-    const[repeat,setRepeat] = useState<number>(0)
+    const init = {
+        weight: 0,
+        repeat: 0,
+        tempoUp: 0,
+        tempoDown: 0,
+        series:[],
+        difficultyLevel: "easy" as const,
+    }
+
     const[error,setError] = useState<string>('')
+    const[state,dispach] = useReducer<(state: AddExerciceReducerType, action: ActionTypes) => AddExerciceReducerType>(AddExerciceReducer,init)
     //todo make difficulty level picker
     const theme = useContext(ThemeContext)
 
@@ -21,12 +30,17 @@ export const AddExercise = ({name}:{name:string}) => {
         const data = localStorage.getItem(name)
         if(data){
             const parsedData = JSON.parse(data)
-            setSeries(parsedData as Series[])
+            dispach({type:"SETSERIESFROMMEMORY",payload:parsedData})
         }
     },[])
     const AddSeries = () => {
-        setSeries([...series,{weight,repeat}])
-        localStorage.setItem(name,JSON.stringify([...series,{weight,repeat}]))
+        dispach({type:'ADDSERIES'})
+        localStorage.setItem(name,JSON.stringify([...state.series,{
+            weight: state.weight,
+            repeat: state.repeat,
+            tempoUp: state.tempoUp,
+            tempoDown: state.tempoDown,
+        }]))
     }
     const ResetLocalStorage = () => {
         localStorage.removeItem(name)
@@ -34,7 +48,7 @@ export const AddExercise = ({name}:{name:string}) => {
     const FinishTraining = async () => {
         ResetLocalStorage()
 
-        const possibleError = await AddExerciseAction(name,series,difficultyLevel,pathname.includes('training'))
+        const possibleError = await AddExerciseAction(name,state.series,difficultyLevel,pathname.includes('training'))
         if(possibleError) {
             setError(possibleError.errors)
         }
@@ -44,15 +58,15 @@ export const AddExercise = ({name}:{name:string}) => {
         <h1 className={`text-[${theme?.colorPallete.accent}] text-xl text-center border-b-2 border-b-[${theme?.colorPallete.secondary}] pb-2`}>{name}</h1>
         <div className={`flex flex-col sticky top-0 bg-[${theme?.colorPallete.primary}] pt-2`}>
             <Label htmlFor='weight'>Ciężar</Label>
-            <Input type="number" id='weight' onChange={e=>setWeight(Number(e.target.value))} value={weight} min={1}/>
+            <Input type="number" id='weight' onChange={e=>dispach({type:"WEIGHT",payload:Number(e.target.value)})} value={state.weight} min={1}/>
 
             <Label htmlFor='repeat' sClass='pt-2'>Powtórzenia</Label>
-            <Input type="number" id='repeat' onChange={e=>setRepeat(Number(e.target.value))} value={repeat} min={1}/>
+            <Input type="number" id='repeat' onChange={e=>dispach({type:"REPEAT",payload:Number(e.target.value)})} value={state.repeat} min={1}/>
 
             <button onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl border-white bg-[${theme?.colorPallete.secondary}] text-white border-2 rounded-md py-2`}>Dodaj serie</button>
         </div>
 
-        <DisplayCurrentSeries seriesname={name} currentSeries={series} setSeries={setSeries}/>
+        <DisplayCurrentSeries seriesname={name} currentSeries={state.series} dispachSeries={dispach}/>
 
         {error && <div>
             {error}

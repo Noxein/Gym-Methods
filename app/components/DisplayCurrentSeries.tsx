@@ -1,10 +1,10 @@
 import React from 'react'
-import { Series } from '../types'
+import { ActionTypes, Series } from '../types'
 
-export const DisplayCurrentSeries = ({seriesname,currentSeries,setSeries}:{seriesname:string,currentSeries:Series[],setSeries:React.Dispatch<React.SetStateAction<Series[]>>}) => {
+export const DisplayCurrentSeries = ({seriesname,currentSeries,dispachSeries}:{seriesname:string,currentSeries:Series[],dispachSeries:React.Dispatch<ActionTypes>}) => {
     const deleteSet = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,index:number) => {
         e.preventDefault()
-        setSeries(sets=>sets.filter((set,i)=>i!==index))
+        dispachSeries({type:"DELETESERIES",payload:index})
         localStorage.setItem(seriesname,JSON.stringify(currentSeries.filter((set,i)=>i!==index)))
     }
   return (
