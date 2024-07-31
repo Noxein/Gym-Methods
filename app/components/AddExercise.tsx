@@ -23,7 +23,6 @@ export const AddExercise = ({name}:{name:string}) => {
     //todo make difficulty level picker
     const theme = useContext(ThemeContext)
 
-    const[difficultyLevel,setDifficultyLevel] = useState<string>('easy')
     const pathname = usePathname()
 
     useEffect(()=>{
@@ -48,7 +47,7 @@ export const AddExercise = ({name}:{name:string}) => {
     const FinishTraining = async () => {
         ResetLocalStorage()
 
-        const possibleError = await AddExerciseAction(name,state.series,difficultyLevel,pathname.includes('training'))
+        const possibleError = await AddExerciseAction(name,state.series,state.difficultyLevel,pathname.includes('training'))
         if(possibleError) {
             setError(possibleError.errors)
         }
