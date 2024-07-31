@@ -1,23 +1,26 @@
 'use client'
+import { ThemeContext } from "@/app/context/ThemeContext"
 import { ExpandIcon } from "@/app/ui/icons/ExpandIcon"
 import Link from "next/link"
-import { useState } from "react"
+import { useContext, useState } from "react"
 
-export const ListExercises = ({item,objectName,currentLevel=0}:{item:any, objectName?:string,currentLevel?:number}) => {
+export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:{item:any, objectName?:string,currentLevel?:number,isLast?:boolean}) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
-    console.log(currentLevel,showChildren)
     const mLeft = `ml-${currentLevel*2}`
-    const bgColor = `bg-gray-200 border-b-2 border-white`
+
+    const theme = useContext(ThemeContext)
+    
 
     if(Array.isArray(item)){
+        const bgColor = `bg-${theme?.colorPallete.primary} ${isLast?null:'border-b-2 border-white'}`
         return (<div className={`flex flex-col ${bgColor} ${mLeft} font-semibold`}>
             <ExpandBtn text={objectName} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} 
-                className={`text-left ml-2 flex justify-between pr-4 py-2 text-black`}/>
+                className={`text-left ml-2 flex justify-between pr-4 py-2 text-[${theme?.colorPallete.accent}]`}/>
 
         {showChildren && <div className='flex flex-col gap-[2px] font-normal'>
                 {item.map((x,index)=>(       
-                        <LinkToExercise text={x} mLeft={`ml-${(currentLevel+1)*2}`} bgColor={`bg-blue-${currentLevel+4+1}00`} key={x} isLast={index+1===item.length}/>
+                        <LinkToExercise text={x} mLeft={`ml-${(currentLevel+1)*2}`} key={x} isLast={index+1===item.length}/>
                     ))}
             </div>}
         </div>)
@@ -25,16 +28,16 @@ export const ListExercises = ({item,objectName,currentLevel=0}:{item:any, object
     }
 
     if(typeof item === 'object'){
-        
+        const bgColor = `bg-${theme?.colorPallete.primary} ${objectName?'border-b-2 border-white':null}`
         return (<div className={`flex flex-col ${bgColor} gap-1 font-bold`}>
 
             <ExpandBtn text={objectName||''} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} 
-                className={`text-left ${mLeft}  text-black flex justify-between pr-4 py-2`}/>
+                className={`text-left ${mLeft}  text-[${theme?.colorPallete.accent}] flex justify-between pr-4 py-2`}/>
 
 
             {showChildren && Object.keys(item).map((key,index)=>(
-                 <ListExercises item={item[key]} objectName={Object.keys(item)[index]} key={key} currentLevel={currentLevel+1}/>
+                 <ListExercises item={item[key]} objectName={Object.keys(item)[index]} key={key} currentLevel={currentLevel+1} isLast={index+1===Object.keys(item).length}/>
             ))}
             
 
@@ -42,9 +45,10 @@ export const ListExercises = ({item,objectName,currentLevel=0}:{item:any, object
     }
 }
 
-const LinkToExercise = ({text,mLeft,bgColor,isLast}:{text: string,mLeft:string,bgColor:string,isLast:boolean}) => {
+const LinkToExercise = ({text,mLeft,isLast}:{text: string,mLeft:string,isLast:boolean}) => {
+    const theme = useContext(ThemeContext)
     return(
-        <Link href={`/home/add-exercise/${text.trim()}`} className={`text-left ${mLeft} bg-gray-200 py-1 pl-2 text-black ${!isLast?'border-b-2 border-white':null}`}>
+        <Link href={`/home/add-exercise/${text.trim()}`} className={`text-left ${mLeft} py-1 pl-2 text-[${theme?.colorPallete.accent}] ${!isLast?'border-b-2 border-white':null}`}>
             {text}
         </Link>
 )
@@ -56,12 +60,13 @@ type ExpandBtn = {
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 
 const ExpandBtn = ({text,isExpanded,...rest}:ExpandBtn) => {
+    const theme = useContext(ThemeContext)
 
     return (
         text && <button {...rest}>
             <span>{text}</span>
 
-            <ExpandIcon expanded={isExpanded}/>
+            <ExpandIcon expanded={isExpanded} themeColor={theme?.colorPallete.accent}/>
 
         </button>
     )

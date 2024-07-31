@@ -2,12 +2,11 @@ const iconWidth = 25
 const iconHeight = 25
 const iconFill = '#fff'
 
-export const ExpandIcon = ({expanded}:{expanded: boolean}) => {
-    const fill = '#fff'
+export const ExpandIcon = ({expanded,themeColor = '#E7E7E7'}:{expanded: boolean,themeColor?:string}) => {
     return(
         !expanded?
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width={iconWidth} height={iconHeight}><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path> </g></svg>:
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width={iconWidth} height={iconHeight} transform="rotate(90)"><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path> </g></svg>
+<svg viewBox="0 0 24 24" fill={themeColor} xmlns="http://www.w3.org/2000/svg" width={iconWidth} height={iconHeight}><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path> </g></svg>:
+        <svg color={themeColor} viewBox="0 0 24 24" fill={themeColor} xmlns="http://www.w3.org/2000/svg" width={iconWidth} height={iconHeight} transform="rotate(90)"><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" stroke-width="1.5" strokeLinecap="round" stroke-linejoin="round"></path> </g></svg>
     )
 }
 
