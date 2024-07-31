@@ -46,7 +46,7 @@ export const AddExercise = ({name}:{name:string}) => {
             <Label htmlFor='weight'>Ciężar</Label>
             <Input type="number" id='weight' onChange={e=>setWeight(Number(e.target.value))} value={weight} min={1}/>
 
-            <Label htmlFor='repeat'>Powtórzenia</Label>
+            <Label htmlFor='repeat' sClass='pt-2'>Powtórzenia</Label>
             <Input type="number" id='repeat' onChange={e=>setRepeat(Number(e.target.value))} value={repeat} min={1}/>
 
             <button onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl border-white bg-[${theme?.colorPallete.secondary}] text-white border-2 rounded-md py-2`}>Dodaj serie</button>
@@ -74,12 +74,13 @@ const Input = ({...rest}:InputType) => {
 }
 
 type LabelType = {
+    sClass?:string
 } & React.DetailedHTMLProps<React.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>
 
-const Label = ({...rest}:LabelType) => {
+const Label = ({sClass,...rest}:LabelType) => {
     const theme = useContext(ThemeContext)
 
     return(
-        <label htmlFor=""  className={`text-xl text-[${theme?.colorPallete.accent}]`} {...rest}></label>
+        <label htmlFor=""  className={`text-xl text-[${theme?.colorPallete.accent}] ${sClass}`} {...rest}></label>
     )
 }
