@@ -27,6 +27,5 @@ export default { providers: [
         //check if user exists
         return user
         }
-
     })
 ]} satisfies NextAuthConfig

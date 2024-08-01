@@ -7,7 +7,7 @@ import React, { useContext } from 'react'
 export const BottomMenu = () => {
     const theme = useContext(ThemeContext)
   return (
-    <nav className={`flex fixed bottom-0 z-20 w-screen bg-[${theme?.colorPallete.secondary}] py-6 border-t-blue-400 border-2`}>
+    <nav className={`flex fixed bottom-0 z-20 w-screen bg-[${theme?.colorPallete.secondary}] py-6 border-t-white border-t-2`}>
         <MenuBtn hrefTo={'/home/profile'}>
             <ProfileIcon />
         </MenuBtn>

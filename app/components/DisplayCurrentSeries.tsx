@@ -11,9 +11,19 @@ export const DisplayCurrentSeries = ({seriesname,currentSeries,dispachSeries}:{s
     <div className='flex flex-col gap-2 mt-2 mb-44'>
         {currentSeries.map((series,index)=>(
             <div className='flex gap-2' key={series.weight + series.repeat + index}>
-                <div className='grid grid-cols-[80px_auto] flex-1 bg-slate-500 px-6 py-2 rounded-md '>
-                    <div>{series.weight} kg</div> 
-                    <div className='ml-auto'>x{series.repeat}</div>
+                <div className='flex-1 bg-slate-500 px-6 py-2 rounded-md '>
+                    <div className='flex justify-between'>
+                        <div className='flex'>
+                            <input type="text" value={series.weight} className='w-10 bg-slate-500'/> 
+                            <span>kg</span>
+                        </div>
+                       
+                        
+                        <div className='flex'>
+                            <span className='pr-1'>x</span>
+                            <input type="text" value={series.repeat} className='w-10 bg-slate-500'/>
+                        </div>
+                    </div>
                 </div>
                 <button onClick={e=>deleteSet(e,index)} className='bg-red-200 px-2 rounded-md'>usun</button>
             </div>

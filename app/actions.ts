@@ -65,7 +65,10 @@ export const ComparePasswords = async (password:string,hasedPassword:string) => 
 
 export const AddExerciseAction = async (exercicename:string,sets:Series[],diffucultyLevel:string,ispartoftraining:boolean) => {
     //TODO fetch user id in auth
-    const userID = '353539e9-238c-4552-927b-1660eefbfd2b'
+    const user = await auth()
+    console.log('USER FORM ACTIONS!',user)
+    const userID = user?.user?.id
+    if(!userID) return
     const stringDate = JSON.stringify(new Date())
     const setsObject = {
         sets,

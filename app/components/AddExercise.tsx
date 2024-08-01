@@ -8,7 +8,7 @@ import { ThemeContext } from '../context/ThemeContext'
 import { AddExerciceReducer } from '../lib/reducers'
 import { ReducerWithoutAction} from 'react'
 
-export const AddExercise = ({name}:{name:string}) => {
+export const AddExercise = ({name,showTempo=false}:{name:string,showTempo:boolean}) => {
     const init = {
         weight: 0,
         repeat: 0,
@@ -56,11 +56,8 @@ export const AddExercise = ({name}:{name:string}) => {
     <div className='px-4 pt-4'>
         <h1 className={`text-[${theme?.colorPallete.accent}] text-xl text-center border-b-2 border-b-[${theme?.colorPallete.secondary}] pb-2`}>{name}</h1>
         <div className={`flex flex-col sticky top-0 bg-[${theme?.colorPallete.primary}] pt-2`}>
-            <Label htmlFor='weight'>Ciężar</Label>
-            <Input type="number" id='weight' onChange={e=>dispach({type:"WEIGHT",payload:Number(e.target.value)})} value={state.weight} min={1}/>
-
-            <Label htmlFor='repeat' sClass='pt-2'>Powtórzenia</Label>
-            <Input type="number" id='repeat' onChange={e=>dispach({type:"REPEAT",payload:Number(e.target.value)})} value={state.repeat} min={1}/>
+            {showTempo?<WithTempo dispach={dispach} state={state}/>:<WithoutTempo dispach={dispach} state={state}/>}
+            
 
             <button onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl border-white bg-[${theme?.colorPallete.secondary}] text-white border-2 rounded-md py-2`}>Dodaj serie</button>
         </div>
@@ -95,5 +92,35 @@ const Label = ({sClass,...rest}:LabelType) => {
 
     return(
         <label htmlFor=""  className={`text-xl text-[${theme?.colorPallete.accent}] ${sClass}`} {...rest}></label>
+    )
+}
+
+const WithoutTempo = ({dispach,state}:{dispach:React.Dispatch<ActionTypes>,state:AddExerciceReducerType}) => {
+    return (
+        <>
+            <Label htmlFor='weight'>Ciężar</Label>
+            <Input type="number" id='weight' onChange={e=>dispach({type:"WEIGHT",payload:Number(e.target.value)})} value={state.weight} min={1}/>
+
+            <Label htmlFor='repeat' sClass='pt-2'>Powtórzenia</Label>
+            <Input type="number" id='repeat' onChange={e=>dispach({type:"REPEAT",payload:Number(e.target.value)})} value={state.repeat} min={1}/>
+        </>
+    )
+}
+
+const WithTempo = ({dispach,state}:{dispach:React.Dispatch<ActionTypes>,state:AddExerciceReducerType}) => {
+    return(
+        <div className='flex gap-2 w-full'>
+            <div className='flex flex-col w-7/12'>
+                <WithoutTempo dispach={dispach} state={state}/>
+            </div>
+
+            <div className='flex flex-col w-5/12'>
+                <Label htmlFor='tempoup'>Tempo góra</Label>
+                <Input type="number" id='tempoup' onChange={e=>dispach({type:"TEMPOUP",payload:Number(e.target.value)})} value={state.weight} min={1}/>
+
+                <Label htmlFor='tempodown' sClass='pt-2'>Tempo dół</Label>
+                <Input type="number" id='tempodown' onChange={e=>dispach({type:"TEMPODOWN",payload:Number(e.target.value)})} value={state.repeat} min={1}/>
+            </div>
+        </div>
     )
 }
