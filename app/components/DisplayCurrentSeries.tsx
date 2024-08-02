@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { ActionTypes, ActionTypesEnum, DifficultyLevel, Series } from '../types'
 
 export const DisplayCurrentSeries = ({seriesname,currentSeries,dispachSeries}:{seriesname:string,currentSeries:Series[],dispachSeries:React.Dispatch<ActionTypes>}) => {
@@ -37,14 +37,14 @@ export const DisplayCurrentSeries = ({seriesname,currentSeries,dispachSeries}:{s
                     </div>
                     <div className='flex justify-between px-1 pt-1'>
                         <div className='flex'>
-                            <input type="number" value={series.weight} className='w-10 bg-slate-500' onChange={(e)=>{editInput(e,index,'EDITSERIESKG')}}/> 
+                            <Input type="number" value={series.weight} className='w-10 bg-slate-500' onChange={(e)=>{editInput(e,index,'EDITSERIESKG')}}/> 
                             <span>kg</span>
                         </div>
                        
                         
                         <div className='flex'>
                             <span className='pr-1'>x</span>
-                            <input type="text" value={series.repeat} className='w-10 bg-slate-500 text-right' onChange={(e)=>{editInput(e,index,'EDITSERIESREPEAT')}}/>
+                            <Input type="text" value={series.repeat} className='w-10 bg-slate-500 text-right' onChange={(e)=>{editInput(e,index,'EDITSERIESREPEAT')}}/>
                         </div>
                     </div>
                 </div>
@@ -53,4 +53,12 @@ export const DisplayCurrentSeries = ({seriesname,currentSeries,dispachSeries}:{s
         ))}
     </div>
   )
+}
+
+const Input = ({...rest}:React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) => {
+    const inputRef = useRef<HTMLInputElement|null>(null)
+
+    return(
+        <input {...rest} ref={inputRef} onClick={()=>inputRef.current?.select()}/> 
+    )
 }

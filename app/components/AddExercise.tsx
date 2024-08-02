@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState, useContext, useReducer } from 'react'
+import React, { useEffect, useState, useContext, useReducer, useRef } from 'react'
 import { ActionTypes, AddExerciceReducerType, Series } from '../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
 import { AddExerciseAction } from '../actions'
@@ -76,9 +76,11 @@ type InputType = {
 } & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 
 const Input = ({...rest}:InputType) => {
+    const inputRef = useRef<HTMLInputElement|null>(null)
+
     const theme = useContext(ThemeContext)
     return(
-        <input type="number" className={`text-[${theme?.colorPallete.accent}] border-slate-500 bg-[${theme?.colorPallete.primary}] border-2 min-h-10 text-xl rounded-md pl-4 focus:outline-blue-500`} {...rest}/>
+        <input type="number" className={`text-[${theme?.colorPallete.accent}] border-slate-500 bg-[${theme?.colorPallete.primary}] border-2 min-h-10 text-xl rounded-md pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
     )
 }
 
