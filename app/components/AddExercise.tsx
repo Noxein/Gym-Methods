@@ -6,7 +6,6 @@ import { AddExerciseAction } from '../actions'
 import { usePathname } from 'next/navigation'
 import { ThemeContext } from '../context/ThemeContext'
 import { AddExerciceReducer } from '../lib/reducers'
-import { ReducerWithoutAction} from 'react'
 
 export const AddExercise = ({name,showTempo=false}:{name:string,showTempo:boolean}) => {
     const init = {
@@ -56,10 +55,10 @@ export const AddExercise = ({name,showTempo=false}:{name:string,showTempo:boolea
     <div className='px-4 pt-4'>
         <h1 className={`text-[${theme?.colorPallete.accent}] text-xl text-center border-b-2 border-b-[${theme?.colorPallete.secondary}] pb-2`}>{name}</h1>
         <div className={`flex flex-col sticky top-0 bg-[${theme?.colorPallete.primary}] pt-2`}>
-            {showTempo?<WithTempo dispach={dispach} state={state}/>:<WithoutTempo dispach={dispach} state={state}/>}
+           <WeightAndRepeatInputs dispach={dispach} state={state}/>
+           <DifficultyLevel dispach={dispach}/>
             
-
-            <button onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl border-white bg-[${theme?.colorPallete.secondary}] text-white border-2 rounded-md py-2`}>Dodaj serie</button>
+            <button onClick={e=>{e.preventDefault();AddSeries();console.log(state)}} className={`mt-4 text-xl border-white bg-[${theme?.colorPallete.secondary}] text-white border-2 rounded-md py-2`}>Dodaj serie</button>
         </div>
 
         <DisplayCurrentSeries seriesname={name} currentSeries={state.series} dispachSeries={dispach}/>
@@ -79,7 +78,7 @@ type InputType = {
 const Input = ({...rest}:InputType) => {
     const theme = useContext(ThemeContext)
     return(
-        <input type="number" className={`text-[${theme?.colorPallete.accent}] border-slate-500 bg-[${theme?.colorPallete.primary}] border-2 min-h-12 text-xl rounded-md pl-4 focus:outline-blue-500`} {...rest}/>
+        <input type="number" className={`text-[${theme?.colorPallete.accent}] border-slate-500 bg-[${theme?.colorPallete.primary}] border-2 min-h-10 text-xl rounded-md pl-4 focus:outline-blue-500`} {...rest}/>
     )
 }
 
@@ -95,32 +94,30 @@ const Label = ({sClass,...rest}:LabelType) => {
     )
 }
 
-const WithoutTempo = ({dispach,state}:{dispach:React.Dispatch<ActionTypes>,state:AddExerciceReducerType}) => {
+const WeightAndRepeatInputs = ({dispach,state}:{dispach:React.Dispatch<ActionTypes>,state:AddExerciceReducerType}) => {
     return (
-        <>
-            <Label htmlFor='weight'>Ciężar</Label>
-            <Input type="number" id='weight' onChange={e=>dispach({type:"WEIGHT",payload:Number(e.target.value)})} value={state.weight} min={1}/>
-
-            <Label htmlFor='repeat' sClass='pt-2'>Powtórzenia</Label>
-            <Input type="number" id='repeat' onChange={e=>dispach({type:"REPEAT",payload:Number(e.target.value)})} value={state.repeat} min={1}/>
-        </>
-    )
-}
-
-const WithTempo = ({dispach,state}:{dispach:React.Dispatch<ActionTypes>,state:AddExerciceReducerType}) => {
-    return(
-        <div className='flex gap-2 w-full'>
-            <div className='flex flex-col w-7/12'>
-                <WithoutTempo dispach={dispach} state={state}/>
+        <div className='flex items-center'>
+            <div className='flex flex-col w-1/2'>
+                <Label htmlFor='weight'>Ciężar</Label>
+                <Input type="number" id='weight' onChange={e=>dispach({type:"WEIGHT",payload:Number(e.target.value)})} value={state.weight} min={1}/>
             </div>
 
-            <div className='flex flex-col w-5/12'>
-                <Label htmlFor='tempoup'>Tempo góra</Label>
-                <Input type="number" id='tempoup' onChange={e=>dispach({type:"TEMPOUP",payload:Number(e.target.value)})} value={state.weight} min={1}/>
-
-                <Label htmlFor='tempodown' sClass='pt-2'>Tempo dół</Label>
-                <Input type="number" id='tempodown' onChange={e=>dispach({type:"TEMPODOWN",payload:Number(e.target.value)})} value={state.repeat} min={1}/>
+            <div className='flex flex-col w-1/2'>
+                <Label htmlFor='repeat'>Powtórzenia</Label>
+                <Input type="number" id='repeat' onChange={e=>dispach({type:"REPEAT",payload:Number(e.target.value)})} value={state.repeat} min={1}/>
             </div>
         </div>
     )
+}
+
+const DifficultyLevel = ({dispach}:{dispach:React.Dispatch<ActionTypes>}) => {
+    const theme = useContext(ThemeContext)
+    return(<div className='flex flex-col'>
+        <label htmlFor='difficulty' className={`text-[${theme?.colorPallete.accent}]`}>Ciężkość serii</label>
+        <select name="difficulty" id="difficulty" className={`bg-[${theme?.colorPallete.primary}] text-[${theme?.colorPallete.accent}] border-slate-500 border-2 rounded-md h-10`} onChange={e=>{dispach({type:"DIFFICULTY",payload:e.target.value as 'easy'|'medium'|'hard'})}}>
+            <option value="easy">Łatwa</option>
+            <option value="medium">Średnia</option>
+            <option value="hard">Trudna</option>
+        </select>
+        </div>)
 }

@@ -1,8 +1,7 @@
 export type Series = {
     weight:number,
-    repeat:number
-    tempoUp?: number,
-    tempoDown?: number,
+    repeat:number,
+    difficulty: DifficultyLevel
 }
 
 export type ColorPalleteType = {
@@ -22,12 +21,15 @@ export type AddExerciceReducerType = {
     tempoUp: number,
     tempoDown: number,
     series: Series[],
-    difficultyLevel: 'easy'|'medium'|'hard',
+    difficultyLevel: DifficultyLevel
 }
+
+export type DifficultyLevel = 'easy'|'medium'|'hard'
 
 export type ActionTypes = {
     type: ActionTypesEnum
-    payload?: number | 'easy'|'medium'|'hard' | Series[],
+    payload?: number | DifficultyLevel | Series[],
+    index?: number
 }
 
-type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES'
+export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES' | 'EDITSERIESKG' | 'EDITSERIESREPEAT' | 'EDITSERIESDIFFICULTY'
