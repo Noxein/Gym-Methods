@@ -29,13 +29,13 @@ export const DisplayCurrentSeries = ({seriesname,currentSeries,dispachSeries}:{s
             <div className='flex gap-2' key={index}>
                 <div className='flex-1 bg-slate-500 px-6 py-2 rounded-md flex-col'>
                     <div>
-                        <select name="" id="" value={series.difficulty} className='bg-slate-500 w-full' onChange={(e)=>{editInput(e,index,'EDITSERIESDIFFICULTY')}}>
+                        <select name="" id="" value={series.difficulty} className='bg-slate-500 w-full border-b-2 border-black pb-1' onChange={(e)=>{editInput(e,index,'EDITSERIESDIFFICULTY')}}>
                             <option value="easy">Łatwa</option>
                             <option value="medium">Średnia</option>
                             <option value="hard">Trudna</option>
                         </select>
                     </div>
-                    <div className='flex justify-between px-1'>
+                    <div className='flex justify-between px-1 pt-1'>
                         <div className='flex'>
                             <input type="number" value={series.weight} className='w-10 bg-slate-500' onChange={(e)=>{editInput(e,index,'EDITSERIESKG')}}/> 
                             <span>kg</span>
