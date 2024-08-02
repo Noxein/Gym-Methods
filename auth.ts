@@ -19,9 +19,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({token,session}) {
       
       session.user.id = token.sub as string
-      session.user.showTempo = token.showTempo
+      session.user.showTempo = token.showTempo as string
       return {...session}
     },
   }
   
 })
+
+declare module "next-auth" {
+  interface User {
+    // Add your additional properties here:
+    showTempo?: string;
+  }
+}
+
+declare module "@auth/core/adapters" {
+  interface AdapterUser {
+    // Add your additional properties here:
+    showTempo: string;
+  }
+}

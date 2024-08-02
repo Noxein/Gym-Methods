@@ -35,5 +35,5 @@ export const DEFAULT_LOGIN_REDIRECT = '/home'
  * @type {string[]}
  */
 export const protectedRoutes = [
-    '/home'
+    '/home',
 ]
