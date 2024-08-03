@@ -1,5 +1,5 @@
 import { ExerciseListMapped } from "@/app/components/add-exercise/ExerciseListMapped";
-import { AddExercise } from "../../../components/AddExercise";
+import { AddExercise } from "../../../components/add-exercise/AddExercise";
 import { CenterComponent } from "../../../components/CenterComponent";
 import { auth } from '@/auth'
 

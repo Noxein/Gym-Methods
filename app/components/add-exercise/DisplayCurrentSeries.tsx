@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { ActionTypes, ActionTypesEnum, DifficultyLevel, Series } from '../types'
+import { ActionTypes, ActionTypesEnum, DifficultyLevel, Series } from '../../types'
 
 export const DisplayCurrentSeries = ({seriesname,currentSeries,dispachSeries}:{seriesname:string,currentSeries:Series[],dispachSeries:React.Dispatch<ActionTypes>}) => {
     const deleteSet = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,index:number) => {

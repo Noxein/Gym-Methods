@@ -1,11 +1,11 @@
 'use client'
 import React, { useEffect, useState, useContext, useReducer, useRef } from 'react'
-import { ActionTypes, AddExerciceReducerType, Series } from '../types'
+import { ActionTypes, AddExerciceReducerType, Series } from '../../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
-import { AddExerciseAction } from '../actions'
+import { AddExerciseAction } from '../../actions'
 import { usePathname } from 'next/navigation'
-import { ThemeContext } from '../context/ThemeContext'
-import { AddExerciceReducer } from '../lib/reducers'
+import { ThemeContext } from '../../context/ThemeContext'
+import { AddExerciceReducer } from '../../lib/reducers'
 
 export const AddExercise = ({name,showTempo=false}:{name:string,showTempo:boolean}) => {
     const init = {
