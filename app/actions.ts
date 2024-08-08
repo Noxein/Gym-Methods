@@ -129,27 +129,18 @@ export const SecondStepDataValidation = (exercises:string[]) => {
         succes: 'Wszystko w porządku'
     }
 }
-export const FirstSetupOneOfThree = async (data:dataType) => {
-    const validatedFields = FirstSetupZodSchema.safeParse(data)
-    if(!validatedFields.success){
-        console.log(validatedFields.error)
-        return { error : 'Coś poszło nie tak'}
-    }
+export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],favourtiteExercises:string[]) => {
     const user = await auth()
     const userID = user?.user?.id
-
     try{
         await sql`
             UPDATE gymusers
-            SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}
+            SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
             WHERE id = ${userID};
         `
-        return {
-            succes: 'Zaktualizowano dane'
-        }
     }catch(e){
         console.log(e)
         return { error : 'Coś poszło nie tak'}
     }
+    redirect('/home')
 }
-
