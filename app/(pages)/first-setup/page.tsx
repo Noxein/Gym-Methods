@@ -1,6 +1,6 @@
 import React from 'react'
-import { CenterComponent } from '../../../components/CenterComponent'
-import { FirstSetup } from '../../../components/FirstSetup'
+import { CenterComponent } from '@/app/components/CenterComponent'
+import { FirstSetup } from '@/app/components/first-setup/FirstSetup'
 
 export default function Setup(){
   return (

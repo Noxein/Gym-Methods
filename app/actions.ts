@@ -1,11 +1,12 @@
 "use server"
 import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
-import z from 'zod'
-import { AddExerciseZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
+import { AddExerciseZodSchema, FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { Series } from "./types";
+import { Series } from "@/app/types";
+import { dataType } from "./components/first-setup/SetupOneOfThree";
+import { exercisesArr } from "./lib/exercise-list";
 
 type State = {
     succes?: boolean
@@ -104,3 +105,51 @@ export const AddExerciseAction = async (exercicename:string,sets:Series[],diffuc
     }
     redirect('/home/add-exercise')
 }
+
+export const FistStepDataValidation = (data:dataType) => {
+    const validatedFields = FirstSetupZodSchema.safeParse(data)
+    if(!validatedFields.success){
+        console.log(validatedFields.error)
+        return { error : 'Coś poszło nie tak'}
+    }
+    return {
+        succes: 'Dobre dane'
+    }
+}
+
+export const SecondStepDataValidation = (exercises:string[]) => {
+    let error = false
+    exercises.forEach(exercise=>{
+        if(!exercisesArr.includes(exercise)) error = true
+    })
+    if(error){
+        return { error: 'Coś poszło nie tak'}
+    }
+    return {
+        succes: 'Wszystko w porządku'
+    }
+}
+export const FirstSetupOneOfThree = async (data:dataType) => {
+    const validatedFields = FirstSetupZodSchema.safeParse(data)
+    if(!validatedFields.success){
+        console.log(validatedFields.error)
+        return { error : 'Coś poszło nie tak'}
+    }
+    const user = await auth()
+    const userID = user?.user?.id
+
+    try{
+        await sql`
+            UPDATE gymusers
+            SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}
+            WHERE id = ${userID};
+        `
+        return {
+            succes: 'Zaktualizowano dane'
+        }
+    }catch(e){
+        console.log(e)
+        return { error : 'Coś poszło nie tak'}
+    }
+}
+
