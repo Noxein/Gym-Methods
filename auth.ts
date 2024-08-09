@@ -3,23 +3,25 @@ import authConfig from '@/auth.config'
 import { getTempo } from "./app/lib/sql"
  
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  // pages:{
-  //   signIn :'/login'
-  // },
+  pages:{
+    signIn :'/login',
+  },
   session: {
     strategy: 'jwt'
   },
   ...authConfig,
   callbacks:{
     async jwt({token,session}) {
-      const shouldShowTempo = await getTempo(token.sub as string)
-      token.showTempo = shouldShowTempo
+      const data = await getTempo(token.sub as string)
+      token.showTempo = data.showtempo
+      token.setupcompleted = data.setupcompleted
       return {...token}
     },
     async session({token,session}) {
       
       session.user.id = token.sub as string
       session.user.showTempo = token.showTempo as string
+      session.user.setupcompleted = token.setupcompleted as boolean
       return {...session}
     },
   }
@@ -30,6 +32,7 @@ declare module "next-auth" {
   interface User {
     // Add your additional properties here:
     showTempo?: string;
+    setupcompleted?: boolean;
   }
 }
 
@@ -37,5 +40,6 @@ declare module "@auth/core/adapters" {
   interface AdapterUser {
     // Add your additional properties here:
     showTempo: string;
+    setupcompleted?: boolean;
   }
 }

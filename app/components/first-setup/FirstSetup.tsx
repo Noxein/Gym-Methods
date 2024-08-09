@@ -13,6 +13,6 @@ export const FirstSetup = () => {
   return (
     currentStep===1?<SetupOneOfThree setCurrentStep={setCurrentStep} data={data} setData={setData}/>:
     currentStep===2?<StepTwoOutOfThree setCurrentStep={setCurrentStep} exercisesToDelete={exercisesToDelete} setExercisesToDelete={setExercisesToDelete} favouriteExercises={favouriteExercises}/>:
-    currentStep===3?<StepThreeOutOfThree setCurrentStep={setCurrentStep} favouriteExercises={favouriteExercises} setFavouriteExercises={setFavouriteExercises} exercisesToDelete={exercisesToDelete}/>:null
+    currentStep===3?<StepThreeOutOfThree setCurrentStep={setCurrentStep} favouriteExercises={favouriteExercises} setFavouriteExercises={setFavouriteExercises} exercisesToDelete={exercisesToDelete} data={data}/>:null
   )
 }

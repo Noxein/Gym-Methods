@@ -1,5 +1,6 @@
-import { auth } from '@/auth'
+import { auth, signOut } from '@/auth'
 import { LinkBtn, UserEmail } from './LinkBtn'
+import { SignOutBtn } from './SignOutBtn'
 
 export const Profile = async () => {
   const session = await auth()
@@ -11,7 +12,7 @@ export const Profile = async () => {
         <LinkBtn href='/home/profile/add-new-exercise' text='Dodaj swoje ćwiczenie'/>
         <LinkBtn href='/home/profile/create-training' text='Dodaj plan treningowy'/>
         <LinkBtn href='/home/profile/change-password' text='Zmień hasło'/>
-        <LinkBtn href='/logout' text='Wyloguj'/>
+        <SignOutBtn />
     </div>
   )
 }

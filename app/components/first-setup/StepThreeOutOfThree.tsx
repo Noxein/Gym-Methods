@@ -3,6 +3,7 @@ import { Mapper } from './Mapper'
 import { exerciseList } from '@/app/lib/exercise-list'
 import { FirstSetupFinish, SecondStepDataValidation } from '@/app/actions'
 import { dataType } from './SetupOneOfThree'
+import { useRouter } from 'next/navigation'
 
 type StepTwoOutOfThree = {
     setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
@@ -14,13 +15,17 @@ type StepTwoOutOfThree = {
 
 export const StepThreeOutOfThree = ({setCurrentStep,favouriteExercises,setFavouriteExercises,exercisesToDelete,data}:StepTwoOutOfThree) => {
     const[error,setError] = useState('')
+    const router = useRouter()
 
     const ValidateData = async () => {
         const validData = SecondStepDataValidation(favouriteExercises)
         if(validData.error) return setError(validData.error)
 
-        await FirstSetupFinish(data,exercisesToDelete,favouriteExercises)
+        const sendData = await FirstSetupFinish(data,exercisesToDelete,favouriteExercises)
+        if(sendData && sendData.error) return setError('Coś poszło nie tak')
+        console.log(data)
         //TODO REDIRECT USER
+        router.push('/home')
     }
     return (
     <div>

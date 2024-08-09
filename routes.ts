@@ -17,11 +17,11 @@ export const authRoutes = [
     '/register'
 ]
 /**
- * The prefix for API authentication routes used by next-auth
+ * The array for API authentication routes used by next-auth
  * Routes that start with this prefix are used for API authentication purposes
  * @type {string}
  */
-export const apiAuthPrefix = '/api/auth'
+export const apiAuthPrefix = ['/api/auth']
 /**
  * An default redirect if user is logged in
  * @type {string}

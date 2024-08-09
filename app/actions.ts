@@ -7,6 +7,8 @@ import { redirect } from "next/navigation";
 import { Series } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exercisesArr } from "./lib/exercise-list";
+import { signOut } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 type State = {
     succes?: boolean
@@ -17,7 +19,8 @@ export const Login = async (prevState:State,formData:FormData) => {
     }catch(e){
         console.log(e)
     }
-    
+
+    revalidatePath('/home')
     redirect('/home')
 }
 
@@ -132,6 +135,7 @@ export const SecondStepDataValidation = (exercises:string[]) => {
 export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],favourtiteExercises:string[]) => {
     const user = await auth()
     const userID = user?.user?.id
+    console.log(data)
     try{
         await sql`
             UPDATE gymusers
@@ -143,4 +147,8 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
         return { error : 'Coś poszło nie tak'}
     }
     redirect('/home')
+}
+
+export const logout = async () => {
+    await signOut({redirect:true,redirectTo:'/login'})
 }
