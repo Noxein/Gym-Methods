@@ -33,3 +33,9 @@ export type ActionTypes = {
 }
 
 export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES' | 'EDITSERIESKG' | 'EDITSERIESREPEAT' | 'EDITSERIESDIFFICULTY'
+
+export type UserExercise = {
+    id:string,
+    userid:string,
+    exercicename:string
+}

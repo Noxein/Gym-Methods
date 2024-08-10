@@ -4,7 +4,7 @@ import { compare, hash } from 'bcryptjs'
 import { AddExerciseZodSchema, FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { Series } from "@/app/types";
+import { Series, UserExercise } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exercisesArr } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -151,4 +151,77 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
 
 export const logout = async () => {
     await signOut({redirect:true,redirectTo:'/login'})
+}
+
+export const getUserExercises = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    const exercises = await sql`
+        SELECT * FROM gymusersexercises WHERE userid = ${userID}
+    `
+
+    return exercises.rows as UserExercise[]
+}
+
+export const AddNewUserExercise = async (exercisename:string) => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    if(exercisename.length>=254){
+        return {error : 'Nazwa ćwiczenia jest za długa'}
+    }
+    if( typeof exercisename !== 'string'){
+        return {error: 'Coś poszło nie tak'}
+    }
+    try{
+        await sql`
+            INSERT INTO gymusersexercises (userid,exercicename) VALUES (${userID},${exercisename})
+        `
+        revalidatePath('/home/profile/my-exercises')
+    }catch(e){
+        return {
+            error: 'Coś poszło nie tak'
+        }
+    }
+}
+
+export const DeleteUserExercise = async (id:string) => {
+    if(typeof id !== 'string'){
+        return {
+            error :'Coś poszło nie tak'
+        }
+    }
+    try{
+        sql`
+            DELETE FROM gymusersexercises WHERE id = ${id};
+        `
+        revalidatePath('/home/profile/my-exercises')
+    }catch(e){
+        return {
+            error :'Coś poszło nie tak'
+        }
+    }
+}
+
+export const EditUserExercise = async (exerciseid:string,newname:string) => {
+    if(newname === ''){
+        return {error :'Wpisz nową nazwę ćwiczenia'}
+    }
+    if(typeof exerciseid !== 'string' || typeof newname !== 'string'){
+        return {error :'Coś poszło nie tak'}
+    }
+
+    try{
+        sql`
+            UPDATE gymusersexercises
+            SET exercicename = ${newname}
+            WHERE id = ${exerciseid};
+        `
+        revalidatePath('/home/profile/my-exercises')
+    }catch(e){
+        return {
+            error :'Coś poszło nie tak'
+        }
+    }
 }
