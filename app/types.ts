@@ -36,6 +36,56 @@ export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES
 
 export type UserExercise = {
     id:string,
-    userid:string,
-    exercicename:string
+    exercisename:string
+}
+
+export type TempoType = {
+    up: number,
+    uphold:number,
+    down: number,
+    downhold:number,
+}
+
+export type UserExerciseTempo = {
+    id: string,
+    userid: string,
+    exerciseid: string,
+    tempo: TempoType,
+}
+
+export type UserExerciseTempoReturnType= {
+    [key: string]:{id:string,tempo:TempoType}
+}
+
+export type ExerciceTypes = {
+    Wielostawowe:{
+        Gora: string[],
+        Dol: string[],
+
+    },
+    Izolacyjne:{
+        Ramiona: string[],
+        Przedramiona: string[],
+        Biceps: string[],
+        Triceps: string[],
+        Klata: string[],
+        Plecy: string[],
+        Dwuglowe: string[],
+        Czworoglowe: string[],
+        Brzuch: string[],
+        Posladki: string[],
+        Lydki: string[],
+    }
+    userExercises?: UserExercise[]
+}
+
+export type SelectedExerciseWithTempo = {
+    id:string,
+    name:string,
+    tempo:{
+        up:number,
+        uphold:number,
+        down:number,
+        downhold:number,
+    }
 }
