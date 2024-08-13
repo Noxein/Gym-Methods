@@ -21,13 +21,40 @@ export const SetTempo = ({exercises,tempos,allExercisesInOneArray}:SetTempoType)
 
   console.log(exercises,tempos)
   return (<div className='ml-2 mr-6'>
-      <input type="text" placeholder='Szukaj' onChange={e=>setSearchField(e.target.value)} className={`pl-2 w-[calc(100%-0.5rem)] ml-2 my-5 text-xl bg-[${theme?.colorPallete.primary}] border-[${theme?.colorPallete.accent}] border-2 rounded-md py-2 text-[${theme?.colorPallete.accent}]`}/>
+      <input type="text" 
+      placeholder='Szukaj' 
+      onChange={e=>setSearchField(e.target.value)} 
+      className={`pl-2 w-[calc(100%-0.5rem)] ml-2 my-5 text-xl bg-[${theme?.colorPallete.primary}] border-[${theme?.colorPallete.accent}] border-2 rounded-md py-2 text-[${theme?.colorPallete.accent}]`} 
+      />
 
-      {searchField ? <SearchList searchTerm={searchField} allExercisesInOneArray={allExercisesInOneArray} tempos={tempos} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>: 
-      <div className='mb-20'><MappedTempoExercises item={exercises} tempos={tempos} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/></div>}
+      {searchField ? 
+      <SearchList 
+        searchTerm={searchField} 
+        allExercisesInOneArray={allExercisesInOneArray} 
+        tempos={tempos} 
+        setSelectedExercise={setSelectedExercise} 
+        setShowEditTempoModal={setShowEditTempoModal} 
+        setShowDeleteTempoModal={setShowDeleteTempoModal}/> 
+      :
+      <div className='mb-20'>
+        <MappedTempoExercises 
+          item={exercises} 
+          tempos={tempos} 
+          setSelectedExercise={setSelectedExercise} 
+          setShowEditTempoModal={setShowEditTempoModal} 
+          setShowDeleteTempoModal={setShowDeleteTempoModal}/>
+      </div>}
 
-      {showEditTempoModal && <EditTempo selectedExercise={selectedExercise} setShowEditTempoModal={setShowEditTempoModal}/>}
-      {showDeleteTempoModal && <DeleteTempo selectedExercise={selectedExercise} setShowDeleteTempoModal={setShowDeleteTempoModal}/>}
+      {showEditTempoModal && 
+      <EditTempo 
+        selectedExercise={selectedExercise} 
+        setShowEditTempoModal={setShowEditTempoModal}/>}
+
+      {showDeleteTempoModal && 
+      <DeleteTempo 
+        selectedExercise={selectedExercise} 
+        setShowDeleteTempoModal={setShowDeleteTempoModal}/>}
+
     </div>
   )
 }
