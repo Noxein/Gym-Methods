@@ -9,7 +9,7 @@ export const MyExercises = ({exercises}:{exercises:UserExercise[]}) => {
   return (
     <div className='px-4 pt-20'>
         <Search setSearchValue={setSearchValue}/>
-        <ListExercises exercises={exercises.filter(x=>x.exercicename.toLowerCase().includes(searchValue.toLowerCase()))}/>
+        <ListExercises exercises={exercises.filter(x=>x.exercisename.toLowerCase().includes(searchValue.toLowerCase()))}/>
     </div>
   )
 }

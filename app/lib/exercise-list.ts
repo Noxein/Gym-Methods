@@ -89,12 +89,12 @@ export const exerciseList = {
             "Wiosłowanie na maszynie jednorącz siedząc",
             ],
 
-        Dwugłowe:[
+        Dwuglowe:[
             "Hamstring curl",
             "Uginanie nóg leżąc na maszynie"
             ],
 
-        Czworogłowe:[
+        Czworoglowe:[
             "Prostowanie nóg na maszynie",
             ],
 

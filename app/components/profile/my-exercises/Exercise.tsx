@@ -20,7 +20,7 @@ export const Exercise = ({exercise,setSelectedExercise,setShowEditModal,setShowD
   return (
     <div className={`w-full bg-[${theme?.colorPallete.secondary}] rounded-md flex gap-1 z-10`}>
         <div className={`m-1 bg-[${theme?.colorPallete.primary}] text-[${theme?.colorPallete.accent}] rounded-md pl-4 py-2 flex-1 text-wrap`}>
-            {exercise.exercicename}
+            {exercise.exercisename}
         </div>
         <Icon onClick={()=>handleTouch('edit')}>
           <PencilIcon />
@@ -36,7 +36,7 @@ const Icon = ({children,sClass,...rest}:{children:React.ReactNode,sClass?:string
   const theme = useContext(ThemeContext)
   
   return (
-  <div className={`flex justify-center items-center bg-[${theme?.colorPallete.primary}] rounded-md my-1 ${sClass} px-2`} {...rest}>
+  <div className={`flex justify-center items-center bg-[${theme?.colorPallete.primary}] rounded-md my-1 ${sClass} px-2 cursor-pointer`} {...rest}>
     {children}
   </div>
   )

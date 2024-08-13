@@ -4,9 +4,9 @@ import { compare, hash } from 'bcryptjs'
 import { AddExerciseZodSchema, FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { Series, UserExercise } from "@/app/types";
+import { ExerciceTypes, Series, TempoType, UserExercise, UserExerciseTempo } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
-import { exercisesArr } from "./lib/exercise-list";
+import { exerciseList, exercisesArr } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
 
@@ -156,12 +156,17 @@ export const logout = async () => {
 export const getUserExercises = async () => {
     const user = await auth()
     const userID = user?.user?.id
-
-    const exercises = await sql`
-        SELECT * FROM gymusersexercises WHERE userid = ${userID}
-    `
-
-    return exercises.rows as UserExercise[]
+    let AllExercises = []
+    try{
+        const exercises = await sql`
+        SELECT exercisename,id FROM gymusersexercises WHERE userid = ${userID}
+        `
+        AllExercises = [...exercises.rows]
+    }catch(e){
+        console.log(e)
+        return []
+    }
+    return AllExercises as UserExercise[]
 }
 
 export const AddNewUserExercise = async (exercisename:string) => {
@@ -224,4 +229,122 @@ export const EditUserExercise = async (exerciseid:string,newname:string) => {
             error :'Coś poszło nie tak'
         }
     }
+}
+
+export const getAllExercises = async () => {
+    try{
+        const userExercises = await getUserExercises()
+
+        return {...exerciseList,userExercises}
+    }catch(e){
+        return exerciseList as ExerciceTypes
+    }
+}
+
+const checkTempoErrors = (tempos:TempoType) => {
+    let TempoError =false
+    for(const tempoentry in tempos){
+        if(typeof tempos[tempoentry as keyof TempoType] !== 'number'){
+            TempoError = true
+        }
+    }
+    return TempoError
+}
+export const AddNewUserTempo = async (exercicename:string,tempo:TempoType) => {
+    const user = await auth()
+    const userID = user?.user?.id
+    const userExercises = await sql`SELECT exercicename FROM gymusersexercises WHERE userid = ${userID}`
+    const allExercises = [...userExercises.rows,...exercisesArr]
+
+    const TempoError = checkTempoErrors(tempo)
+
+    if(TempoError) return {error: 'Something went wrong'}
+    if(!tempo) return {error:'Dodaj tempo'}
+    if(!allExercises.includes(exercicename)){
+        return {error:'Zła nazwa ćwiczenia'}
+    }
+
+    try{
+        sql`
+            INSERT INTO gymuserstempos (userid,exercicename,tempo) VALUES (${userID},${exercicename},${JSON.stringify(tempo)})
+        `
+    }catch(e){
+        return {error:'Coś poszło nie tak'}
+    }
+
+
+}
+
+export const getAllTempos = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+    try{
+        const tempos = await sql`
+            SELECT * FROM gymuserstempos WHERE userid = ${userID}
+        `
+        let temposObject:{[key: string]:{id:string,tempo:TempoType}} = {}
+        const newTempos = tempos.rows as UserExerciseTempo[]
+
+        newTempos.forEach((item:UserExerciseTempo,index:number)=>{
+            temposObject[item.exerciseid] = {id:item.id,tempo:item.tempo}
+        })
+
+        return temposObject as {[key: string]:{id:string,tempo:TempoType}}
+    }catch(e){
+        return {} as {[key: string]:{id:string,tempo:TempoType}}
+    }
+}
+
+export const AddOrUpdateTempo = async (exerciceid:string,tempos:TempoType) => {
+
+    if(typeof exerciceid !== 'string') return { error: "Coś poszło nie tak1" }
+    const TempoError = checkTempoErrors(tempos)
+    if(TempoError) return { error: "Coś poszło nie tak2" }
+
+    const user = await auth()
+    const userID = user?.user?.id
+
+    try{
+        const exisingTempo = await sql`
+            SELECT 1 FROM gymuserstempos WHERE userid = ${userID} AND exerciseid = ${exerciceid}
+        `
+        if(exisingTempo.rows.length>0){
+            //TEMPO ALREDY EXIST IN DB AND NEEDS TO BE UPDATED
+            await sql`
+                UPDATE gymuserstempos
+                SET tempo = ${JSON.stringify(tempos)}
+                WHERE userid = ${userID} AND exerciseid = ${exerciceid};
+            `
+        }else{
+            //TEMPO DONT EXIST IN DB AND NEEDS TO BE CREATED
+            await sql`
+                INSERT INTO gymuserstempos (userid,exerciseid,tempo) VALUES (${userID},${exerciceid},${JSON.stringify(tempos)})
+            `
+        }
+    }catch(e){
+        console.log(e)
+        return { error: "Coś poszło nie tak3" }
+    }
+    revalidatePath('/home/profile/set-tempo')
+}
+
+export const DeleteTempoFromDb = async (exerciceid:string) => {
+    if(typeof exerciceid !== 'string') return { error: "Coś poszło nie tak1" }
+
+    const user = await auth()
+    const userID = user?.user?.id
+    try{
+        await sql`
+            DELETE FROM gymuserstempos WHERE userid = ${userID} AND exerciseid = ${exerciceid};
+        `
+    }catch(e){
+        return { error: 'Coś poszło nie tak' }
+    }
+    revalidatePath('/home/profile/set-tempo')
+}
+
+export const AllExercisesInOneArray = async () => {
+    const userExercises = await getUserExercises()
+
+    return [...exercisesArr,...userExercises]
 }

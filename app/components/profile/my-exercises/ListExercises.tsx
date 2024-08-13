@@ -7,7 +7,7 @@ import { DeleteModal } from './DeleteModal'
 
 export const ListExercises = ({exercises}:{exercises:UserExercise[]}) => {
   const theme = useContext(ThemeContext)
-  const[selectedExercise,setSelectedExercise] = useState<UserExercise>({exercicename:'',id:'',userid:''})
+  const[selectedExercise,setSelectedExercise] = useState<UserExercise>({exercisename:'',id:''})
   const[showEditModal,setShowEditModal] = useState(false)
   const[showDeleteModal,setShowDeleteModal] = useState(false)
   return (

@@ -5,7 +5,7 @@ import { ThemeContext } from '@/app/context/ThemeContext'
 import { EditUserExercise } from '@/app/actions'
 
 export const EditModal = ({selectedExercise,setShowEditModal}:{selectedExercise:UserExercise,setShowEditModal:React.Dispatch<React.SetStateAction<boolean>>}) => {
-    const [newName,setNewName] = useState(selectedExercise.exercicename)
+    const [newName,setNewName] = useState(selectedExercise.exercisename)
     const[error,setError] = useState('')
     const theme = useContext(ThemeContext)
 
