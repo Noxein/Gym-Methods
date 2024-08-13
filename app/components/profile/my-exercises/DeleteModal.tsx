@@ -17,7 +17,7 @@ export const DeleteModal = ({selectedExercise,setShowDeleteModal}:{selectedExerc
         <div onClick={e=>e.stopPropagation()} className={`border-2 border-[${theme?.colorPallete.accent}] text-[${theme?.colorPallete.accent}] px-10 py-6 rounded-md text-xl flex flex-col gap-2`}>
             <div className='text-center'>
                 Czy napewno chcesz usunąć <br />
-                {selectedExercise.exercicename}
+                <strong>{selectedExercise.exercisename}</strong>
             </div>
             <div className='flex gap-2'>
                 <button className='flex-1 bg-red-600 py-2' onClick={deleteExercise}>Usuń</button>

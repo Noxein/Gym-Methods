@@ -179,9 +179,12 @@ export const AddNewUserExercise = async (exercisename:string) => {
     if( typeof exercisename !== 'string'){
         return {error: 'Coś poszło nie tak'}
     }
+    if(exercisesArr.toLocaleString().toLowerCase().includes(exercisename.toLowerCase())){
+        return {error: 'Takie ćwiczenie już istnieje'}
+    }
     try{
         await sql`
-            INSERT INTO gymusersexercises (userid,exercicename) VALUES (${userID},${exercisename})
+            INSERT INTO gymusersexercises (userid,exercisename) VALUES (${userID},${exercisename})
         `
         revalidatePath('/home/profile/my-exercises')
     }catch(e){

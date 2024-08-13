@@ -1,26 +1,40 @@
 'use client'
 import { ThemeContext } from "@/app/context/ThemeContext"
 import { ExpandIcon } from "@/app/ui/icons/ExpandIcon"
-import Link from "next/link"
 import { useContext, useState } from "react"
+import { LinkToExercise } from "./LinkToExercise"
 
-export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:{item:any, objectName?:string,currentLevel?:number,isLast?:boolean}) => {
+type ListExercisesTypes = {
+    item:any,
+    objectName?:string,
+    currentLevel?:number,
+    isLast?:boolean,
+}
+export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListExercisesTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `ml-${currentLevel*2}`
 
     const theme = useContext(ThemeContext)
     
-
+    if(objectName === 'userExercises' && Array.isArray(item)){
+        return (<div className={`flex flex-col gap-1 font-bold`}>
+            <ExpandBtn text={'Twoje ćwiczenia'} isExpanded={showChildren} 
+                onClick={()=>setShowChildren(!showChildren)} 
+                className={`text-left ${mLeft}  text-[${theme?.colorPallete.accent}] border-[${theme?.colorPallete.secondary}] border-2 rounded flex justify-between pl-4 py-2`}/>
+            {showChildren && item.map((x:{exercisename:string,id:string},index:number)=>(
+            <LinkToExercise isFirst={index===0} mLeft={`ml-10`} key={x.id} text={x.exercisename}/>
+        ))}
+    </div>)
+    }
     if(Array.isArray(item)){
-        const bgColor = `bg-${theme?.colorPallete.primary} ${isLast?null:'border-b-2 border-white'}`
-        return (<div className={`flex flex-col ${bgColor} ${mLeft} font-semibold`}>
+        return (<div className={`flex flex-col ${mLeft} font-semibold`}>
             <ExpandBtn text={objectName} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} 
-                className={`text-left ml-2 flex justify-between pr-4 py-2 text-[${theme?.colorPallete.accent}]`}/>
+                className={`text-left ${mLeft}  text-[${theme?.colorPallete.accent}] border-[${theme?.colorPallete.secondary}] border-2 rounded flex justify-between pl-4 py-2`}/>
 
-        {showChildren && <div className='flex flex-col gap-[2px] font-normal'>
+        {showChildren && <div className='flex flex-col gap-2 font-normal'>
                 {item.map((x,index)=>(       
-                        <LinkToExercise text={x} mLeft={`ml-${(currentLevel+1)*2}`} key={x} isLast={index+1===item.length}/>
+                        <LinkToExercise isFirst={index===0} mLeft={`ml-10`} key={x} text={x}/>
                     ))}
             </div>}
         </div>)
@@ -28,12 +42,11 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:{item
     }
 
     if(typeof item === 'object'){
-        const bgColor = `bg-${theme?.colorPallete.primary} ${objectName?'border-b-2 border-white':null}`
-        return (<div className={`flex flex-col ${bgColor} gap-1 font-bold`}>
+        return (<div className={`flex flex-col gap-3 font-bold`}>
 
             <ExpandBtn text={objectName||''} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} 
-                className={`text-left ${mLeft}  text-[${theme?.colorPallete.accent}] flex justify-between pr-4 py-2`}/>
+                className={`text-left ${mLeft}  text-[${theme?.colorPallete.accent}] border-[${theme?.colorPallete.secondary}] border-2 rounded flex justify-between pl-4 py-2`}/>
 
 
             {showChildren && Object.keys(item).map((key,index)=>(
@@ -43,15 +56,6 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:{item
 
             </div>)
     }
-}
-
-const LinkToExercise = ({text,mLeft,isLast}:{text: string,mLeft:string,isLast:boolean}) => {
-    const theme = useContext(ThemeContext)
-    return(
-        <Link href={`/home/add-exercise/${text.trim()}`} className={`text-left ${mLeft} py-1 pl-2 text-[${theme?.colorPallete.accent}] ${!isLast?'border-b-2 border-white':null}`}>
-            {text}
-        </Link>
-)
 }
 
 type ExpandBtn = {
