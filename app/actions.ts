@@ -342,3 +342,9 @@ export const DeleteTempoFromDb = async (exerciceid:string) => {
     }
     revalidatePath('/home/profile/set-tempo')
 }
+
+export const AllExercisesInOneArray = async () => {
+    const userExercises = await getUserExercises()
+
+    return [...exercisesArr,...userExercises]
+}
