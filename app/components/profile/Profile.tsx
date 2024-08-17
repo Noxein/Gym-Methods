@@ -10,7 +10,7 @@ export const Profile = async () => {
         <LinkBtn href='/home/profile/set-tempo' text='Ustaw tempo'/>
         <LinkBtn href='/home/profile/search' text='Historia ćwiczeń'/>
         <LinkBtn href='/home/profile/my-exercises' text='Moje ćwiczenia'/>
-        <LinkBtn href='/home/profile/create-training' text='Dodaj plan treningowy'/>
+        <LinkBtn href='/home/profile/my-training-plans' text='Moje treningi'/>
         <LinkBtn href='/home/profile/change-password' text='Zmień hasło'/>
         <SignOutBtn />
     </div>

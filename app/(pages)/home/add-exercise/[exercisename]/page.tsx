@@ -13,6 +13,7 @@ export default async function page({params}:{params:{exercisename:string}}){
   return (
     <div>
       <AddExercise name={exerciseName} showTempo={!!user?.user?.showTempo}/>
+      
     </div>
   )
 }

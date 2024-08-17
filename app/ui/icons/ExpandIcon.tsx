@@ -18,9 +18,9 @@ export const ProfileIcon = () => {
     )
 }
 
-export const PlusIcon = () => {
+export const PlusIcon = ({width,height}:{width?:string,height?:string}) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={iconWidth} height={iconHeight} fill={iconFill}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={width?width:iconWidth} height={height?height:iconHeight} fill={iconFill}>
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
         </svg>
     )
@@ -56,9 +56,9 @@ export const PencilIcon = () => {
     )
 }
 
-export const TrashIcon = () => {
+export const TrashIcon = ({width,height}:{width?:string,height?:string}) => {
     return (
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" width={iconWidth+5} height={iconHeight+5}>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" width={width?width:iconWidth+5} height={height?height:iconHeight+5}>
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
             <g id="SVGRepo_iconCarrier"> 
@@ -68,6 +68,17 @@ export const TrashIcon = () => {
                 <path d="M6 7H12H18V18C18 19.6569 16.6569 21 15 21H9C7.34315 21 6 19.6569 6 18V7Z" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
                 <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
             </g>
+        </svg>
+    )
+}
+export const LeftAngle = ({width,height}:{width?:string,height?:string}) => {
+    return (
+        <svg fill={iconFill} width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                <path d="M11.3,12l3.5-3.5c0.4-0.4,0.4-1,0-1.4c-0.4-0.4-1-0.4-1.4,0l-4.2,4.2l0,0c-0.4,0.4-0.4,1,0,1.4l4.2,4.2c0.2,0.2,0.4,0.3,0.7,0.3l0,0c0.3,0,0.5-0.1,0.7-0.3c0.4-0.4,0.4-1,0-1.4L11.3,12z"></path>
+                </g>
         </svg>
     )
 }

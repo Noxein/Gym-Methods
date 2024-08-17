@@ -89,3 +89,18 @@ export type SelectedExerciseWithTempo = {
         downhold:number,
     }
 }
+export type WeekDay = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday'
+
+export type UserTraining = {
+    id: string,
+    trainingname: string,
+    date: Date,
+    exercises: string[],
+    weekday: WeekDay
+}
+
+export type TrainingExerciseType = {
+    exercisename: string,
+    exerciseid:string,
+    id: string,
+}

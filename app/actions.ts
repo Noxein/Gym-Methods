@@ -4,11 +4,12 @@ import { compare, hash } from 'bcryptjs'
 import { AddExerciseZodSchema, FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExerciceTypes, Series, TempoType, UserExercise, UserExerciseTempo } from "@/app/types";
+import { ExerciceTypes, Series, TempoType, UserExercise, UserExerciseTempo, UserTraining, WeekDay } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
+import { WeekDayArray, WeekDayArrayPL } from "./lib/utils";
 
 type State = {
     succes?: boolean
@@ -351,3 +352,161 @@ export const AllExercisesInOneArray = async () => {
 
     return [...exercisesArr,...userExercises]
 }
+
+export const getAllIdsExercisesInArray = async () => {
+    let array = [...exercisesArr]
+    const userExercises = await getUserExercises()
+    userExercises.forEach(x=>{
+        array.push(x.id)
+    })
+
+    return array
+}
+
+const checkTrainingFields = async (trainingplanname:string,exercises:string[],weekday:WeekDay,userID:string) => {
+    if(typeof trainingplanname !== 'string'){
+        return {error:'Coś poszło nie tak'}
+    }
+    if (trainingplanname.length > 255){
+        return {error:'Nazwa treningu jest za długa'}
+    }
+    if(exercises.length <2){
+        console.log('what')
+        return {error:'Trening musi miec conajmniej dwa ćwiczenia'}
+    }
+    let NotStringError = false
+    let UnknownExerciseError = false
+    let unknownExercice = ''
+    const allExerciseIdsArray = await getAllIdsExercisesInArray()
+
+    for(let x in exercises){
+        console.log(x)
+        if(typeof x !== 'string') NotStringError = true
+
+        if(!allExerciseIdsArray.includes(exercises[x])){
+            UnknownExerciseError = true 
+            unknownExercice = exercises[x]
+        }
+    }
+    if(NotStringError) return { error: 'Coś poszło nie tak'}
+    if(UnknownExerciseError) return { error: `Nieznane ćwiczenie w liście: "${unknownExercice}"`}
+
+    if(!WeekDayArray.includes(weekday)) return { error: 'Zły dzień tygodnia'}
+}
+
+export const GetUserTrainings = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+    try{
+        const UserTrainings = await sql`
+            SELECT id,trainingname,date,exercises,weekday FROM gymuserstrainings WHERE userid = ${userID}
+        `
+        return UserTrainings.rows as UserTraining[]
+    }catch(e){
+        return []
+    }
+}
+
+export const GetUserTrainingByName = async (trainingname:string) => {
+    if(typeof trainingname !== 'string') return { error: "Coś poszło nie tak"}
+    const user = await auth()
+    const userID = user?.user?.id
+
+    try{
+        const Training = await sql`
+            SELECT id,trainingname,date,exercises,weekday FROM gymuserstrainings WHERE userid = ${userID} AND trainingname = ${trainingname}
+        `
+        if(Training.rows.length<=0) return null
+        return {
+            training: Training.rows[0] as UserTraining,
+            error: ''
+        }
+    }catch(e){
+        return { error: 'Coś poszło nie tak'}
+    }
+}
+export const AddUserTraining = async (trainingplanname:string,exercises:string[],weekday:WeekDay) => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    checkTrainingFields(trainingplanname,exercises,weekday,userID as string)
+
+    const date = new Date()
+    try{
+        await sql`
+            INSERT INTO gymuserstrainings (userid, trainingname, date, exercises, weekday) VALUES (${userID},${trainingplanname},${JSON.stringify(date)},${JSON.stringify({exercises})},${weekday})
+        `
+    }catch(e){
+        return { error: 'Coś poszło nie tak'}
+    }
+}
+export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay) => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    if(typeof trainingplanname !== 'string'){
+        return {error:'Coś poszło nie tak1'}
+    }
+    if (trainingplanname.length > 255){
+        return {error:'Nazwa treningu jest za długa'}
+    }
+    if(!WeekDayArrayPL.includes(weekday)) return { error: 'Zły dzień tygodnia'}
+
+    try{
+        const userExercice = await sql`
+        SELECT 1 FROM gymuserstrainings WHERE userid = ${userID} AND trainingname = ${trainingplanname}
+        `
+        if(userExercice.rows.length>0){
+            return { error: 'Trening o tej nazwie już istnieje, wybierz inną'}
+        }
+    }catch(e){
+        return {error:'Coś poszło nie tak2'}
+    }
+
+    const date = new Date()
+    const endlishWeekDay = WeekDayArray[WeekDayArrayPL.indexOf(weekday)]
+    try{
+        await sql`
+            INSERT INTO gymuserstrainings (userid,trainingname,date,weekday,exercises) VALUES (${userID},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify({})})
+        `
+    }catch(e){
+        console.log(e)
+        return { error: 'Coś poszło nie tak3'}
+    }
+    revalidatePath('/home/profile/my-training-plans')
+}
+export const EditUserTraining = async (trainingid:string,trainingplanname:string,exercises:string[],weekday:WeekDay) => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    const checkvalue = await checkTrainingFields(trainingplanname,exercises,weekday,userID as string)
+    if(checkvalue?.error) return  checkvalue
+    const date = new Date()
+    try{
+        await sql`
+            UPDATE gymuserstrainings
+            SET trainingname = ${trainingplanname}, date = ${JSON.stringify(date)}, exercises = ${JSON.stringify({exercises})}, weekday = ${weekday}
+            WHERE id = ${trainingid};
+        
+            `
+    }catch(e){
+        return { error: 'Coś poszło nie tak'}
+    }
+    revalidatePath('/home/profile/my-training-plans')
+    redirect('/home/profile/my-training-plans')
+}
+
+export const DeleteUserTraining = async (trainingid:string) => {
+    if(typeof trainingid !== 'string') return { error: "Coś poszło nie tak"}
+
+    try{
+        await sql`
+            DELETE FROM gymuserstrainings WHERE id = ${trainingid};
+            `
+    }catch(e){
+        return { error: 'Coś poszło nie tak'}
+    }
+    revalidatePath('/home/profile/my-training-plans')
+    redirect('/home/profile/my-training-plans')
+}
+
