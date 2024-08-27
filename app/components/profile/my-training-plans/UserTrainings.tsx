@@ -1,11 +1,11 @@
-import { UserTraining } from '@/app/types'
+import { UserTrainingPlan as U } from '@/app/types'
 import React from 'react'
 import { Training } from './Training'
 
 type UserTrainingPlansTypes = {
-    UserTrainings: UserTraining[],
+    UserTrainings: U[],
     setShowDeleteModal: React.Dispatch<React.SetStateAction<boolean>>,
-    setCurrentSelectedTrainign: React.Dispatch<React.SetStateAction<UserTraining | null | undefined>>,
+    setCurrentSelectedTrainign: React.Dispatch<React.SetStateAction<U | null | undefined>>,
 }
 export const UserTrainingPlans = ({UserTrainings,setShowDeleteModal,setCurrentSelectedTrainign}:UserTrainingPlansTypes) => {
   return (

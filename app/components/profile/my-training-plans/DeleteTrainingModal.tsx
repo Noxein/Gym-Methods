@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
-import { UserTraining } from '@/app/types'
+import { UserTrainingPlan } from '@/app/types'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { DeleteUserTraining } from '@/app/actions'
 
 type DeleteTrainingModalTypes = {
     setShowDeleteModal: React.Dispatch<React.SetStateAction<boolean>>,
-    currentSelectedTraining: UserTraining | null | undefined,
+    currentSelectedTraining: UserTrainingPlan | null | undefined,
 }
 export const DeleteTrainingModal = ({setShowDeleteModal,currentSelectedTraining}:DeleteTrainingModalTypes) => {
   const theme = useContext(ThemeContext)
@@ -18,13 +18,13 @@ export const DeleteTrainingModal = ({setShowDeleteModal,currentSelectedTraining}
   }
   return (
     <BlurBackgroundModal onClick={()=>setShowDeleteModal(false)}>
-        <div onClick={e=>e.stopPropagation()} className={`border-2 border-[${theme?.colorPallete.accent}] text-[${theme?.colorPallete.accent}] px-10 py-6 rounded-md text-xl flex flex-col gap-2 mb-20`}>
+        <div onClick={e=>e.stopPropagation()} className={`border-2 border-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent} px-10 py-6 rounded-md text-xl flex flex-col gap-2 mb-20`}>
         <div className='text-center'>
                 Czy napewno chcesz usunąć <br />
                 <strong>{currentSelectedTraining?.trainingname}</strong>
             </div>
             <div className='flex gap-2'>
-                <button className='flex-1 bg-red-600 py-2' onClick={deleteExercise}>Usuń</button>
+                <button className='flex-1 bg-red py-2' onClick={deleteExercise}>Usuń</button>
                 <button onClick={()=>setShowDeleteModal(false)} className='flex-1 bg-gray-600'>Anuluj</button>
             </div>
             {error && <div className='text-red-500'>${error}</div>}

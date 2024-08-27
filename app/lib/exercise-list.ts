@@ -198,7 +198,10 @@ export const exercisesArr:string[] =
     "Wykroki ze sztangą",
     "Unoszenie nóg w zwisie"
 ] as const
-
+export const timeMesureExercises:string[] = [
+    "Deska",
+    "Unoszenie nóg w zwisie",
+]
 // function FillArray(){
 //     exercisesArr = []
 //     for (const [key, value] of Object.entries(exerciseList.Izolacyjne)) {

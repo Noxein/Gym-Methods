@@ -1,7 +1,8 @@
 export type Series = {
     weight:number,
     repeat:number,
-    difficulty: DifficultyLevel
+    difficulty: DifficultyLevel,
+    time?:string,
 }
 
 export type ColorPalleteType = {
@@ -21,22 +22,24 @@ export type AddExerciceReducerType = {
     tempoUp: number,
     tempoDown: number,
     series: Series[],
-    difficultyLevel: DifficultyLevel
+    difficultyLevel: DifficultyLevel,
+    time: string,
 }
 
 export type DifficultyLevel = 'easy'|'medium'|'hard'
 
 export type ActionTypes = {
     type: ActionTypesEnum
-    payload?: number | DifficultyLevel | Series[],
+    payload?: number | DifficultyLevel | Series[] | string,
     index?: number
 }
 
-export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES' | 'EDITSERIESKG' | 'EDITSERIESREPEAT' | 'EDITSERIESDIFFICULTY'
+export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES' | 'EDITSERIESKG' | 'EDITSERIESREPEAT' | 'EDITSERIESDIFFICULTY' | 'TIME' | 'EDITSERIESTIME' | 'RESETSTATE'
 
 export type UserExercise = {
     id:string,
-    exercisename:string
+    exercisename:string,
+    timemesure: boolean,
 }
 
 export type TempoType = {
@@ -90,12 +93,15 @@ export type SelectedExerciseWithTempo = {
     }
 }
 export type WeekDay = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday'
+export type WeekDayPL = 'Poniedziałek' | 'Wtorek' | 'Środa' | 'Czwartek' | 'Piątek' | 'Sobota' | 'Niedziela'
 
-export type UserTraining = {
+export type UserTrainingPlan = {
     id: string,
     trainingname: string,
     date: Date,
-    exercises: string[],
+    exercises:{
+        exercises: TrainingExerciseType[],
+    },
     weekday: WeekDay
 }
 
@@ -103,4 +109,43 @@ export type TrainingExerciseType = {
     exercisename: string,
     exerciseid:string,
     id: string,
+}
+
+export type UserTrainingInProgress = {
+    id: string,
+    userid: string,
+    lastexerciseid: string,
+    iscompleted: boolean,
+    trainingid: string,
+    datetime: Date,
+}
+
+export type LastExerciseType = {
+    trainingid: string,
+    datetime: Date,
+    trainingname: string,
+    weekday: string,
+}
+
+export type LastTrainingType = {
+    trainingid: string,
+    trainingdatetime: Date,
+    id: string,
+    exerciseid: string,
+    sets: { 
+        sets: Series[], diffucultyLevel: DifficultyLevel
+    },
+    date: Date
+}
+
+export type GymExercisesDbResult = {
+    id: string,
+    userid: string,
+    exerciseid: string,
+    date: Date,
+    sets: { 
+        sets: Series[], diffucultyLevel: DifficultyLevel
+    },
+    ispartoftraining: boolean
+    trainingid: string,
 }

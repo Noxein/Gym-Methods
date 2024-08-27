@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react'
 import { AddExercise } from './AddSingleExercise'
 import { TrainingExerciseType } from '@/app/types'
 import { ExpandIcon } from '@/app/ui/icons/ExpandIcon'
+import { Icon } from '@/app/components/Icon'
 
 type ListExercisesTrainingTypes = {
     item:any,
@@ -19,9 +20,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
     
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`flex flex-col gap-1 font-bold`}>
-            <ExpandBtn text={'Twoje ćwiczenia'} isExpanded={showChildren} 
-                onClick={()=>setShowChildren(!showChildren)} 
-                className={`text-left ${mLeft}  text-[${theme?.colorPallete.accent}] bg-[${theme?.colorPallete.primary}] border-[${theme?.colorPallete.secondary}] border-2 rounded flex justify-between pl-4 py-2`}/>
+            <ExpandBtn text={'Twoje ćwiczenia'} isExpanded={showChildren} onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft}/>
             {showChildren && item.map((x:{exercisename:string,id:string},index:number)=>(
             <AddExercise id={x.id} isFirst={index===0} mLeft={`ml-10`} text={x.exercisename} setPlanExercises={setPlanExercises}/>
         ))}
@@ -29,9 +28,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
     }
     if(Array.isArray(item)){
         return (<div className={`flex flex-col ${mLeft} font-semibold`}>
-            <ExpandBtn text={objectName} isExpanded={showChildren} 
-                onClick={()=>setShowChildren(!showChildren)} 
-                className={`text-left ${mLeft}  text-[${theme?.colorPallete.accent}] bg-[${theme?.colorPallete.primary}] border-[${theme?.colorPallete.secondary}] border-2 rounded flex justify-between pl-4 py-2`}/>
+            <ExpandBtn text={objectName} isExpanded={showChildren} onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft}/>
 
         {showChildren && <div className='flex flex-col gap-1 font-normal'>
                 {item.map((x,index)=>(       
@@ -45,9 +42,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
     if(typeof item === 'object'){
         return (<div className={`flex flex-col gap-2 font-bold`}>
 
-            <ExpandBtn text={objectName||''} isExpanded={showChildren} 
-                onClick={()=>setShowChildren(!showChildren)} 
-                className={`text-left ${mLeft} bg-[${theme?.colorPallete.primary}]  text-[${theme?.colorPallete.accent}] border-[${theme?.colorPallete.secondary}] border-2 rounded flex justify-between pl-4 py-2`}/>
+            <ExpandBtn text={objectName||''} isExpanded={showChildren} onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft}/>
 
 
             {showChildren && Object.keys(item).map((key,index)=>(
@@ -61,18 +56,22 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
 
 type ExpandBtn = {
     text?:string,
-    isExpanded:boolean
+    isExpanded:boolean,
+    mLeft: string,
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 
-const ExpandBtn = ({text,isExpanded,...rest}:ExpandBtn) => {
+const ExpandBtn = ({text,isExpanded,mLeft,...rest}:ExpandBtn) => {
     const theme = useContext(ThemeContext)
 
     return (
-        text && <button {...rest} >
-            <span>{text}</span>
+        text && 
+        <button {...rest} className={`text-left ${mLeft} bg-${theme?.colorPallete.accent}  text-${theme?.colorPallete.accent} rounded-lg flex pl-[1px] py-[1px] items-center`}>
+            <span className={`flex-1 rounded-lg bg-${theme?.colorPallete.primary} py-3 pl-4`}>{text}</span>
 
-            <ExpandIcon expanded={isExpanded} themeColor={theme?.colorPallete.accent}/>
-
+            <Icon className='p-0 -ml-1'>
+                <ExpandIcon expanded={isExpanded} themeColor={theme?.colorPallete.accent}/>
+            </Icon>
+            
         </button>
     )
 }

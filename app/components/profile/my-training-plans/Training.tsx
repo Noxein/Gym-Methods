@@ -1,13 +1,13 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
-import { UserTraining } from '@/app/types'
-import { PencilIcon, TrashIcon } from '@/app/ui/icons/ExpandIcon'
+import { UserTrainingPlan } from '@/app/types'
+import { PencilIcon, RightTriangle, TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
 import React, { useContext } from 'react'
 
 type Training = {
-    UserTraining: UserTraining,
+    UserTraining: UserTrainingPlan,
     setShowDeleteModal: React.Dispatch<React.SetStateAction<boolean>>,
-    setCurrentSelectedTrainign: React.Dispatch<React.SetStateAction<UserTraining | null | undefined>>,
+    setCurrentSelectedTrainign: React.Dispatch<React.SetStateAction<UserTrainingPlan | null | undefined>>,
 }
 export const Training = ({UserTraining,setShowDeleteModal,setCurrentSelectedTrainign}:Training) => {
     const theme = useContext(ThemeContext)
@@ -16,19 +16,21 @@ export const Training = ({UserTraining,setShowDeleteModal,setCurrentSelectedTrai
       setShowDeleteModal(true)
     }
   return (
-    <div className={`text-xl px-5 py-4 border-2 border-[${theme?.colorPallete.accent}] rounded-lg flex gap-2 items-center`}>
-        <Link href={`/home/profile/my-training-plans/${UserTraining.trainingname}`} className={`flex-1`}>
-            {UserTraining.trainingname}
-        </Link>
-        <Link href={`/home/profile/my-training-plans/${UserTraining.trainingname}`}>
-            <Icon>
-                <PencilIcon />
-            </Icon>
-        </Link>
+    <div className={`text-xl py-[1px] rounded-lg flex items-center bg-${theme?.colorPallete.accent}`}>
         <Icon onClick={DeleteTraining}>
-            <TrashIcon />
+          <TrashIcon fill='#0D1317'/>
         </Icon>
-        
+
+        <Link href={`/home/profile/my-training-plans/${UserTraining.trainingname}`} className='flex flex-1 items-center'>
+          <div className={`bg-${theme?.colorPallete.primary} py-3 rounded-lg flex-1 px-4`}>
+            {UserTraining.trainingname}
+          </div>
+
+
+          <Icon className='px-1 pr-2'>
+            <RightTriangle width='15px'/>
+          </Icon>
+        </Link>
         
     </div>
 

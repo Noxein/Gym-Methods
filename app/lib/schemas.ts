@@ -16,7 +16,7 @@ export const RegisterUserZodSchema = z.object({
 })
 
 export const AddExerciseZodSchema = z.object({
-    exercicename: z.enum(['Wznosy bokiem',...exercisesArr]),
+    exerciceid: z.enum(['Wznosy bokiem',...exercisesArr]),
     sets: z.array(z.object({
         weight: z.number(),
         repeat: z.number(),

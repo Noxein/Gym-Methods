@@ -1,6 +1,7 @@
+import { Icon } from '@/app/components/Icon';
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { TrainingExerciseType } from '@/app/types'
-import { randomUUID } from 'crypto'
+import { PlusIcon } from '@/app/ui/icons/ExpandIcon';
 import React, { useContext } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,15 +16,22 @@ export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises}:AddExercise
     const theme = useContext(ThemeContext)
 
     const addExercise = () => {
-        setPlanExercises(x=>[...x,{exerciseid:id,exercisename:text,id:uuidv4()}])
+        setPlanExercises(x=>{
+            if(x) return [...x,{exerciseid:id,exercisename:text,id:uuidv4()}]
+            return [{exerciseid:id,exercisename:text,id:uuidv4()}]
+            
+        })
     }
     return(
-        <button className={`text-left ${mLeft} bg-[${theme?.colorPallete.secondary}] text-[${theme?.colorPallete.accent}] border-[${theme?.colorPallete.secondary}] border-2 rounded flex justify-between ${isFirst?'mt-2':null}`} 
+        <button className={`text-left ${mLeft} bg-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent} py-[1px] pl-[1px] rounded flex items-center justify-between ${isFirst?'mt-2':null}`} 
         onClick={addExercise}
         >
-            <span className={`flex-1 bg-[${theme?.colorPallete.primary}] rounded-md pl-4 py-2 flex flex-col`}>
+            <span className={`flex-1 bg-${theme?.colorPallete.primary} rounded-md pl-4 py-3 flex flex-col`}>
                 {text}
             </span>
+            <Icon className='px-[3px]'>
+                <PlusIcon width='20px' fill='#0D1317'/>
+            </Icon>
         </button>
     )
 }

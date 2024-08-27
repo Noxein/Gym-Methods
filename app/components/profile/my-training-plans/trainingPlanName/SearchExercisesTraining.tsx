@@ -28,7 +28,7 @@ type FilteredExercisesTypes = {
 }
 export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises}:FilteredExercisesTypes) => {
     return (
-        <div className='mx-auto flex flex-col gap-2 w-full mb-20'>
+        <div className='flex flex-col gap-2 mx-3'>
             {allExercisesInOneArray.map((x,i)=>{
                 if(typeof x === 'object'){
                     return (

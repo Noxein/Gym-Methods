@@ -5,7 +5,6 @@ export default async function AddExercisePage(){
 
     const exercises = await getAllExercises()
     const allExercisesInOneArray = await AllExercisesInOneArray()
-
     return(
         <ExerciseListMapped exercises={exercises} allExercisesInOneArray={allExercisesInOneArray}/>
     )

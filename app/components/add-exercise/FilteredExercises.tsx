@@ -7,16 +7,16 @@ type FilteredExercisesTypes = {
 }
 export const FilteredExercises = ({allExercisesInOneArray}:FilteredExercisesTypes) => {
     return (
-        <div className='mx-auto flex flex-col gap-2 w-full'>
+        <div className='flex flex-col gap-2 w-full'>
             {allExercisesInOneArray.map((x,i)=>{
                 if(typeof x === 'object'){
                     return (
-                        <LinkToExercise mLeft='ml-2' isFirst={i===0} text={x.exercisename}/>
+                        <LinkToExercise mLeft='ml-2' isFirst={i===0} text={x.exercisename} showLeftLine={false}/>
                     )
                 }
                 if(typeof x === 'string'){
                     return (
-                        <LinkToExercise mLeft='ml-2' isFirst={i===0} text={x}/>
+                        <LinkToExercise mLeft='ml-2' isFirst={i===0} text={x} showLeftLine={false}/>
                     )
                 }
             })}
