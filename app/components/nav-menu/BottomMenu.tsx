@@ -1,27 +1,27 @@
 'use client'
 import { ThemeContext } from '@/app/context/ThemeContext'
-import { PlusIcon, ProfileIcon, SettingsIcon, StartWorkoutIcon } from '@/app/ui/icons/ExpandIcon'
+import { HomeIcon, PlusIcon, ProfileIcon, SettingsIcon, StartWorkoutIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
 import React, { useContext } from 'react'
 
 export const BottomMenu = () => {
     const theme = useContext(ThemeContext)
   return (
-    <nav className={`flex fixed bottom-0 z-20 w-screen bg-[${theme?.colorPallete.secondary}] py-6 border-t-white border-t-2`}>
-        <MenuBtn hrefTo={'/home/profile'}>
-            <ProfileIcon />
-        </MenuBtn>
-
-        <MenuBtn hrefTo={'/home/add-exercise'}>
-            <PlusIcon />
+    <nav className={`flex fixed bottom-0 z-20 w-screen bg-[#131C22] py-6 border-t-white border-t-2`}>
+        <MenuBtn hrefTo={'/home'}>
+            <HomeIcon />
         </MenuBtn>
 
         <MenuBtn hrefTo={'/home/start-training'}>
             <StartWorkoutIcon />
         </MenuBtn>
 
-        <MenuBtn hrefTo={'/home/settings'}>
-            <SettingsIcon />
+        <MenuBtn hrefTo={'/home/add-exercise'}>
+            <PlusIcon />
+        </MenuBtn>
+
+        <MenuBtn hrefTo={'/home/profile'}>
+            <ProfileIcon />
         </MenuBtn>
     </nav>
   )

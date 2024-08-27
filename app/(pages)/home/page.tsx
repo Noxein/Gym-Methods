@@ -1,12 +1,10 @@
-import { NavButton } from "@/app/components/home/NavButton";
-import { auth } from "@/auth";
+import { Home } from "@/app/components/home/Home";
 
-export default async function Home(){
-    const user = await auth()
-    console.log('USER:',user)
+export default async function page(){
+
     return(
         <div className="flex flex-col items-center w-full">
-            <NavButton text="Dodaj ćwiczenie" href="/home/add-exercise"/>
+            <Home />
         </div>
     )
 }

@@ -36,23 +36,36 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
     if(typeof action.payload === 'string'){
         switch (action.type) {
             case "DIFFICULTY":
-                return { ...state, difficultyLevel: action.payload };
+                return { ...state, difficultyLevel: action.payload as 'easy'|'medium'|'hard' };
             case 'EDITSERIESDIFFICULTY':{
                 let index = action.index!
                 let changeValue = action.payload
 
                 const arr = [...state.series]
-                arr[index].difficulty = changeValue
+                arr[index].difficulty = changeValue as 'easy'|'medium'|'hard'
                 return {...state, series: arr}
+            };
+            case 'EDITSERIESTIME':{
+                let index = action.index!
+                let changeValue = action.payload
+
+                const arr = [...state.series]
+                arr[index].time = changeValue
+                return {...state, series: arr}
+            };
+            case 'TIME' :{
+                return { ...state, time: action.payload };
             }
         }
     }
+
     switch (action.type) {
         case "ADDSERIES":
             return { ...state, series: [...state.series, { 
                 weight: state.weight,
                 repeat: state.repeat,
                 difficulty: state.difficultyLevel,
+                time: state.time
             }]};
         case 'SETSERIESFROMMEMORY':
             if(action.payload && typeof action.payload !== 'number' && typeof action.payload !== 'string'){
@@ -61,7 +74,13 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
                 }
             };
         case 'DELETESERIES':
-            return {...state, series: state.series.filter((set,i)=>i!==action.payload)}
+            return {...state, series: state.series.filter((set,i)=>i!==action.payload)};
+        case 'RESETSTATE' :{
+            console.log('hit')
+            return {
+                ...state, series : [], repeat: 0, difficultyLevel: 'easy', tempoDown: 0, tempoUp: 0, time: '', weight: 0
+            }
+        }
         default:
           return state;
       }

@@ -7,14 +7,14 @@ export const ThemeContext = createContext<ThemeContextTypes|null>(null)
 
 export const ThemeContextProvider = ({children}:{children:React.ReactNode}) => {
     const darkPalette = {
-        primary: '#0D1317',
+        primary: 'dark',
         secondary: '#576CA8',
-        accent: '#E7E7E7',
+        accent: 'marmur',
     }
     const ligtPalette = {
         primary: '#E7E7E7',
         secondary: '#576CA8',
-        accent: '#E7E7E7',
+        accent: 'marmur',
     }
     const[theme,setTheme] = useState<'dark'|'light'>('light')
     const[colorPallete,setColorPalette] = useState<ColorPalleteType>(darkPalette)

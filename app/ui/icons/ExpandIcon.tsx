@@ -2,11 +2,12 @@ const iconWidth = 25
 const iconHeight = 25
 const iconFill = '#fff'
 
-export const ExpandIcon = ({expanded,themeColor = '#E7E7E7'}:{expanded: boolean,themeColor?:string}) => {
+export const ExpandIcon = ({expanded,fill = '#E7E7E7'}:{expanded: boolean,fill?:string}) => {
     return(
         !expanded?
-<svg viewBox="0 0 24 24" fill={themeColor} xmlns="http://www.w3.org/2000/svg" width={iconWidth} height={iconHeight}><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>:
-        <svg color={themeColor} viewBox="0 0 24 24" fill={themeColor} xmlns="http://www.w3.org/2000/svg" width={iconWidth} height={iconHeight} transform="rotate(90)"><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+        <svg viewBox="0 0 24 24" fill={fill}  width={iconWidth+10} height={iconHeight+10}><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+        :
+        <svg viewBox="0 0 24 24" fill={fill}  width={iconWidth} height={iconHeight} transform="rotate(90)"><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
     )
 }
 
@@ -18,17 +19,17 @@ export const ProfileIcon = () => {
     )
 }
 
-export const PlusIcon = () => {
+export const PlusIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={iconWidth} height={iconHeight} fill={iconFill}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={width?width:iconWidth} height={height?height:iconHeight} fill={fill?fill:iconFill}>
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
         </svg>
     )
 }
 
-export const StartWorkoutIcon = () => {
+export const StartWorkoutIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width={iconWidth} height={iconHeight} fill={iconFill}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width={width?width:iconWidth} height={height?height:iconHeight} fill={fill?fill:iconFill}>
             <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
         </svg>
     )
@@ -56,17 +57,180 @@ export const PencilIcon = () => {
     )
 }
 
-export const TrashIcon = () => {
+export const TrashIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
     return (
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" width={iconWidth+5} height={iconHeight+5}>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" width={width?width:iconWidth+5} height={height?height:iconHeight+5}>
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
             <g id="SVGRepo_iconCarrier"> 
-                <path d="M10 11V17" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
-                <path d="M14 11V17" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
-                <path d="M4 7H20" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
-                <path d="M6 7H12H18V18C18 19.6569 16.6569 21 15 21H9C7.34315 21 6 19.6569 6 18V7Z" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
-                <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+                <path d="M10 11V17" stroke={fill?fill:"#ffffff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+                <path d="M14 11V17" stroke={fill?fill:"#ffffff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+                <path d="M4 7H20" stroke={fill?fill:"#ffffff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+                <path d="M6 7H12H18V18C18 19.6569 16.6569 21 15 21H9C7.34315 21 6 19.6569 6 18V7Z" stroke={fill?fill:"#ffffff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+                <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke={fill?fill:"#ffffff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+            </g>
+        </svg>
+    )
+}
+export const LeftAngle = ({width,height}:{width?:string,height?:string}) => {
+    return (
+        <svg fill={iconFill} width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                <path d="M11.3,12l3.5-3.5c0.4-0.4,0.4-1,0-1.4c-0.4-0.4-1-0.4-1.4,0l-4.2,4.2l0,0c-0.4,0.4-0.4,1,0,1.4l4.2,4.2c0.2,0.2,0.4,0.3,0.7,0.3l0,0c0.3,0,0.5-0.1,0.7-0.3c0.4-0.4,0.4-1,0-1.4L11.3,12z"></path>
+                </g>
+        </svg>
+    )
+}
+
+export const RightTriangle = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return(
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(90)">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <path d="M7.93189 1.24806C7.84228 1.09446 7.67783 1 7.5 1C7.32217 1 7.15772 1.09446 7.06811 1.24806L0.0681106 13.2481C-0.0220988 13.4027 -0.0227402 13.5938 0.0664289 13.749C0.155598 13.9043 0.320967 14 0.5 14H14.5C14.679 14 14.8444 13.9043 14.9336 13.749C15.0227 13.5938 15.0221 13.4027 14.9319 13.2481L7.93189 1.24806Z" fill={fill?fill:"#0D1317"}>
+                </path> 
+            </g>
+        </svg>
+    )
+}
+
+export const VerticalDots = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return(
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill={fill?fill:"#0D1317"} stroke="#0D1317">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z">
+                </path> 
+            </g>
+        </svg>
+    )
+}
+
+export const HomeIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return (
+        <svg fill="#D9D9D9" width={width?width:iconWidth} height={height?height:iconHeight} version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" >
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <path d="M28.7,16.3l-12-13c-0.4-0.4-1.1-0.4-1.5,0l-12,13C3,16.6,2.9,17,3.1,17.4C3.2,17.8,3.6,18,4,18h3v10c0,0.6,0.4,1,1,1h16 c0.6,0,1-0.4,1-1V18h3c0.4,0,0.8-0.2,0.9-0.6C29.1,17,29,16.6,28.7,16.3z"></path> 
+            </g>
+        </svg>
+    )
+}
+
+export const TimerIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return (
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <path d="M5.06152 12C5.55362 8.05369 8.92001 5 12.9996 5C17.4179 5 20.9996 8.58172 20.9996 13C20.9996 17.4183 17.4179 21 12.9996 21H8M13 13V9M11 3H15M3 15H8M5 18H10" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                </path> 
+            </g>
+        </svg>
+    )
+}
+
+export const CalendarIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return (
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <path d="M3 10H21M7 3V5M17 3V5M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                </path> 
+            </g>
+        </svg>
+    )
+}
+
+export const ExerciseIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return (
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="-11 0 32 32" version="1.1" fill={fill?fill:"#0D1317"} transform="rotate(45)">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> <title>pencil</title> 
+            <desc>Created with Sketch Beta.</desc> 
+            <defs> </defs> 
+            <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd"> 
+                <g id="Icon-Set" transform="translate(-579.000000, -99.000000)" fill={fill?fill:"#0D1317"}> 
+                    <path d="M587,106 L581,106 L581,102 C580.969,101.012 581.021,100.968 582,101 L586,101 C586.98,101.007 587.004,100.967 587,102 L587,106 L587,106 Z M587,121 C584.946,120.999 581.582,121 581,121 L581,108 L587,108 L587,121 L587,121 Z M584,128.257 L581,123 L587,123 L584,128.257 L584,128.257 Z M587,99 L581,99 C579.79,99 579,99.779 579,101 L579,123.213 L583,130.275 C583.604,131.206 584.396,131.206 585,130.275 L589,123.213 L589,101 C589,99.779 588.21,99.001 587,99 L587,99 Z" id="pencil"> 
+                    </path> 
+                </g> 
+            </g> 
+        </g>
+        </svg>
+    )
+}
+
+export const BookIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return (
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <path fillRule="evenodd" clipRule="evenodd" d="M3 6.1519V19.3095C3.99197 18.8639 5.40415 18.4 7 18.4C8.58915 18.4 9.9999 18.8602 11 19.3094V6.1519C10.7827 6.02653 10.4894 5.8706 10.1366 5.71427C9.31147 5.34869 8.20352 5 7 5C5.26385 5 3.74016 5.72499 3 6.1519ZM13 6.1519V19.3578C13.9977 18.9353 15.41 18.5 17 18.5C18.596 18.5 20.0095 18.9383 21 19.3578V6.1519C20.2598 5.72499 18.7362 5 17 5C15.7965 5 14.6885 5.34869 13.8634 5.71427C13.5106 5.8706 13.2173 6.02653 13 6.1519ZM12 4.41985C11.7302 4.26422 11.3734 4.07477 10.9468 3.88572C9.96631 3.45131 8.57426 3 7 3C4.69187 3 2.76233 3.97065 1.92377 4.46427C1.30779 4.82687 1 5.47706 1 6.11223V20.0239C1 20.6482 1.36945 21.1206 1.79531 21.3588C2.21653 21.5943 2.78587 21.6568 3.30241 21.3855C4.12462 20.9535 5.48348 20.4 7 20.4C8.90549 20.4 10.5523 21.273 11.1848 21.6619C11.6757 21.9637 12.2968 21.9725 12.7959 21.6853C13.4311 21.32 15.0831 20.5 17 20.5C18.5413 20.5 19.9168 21.0305 20.7371 21.4366C21.6885 21.9075 23 21.2807 23 20.0593V6.11223C23 5.47706 22.6922 4.82687 22.0762 4.46427C21.2377 3.97065 19.3081 3 17 3C15.4257 3 14.0337 3.45131 13.0532 3.88572C12.6266 4.07477 12.2698 4.26422 12 4.41985Z" fill={fill?fill:"#0D1317"}>
+                </path> 
+            </g>
+        </svg>
+    )
+}
+
+export const SummaryIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return (
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke={fill?fill:"#0D1317"}>
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <path d="M7 14L9.29289 11.7071C9.68342 11.3166 10.3166 11.3166 10.7071 11.7071L12.2929 13.2929C12.6834 13.6834 13.3166 13.6834 13.7071 13.2929L17 10M17 10V12.5M17 10H14.5" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                </path> 
+                <path d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round">
+                </path> 
+            </g>
+        </svg>
+    )
+}
+
+export const StarIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return (
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                <path d="M14.65 8.93274L12.4852 4.30901C12.2923 3.89699 11.7077 3.897 11.5148 4.30902L9.35002 8.93274L4.45559 9.68243C4.02435 9.74848 3.84827 10.2758 4.15292 10.5888L7.71225 14.2461L6.87774 19.3749C6.80571 19.8176 7.27445 20.1487 7.66601 19.9317L12 17.5299L16.334 19.9317C16.7256 20.1487 17.1943 19.8176 17.1223 19.3749L16.2878 14.2461L19.8471 10.5888C20.1517 10.2758 19.9756 9.74848 19.5444 9.68243L14.65 8.93274Z" stroke={fill?fill:"#0D1317"} strokeWidth='2' strokeLinecap="round" strokeLinejoin="round">
+                </path>
+            </g>
+        </svg>
+    )
+}
+
+
+export const LockIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return (
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke={fill?fill:"#0D1317"}>
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <path d="M12 14.5V16.5M7 10.0288C7.47142 10 8.05259 10 8.8 10H15.2C15.9474 10 16.5286 10 17 10.0288M7 10.0288C6.41168 10.0647 5.99429 10.1455 5.63803 10.327C5.07354 10.6146 4.6146 11.0735 4.32698 11.638C4 12.2798 4 13.1198 4 14.8V16.2C4 17.8802 4 18.7202 4.32698 19.362C4.6146 19.9265 5.07354 20.3854 5.63803 20.673C6.27976 21 7.11984 21 8.8 21H15.2C16.8802 21 17.7202 21 18.362 20.673C18.9265 20.3854 19.3854 19.9265 19.673 19.362C20 18.7202 20 17.8802 20 16.2V14.8C20 13.1198 20 12.2798 19.673 11.638C19.3854 11.0735 18.9265 10.6146 18.362 10.327C18.0057 10.1455 17.5883 10.0647 17 10.0288M7 10.0288V8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8V10.0288" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                </path>
+            </g>
+        </svg>
+    )
+}
+
+
+export const LogoutIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return (
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <path d="M15 16.5V19C15 20.1046 14.1046 21 13 21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3H13C14.1046 3 15 3.89543 15 5V8.0625M11 12H21M21 12L18.5 9.5M21 12L18.5 14.5" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                </path> 
             </g>
         </svg>
     )

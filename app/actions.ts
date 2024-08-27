@@ -4,11 +4,14 @@ import { compare, hash } from 'bcryptjs'
 import { AddExerciseZodSchema, FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExerciceTypes, Series, TempoType, UserExercise, UserExerciseTempo } from "@/app/types";
+import { DifficultyLevel, ExerciceTypes, GymExercisesDbResult, LastExerciseType, LastTrainingType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
-import { exerciseList, exercisesArr } from "./lib/exercise-list";
+import { exerciseList, exercisesArr, timeMesureExercises } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
+import { WeekDayArray, WeekDayArrayPL } from "./lib/utils";
+import { z } from "zod";
+import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 
 type State = {
     succes?: boolean
@@ -67,10 +70,9 @@ export const ComparePasswords = async (password:string,hasedPassword:string) => 
     return isCorrect
 }
 
-export const AddExerciseAction = async (exercicename:string,sets:Series[],diffucultyLevel:string,ispartoftraining:boolean) => {
+export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],diffucultyLevel:string,ispartoftraining:boolean,trainingPlanId?:string) => {
     //TODO fetch user id in auth
     const user = await auth()
-    console.log('USER FORM ACTIONS!',user)
     const userID = user?.user?.id
     if(!userID) return
     const stringDate = JSON.stringify(new Date())
@@ -78,41 +80,59 @@ export const AddExerciseAction = async (exercicename:string,sets:Series[],diffuc
         sets,
         diffucultyLevel
     }
+    let arr = [...exercisesArr]
+    const userExercises = await getUserExercises()
+
+    userExercises.forEach(item=>{
+        arr.push(item.id)
+    })
+
+    const AddExerciseZodSchema = z.object({
+        exerciseid: z.enum(['Wznosy bokiem',...arr]),
+        sets: z.array(z.object({
+            weight: z.number(),
+            repeat: z.number(),
+        })).nonempty('Dodaj minimum jedną serię'),
+        diffucultyLevel: z.enum(['easy','medium','hard']),
+        ispartoftraining: z.boolean()
+    })
+    
     const validData = AddExerciseZodSchema.safeParse({
-        exercicename,
+        exerciseid,
         sets,
         diffucultyLevel,
-        ispartoftraining,
+        ispartoftraining
     })
+
     if(!validData.success) {
-        console.log('WRONG DATA!', validData.error.flatten().fieldErrors)
+        console.log(validData.error.flatten().fieldErrors)
         if(validData.error.flatten().fieldErrors.sets){
             return {
                 errors: validData.error.flatten().fieldErrors.sets![0]
             }
         }
         return {
-            errors: 'Coś poszło nie tak'
+            errors: 'Coś poszło nie tak1'
         }
     }
-
+    let trainingid = null
+    if(trainingPlanId) trainingid = trainingPlanId
     try{
         await sql`
-        INSERT INTO gymexercises (userid,exercicename,date,sets,ispartoftraining) VALUES (${userID},${exercicename},${stringDate},${JSON.stringify(setsObject)},${ispartoftraining})
+        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid) VALUES (${userID},${exerciseid},${stringDate},${JSON.stringify(setsObject)},${ispartoftraining},${trainingid})
         `
     }catch(e){
         console.log('Error occured: ',e)
         return {
-            errors: 'Coś poszło nie tak'
+            errors: 'Coś poszło nie tak2'
         }
     }
-    redirect('/home/add-exercise')
+    if(redirectUser) redirect('/home/add-exercise')
 }
 
 export const FistStepDataValidation = (data:dataType) => {
     const validatedFields = FirstSetupZodSchema.safeParse(data)
     if(!validatedFields.success){
-        console.log(validatedFields.error)
         return { error : 'Coś poszło nie tak'}
     }
     return {
@@ -135,7 +155,6 @@ export const SecondStepDataValidation = (exercises:string[]) => {
 export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],favourtiteExercises:string[]) => {
     const user = await auth()
     const userID = user?.user?.id
-    console.log(data)
     try{
         await sql`
             UPDATE gymusers
@@ -169,12 +188,15 @@ export const getUserExercises = async () => {
     return AllExercises as UserExercise[]
 }
 
-export const AddNewUserExercise = async (exercisename:string) => {
+export const AddNewUserExercise = async (exercisename:string,timeExercise:boolean) => {
     const user = await auth()
     const userID = user?.user?.id
 
     if(exercisename.length>=254){
         return {error : 'Nazwa ćwiczenia jest za długa'}
+    }
+    if(typeof timeExercise !== 'boolean'){
+        return {error: 'Coś poszło nie tak'}
     }
     if( typeof exercisename !== 'string'){
         return {error: 'Coś poszło nie tak'}
@@ -184,7 +206,7 @@ export const AddNewUserExercise = async (exercisename:string) => {
     }
     try{
         await sql`
-            INSERT INTO gymusersexercises (userid,exercisename) VALUES (${userID},${exercisename})
+            INSERT INTO gymusersexercises (userid,exercisename,timemesure) VALUES (${userID},${exercisename},${JSON.stringify(timeExercise)})
         `
         revalidatePath('/home/profile/my-exercises')
     }catch(e){
@@ -350,4 +372,396 @@ export const AllExercisesInOneArray = async () => {
     const userExercises = await getUserExercises()
 
     return [...exercisesArr,...userExercises]
+}
+
+export const ArrayOfAllExercises = async () => {
+    const userExercises = await getUserExercises()
+    let arr = [...exercisesArr]
+    userExercises.forEach(exercise=>{
+        arr.push(exercise.exercisename)
+    })
+    return arr
+}
+
+export const ExercisesThatRequireTimeMesure = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+    let TimeMesureExerciseArr:string[] = [...timeMesureExercises]
+    try{
+        const userExercisesThatRequireTimeMesure = await sql`
+        SELECT * FROM gymusersexercises WHERE userid = ${userID} AND timemesure = true
+        `
+        const rows = userExercisesThatRequireTimeMesure.rows as UserExercise[]
+        rows.forEach((item)=>{
+            TimeMesureExerciseArr.push(item.exercisename)
+        })
+        return TimeMesureExerciseArr
+    }catch{
+        return []
+    }
+
+}
+export const getAllIdsExercisesInArray = async () => {
+    let array = [...exercisesArr]
+    const userExercises = await getUserExercises()
+    userExercises.forEach(x=>{
+        array.push(x.id)
+    })
+
+    return array
+}
+
+const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay,userID:string) => {
+    if(typeof trainingplanname !== 'string'){
+        return {error:'Coś poszło nie tak'}
+    }
+    if (trainingplanname.length > 255){
+        return {error:'Nazwa treningu jest za długa'}
+    }
+    if(exercises.length <2){
+        return {error:'Trening musi miec conajmniej dwa ćwiczenia'}
+    }
+    let NotStringError = false
+    let UnknownExerciseError = false
+    let unknownExercice = ''
+    const allExerciseIdsArray = await getAllIdsExercisesInArray()
+
+    for(let x in exercises){
+        if(typeof x !== 'string') NotStringError = true
+
+        if(!allExerciseIdsArray.includes(exercises[x].exerciseid)){
+            UnknownExerciseError = true 
+            unknownExercice = exercises[x].exerciseid
+        }
+    }
+    if(NotStringError) return { error: 'Coś poszło nie tak'}
+    if(UnknownExerciseError) return { error: `Nieznane ćwiczenie w liście: "${unknownExercice}"`}
+    const endlishWeekDay = WeekDayArray[WeekDayArrayPL.indexOf(weekday)]
+    if(!WeekDayArray.includes(endlishWeekDay)) return { error: 'Zły dzień tygodnia'}
+}
+
+export const GetUserTrainings = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+    try{
+        const UserTrainings = await sql`
+            SELECT id,trainingname,date,exercises,weekday FROM gymuserstrainingplans WHERE userid = ${userID}
+        `
+        return UserTrainings.rows as UserTrainingPlan[]
+    }catch(e){
+        return []
+    }
+}
+
+export const GetUserTrainingByName = async (trainingname:string) => {
+    if(typeof trainingname !== 'string') return { error: "Coś poszło nie tak"}
+    const user = await auth()
+    const userID = user?.user?.id
+
+    try{
+        const Training = await sql`
+            SELECT id,trainingname,date,exercises,weekday FROM gymuserstrainingplans WHERE userid = ${userID} AND trainingname = ${trainingname}
+        `
+        if(Training.rows.length===0){
+            return {
+                error: 'Trening o tej nazwie nie istnieje'
+            }
+        } 
+        return {
+            training: Training.rows[0] as UserTrainingPlan,
+            error: ''
+        }
+    }catch(e){
+        return { error: 'Coś poszło nie tak'}
+    }
+}
+export const AddUserTraining = async (trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay) => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    checkTrainingFields(trainingplanname,exercises,weekday,userID as string)
+
+    const date = new Date()
+    try{
+        await sql`
+            INSERT INTO gymuserstrainingplans (userid, trainingname, date, exercises, weekday) VALUES (${userID},${trainingplanname},${JSON.stringify(date)},${JSON.stringify({exercises})},${weekday})
+        `
+    }catch(e){
+        return { error: 'Coś poszło nie tak'}
+    }
+}
+export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDayPL) => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    if(typeof trainingplanname !== 'string'){
+        return {error:'Coś poszło nie tak1'}
+    }
+    if (trainingplanname.length > 255){
+        return {error:'Nazwa treningu jest za długa'}
+    }
+    if(!WeekDayArrayPL.includes(weekday)) return { error: 'Zły dzień tygodnia'}
+
+    try{
+        const userExercice = await sql`
+        SELECT 1 FROM gymuserstrainingplans WHERE userid = ${userID} AND trainingname = ${trainingplanname}
+        `
+        if(userExercice.rows.length>0){
+            return { error: 'Trening o tej nazwie już istnieje, wybierz inną'}
+        }
+    }catch(e){
+        return {error:'Coś poszło nie tak2'}
+    }
+
+    const date = new Date()
+    const endlishWeekDay = WeekDayArray[WeekDayArrayPL.indexOf(weekday)]
+    try{
+        await sql`
+            INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userID},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify({})})
+        `
+    }catch(e){
+        console.log(e)
+        return { error: 'Coś poszło nie tak3'}
+    }
+    revalidatePath('/home/profile/my-training-plans')
+}
+export const EditUserTraining = async (trainingid:string,trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay) => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    const checkvalue = await checkTrainingFields(trainingplanname,exercises,weekday,userID as string)
+    if(checkvalue?.error) return  checkvalue
+    const date = new Date()
+    try{
+        await sql`
+            UPDATE gymuserstrainingplans
+            SET trainingname = ${trainingplanname}, date = ${JSON.stringify(date)}, exercises = ${JSON.stringify({exercises})}, weekday = ${weekday}
+            WHERE id = ${trainingid};
+        
+            `
+    }catch(e){
+        console.log(e)
+        return { error: 'Coś poszło nie tak'}
+    }
+    revalidatePath('/home/profile/my-training-plans')
+    redirect('/home/profile/my-training-plans')
+}
+
+export const DeleteUserTraining = async (trainingid:string) => {
+    if(typeof trainingid !== 'string') return { error: "Coś poszło nie tak"}
+
+    try{
+        await sql`
+            DELETE FROM gymuserstrainingplans WHERE id = ${trainingid};
+            `
+    }catch(e){
+        return { error: 'Coś poszło nie tak'}
+    }
+    revalidatePath('/home/profile/my-training-plans')
+    redirect('/home/profile/my-training-plans')
+}
+
+export const checkTrainingInProgress = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+    try{
+        const trainingInProgress = await sql`
+            SELECT 1 FROM gymuserstrainings WHERE userid = ${userID} AND iscompleted = false
+        `
+        if(trainingInProgress.rows.length>0) return true
+        return false
+    }catch{
+        return false
+    }
+}
+
+export const userTrainingsList = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    try{
+        const list = await sql`
+            SELECT * FROM gymuserstrainingplans WHERE userid = ${userID}
+        `
+        return list.rows as UserTrainingPlan[]
+    }catch{
+        return []
+    }
+}
+
+export const getTrainingInProgressData = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+    try{
+        const trainingInProgess = await sql`
+        SELECT * FROM gymuserstrainings WHERE userid = ${userID} AND iscompleted = false
+        `
+        const trainingID = trainingInProgess.rows[0].trainingid
+        const training = await sql `
+            SELECT trainingname FROM gymuserstrainingplans WHERE id = ${trainingID}
+        `
+        return training.rows[0] as UserTrainingPlan
+    }catch{
+        return null
+    }
+}
+export const closeTraining = async (redirectToTraining:string) => {
+    console.log('NAME OF TRAINING "actions.ts" COMPONENT',redirectToTraining)
+    const user = await auth()
+    const userID = user?.user?.id
+    try{
+        await sql`
+            UPDATE gymuserstrainings
+            SET iscompleted = true
+            WHERE userid = ${userID} AND iscompleted = false ;
+        `
+    }catch(e){
+        console.log(e)
+        return {error: 'Coś poszło nie tak'}
+    }finally{
+        redirect(`/home/start-training/${redirectToTraining}`)
+    }
+}
+
+export const createTraining = async (trainingPlanId:string) => {
+    const user = await auth()
+    const userID = user?.user?.id
+    const date = new Date()
+
+    try{
+        console.log(trainingPlanId,userID)
+        const training = await sql`
+        INSERT INTO gymuserstrainings (userid,iscompleted,trainingid,datetime) VALUES (${userID},false,${trainingPlanId},${JSON.stringify(date)})
+    `
+        const trainingID = await sql`
+            SELECT id FROM gymuserstrainings WHERE userid = ${userID} ORDER BY datetime DESC LIMIT 1;
+        `
+        console.log(trainingID)
+        return trainingID.rows[0].id
+    }catch(e){
+        console.log(e)
+    }
+
+}
+
+export const updateCurrentTraining = async (exerciseid:string,id:string) => {
+    try{
+        await sql`
+            UPDATE gymuserstrainings SET lastexerciseid = ${exerciseid} WHERE id=${id}
+        `
+    }catch{
+
+    }
+}
+
+export const getExistingTraining = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+    try{
+        const training = await sql`
+            SELECT * FROM gymuserstrainings WHERE userid = ${userID} AND iscompleted = false
+        `
+        return training.rows[0] as UserTrainingInProgress
+    }catch{
+
+    }
+}
+
+export const getLastTrainigs = async (limit:number) => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    try{
+        const lastTrainings = await sql`
+        SELECT gymuserstrainings.trainingid, gymuserstrainings.datetime, gymuserstrainingplans.trainingname, gymuserstrainingplans.weekday
+        FROM gymuserstrainings
+        INNER JOIN gymuserstrainingplans ON gymuserstrainings.userid=gymuserstrainingplans.userid 
+        WHERE gymuserstrainings.userid = ${userID} ORDER BY datetime DESC LIMIT ${limit};
+        `
+        return lastTrainings.rows as LastExerciseType[]
+    }catch(e){
+        return []
+    }
+
+}
+
+export const fetchIncomingTrainings = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    const today = new Date()
+    const dayOfWeekIndex = -1 === today.getDay() - 1 ? 6 : today.getDay() // 0 = monday , 6 = sunday
+    let finalArray = []
+    try{
+        const trainings = await sql`
+            SELECT * FROM gymuserstrainingplans WHERE userid = ${userID}
+        `
+        const trainingPlansArray = trainings.rows as UserTrainingPlan[]
+        if(trainingPlansArray.length<=2) return trainingPlansArray
+
+        return trainingPlansArray.sort((a,b)=>{
+            let aDiff = new Date(a.date).getDay() - today.getDay()
+            let bDiff = new Date(b.date).getDay() - today.getDay()
+            if(Math.abs(aDiff) < Math.abs(bDiff)){
+                return 1
+            }else{
+                return - 1 
+            }
+        })
+    }catch{
+        return []
+    }
+}
+
+export const getTwoLatestTrainings = async () => {
+    const user = await auth()
+    const userID = user?.user?.id
+
+    try{
+        const lastTrainings = await sql`    
+            SELECT gymuserstrainings.id, gymuserstrainings.datetime, gymuserstrainingplans.trainingname FROM gymuserstrainings
+            INNER JOIN gymuserstrainingplans ON gymuserstrainings.trainingid = gymuserstrainingplans.id
+            WHERE gymuserstrainings.userid = ${userID} AND gymuserstrainings.iscompleted = true ORDER BY datetime DESC LIMIT 2
+            ` 
+        const x = lastTrainings.rows as {id: string, datetime:Date,trainingname:string}[]
+
+        if(x.length === 0) return {newArr:[[]], trainingNames:lastTrainings.rows}
+        let result:GymExercisesDbResult[] = []
+
+        if(x.length === 1){
+            const gymexercises = await sql`
+                SELECT * FROM gymexercises
+                WHERE trainingid = ${x[0].id} ORDER BY date DESC
+            `
+            result = gymexercises.rows as GymExercisesDbResult[]
+        }else{
+            const gymexercises = await sql`
+                SELECT * FROM gymexercises
+                WHERE trainingid = ${x[0].id} OR trainingid = ${x[1].id} ORDER BY date DESC
+        `
+            result = gymexercises.rows as GymExercisesDbResult[]
+        }
+        const userExercises = await getUserExercises()
+        let newArr:GymExercisesDbResult[][] = [[]]
+        let IdA = result[0].trainingid
+        result.forEach(item=>{
+            if(!exercisesArr.includes(item.exerciseid)){
+                const id = userExercises.findIndex(x=>x.id===item.exerciseid)
+                if(!id) return
+                item.exerciseid = userExercises[id].exercisename
+            }
+            if(item.trainingid===IdA){
+                item.trainingid
+                newArr[0].push(item)
+            }else{
+                if(newArr.length===1) newArr.push([])
+                newArr[1].push(item)
+            }
+            
+        })
+        return {newArr, trainingNames:lastTrainings.rows}
+    }catch(e){
+        console.log(e)
+        return {error: 'Coś poszło nie tak'}
+    }
 }
