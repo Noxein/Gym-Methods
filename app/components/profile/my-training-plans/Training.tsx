@@ -1,4 +1,5 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
+import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { UserTrainingPlan } from '@/app/types'
 import { PencilIcon, RightTriangle, TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
@@ -13,27 +14,21 @@ export const Training = ({UserTraining,setShowDeleteModal,setCurrentSelectedTrai
     const theme = useContext(ThemeContext)
     const DeleteTraining = () => {
       setCurrentSelectedTrainign(UserTraining)
+      HideShowHTMLScrollbar('hide')
       setShowDeleteModal(true)
     }
   return (
-    <div className={`text-xl py-[1px] rounded-lg flex items-center bg-${theme?.colorPallete.accent}`}>
-        <Icon onClick={DeleteTraining}>
-          <TrashIcon fill='#0D1317'/>
-        </Icon>
-
-        <Link href={`/home/profile/my-training-plans/${UserTraining.trainingname}`} className='flex flex-1 items-center'>
-          <div className={`bg-${theme?.colorPallete.primary} py-3 rounded-lg flex-1 px-4`}>
-            {UserTraining.trainingname}
-          </div>
-
-
-          <Icon className='px-1 pr-2'>
-            <RightTriangle width='15px'/>
-          </Icon>
-        </Link>
-        
+    <div className={`text-xl rounded-lg flex items-center bg-${theme?.colorPallete.accent}`}>
+      <Link href={`/home/profile/my-training-plans/${UserTraining.trainingname}`} className='flex flex-1 items-center rounded-lg p-[1px]'>
+        <div className={`bg-${theme?.colorPallete.primary} py-3 rounded-lg flex-1 px-4`}>
+          {UserTraining.trainingname}
+        </div>
+      </Link>
+      
+      <Icon onClick={DeleteTraining}>
+        <TrashIcon fill='#0D1317'/>
+      </Icon>
     </div>
-
   )
 }
 

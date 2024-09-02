@@ -16,7 +16,7 @@ export const TrainingInProcessModal = ({trainingInProgressData,currentTrainingNe
 
     const handleCloseTraining = async () => {
         setIsLoading(true)
-        const isError = await closeTraining(currentTrainingNeed)
+        const isError = await closeTraining(`/home/start-training/${currentTrainingNeed}`)
         if(isError && isError.error) return setError(isError.error)
         setIsLoading(false)
     }

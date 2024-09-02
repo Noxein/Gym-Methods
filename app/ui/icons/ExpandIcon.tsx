@@ -43,9 +43,9 @@ export const SettingsIcon = () => {
     )
 }
 
-export const PencilIcon = () => {
+export const PencilIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
     return(
-        <svg fill="#ffffff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 528.899 528.899" stroke="#ffffff" width={iconWidth} height={iconHeight}>
+        <svg fill={fill?fill:"#0D1317"} version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 528.899 528.899" stroke={fill?fill:"#0D1317"} width={width?width:iconWidth} height={height?height:iconHeight}>
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
             <g id="SVGRepo_iconCarrier"> 
@@ -59,15 +59,15 @@ export const PencilIcon = () => {
 
 export const TrashIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
     return (
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" width={width?width:iconWidth+5} height={height?height:iconHeight+5}>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke={fill?fill:"#0D1317"} width={width?width:iconWidth+5} height={height?height:iconHeight+5}>
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
             <g id="SVGRepo_iconCarrier"> 
-                <path d="M10 11V17" stroke={fill?fill:"#ffffff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
-                <path d="M14 11V17" stroke={fill?fill:"#ffffff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
-                <path d="M4 7H20" stroke={fill?fill:"#ffffff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
-                <path d="M6 7H12H18V18C18 19.6569 16.6569 21 15 21H9C7.34315 21 6 19.6569 6 18V7Z" stroke={fill?fill:"#ffffff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
-                <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke={fill?fill:"#ffffff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+                <path d="M10 11V17" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+                <path d="M14 11V17" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+                <path d="M4 7H20" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+                <path d="M6 7H12H18V18C18 19.6569 16.6569 21 15 21H9C7.34315 21 6 19.6569 6 18V7Z" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
+                <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke={fill?fill:"#0D1317"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> 
             </g>
         </svg>
     )

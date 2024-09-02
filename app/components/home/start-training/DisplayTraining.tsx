@@ -5,6 +5,7 @@ import { AddExercise } from '../../add-exercise/AddExercise'
 import { AddExerciceReducer } from '@/app/lib/reducers'
 import { AddExerciseAction, closeTraining, createTraining, updateCurrentTraining } from '@/app/actions'
 import { usePathname } from 'next/navigation'
+import { DisplayTrainingSkeleton } from '../../Loading/home/start-training/trainingName/DisplayTrainingSkeleton'
 
 type DisplayTrainingTypes = {
     training?: TrainingExerciseType[],
@@ -49,7 +50,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
         setIsLoading(false)
     }
 
-    const nextExercise = async () => {
+    const nextExercise = async (goToNextExercise:boolean) => {
         setIsLoading(true)
         let id = trainingID
         if(!trainingID){
@@ -58,20 +59,25 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
             setTrainingID(id)
         }
         
-        dispatch({type:'RESETSTATE'});
         //save to database 
+        console.log('ID',id,training![currentExercise].exerciseid,state.series,state.difficultyLevel)
         const possibleError = await AddExerciseAction(false,training![currentExercise].exerciseid,state.series,state.difficultyLevel,pathname.includes('training'),id)
+        if(possibleError && possibleError.errors){
+            setIsLoading(false)
+            return setError(possibleError.errors)
+        } 
         await updateCurrentTraining(training![currentExercise].exerciseid,id)
-        if(possibleError && possibleError.errors) return setError(possibleError.errors)
-
+        dispatch({type:'RESETSTATE'});
         localStorage.removeItem(`${training![currentExercise].exercisename}`)
         setError('')
-        setCurrentExercise(currentExercise+1)
+        if(goToNextExercise) setCurrentExercise(currentExercise+1)
         setIsLoading(false)
     }
     const handleCloseTraining = async() => {
+        const goToNextExercise = false
+        await nextExercise(goToNextExercise)
         setIsLoading(true)
-        const isError = await closeTraining('')
+        const isError = await closeTraining('/home')
         if(isError && isError.error) return setError(isError.error)
         setIsLoading(false)
     }
@@ -85,9 +91,12 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
                 {currentExercise+1} z {training!.length}
             </div>
         </div>
-
+        {
+            isLoading? <DisplayTrainingSkeleton isTraining={true}/> :
+        <>
         {training && <AddExercise name={training[currentExercise].exercisename} isLoading={isLoading} showTempo={showTempo} showTimeMesure={showTimeMesure} isTraining={true} state={state} dispatch={dispatch}/>}
-
+        </>
+        }
         {error && <div className='text-red-500'>{error}</div>}
         <div className='mb-24 text-white mt-auto flex mx-5 gap-4'>
             
@@ -95,8 +104,9 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
                 <button onClick={handleCloseTraining} disabled={isLoading}  className='flex-1 bg-green py-4 rounded-lg'>Zakończ Trening</button>
             </>:<>
                 <button className='flex-1 bg-red py-4 rounded-lg' onClick={skipExercise} disabled={isLoading}>Pomiń ćwiczenie</button>
-                <button onClick={nextExercise} className='flex-1 bg-green py-4 rounded-lg' disabled={isLoading}>Następne ćwiczenie</button>
+                <button onClick={()=>nextExercise(true)} className='flex-1 bg-green py-4 rounded-lg' disabled={isLoading}>Następne ćwiczenie</button>
             </>}
         </div>
+        
     </div>)
 }

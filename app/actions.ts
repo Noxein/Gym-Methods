@@ -112,7 +112,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
             }
         }
         return {
-            errors: 'Coś poszło nie tak1'
+            errors: 'Coś poszło nie tak'
         }
     }
     let trainingid = null
@@ -121,10 +121,11 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
         await sql`
         INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid) VALUES (${userID},${exerciseid},${stringDate},${JSON.stringify(setsObject)},${ispartoftraining},${trainingid})
         `
+        console.log('inserted')
     }catch(e){
         console.log('Error occured: ',e)
         return {
-            errors: 'Coś poszło nie tak2'
+            errors: 'Coś poszło nie tak'
         }
     }
     if(redirectUser) redirect('/home/add-exercise')
@@ -217,20 +218,54 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
 }
 
 export const DeleteUserExercise = async (id:string) => {
+    const userid = await userID()
     if(typeof id !== 'string'){
         return {
             error :'Coś poszło nie tak'
         }
     }
+    const checkIfIdInTraining = (trainingExercises:TrainingExerciseType[]) => {
+        for(let i = 0 ; i<trainingExercises.length ; i++ ){
+            if(trainingExercises[i].exerciseid === id){
+                return true    
+            }   
+        }
+        return false
+    }
     try{
-        sql`
+        //UPDATE ALL TRAINING PLANS NOT TO INCLUDE THIS EXERCISE
+        const trainingsQuery = await sql`
+            SELECT * FROM gymuserstrainingplans WHERE userid = ${userid}
+        ` 
+        const trainings = trainingsQuery.rows as UserTrainingPlan[]
+        trainings.forEach(async training=>{
+            if(checkIfIdInTraining(training.exercises.exercises)){
+                //IT SEEMS THAT IN THIS TRAINING IS THE ID OF SOON TO DELETE ITEM
+                const exercises1 = [...training.exercises.exercises]
+                const exercises = exercises1.filter(x=>x.exerciseid!==id)
+                console.log(exercises)
+                await sql`
+                    UPDATE gymuserstrainingplans
+                    SET exercises = ${JSON.stringify({exercises})}
+                    WHERE id = ${training.id};
+                `
+            }
+        })
+
+        await sql`
             DELETE FROM gymusersexercises WHERE id = ${id};
         `
-        revalidatePath('/home/profile/my-exercises')
+        await sql`
+            DELETE FROM gymexercises WHERE exerciseid = ${id}
+        `
+       
     }catch(e){
+        console.log(e)
         return {
             error :'Coś poszło nie tak'
         }
+    }finally{
+        revalidatePath('/home/profile/my-exercises')
     }
 }
 
@@ -245,7 +280,7 @@ export const EditUserExercise = async (exerciseid:string,newname:string) => {
     try{
         sql`
             UPDATE gymusersexercises
-            SET exercicename = ${newname}
+            SET exercisename = ${newname}
             WHERE id = ${exerciseid};
         `
         revalidatePath('/home/profile/my-exercises')
@@ -436,8 +471,7 @@ const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExe
     }
     if(NotStringError) return { error: 'Coś poszło nie tak'}
     if(UnknownExerciseError) return { error: `Nieznane ćwiczenie w liście: "${unknownExercice}"`}
-    const endlishWeekDay = WeekDayArray[WeekDayArrayPL.indexOf(weekday)]
-    if(!WeekDayArray.includes(endlishWeekDay)) return { error: 'Zły dzień tygodnia'}
+    if(!WeekDayArray.includes(weekday)) return { error: 'Zły dzień tygodnia'}
 }
 
 export const GetUserTrainings = async () => {
@@ -548,14 +582,34 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
 }
 
 export const DeleteUserTraining = async (trainingid:string) => {
-    if(typeof trainingid !== 'string') return { error: "Coś poszło nie tak"}
+    if(typeof trainingid !== 'string') return { error: "Coś poszło nie tak1"}
 
     try{
+
+        const exercisesIDs = await sql`
+        SELECT id FROM gymuserstrainings WHERE trainingid = ${trainingid}
+        ` 
+        const idsArray = exercisesIDs.rows as {id: string}[]
+        console.log(idsArray)
+        idsArray.forEach(async item=>{
+            await sql`
+                DELETE FROM gymexercises WHERE trainingid = ${item.id}
+            `
+        })
+        await Promise.all(idsArray.map(async item=>{
+            await sql`
+                DELETE FROM gymexercises WHERE trainingid = ${item.id}
+            `
+        }))
+        await sql`
+            DELETE FROM gymuserstrainings WHERE trainingid = ${trainingid};
+        `
         await sql`
             DELETE FROM gymuserstrainingplans WHERE id = ${trainingid};
             `
     }catch(e){
-        return { error: 'Coś poszło nie tak'}
+        console.log(e)
+        return { error: 'Coś poszło nie tak2'}
     }
     revalidatePath('/home/profile/my-training-plans')
     redirect('/home/profile/my-training-plans')
@@ -619,7 +673,7 @@ export const closeTraining = async (redirectToTraining:string) => {
         console.log(e)
         return {error: 'Coś poszło nie tak'}
     }finally{
-        redirect(`/home/start-training/${redirectToTraining}`)
+        redirect(redirectToTraining)
     }
 }
 
@@ -675,9 +729,10 @@ export const getLastTrainigs = async (limit:number) => {
         const lastTrainings = await sql`
         SELECT gymuserstrainings.trainingid, gymuserstrainings.datetime, gymuserstrainingplans.trainingname, gymuserstrainingplans.weekday
         FROM gymuserstrainings
-        INNER JOIN gymuserstrainingplans ON gymuserstrainings.userid=gymuserstrainingplans.userid 
+        INNER JOIN gymuserstrainingplans ON gymuserstrainings.trainingid=gymuserstrainingplans.id 
         WHERE gymuserstrainings.userid = ${userID} ORDER BY datetime DESC LIMIT ${limit};
         `
+        console.log('rows',lastTrainings.rows)
         return lastTrainings.rows as LastExerciseType[]
     }catch(e){
         return []
@@ -725,7 +780,8 @@ export const getTwoLatestTrainings = async () => {
             ` 
         const x = lastTrainings.rows as {id: string, datetime:Date,trainingname:string}[]
 
-        if(x.length === 0) return {newArr:[[]], trainingNames:lastTrainings.rows}
+        if(x.length === 0) return {newArr:null, trainingNames:lastTrainings.rows}
+
         let result:GymExercisesDbResult[] = []
 
         if(x.length === 1){
@@ -747,21 +803,51 @@ export const getTwoLatestTrainings = async () => {
         result.forEach(item=>{
             if(!exercisesArr.includes(item.exerciseid)){
                 const id = userExercises.findIndex(x=>x.id===item.exerciseid)
-                if(!id) return
+                if(id!==0&&!id) return
                 item.exerciseid = userExercises[id].exercisename
             }
             if(item.trainingid===IdA){
                 item.trainingid
                 newArr[0].push(item)
             }else{
-                if(newArr.length===1) newArr.push([])
+                if(newArr.length===1) return newArr.push([item])
                 newArr[1].push(item)
             }
             
         })
-        return {newArr, trainingNames:lastTrainings.rows}
+        return {newArr, trainingNames:lastTrainings.rows as {id: string, datetime:Date,trainingname:string}[]}
     }catch(e){
         console.log(e)
         return {error: 'Coś poszło nie tak'}
     }
+}
+
+const timeout = async () => {
+    const a = await  new Promise((resolve)=>{
+        setTimeout(()=>resolve(true),3000)
+    })
+    return a
+}
+
+export const checkIfTrainingIsInProgress = async (trainingName:string) => {
+    const userid = await userID()
+
+    try{
+        const training = await sql`
+            SELECT id FROM gymuserstrainingplans WHERE userid = ${userid} AND trainingname = ${trainingName}
+        `
+        const id = training.rows[0].id
+        const isTrainingInProgress = await sql`
+            SELECT id FROM gymuserstrainings WHERE userid = ${userid} AND iscompleted = false AND trainingid = ${id}
+        `
+        if(isTrainingInProgress.rowCount && isTrainingInProgress.rowCount >0) return true
+        return false
+    }catch{
+        return false
+    }
+}
+
+const userID = async () => {
+    const user = await auth()
+    return user?.user?.id
 }

@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { ThemeContext } from '../../context/ThemeContext'
 import { Icon } from '../Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
+import { TempoContext } from '@/app/context/TempoContext'
 
 type AddExerciseType = {
     name:string,
@@ -22,7 +23,9 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
 
     const[error,setError] = useState<string>('')
     const theme = useContext(ThemeContext)
+    const tempos = useContext(TempoContext)
 
+    console.log(tempos)
     const pathname = usePathname()
 
     useEffect(()=>{

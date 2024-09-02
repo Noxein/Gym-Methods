@@ -97,6 +97,7 @@ export type WeekDayPL = 'Poniedziałek' | 'Wtorek' | 'Środa' | 'Czwartek' | 'Pi
 
 export type UserTrainingPlan = {
     id: string,
+    userid: string,
     trainingname: string,
     date: Date,
     exercises:{
@@ -124,7 +125,7 @@ export type LastExerciseType = {
     trainingid: string,
     datetime: Date,
     trainingname: string,
-    weekday: string,
+    weekday: WeekDay,
 }
 
 export type LastTrainingType = {

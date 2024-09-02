@@ -1,6 +1,6 @@
 'use client'
 import { ThemeContext } from '@/app/context/ThemeContext'
-import { WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
+import { HideShowHTMLScrollbar, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
 import { ExerciceTypes, TrainingExerciseType, UserExercise, UserTrainingPlan, WeekDay } from '@/app/types'
 import React, { useCallback, useContext, useRef, useState } from 'react'
 import { MapExercises } from './MapExercises'
@@ -8,6 +8,7 @@ import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ListedAddedExercises } from './ListedAddedExercises'
 import { EditUserTraining } from '@/app/actions'
 import { useRouter } from 'next/navigation'
+import { LoaderFullScreen } from '@/app/components/Loading/LoaderFullScreen'
 
 type SpecificTrainingType = {
     training: UserTrainingPlan,
@@ -22,25 +23,27 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
   const[planExercises,setPlanExercises] = useState<TrainingExerciseType[]>(training.exercises.exercises)
   const[showAddExercise,setShowAddExercise] = useState(false)
   const[error,setError] = useState('')
+  const[isLoading,setIsLoading] = useState(false)
 
   const addExercise = () => {
     setShowAddExercise(true)
-    const html = document.querySelector('html')
-    html?.classList.add('no-scrollbar')
-    if(html?.scrollHeight && html?.scrollHeight > html?.clientHeight){
-      html?.classList.add('no-scrollbar-margin')
-  }
+    HideShowHTMLScrollbar('hide')
   }
 
   const handleSave = async () => {
+    setIsLoading(true)
     const isError = await EditUserTraining(training.id,planName,planExercises,planWeekDay)
-    if(isError && isError.error) setError(isError.error)
+    if(isError && isError.error){
+      setIsLoading(false)
+      return setError(isError.error)
+    } 
   }
+  if(isLoading) return <LoaderFullScreen />
   return (
     <div className='flex flex-col mx-5 min-h-[calc(100dvh-40px)]'>
       <div className='flex flex-col gap-2 mt-5'>
         <input type="text" value={planName} onChange={e=>setPlanName(e.target.value)} className={`w-full bg-${theme?.colorPallete.primary} text-${theme?.colorPallete.accent} border-${theme?.colorPallete.accent} border-2 rounded-md py-3 px-2`} placeholder='Nazwa treningu'/>
-        <Select handleChange={setPlanWeekDay} value={planWeekDay}/>
+        <Select handleChange={setPlanWeekDay} value={WeekDayArrayPL[WeekDayArray.indexOf(planWeekDay)]}/>
       </div>
       {error && <div className='text-red-500'>{error}</div>}
 
@@ -71,7 +74,7 @@ type SelectTypes = {
 const Select = ({value,handleChange}:SelectTypes) => {
   const theme = useContext(ThemeContext)
   return(
-    <select name="Dzień tygodnia" value={value} onChange={e=>handleChange(e.target.value as WeekDay)} className={`text-${theme?.colorPallete.accent} rounded-md border-2 border-${theme?.colorPallete.accent} bg-${theme?.colorPallete.primary} px-2 py-3 `}>
+    <select name="Dzień tygodnia" value={value} onChange={e=>handleChange(WeekDayArray[WeekDayArrayPL.indexOf(e.target.value)] as WeekDay)} className={`text-${theme?.colorPallete.accent} rounded-md border-2 border-${theme?.colorPallete.accent} bg-${theme?.colorPallete.primary} px-2 py-3 `}>
         {WeekDayArrayPL.map(day=>(
             <option value={day} key={day}>{day}</option>
         ))}

@@ -11,12 +11,12 @@ export const FilteredExercises = ({allExercisesInOneArray}:FilteredExercisesType
             {allExercisesInOneArray.map((x,i)=>{
                 if(typeof x === 'object'){
                     return (
-                        <LinkToExercise mLeft='ml-2' isFirst={i===0} text={x.exercisename} showLeftLine={false}/>
+                        <LinkToExercise mLeft='ml-2' isFirst={i===0} text={x.exercisename} key={i}/>
                     )
                 }
                 if(typeof x === 'string'){
                     return (
-                        <LinkToExercise mLeft='ml-2' isFirst={i===0} text={x} showLeftLine={false}/>
+                        <LinkToExercise mLeft='ml-2' isFirst={i===0} text={x} key={i}/>
                     )
                 }
             })}

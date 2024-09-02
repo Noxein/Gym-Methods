@@ -20,36 +20,71 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
     
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`flex flex-col gap-1 font-bold`}>
-            <ExpandBtn text={'Twoje ćwiczenia'} isExpanded={showChildren} onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft}/>
+            <ExpandBtn 
+                text={'Twoje ćwiczenia'} 
+                isExpanded={showChildren} 
+                onClick={()=>setShowChildren(!showChildren)} 
+                mLeft={mLeft}
+            />
+
             {showChildren && item.map((x:{exercisename:string,id:string},index:number)=>(
-            <AddExercise id={x.id} isFirst={index===0} mLeft={`ml-10`} text={x.exercisename} setPlanExercises={setPlanExercises}/>
-        ))}
+                <AddExercise 
+                    id={x.id} 
+                    isFirst={index===0} 
+                    mLeft={`ml-10`} 
+                    text={x.exercisename} 
+                    setPlanExercises={setPlanExercises} 
+                    key={x.id}
+                />
+            ))}
     </div>)
     }
     if(Array.isArray(item)){
-        return (<div className={`flex flex-col ${mLeft} font-semibold`}>
-            <ExpandBtn text={objectName} isExpanded={showChildren} onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft}/>
+        return (
+            <div className={`flex flex-col ${mLeft} font-semibold`}>
+                <ExpandBtn text={objectName} isExpanded={showChildren} onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft}/>
 
-        {showChildren && <div className='flex flex-col gap-1 font-normal'>
-                {item.map((x,index)=>(       
-                        <AddExercise id={x} isFirst={index===0} mLeft={`ml-10`} text={x} setPlanExercises={setPlanExercises}/>
+                {showChildren && 
+                <div className='flex flex-col gap-1 font-normal'>
+                    {item.map((x,index)=>(       
+                            <AddExercise 
+                                id={x} 
+                                isFirst={index===0} 
+                                mLeft={`ml-10`} 
+                                text={x} 
+                                setPlanExercises={setPlanExercises} 
+                                key={x}
+                            />
                     ))}
-            </div>}
-        </div>)
+                </div>}
+            </div>
+        )
        
     }
 
     if(typeof item === 'object'){
-        return (<div className={`flex flex-col gap-2 font-bold`}>
+        return (
+            <div className={`flex flex-col gap-2 font-bold`}>
 
-            <ExpandBtn text={objectName||''} isExpanded={showChildren} onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft}/>
+                <ExpandBtn 
+                    text={objectName||''} 
+                    isExpanded={showChildren} 
+                    onClick={()=>setShowChildren(!showChildren)} 
+                    mLeft={mLeft}
+                />
 
 
-            {showChildren && Object.keys(item).map((key,index)=>(
-                 <ListExercisesTraining item={item[key]} objectName={Object.keys(item)[index]} key={key} currentLevel={currentLevel+1} isLast={index+1===Object.keys(item).length} setPlanExercises={setPlanExercises}/>
-            ))}
-            
-
+                {showChildren && Object.keys(item).map((key,index)=>(
+                    <ListExercisesTraining 
+                        item={item[key]} 
+                        objectName={Object.keys(item)[index]} 
+                        key={key} 
+                        currentLevel={currentLevel+1} 
+                        isLast={index+1===Object.keys(item).length} 
+                        setPlanExercises={setPlanExercises}
+                    />
+                ))}
+        
             </div>)
     }
 }
@@ -69,7 +104,7 @@ const ExpandBtn = ({text,isExpanded,mLeft,...rest}:ExpandBtn) => {
             <span className={`flex-1 rounded-lg bg-${theme?.colorPallete.primary} py-3 pl-4`}>{text}</span>
 
             <Icon className='p-0 -ml-1'>
-                <ExpandIcon expanded={isExpanded} themeColor={theme?.colorPallete.accent}/>
+                <ExpandIcon expanded={isExpanded} fill={theme?.colorPallete.accent}/>
             </Icon>
             
         </button>

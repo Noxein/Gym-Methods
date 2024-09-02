@@ -1,4 +1,5 @@
 import { ThemeContext } from "@/app/context/ThemeContext"
+import { HideShowHTMLScrollbar } from "@/app/lib/utils"
 import { SelectedExerciseWithTempo, TempoType } from "@/app/types"
 import { PencilIcon, TrashIcon } from "@/app/ui/icons/ExpandIcon"
 import { useContext } from "react"
@@ -22,7 +23,7 @@ export const SingleExercise = ({text,mLeft,isFirst,tempo,exerciceid,setSelectedE
             name: text,
             tempo
         } satisfies SelectedExerciseWithTempo
-
+        HideShowHTMLScrollbar('hide')
         setSelectedExercise(exercise)
         if(show==='edit'){
             console.log('edited')
@@ -32,19 +33,19 @@ export const SingleExercise = ({text,mLeft,isFirst,tempo,exerciceid,setSelectedE
     }
         
     return(
-        <div className={`text-left ${mLeft} bg-[${theme?.colorPallete.secondary}] text-[${theme?.colorPallete.accent}] border-[${theme?.colorPallete.secondary}] border-2 rounded flex justify-between ${isFirst?'mt-2':null}`}>
-            <span className={`flex-1 bg-[${theme?.colorPallete.primary}] rounded-md pl-4 py-2 flex flex-col`}>
+        <div className={`flex-1 text-left ${mLeft} bg-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent} border-[1px] rounded-lg flex justify-between ${isFirst?'mt-2':null}`}>
+            <span className={`flex-1 bg-${theme?.colorPallete.primary} rounded-lg pl-4 py-2 flex flex-col`}>
                 <span>{text}</span>
-                <span className="text-sm text-gray-500 -mt-1">
+                <span className="text-sm -mt-1">
                     {tempo.up} - {tempo.uphold} - {tempo.down} - {tempo.downhold}
                 </span>
             </span>
-            <div className="flex gap-1 pr-1 justify-center items-center">
-                <Icon sClass={'ml-1'} onClick={()=>setExercice('edit')}>
-                    <PencilIcon/>
+            <div className="flex justify-center items-center">
+                <Icon onClick={()=>setExercice('edit')}>
+                    <PencilIcon fill="#0D1317" />
                 </Icon>
                 <Icon onClick={()=>setExercice('delete')}>
-                    <TrashIcon/>
+                    <TrashIcon fill="#0D1317"/>
                 </Icon>
                 
             </div>

@@ -19,3 +19,77 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 } 
+
+.gradient-background-green{
+  background: linear-gradient(267deg,#0f6932,#042e1a);
+  background-size: 120% 120%;
+  animation: gradient-animation 1.5s ease infinite;
+}
+.gradient-background {
+  background: linear-gradient(267deg,#0D1317,#172127);
+  background-size: 120% 120%;
+  animation: gradient-animation 1s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.loader {
+  border: 24px solid;
+  border-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: animloader 1s linear infinite;
+}
+
+@keyframes animloader {
+  0% {
+    border-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.75);
+}
+  33% {
+    border-color: rgba(255, 255, 255, 0.75) rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.35);
+}
+  66% {
+    border-color: rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.75) rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.25);
+}
+  100% {
+    border-color: rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.75) rgba(255, 255, 255, 0.15);
+}
+}
+
+
+.loader1 {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 32px 0 #fff, -32px 0 #fff;
+  position: relative;
+  animation: flash 0.5s ease-out infinite alternate;
+}
+
+@keyframes flash {
+  0% {
+    background-color: #FFF2;
+    box-shadow: 32px 0 #FFF2, -32px 0 #FFF;
+  }
+  50% {
+    background-color: #FFF;
+    box-shadow: 32px 0 #FFF2, -32px 0 #FFF2;
+  }
+  100% {
+    background-color: #FFF2;
+    box-shadow: 32px 0 #FFF, -32px 0 #FFF2;
+  }
+}
+      

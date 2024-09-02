@@ -18,16 +18,16 @@ type filteredTemposType = {
 }
 export const FilteredTempos = ({filteredExercises,tempos,setSelectedExercise,setShowEditTempoModal,setShowDeleteTempoModal}:filteredTemposType) => {
   return (
-    <div className='mx-auto flex flex-col gap-2'>
+    <div className='flex flex-col gap-2'>
         {filteredExercises.map((x,i)=>{
             if(typeof x === 'object'){
                 return (
-                    <SingleExercise exerciceid={x.id} mLeft='ml-2' isFirst={i===0} text={x.exercisename} tempo={tempos[x.id]?tempos[x.id].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
+                    <SingleExercise exerciceid={x.id} mLeft='' isFirst={i===0} text={x.exercisename} tempo={tempos[x.id]?tempos[x.id].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
                 )
             }
             if(typeof x === 'string'){
                 return (
-                    <SingleExercise exerciceid={x} mLeft='ml-2' isFirst={i===0} text={x} tempo={tempos[x]?tempos[x].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
+                    <SingleExercise exerciceid={x} mLeft='' isFirst={i===0} text={x} tempo={tempos[x]?tempos[x].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
                 )
             }
         })}

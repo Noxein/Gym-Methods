@@ -4,16 +4,19 @@ import { Icon } from '../../Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { LastTrainings } from './LastTrainings'
 import Link from 'next/link'
+import { Suspense } from 'react'
+import { TrainingListSkeleton } from '../../Loading/home/start-training/TrainingListSkeleton'
+import { LatestTrainingSkeleton } from '../../Loading/home/start-training/LatestTrainingSkeleton'
 
 export const SelectTraining = async () => {
-    const trainingList = await userTrainingsList()
-    const filteredList = trainingList.filter(x=>Object.keys(x.exercises).length>0)
+    
+    
   return (
     <div className='flex flex-col min-h-[calc(100dvh-40px)]'>
         <h1 className='text-2xl text-center mt-10'>ROZPOCZNIJ TRENING</h1>
 
-        <button className='bg-green mx-5 mt-5 px-4 py-3 rounded-lg'>
-          <Link href={`/home/profile/my-training-plans`} className='flex justify-between'>
+        <button className='bg-green mx-5 mt-5 px-4 py-4 rounded-lg text-xl'>
+          <Link href={`/home/profile/my-training-plans?showAddModal=true`} className='flex justify-between'>
             <span>Dodaj nowy trening</span>
             <Icon className='bg-opacity-0'>
               <PlusIcon />
@@ -21,12 +24,16 @@ export const SelectTraining = async () => {
           </Link>
         </button>
 
-        <TrainingList list={filteredList}/>
+        <Suspense fallback={<TrainingListSkeleton />}>
+          <TrainingList/>
+        </Suspense>
 
-        <div className='mt-auto mb-16'>
+        <div className='mt-auto mb-20'>
           <h2 className='text-center text-xl'>OSTATNIE TRENINGI</h2>
 
+        <Suspense fallback={<LatestTrainingSkeleton />}>
           <LastTrainings />
+        </Suspense>
           
         </div>
     </div>

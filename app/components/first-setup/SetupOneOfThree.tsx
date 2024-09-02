@@ -65,7 +65,7 @@ const Input = ({labelText,type,name,errors}:InputTypes) => {
             <input type={type} name={name} id={name} />
             <div>
                 {errors.map(e=>(
-                    <span>{e}</span>
+                    <span key={e}>{e}</span>
                 ))}
             </div>
         </div>

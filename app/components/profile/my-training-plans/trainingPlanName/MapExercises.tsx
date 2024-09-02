@@ -7,6 +7,7 @@ import { SearchExercisesTraining } from './SearchExercisesTraining'
 import { ListExercisesTraining } from './ListExercisesTraining'
 import { BlurBackgroundModal } from '@/app/components/BlurBackgroundModal'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
+import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 
 type MapExercisesTypes = {
     exercises:ExerciceTypes,
@@ -18,9 +19,7 @@ export const MapExercises = ({exercises,allExercisesInOneArray,setPlanExercises,
     const[searchField,setSearchField] = useState('')
     const CloseExercises = () => {
         setShowAddExercise(false)
-        const html = document.querySelector('html')
-        html?.classList.remove('no-scrollbar')
-        html?.classList.remove('no-scrollbar-margin')
+        HideShowHTMLScrollbar('show')
     }
     const theme = useContext(ThemeContext)
     return (

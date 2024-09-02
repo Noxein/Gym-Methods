@@ -16,7 +16,7 @@ export const IncomingTrainings = async () => {
       {trainings.map(training=>(
         <Training training={training} currentWeekDay={currentWeekDay} key={training.id}/>
       ))}
-      <Link className={`flex justify-between px-5 bg-green text-white py-2 rounded-lg items-center`} href={'/home/profile/my-training-plans'}>
+      <Link className={`flex justify-between px-5 bg-green text-white py-2 rounded-lg items-center`} href={'/home/profile/my-training-plans?showAddModal=true'}>
         <span>Dodaj nowy trening</span>
         <Icon>
           <PlusIcon />

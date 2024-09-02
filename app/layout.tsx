@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeContextProvider } from "./context/ThemeContext";
 import { ClassMaker } from "./ui/icons/ClassMaker";
 import { BodyColorProvider } from "./components/BodyColorProvider";
+import { TempoContextDataProvider } from "./context/TempoContextDataProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +23,10 @@ export default function RootLayout({
       
         <body className={`${inter.className} flex flex-col min-h-screen`}>
           <ThemeContextProvider>
-            {children}
-            <BodyColorProvider />
+            <TempoContextDataProvider>
+              {children}
+              <BodyColorProvider />
+            </TempoContextDataProvider>
           </ThemeContextProvider>
         </body>
       

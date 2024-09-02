@@ -3,25 +3,41 @@ import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { UserExercise } from '@/app/types'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { EditUserExercise } from '@/app/actions'
+import { HideShowHTMLScrollbar } from '@/app/lib/utils'
+import { SmallLoader } from '../../Loading/SmallLoader'
 
 export const EditModal = ({selectedExercise,setShowEditModal}:{selectedExercise:UserExercise,setShowEditModal:React.Dispatch<React.SetStateAction<boolean>>}) => {
     const [newName,setNewName] = useState(selectedExercise.exercisename)
     const[error,setError] = useState('')
+    const[isLoading,setIsLoading] = useState(false)
     const theme = useContext(ThemeContext)
 
     const editExercise = async () => {
+        setIsLoading(true)
         const isError = await EditUserExercise(selectedExercise.id,newName)
-        if(isError && isError.error) return setError(isError.error)
+        if(isError && isError.error){
+            setIsLoading(false)
+            return setError(isError.error)
+        } 
+        HandleCloseModal()
+        setIsLoading(false)
+    }
+
+    const HandleCloseModal = () => {
+        if(isLoading) return
+        HideShowHTMLScrollbar('show')
         setShowEditModal(false)
     }
   return (
-    <BlurBackgroundModal onClick={()=>setShowEditModal(false)}>
-        <div onClick={e=>e.stopPropagation()} className={`border-2 border-[${theme?.colorPallete.accent}] text-[${theme?.colorPallete.accent}] px-10 py-6 rounded-md text-xl flex flex-col gap-2`}>
-            <input type="text" value={newName} onChange={e=>setNewName(e.target.value)} className={`px-2 py-1 bg-[${theme?.colorPallete.primary}] border-2 rounded-md border-[${theme?.colorPallete.accent}] text-[${theme?.colorPallete.accent}]`}/>
+    <BlurBackgroundModal onClick={HandleCloseModal}>
+        <div onClick={e=>e.stopPropagation()} className={`border-[1px] border-${theme?.colorPallete.accent} bg-${theme?.colorPallete.primary} text-${theme?.colorPallete.accent} px-10 py-6 rounded-md text-xl flex flex-col gap-2`}>
+            <input type="text" value={newName} onChange={e=>setNewName(e.target.value)} className={`px-2 py-1 bg-${theme?.colorPallete.primary} border-[1px] rounded-md border-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent}`}/>
+            {isLoading?
+            <SmallLoader/>:
             <div className='flex gap-2'>
-                <button className='flex-1 bg-green-600 py-2' onClick={editExercise}>Zapisz</button>
-                <button onClick={()=>setShowEditModal(false)} className='flex-1 bg-red-600'>Anuluj</button>
-            </div>
+                <button className='flex-1 bg-green py-2 rounded-lg' onClick={editExercise}>Zapisz</button>
+                <button onClick={HandleCloseModal} className='flex-1 bg-red rounded-lg'>Anuluj</button>
+            </div>}
             {error && <div className='bg-red-500'>{error}</div>}
         </div>
     </BlurBackgroundModal>

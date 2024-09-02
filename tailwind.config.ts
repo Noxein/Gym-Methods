@@ -14,6 +14,9 @@ const config: Config = {
         marmur: '#D9D9D9',
         dark: '#0D1317',
       },
+      borderWidth:{
+        1: '1px'
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

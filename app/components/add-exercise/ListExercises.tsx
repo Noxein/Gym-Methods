@@ -25,7 +25,6 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListE
             {showChildren && item.map((x:{exercisename:string,id:string},index:number)=>(
             <LinkToExercise isFirst={index===0} mLeft={'6'} key={x.id} text={x.exercisename}/>
         ))}
-            <div className={`h-[calc(100%-20px)] absolute bg-marmur w-1 -z-[1] left-2`}></div>
     </div>)
     }
     if(Array.isArray(item)){
@@ -39,7 +38,6 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListE
                     ))}
             </div>}
 
-            <div className={`${currentLevel===0?'':'h-[calc(100%-20px)] absolute bg-marmur w-1 -z-[1] left-8'}`}></div>
         </div>)
        
     }
@@ -55,10 +53,6 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListE
                  <ListExercises item={item[key]} objectName={Object.keys(item)[index]} key={key} currentLevel={currentLevel+1} isLast={index+1===Object.keys(item).length}/>
             ))}
             
-            {currentLevel<1?null:
-            <>
-                <div className={`h-[calc(100%-20px)] absolute bg-marmur w-1 -z-[1] left-2 '} `}></div>
-            </>}
             </div>)
     }
 }
@@ -81,10 +75,6 @@ const ExpandBtn = ({text,isExpanded,mLeft,currentLevel,...rest}:ExpandBtn) => {
             <Icon className={`flex items-center is`}>
                 <ExpandIcon expanded={isExpanded} fill={theme?.colorPallete.accent}/>
             </Icon>
-            {currentLevel<=1? null:
-            <>
-                <div className={`absolute h-1 w-4 bg-marmur -left-4 z-10`}></div>
-            </>}
         </button>
     )
     return (
@@ -95,11 +85,6 @@ const ExpandBtn = ({text,isExpanded,mLeft,currentLevel,...rest}:ExpandBtn) => {
             <Icon className={`flex items-center is`}>
                 <ExpandIcon  expanded={isExpanded} fill={'#D9D9D9'}/>
             </Icon>
-
-            {currentLevel<=1? null:
-            <>
-            <div className={`absolute h-1 w-4 bg-marmur -left-4 z-10`}></div>
-            </>}
         </button>
     )
 }

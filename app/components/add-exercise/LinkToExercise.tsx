@@ -8,9 +8,8 @@ type LinkToExerciseType = {
     text: string,
     mLeft: string,
     isFirst: boolean,
-    showLeftLine?: boolean
 }
-export const LinkToExercise = ({text,mLeft,isFirst,showLeftLine = true}:LinkToExerciseType) => {
+export const LinkToExercise = ({text,mLeft,isFirst}:LinkToExerciseType) => {
     const theme = useContext(ThemeContext)
 
     return(
@@ -21,7 +20,6 @@ export const LinkToExercise = ({text,mLeft,isFirst,showLeftLine = true}:LinkToEx
             <Icon className="flex items-center px-1">
                 <PlusIcon fill="#0D1317"/>
             </Icon>
-            {showLeftLine && <div className={`absolute h-1 w-4 bg-marmur top-2/4 -left-4`}></div>}
         </Link>
 )
 }

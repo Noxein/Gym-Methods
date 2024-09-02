@@ -4,18 +4,20 @@ import { UserTrainingPlan } from '@/app/types'
 import { LeftAngle, RightTriangle } from '@/app/ui/icons/ExpandIcon'
 import React, { useContext } from 'react'
 import { Icon } from '../../Icon'
+import { ConvertEnglishWeekDayToPolish, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
 
 type TrainingLinkTypes = {
     plan: UserTrainingPlan
 }
 export const TrainingLink = ({plan}:TrainingLinkTypes) => {
     const theme = useContext(ThemeContext)
+    const weekday = ConvertEnglishWeekDayToPolish(plan.weekday)
   return (
     <div className={`bg-${theme?.colorPallete.accent} py-[1px] pl-[1px] rounded-md flex`}>
         <div className={`bg-${theme?.colorPallete.primary} flex flex-col rounded-md flex-1 px-4 pb-5 pt-3 relative`}>
             <span>{plan.trainingname}</span>
             <span className='text-gray-400 text-sm relative'>
-                <span className='absolute -top-2'>{plan.weekday}</span>
+                <span className='absolute -top-2'>{weekday}</span>
             </span>
         </div>
         <div className='flex items-center px-2'>
