@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeContextProvider } from "./context/ThemeContext";
-import { ClassMaker } from "./ui/icons/ClassMaker";
 import { BodyColorProvider } from "./components/BodyColorProvider";
 import { TempoContextDataProvider } from "./context/TempoContextDataProvider";
 
@@ -24,7 +23,7 @@ export default function RootLayout({
         <body className={`${inter.className} flex flex-col min-h-screen`}>
           <ThemeContextProvider>
             <TempoContextDataProvider>
-              {children}
+                {children}
               <BodyColorProvider />
             </TempoContextDataProvider>
           </ThemeContextProvider>

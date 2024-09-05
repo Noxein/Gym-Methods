@@ -60,7 +60,7 @@ export type UserExerciseTempoReturnType= {
     [key: string]:{id:string,tempo:TempoType}
 }
 
-export type ExerciceTypes = {
+export type ExerciseTypes = {
     Wielostawowe:{
         Gora: string[],
         Dol: string[],
@@ -149,4 +149,13 @@ export type GymExercisesDbResult = {
     },
     ispartoftraining: boolean
     trainingid: string,
+}
+
+export type ExerciseType = {
+    id: string,
+    exerciseid: string,
+    date: Date,
+    sets: { 
+        sets: Series[], diffucultyLevel: DifficultyLevel
+    }
 }

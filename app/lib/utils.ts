@@ -3,6 +3,13 @@ import { WeekDay, WeekDayPL } from "../types"
 export const WeekDayArray = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
 export const WeekDayArrayPL = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela']
 
+export const MonthNamesArray = ['January','February','March','April','May',"June","July","August",'September','October','November','December']
+export const MonthNamesArrayPL = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień']
+
+export const DifficultyArray = ['easy','medium','hard']
+export const DifficultyArrayPL = ['Łatwa','Średnia','Trudna']
+
+
 export const GetMonth = (date:Date) => {
     const MonthNumber = date.getMonth()+1
     if(MonthNumber>=10) return String(MonthNumber)

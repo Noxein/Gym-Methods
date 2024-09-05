@@ -6,10 +6,6 @@ import React from 'react'
 export default async function page({params}:{params:{trainingPlanName:string}}){
   const trainingName = decodeURI(params.trainingPlanName)
   const isThisTrainingInProgress = await checkIfTrainingIsInProgress(trainingName)
-  const training = await GetUserTrainingByName(trainingName)
-  const isError = training?.error
-  const exercises = await getAllExercises()
-  const allExercisesInOneArray = await AllExercisesInOneArray()
 
   if(isThisTrainingInProgress) {
     return <TrainingInProgressModal trainingName={trainingName}/>

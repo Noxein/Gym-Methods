@@ -1,14 +1,14 @@
 'use client'
 import { useContext, useState } from 'react'
 import { ListExercises } from './ListExercises'
-import { ExerciceTypes, UserExercise } from '@/app/types'
+import { ExerciseTypes, UserExercise } from '@/app/types'
 import { FilteredExercises } from './FilteredExercises'
 import { SearchExercises } from './SearchExercises'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import Link from 'next/link'
 
 type ExerciseListMappedTypes = {
-  exercises:ExerciceTypes,
+  exercises:ExerciseTypes,
   allExercisesInOneArray: (string | UserExercise)[],
 }
 export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseListMappedTypes) => {

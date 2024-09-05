@@ -4,7 +4,7 @@ import { compare, hash } from 'bcryptjs'
 import { AddExerciseZodSchema, FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { DifficultyLevel, ExerciceTypes, GymExercisesDbResult, LastExerciseType, LastTrainingType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL } from "@/app/types";
+import { DifficultyLevel, ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, LastTrainingType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, timeMesureExercises } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -297,7 +297,7 @@ export const getAllExercises = async () => {
 
         return {...exerciseList,userExercises}
     }catch(e){
-        return exerciseList as ExerciceTypes
+        return exerciseList as ExerciseTypes
     }
 }
 
@@ -441,6 +441,16 @@ export const getAllIdsExercisesInArray = async () => {
     const userExercises = await getUserExercises()
     userExercises.forEach(x=>{
         array.push(x.id)
+    })
+
+    return array
+}
+
+export const getAllExerciseNamesInArray = async () => {
+    let array = [...exercisesArr]
+    const userExercises = await getUserExercises()
+    userExercises.forEach(x=>{
+        array.push(x.exercisename)
     })
 
     return array
@@ -850,4 +860,36 @@ export const checkIfTrainingIsInProgress = async (trainingName:string) => {
 const userID = async () => {
     const user = await auth()
     return user?.user?.id
+}
+
+export const fetchUserExercises = async (from:Date,to:Date,exerciseName?:string) => {
+    console.log(from,to)
+    const userid = await userID()
+    const fetchAll = !!exerciseName
+    console.log(exerciseName,fetchAll)
+    
+    let name = exerciseName
+    try{
+        if(!fetchAll){
+            //todo when fetching all exercises, inner join names from gymuserexercises
+            const exercises = await sql`
+            SELECT id,exerciseid,date,sets FROM gymexercises WHERE userid = ${userid} AND date < ${JSON.stringify(to)} AND date > ${JSON.stringify(from)}
+        `
+            return exercises.rows as ExerciseType[]
+        }
+
+        const isUserOwnExercise = !exercisesArr.includes(exerciseName!)
+        if(isUserOwnExercise) {
+            const exercise = await sql`
+                SELECT id FROM gymusersexercises WHERE userid = ${userid} AND exercisename = ${exerciseName}
+            `
+            name = exercise.rows[0].id
+        }
+        const exercises = await sql`
+            SELECT id,exerciseid,date,sets FROM gymexercises WHERE userid = ${userid} AND exerciseid = ${name} AND date < ${JSON.stringify(to)} AND date > ${JSON.stringify(from)}
+        `
+        return exercises.rows as ExerciseType[]
+    }catch{
+        return []
+    }
 }
