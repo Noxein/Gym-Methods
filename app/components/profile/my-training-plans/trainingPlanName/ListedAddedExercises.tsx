@@ -66,9 +66,9 @@ const SingleExercise = ({name,exercise,setPlanExercises}:SingleExerciseTypes) =>
         transform: CSS.Transform.toString(transform)
     }
     return(
-    <div className={`py-[1px] touch-none flex rounded-lg bg-${theme?.colorPallete.accent}`} ref={setNodeRef} {...attributes} {...listeners}  style={style}>
+    <div className={`py-[1px] touch-none flex rounded-lg bg-${theme?.colorPallete.accent}`} ref={setNodeRef}  style={style} {...attributes}>
         <div className={`text-${theme?.colorPallete.accent} rounded-md flex justify-between items-center flex-1` } >
-            <Icon className='px-0'>
+            <Icon className='px-0' {...listeners} >
                 <VerticalDots />
             </Icon>
 
