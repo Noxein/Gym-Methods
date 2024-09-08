@@ -33,7 +33,7 @@ export const DeleteTempo = ({selectedExercise,setShowDeleteTempoModal}:DeleteTem
     }
   return (
     <BlurBackgroundModal onClick={HandleCloseModal}>
-        <div onClick={e=>e.stopPropagation()} className={`flex flex-col gap-2 mx-5 mb-20 bg-${theme?.colorPallete.primary} border-${theme?.colorPallete.accent} border-[1px] rounded-md py-6 px-10 text-xl text-${theme?.colorPallete.accent} max-w-xl`}>
+        <div onClick={e=>e.stopPropagation()} className={`flex flex-col gap-2 mx-5 mb-20 bg-${theme?.colorPallete.primary} border-${theme?.colorPallete.accent} border-[1px] rounded-md py-6 px-10 text-xl text-white max-w-xl`}>
             <div className='text-center'>Czy napewno chcesz usunąć tempo do ćwiczenia <br/> <b>{selectedExercise.name}</b>?</div>
             {isLoading?            
             <div className='flex justify-center mt-4'>

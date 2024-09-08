@@ -49,14 +49,14 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
 
       <div className='mt-10 min-h-[calc(100dvh-180px)]'>
         <button onClick={addExercise}
-          className={`text-left px-2 pr-4 w-full bg-green text-${theme?.colorPallete.accent} rounded-md py-3 flex justify-between`}
+          className={`text-left px-2 pl-4 pr-4 w-full bg-green text-white rounded-md py-3 flex justify-between`}
         >Dodaj nowe ćwiczenie <PlusIcon width='20'/> </button>
 
         {planExercises && <ListedAddedExercises planExercises={planExercises} setPlanExercises={setPlanExercises}/>}
 
-        <div className='bottom-24 fixed flex right-5 left-5 gap-4'>
-          <button className={`flex-1 bg-green text-${theme?.colorPallete.accent} py-3 rounded-md`} onClick={handleSave}>Zapisz zmiany</button>
-          <button className={`flex-1 bg-red text-${theme?.colorPallete.accent} rounded-md`} onClick={()=>router.push('/home/profile/my-training-plans')}>Anuluj</button>
+        <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
+          <button className={`flex-1 bg-green text-white py-3 rounded-md`} onClick={handleSave}>Zapisz zmiany</button>
+          <button className={`flex-1 bg-red text-white rounded-md`} onClick={()=>router.push('/home/profile/my-training-plans')}>Anuluj</button>
         </div>
 
       </div>

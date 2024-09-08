@@ -3,6 +3,12 @@ import { TrainingInProcess } from "@/app/components/home/start-training/Training
 import { Training } from "@/app/components/home/start-training/Training"
 import { TrainingError } from "@/app/components/home/start-training/TrainingError"
 import { ContinueTraining } from "@/app/components/home/start-training/ContinueTraining"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: "Trening",
+};
+
 
 type Pagetypes = {
     params:{trainingName:string}

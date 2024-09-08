@@ -37,7 +37,7 @@ export const EditTempo = ({selectedExercise,setShowEditTempoModal}:EditTempoType
     }
   return (
     <BlurBackgroundModal onClick={HandleCloseModal}>
-        <div onClick={e=>e.stopPropagation()} className={`flex flex-col gap-2 text-xl px-10 mx-5 mb-20 py-5 bg-${theme?.colorPallete.primary} text-${theme?.colorPallete.accent} border-${theme?.colorPallete.accent} border-[1px] rounded-md max-w-xl`}>
+        <div onClick={e=>e.stopPropagation()} className={`flex flex-col gap-2 text-xl px-10 mx-5 mb-20 py-5 bg-${theme?.colorPallete.primary} text-white border-${theme?.colorPallete.accent} border-[1px] rounded-md max-w-xl`}>
             <div>Tempo - {selectedExercise.name}</div>
             <div className='flex flex-col gap-2'>
                 <div className='flex gap-4'>

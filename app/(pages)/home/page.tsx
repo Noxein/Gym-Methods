@@ -1,5 +1,7 @@
 import { Home } from "@/app/components/home/Home";
+import { Metadata } from "next";
 
+  
 export default async function page(){
 
     return(

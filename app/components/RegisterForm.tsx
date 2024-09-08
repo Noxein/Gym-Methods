@@ -5,6 +5,7 @@ import { InputGroup } from './InputGroup'
 import { FormInputErrors } from './FormInputErrors'
 import { useFormState } from 'react-dom'
 import { Register } from '../actions'
+import { useRouter } from 'next/navigation'
 
 export const RegisterForm = () => {
   const initState = {
@@ -15,6 +16,8 @@ export const RegisterForm = () => {
     }
   }
   const[state,dispach] = useFormState(Register,initState)
+  const router = useRouter()
+  if(Object.keys(state.errors).length === 0) router.push('/login')
   return (<>
     <FormWrapper
     headerLabel='Rejestracja'

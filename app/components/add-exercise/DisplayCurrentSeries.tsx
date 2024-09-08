@@ -68,7 +68,7 @@ export const DisplayCurrentSeries = ({seriesname,currentSeries,dispachSeries,sho
 
                     {showTimeMesure && 
                     <div>
-                        <Input type="text" value={series.time} className={`w-full mr-1 bg-${theme?.colorPallete.primary} ml-4`} onChange={(e)=>{editInput(e,index,'EDITSERIESTIME')}}/> 
+                        <Input type="text" value={series.time} className={`w-[calc(100%-10px)] mr-1 bg-${theme?.colorPallete.primary} ml-4`} onChange={(e)=>{editInput(e,index,'EDITSERIESTIME')}}/> 
                     </div>}
                 </div>
                 <div className='w-10 flex justify-center items-center'>

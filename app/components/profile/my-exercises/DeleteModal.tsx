@@ -28,7 +28,7 @@ export const DeleteModal = ({selectedExercise,setShowDeleteModal}:{selectedExerc
     }
     return (
     <BlurBackgroundModal onClick={HandleCloseModal}>
-        <div onClick={e=>e.stopPropagation()} className={`border-1 border-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent} bg-${theme?.colorPallete.primary} px-10 py-6 rounded-md text-xl flex flex-col gap-2`}>
+        <div onClick={e=>e.stopPropagation()} className={`border-1 border-${theme?.colorPallete.accent} text-white bg-${theme?.colorPallete.primary} px-10 py-6 rounded-md text-xl flex flex-col gap-2`}>
             <div className='text-center'>
                 Czy napewno chcesz usunąć <br />
                 <strong>{selectedExercise.exercisename}</strong>

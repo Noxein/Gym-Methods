@@ -77,8 +77,8 @@ const SingleSet = ({set}:SingleSetType) => {
         <div className='flex pr-2'>
             <SpanElement text={set.weight} additionalText='kg'/>
             {
-            set.time?<SpanElement text={set.time}/>:
-            <SpanElement text={set.repeat} additionalText={set.repeat>=5?'serii':set.repeat>=2?'serie':'seria'}/>
+            set.time?<SpanElement text={set.time} additionalText='czas'/>:
+            <SpanElement text={set.repeat} additionalText={set.repeat===0?'serii':set.repeat===1?'seria':set.repeat>=5?'serii':set.repeat>=2?'serie':'seria'}/>
             }
             <SpanElement additionalText={DifficultyArrayPL[DifficultyArray.indexOf(set.difficulty)]}/>
         </div>

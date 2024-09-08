@@ -30,7 +30,7 @@ export const EditModal = ({selectedExercise,setShowEditModal}:{selectedExercise:
     }
   return (
     <BlurBackgroundModal onClick={HandleCloseModal}>
-        <div onClick={e=>e.stopPropagation()} className={`border-[1px] border-${theme?.colorPallete.accent} bg-${theme?.colorPallete.primary} text-${theme?.colorPallete.accent} px-10 py-6 rounded-md text-xl flex flex-col gap-2`}>
+        <div onClick={e=>e.stopPropagation()} className={`border-[1px] border-${theme?.colorPallete.accent} bg-${theme?.colorPallete.primary} text-white px-10 py-6 rounded-md text-xl flex flex-col gap-2`}>
             <input type="text" value={newName} onChange={e=>setNewName(e.target.value)} className={`px-2 py-1 bg-${theme?.colorPallete.primary} border-[1px] rounded-md border-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent}`}/>
             {isLoading?
             <SmallLoader/>:
