@@ -948,52 +948,52 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
         //TODO MAKE SEPARATE FUNCTION FOR FETCHING COUNT
         if(from && to && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName} LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return exercises.rows as ExerciseType[]
         }
 
         if(from && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName} LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return exercises.rows as ExerciseType[]
         }
 
         if(to && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND exercisename = ${exerciseName} LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return exercises.rows as ExerciseType[]
         }
         if(to && from){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return exercises.rows as ExerciseType[]
         }
         if(to){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return exercises.rows as ExerciseType[]
         }
 
         if(from){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return exercises.rows as ExerciseType[]
         }
 
         if(exerciseName){
             const exercises = await sql`
-            SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName} LIMIT ${limit} OFFSET ${page*limit}
+            SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return exercises.rows as ExerciseType[]
         }
         const exercises = await sql`
-            SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} LIMIT ${limit} OFFSET ${page*limit}
+            SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
         `
         return exercises.rows as ExerciseType[]
     }catch(e){

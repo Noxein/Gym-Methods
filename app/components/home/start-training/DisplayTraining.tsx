@@ -59,7 +59,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
             setTrainingID(id)
         }
         
-        const possibleError = await AddExerciseAction(false,training![currentExercise].exerciseid,state.series,state.difficultyLevel,pathname.includes('training'),id)
+        const possibleError = await AddExerciseAction(false,training![currentExercise].exercisename,state.series,state.difficultyLevel,pathname.includes('training'),id)
         if(possibleError && possibleError.errors){
             setIsLoading(false)
             return setError(possibleError.errors)
