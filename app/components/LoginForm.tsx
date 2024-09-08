@@ -3,26 +3,29 @@ import React from 'react'
 import { FormWrapper } from './FormWrapper'
 import { InputGroup } from './InputGroup'
 import { FormInputErrors } from './FormInputErrors'
-import { CreateAccountOrLogin } from './CreateAccountOrLogin'
-import { signIn } from '@/auth'
 import { useFormState } from 'react-dom'
 import { Login } from '../actions'
+import { useRouter } from 'next/navigation'
 
 export const LoginForm = () => {
-  const[status,dispach] = useFormState(Login,{succes:true})
+  const[status,dispach] = useFormState(Login,{error:''})
+  const router = useRouter()
+
+  if(!status.error) router.push('/home')
   return (<>
-      <FormWrapper
+      <FormWrapper 
       headerLabel='Login'
       submitBtnText='Zaloguj'
       action={dispach}
+      hasAccount={false}
       >
         <InputGroup id='email' text='Email' type='email'/>
-        <FormInputErrors />
+        <FormInputErrors/>
         
         <InputGroup id='password' text='Hasło' type='password'/>
-        <FormInputErrors />
+        <FormInputErrors errors={[status.error]}/>
 
       </FormWrapper>
-      <CreateAccountOrLogin hasAccount={false}/>
+      
     </>)
 }

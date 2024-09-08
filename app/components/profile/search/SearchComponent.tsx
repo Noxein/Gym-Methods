@@ -8,7 +8,7 @@ import { Icon } from '../../Icon'
 import { ExpandIcon2 } from '@/app/ui/icons/ExpandIcon'
 import { SmallLoader } from '../../Loading/SmallLoader'
 import { DisplayUserExercises } from './DisplayUserExercises'
-import { fetchUserExercises } from '@/app/actions'
+import { fetchUserExercises, fetchUserExercisesCount } from '@/app/actions'
 import { format } from 'date-fns'
 
 type SearchComponentTypes = {
@@ -18,8 +18,9 @@ type SearchComponentTypes = {
 
 export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) => {
     const [showSearch,setShowSearch] = useState(false)
-    const [from,setFrom] = useState<Date>(new Date())
-    const [to,setTo] = useState<Date>(new Date())
+    const [from,setFrom] = useState<Date>()
+    const [to,setTo] = useState<Date>()
+    const [currentPage,setCurrentPage] = useState(0)
 
     const searchExercise = useContext(SelectedExerciseContext)
     const showExerciseList = searchExercise?.showExerciseList
@@ -29,25 +30,44 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     const theme = useContext(ThemeContext)
 
     const [fetchedExercises,setFetchedExercises] = useState<ExerciseType[]>([])
+    const [totalItems,setTotalItems] = useState<number>(0)
 
     const[isLoadingExercises,setIsLoadingExercises] = useState(true)
 
     const handleShowExerciseList = () => {
         setShowExerciseList && setShowExerciseList(true)
     }
-    const handleSearch = async () => {
-        const result = await fetchUserExercises(from,to,selectedExercise)
-        console.log(result)
-        setFetchedExercises(result)
+    const handleSearch = async (reset:boolean) => {
+        
+        if(reset){
+            const result = await fetchUserExercises(from,to,selectedExercise,0)
+            await handleSearchCount()
+            setFetchedExercises(result)
+            setCurrentPage(1)
+        }else{
+            const result = await fetchUserExercises(from,to,selectedExercise,currentPage)
+            setFetchedExercises([...fetchedExercises,...result])
+            setCurrentPage(currentPage+1)
+        }
+
         setIsLoadingExercises(false)
+    }
+    const handleSearchCount = async () => {
+        const count = await fetchUserExercisesCount(from,to,selectedExercise)
+        setTotalItems(Number(count))
     }
     const toggleSearchBar = () => {
         setShowSearch(!showSearch)
     }
+    useEffect(()=>{
+        handleSearchCount()
+        handleSearch(false)
+        setCurrentPage(currentPage+1)
+    },[])
   return (
 <>
     <div className='text-white'>
-        <div className={`fixed z-20 left-0 w-full ${showSearch?'top-5':'-top-[120px]'} transition-all bg-${theme?.colorPallete.primary}`}>
+        <div className={`fixed z-20 left-0 pt-5 w-full ${showSearch?'top-0':'-top-[140px]'} transition-all bg-${theme?.colorPallete.primary}`}>
             <div className='flex flex-col gap-4'>
                 <div className='flex gap-4 mx-5'>
                     <div className='flex flex-col flex-1 relative'>
@@ -60,7 +80,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                     </div>
                 </div>
                 <div className='mx-5'>
-                    <button className='w-full border-1 rounded-lg py-2' onClick={handleShowExerciseList}>{searchExercise?.exercise || 'Wszystkie ćwiczenia'}</button>
+                    <button className={`w-full border-1 rounded-lg py-2`} onClick={handleShowExerciseList}>{searchExercise?.exercise || 'Wszystkie ćwiczenia'}</button>
                 </div>
             </div>
             <div className={`w-full flex justify-between px-5 bg-${theme?.colorPallete.accent} mt-5 gap-10`}>
@@ -71,14 +91,14 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                 </button>
                 {
                     showSearch?
-                    <button className={`text-${theme?.colorPallete.primary} font-semibold pl-10 text-right`} onClick={handleSearch}>
+                    <button className={`text-${theme?.colorPallete.primary} font-semibold pl-10 text-right`} onClick={()=>handleSearch(true)}>
                         Szukaj
                     </button>:
                     <div className={`flex flex-col text-${theme?.colorPallete.primary}`}>
-                        <span>
-                            {format(from,'dd.MM.yyyy')} - {format(to,'dd.MM.yyyy')}
+                        <span className={`text-${theme?.colorPallete.primary}`}>
+                            {from && format(from,'dd.MM.yyyy')} - {to && format(to,'dd.MM.yyyy')}
                         </span>
-                        <span className='text-right font-semibold text-xl'>
+                        <span className={`text-${theme?.colorPallete.primary} text-right font-semibold text-xl`}>
                             {selectedExercise}
                         </span>
 
@@ -90,7 +110,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
 
         {isLoadingExercises?
         <SmallLoader sClassParent='h-screen flex items-center'/>:
-        <DisplayUserExercises fetchedExercises={fetchedExercises} manyExercises={selectedExercise===''}/>
+        <DisplayUserExercises fetchedExercises={fetchedExercises} manyExercises={selectedExercise===''} handleSearch={()=>handleSearch(false)} dataLength={fetchedExercises.length} totalItems={totalItems}/>
         }
     </div>
     {showExerciseList && 

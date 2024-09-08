@@ -3,14 +3,14 @@ import React from 'react'
 
 export const CreateAccountOrLogin = ({hasAccount}:{hasAccount:boolean}) => {
     if(hasAccount) return(
-        <div>
-            Masz już konto? <Link href={'/login'}>Zaloguj się</Link>
+        <div className='text-center text-white'>
+            Masz już konto? <Link href={'/login'} className='text-lime-100'>Zaloguj się</Link>
         </div>
     )
 
   return (
-    <div>
-        Nie masz jeszcze konta? <Link href={'/register'}>Zarejestruj się</Link>
+    <div className='text-center text-white'>
+        Nie masz jeszcze konta? <Link href={'/register'} className='text-lime-100'>Zarejestruj się</Link>
     </div>
   )
 }

@@ -1,12 +1,10 @@
 import { UserExercise } from '@/app/types'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Exercise } from './Exercise'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { EditModal } from './EditModal'
 import { DeleteModal } from './DeleteModal'
 
 export const ListExercises = ({exercises}:{exercises:UserExercise[]}) => {
-  const theme = useContext(ThemeContext)
   const[selectedExercise,setSelectedExercise] = useState<UserExercise>({exercisename:'',id:'',timemesure:false})
   const[showEditModal,setShowEditModal] = useState(false)
   const[showDeleteModal,setShowDeleteModal] = useState(false)

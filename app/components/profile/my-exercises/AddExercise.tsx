@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { AddNewUserExercise } from '@/app/actions'
@@ -18,7 +18,6 @@ export const AddExercise = ({setShowModal}:{setShowModal:React.Dispatch<React.Se
         if(isError && isError.error) return setError(isError.error)
         hideModal()
     }
-    useEffect(()=>console.log(timeExercise),[timeExercise])
   return (
         <BlurBackgroundModal onClick={hideModal}>
             <div className={`border-white border-1 bg-${theme?.colorPallete.primary} rounded-md flex flex-col px-10 py-4 gap-4 text-xl mb-20`} onClick={e=>e.stopPropagation()}>
@@ -32,7 +31,7 @@ export const AddExercise = ({setShowModal}:{setShowModal:React.Dispatch<React.Se
                     <button className='bg-green flex-1 py-2' onClick={addExercise}>Dodaj</button>
                     <button onClick={hideModal} className='bg-red flex-1'>Anuluj</button>
                 </div>
-                {error && <div className='text-red-500'>{error}</div>}
+                {error && <div className='text-red'>{error}</div>}
             </div>
         </BlurBackgroundModal>
   )

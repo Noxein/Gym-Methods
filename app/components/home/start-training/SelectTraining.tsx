@@ -1,4 +1,3 @@
-import { userTrainingsList } from '@/app/actions'
 import { TrainingList } from './TrainingList'
 import { Icon } from '../../Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'

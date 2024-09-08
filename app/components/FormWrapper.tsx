@@ -1,19 +1,30 @@
-import { signIn } from '@/auth'
-import React, { FormHTMLAttributes } from 'react'
-import { Login } from '../actions'
+'use client'
+import React, { useContext } from 'react'
+import { ThemeContext } from '../context/ThemeContext'
+import { CreateAccountOrLogin } from './CreateAccountOrLogin'
 
-export const FormWrapper = ({children,headerLabel,submitBtnText,buttonFunc,action}:{children:React.ReactNode,headerLabel:string,submitBtnText:string,buttonFunc?:()=>void,action?:string | ((formData: FormData) => void) | undefined}) => {
+type FormWrapperTypes = {
+  children:React.ReactNode,
+  headerLabel:string,
+  submitBtnText:string,
+  buttonFunc?:()=>void,action?:string | ((formData: FormData) => void) | undefined,
+  hasAccount: boolean
+}
+
+export const FormWrapper = ({children,headerLabel,submitBtnText,buttonFunc,action,hasAccount}:FormWrapperTypes) => {
+  const theme = useContext(ThemeContext)
   return (
-    <form className='flex flex-col rounded-xl px-6 py-10 gap-2 min-w-80 min-h-screen' action={action}>
+    <form className='flex flex-col rounded-xl px-6 py-10 gap-2 w-full items-cente justify-center mb-20' action={action}>
 
-        <h2 className='self-center text-3xl pb-6'>{headerLabel}</h2>
+        <h2 className={`self-center text-3xl pb-6 text-white`}>{headerLabel}</h2>
 
         {children}
 
-        <button type='submit' onClick={e=>{buttonFunc && e.preventDefault();buttonFunc && buttonFunc()}}  className='py-2 px-4 bg-blue-400 rounded hover:bg-blue-500 mt-auto mb-16'>
+        <button type='submit' onClick={e=>{buttonFunc && e.preventDefault();buttonFunc && buttonFunc()}}  className={`w-full py-2 px-4 border-1 border-white text-white bg-green rounded`}>
             {submitBtnText}
         </button>
 
+        <CreateAccountOrLogin hasAccount={hasAccount}/>
     </form>
   )
 }

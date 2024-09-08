@@ -153,7 +153,7 @@ export type GymExercisesDbResult = {
 
 export type ExerciseType = {
     id: string,
-    exerciseid: string,
+    exercisename: string,
     date: Date,
     sets: { 
         sets: Series[], diffucultyLevel: DifficultyLevel

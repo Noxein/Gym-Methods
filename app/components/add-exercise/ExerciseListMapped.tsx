@@ -2,7 +2,6 @@
 import { useContext, useState } from 'react'
 import { ListExercises } from './ListExercises'
 import { ExerciseTypes, UserExercise } from '@/app/types'
-import { FilteredExercises } from './FilteredExercises'
 import { SearchExercises } from './SearchExercises'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import Link from 'next/link'

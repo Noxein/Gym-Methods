@@ -1,10 +1,10 @@
 'use client'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { UserTrainingPlan } from '@/app/types'
-import { LeftAngle, RightTriangle } from '@/app/ui/icons/ExpandIcon'
+import { RightTriangle } from '@/app/ui/icons/ExpandIcon'
 import React, { useContext } from 'react'
 import { Icon } from '../../Icon'
-import { ConvertEnglishWeekDayToPolish, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
+import { ConvertEnglishWeekDayToPolish } from '@/app/lib/utils'
 
 type TrainingLinkTypes = {
     plan: UserTrainingPlan

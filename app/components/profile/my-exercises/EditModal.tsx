@@ -38,7 +38,7 @@ export const EditModal = ({selectedExercise,setShowEditModal}:{selectedExercise:
                 <button className='flex-1 bg-green py-2 rounded-lg' onClick={editExercise}>Zapisz</button>
                 <button onClick={HandleCloseModal} className='flex-1 bg-red rounded-lg'>Anuluj</button>
             </div>}
-            {error && <div className='bg-red-500'>{error}</div>}
+            {error && <div className='text-red'>{error}</div>}
         </div>
     </BlurBackgroundModal>
   )

@@ -76,7 +76,6 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
         case 'DELETESERIES':
             return {...state, series: state.series.filter((set,i)=>i!==action.payload)};
         case 'RESETSTATE' :{
-            console.log('hit')
             return {
                 ...state, series : [], repeat: 0, difficultyLevel: 'easy', tempoDown: 0, tempoUp: 0, time: '', weight: 0
             }

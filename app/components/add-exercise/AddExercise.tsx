@@ -25,7 +25,6 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
     const theme = useContext(ThemeContext)
     const tempos = useContext(TempoContext)
 
-    console.log(tempos)
     const pathname = usePathname()
 
     useEffect(()=>{
@@ -57,7 +56,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
         }
     }
   return (
-    <div className='px-4 pt-4'>
+    <div className='px-4 pt-4 mb-4'>
         <h1 className={`text-${theme?.colorPallete.accent} text-xl text-center font-medium`}>{name}</h1>
         <div className={`flex flex-col sticky top-0 pt-2 mt-2`}>
             <div className='flex flex-col gap-6'>

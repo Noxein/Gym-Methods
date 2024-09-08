@@ -1,4 +1,4 @@
-import { AllExercisesInOneArray, checkIfTrainingIsInProgress, getAllExercises, GetUserTrainingByName } from '@/app/actions'
+import { checkIfTrainingIsInProgress } from '@/app/actions'
 import { MyTraingPlansPage } from '@/app/components/profile/my-training-plans/trainingPlanName/MyTraingPlansPage'
 import { TrainingInProgressModal } from '@/app/components/profile/my-training-plans/trainingPlanName/TrainingInProgressModal'
 import React from 'react'

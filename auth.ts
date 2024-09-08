@@ -3,6 +3,7 @@ import authConfig from '@/auth.config'
 import { getTempo } from "./app/lib/sql"
  
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   pages:{
     signIn :'/login',
   },
@@ -11,14 +12,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   ...authConfig,
   callbacks:{
-    async jwt({token,session}) {
+    async jwt({token,session}) { 
       const data = await getTempo(token.sub as string)
+      if(!data) return token
       token.showTempo = data.showtempo
       token.setupcompleted = data.setupcompleted
       return {...token}
     },
     async session({token,session}) {
-      
       session.user.id = token.sub as string
       session.user.showTempo = token.showTempo as string
       session.user.setupcompleted = token.setupcompleted as boolean

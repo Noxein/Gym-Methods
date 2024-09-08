@@ -1,7 +1,7 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { UserTrainingPlan } from '@/app/types'
-import { PencilIcon, RightTriangle, TrashIcon } from '@/app/ui/icons/ExpandIcon'
+import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
 import React, { useContext } from 'react'
 

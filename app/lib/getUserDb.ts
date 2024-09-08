@@ -5,10 +5,7 @@ export const getUser = async(email:string) => {
     let users = await sql`
         SELECT * FROM gymusers WHERE email = ${email}
     `
-    console.log(users)
-    const user = users.rows[0]
+    if(users.rowCount === 0) return null
 
-    if(!user) return null
-
-    return user 
+    return users.rows[0] 
 } 

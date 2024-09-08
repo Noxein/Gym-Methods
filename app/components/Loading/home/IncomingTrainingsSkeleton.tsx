@@ -1,7 +1,3 @@
-'use client'
-import { ThemeContext } from '@/app/context/ThemeContext'
-import React, { useContext } from 'react'
-
 export const IncomingTrainingsSkeleton = () => {
   return (
     <div className='flex flex-col px-5 gap-4 mt-8'>
@@ -20,8 +16,8 @@ export const Training = () => {
     return (
       <div  className={`flex justify-between items-center pt-3 border-[1px] rounded-lg py-2 px-4 min-h-[55px] gradient-background`}>
         <div className="flex flex-col leading-3 text-opacity-0">
-            <span className='text-opacity-0'>o</span>
-            <span className="text-gray-400 text-sm text-opacity-0">o</span>
+            <span className='text-opacity-0 invisible'>o</span>
+            <span className="text-gray-400 text-sm text-opacity-0 invisible">o</span>
         </div>
         
       </div>

@@ -17,7 +17,6 @@ type SingleExerciseType = {
 export const SingleExercise = ({text,mLeft,isFirst,tempo,exerciceid,setSelectedExercise,setShowEditTempoModal,setShowDeleteTempoModal}:SingleExerciseType) => {
     const theme = useContext(ThemeContext)
     const setExercice = (show:'edit'|'delete') => {
-        console.log(show)
         const exercise = {
             id: exerciceid,
             name: text,
@@ -26,7 +25,6 @@ export const SingleExercise = ({text,mLeft,isFirst,tempo,exerciceid,setSelectedE
         HideShowHTMLScrollbar('hide')
         setSelectedExercise(exercise)
         if(show==='edit'){
-            console.log('edited')
             return setShowEditTempoModal(true)
         } 
         setShowDeleteTempoModal(true)

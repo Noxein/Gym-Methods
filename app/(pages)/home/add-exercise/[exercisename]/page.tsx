@@ -1,6 +1,5 @@
 import React from 'react'
 import { ExerciseNotFound } from '@/app/components/add-exercise/ExerciseNotFound'
-import { AddExercise } from '@/app/components/add-exercise/AddExercise'
 import { auth } from '@/auth'
 import { ArrayOfAllExercises, ExercisesThatRequireTimeMesure } from '@/app/actions'
 import { AddExerciseStateProvider } from '@/app/components/add-exercise/AddExerciseStateProvider'

@@ -14,7 +14,6 @@ export const Training = async ({name,training,lastid,trainingid}:TrainingTypes) 
     const user = await auth()
     const showTempo = !!user?.user?.showTempo
     const exercisesThatRequireTimeMesure = await ExercisesThatRequireTimeMesure()
-    console.log(training)
     return(
         <main>
             <DisplayTraining trainingName={name} training={training?.exercises.exercises} trainingPlanId={training?.id!} showTempo={showTempo} exercisesThatRequireTimeMesure={exercisesThatRequireTimeMesure} lastid={lastid} trainingid={trainingid}/>

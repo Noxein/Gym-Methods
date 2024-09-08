@@ -59,8 +59,6 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
             setTrainingID(id)
         }
         
-        //save to database 
-        console.log('ID',id,training![currentExercise].exerciseid,state.series,state.difficultyLevel)
         const possibleError = await AddExerciseAction(false,training![currentExercise].exerciseid,state.series,state.difficultyLevel,pathname.includes('training'),id)
         if(possibleError && possibleError.errors){
             setIsLoading(false)

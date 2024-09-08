@@ -1,9 +1,5 @@
-'use client'
-import { ThemeContext } from '@/app/context/ThemeContext'
-import React, { useContext } from 'react'
 
 export const LoadingTrainingPlanSkeleton = () => {
-  const theme = useContext(ThemeContext)
   return (
     <div className='mx-5 mb-20'>
       <div className='flex flex-col gap-2 mt-5'>
@@ -34,7 +30,6 @@ export const LoadingTrainingPlanSkeleton = () => {
 }
 
 const LoadingExerciseElement = ({opacity}:{opacity:number}) => {
-  const theme = useContext(ThemeContext)
   return(
     <div className={` gradient-background my-1 py-4 px-2 rounded-md flex ${opacity===3?'bg-opacity-80':opacity===2?'bg-opacity-60':'bg-opacity-40'}` }>
       <span className='invisible'>o</span>

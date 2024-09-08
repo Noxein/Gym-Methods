@@ -3,12 +3,12 @@ import React, { useContext, useState } from 'react'
 import { MappedTempoExercises } from '@/app/components/profile/set-tempo/MappedTempoExercises'
 import { SearchList } from './SearchList'
 import { EditTempo } from './EditTempo'
-import { ExerciceTypes, SelectedExerciseWithTempo, UserExercise, UserExerciseTempoReturnType } from '@/app/types'
+import { ExerciseTypes, SelectedExerciseWithTempo, UserExercise, UserExerciseTempoReturnType } from '@/app/types'
 import { DeleteTempo } from './DeleteTempo'
 import { ThemeContext } from '@/app/context/ThemeContext'
 
 type SetTempoType = {
-  exercises:ExerciceTypes,
+  exercises:ExerciseTypes,
   tempos:UserExerciseTempoReturnType,
   allExercisesInOneArray: (string | UserExercise)[],
 }

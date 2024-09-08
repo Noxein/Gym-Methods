@@ -1,30 +1,41 @@
 "use server"
 import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
-import { AddExerciseZodSchema, FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
+import { FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { DifficultyLevel, ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, LastTrainingType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL } from "@/app/types";
+import { ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, timeMesureExercises } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { WeekDayArray, WeekDayArrayPL } from "./lib/utils";
 import { z } from "zod";
-import { formatInTimeZone, toZonedTime } from "date-fns-tz";
+import { addDays } from "date-fns";
+import { AuthError } from "next-auth"; 
 
 type State = {
+    error?: string
     succes?: boolean
 }
 export const Login = async (prevState:State,formData:FormData) => {
+    //check if user exist 
     try{
-        await signIn('credentials',formData)
+        const response = await signIn('credentials',{
+            email: formData.get('email'),
+            password: formData.get('password'),
+            redirect: false,
+        })
+        return response
     }catch(e){
-        console.log(e)
+        if(e instanceof AuthError){
+            // @ts-ignore
+           if(e.cause?.err!.code === 'credentials'){
+            return { error: 'Zły login lub hasło'}
+           }
+           return { error: 'Coś poszło nie tak'}
+        }
     }
-
-    revalidatePath('/home')
-    redirect('/home')
 }
 
 type RegisterState = {
@@ -64,14 +75,14 @@ export const Register = async (prevState:RegisterState,formData:FormData) => {
     await sql`
         INSERT INTO gymusers (email,password) VALUES (${email},${hasedPassword})
     `
+    return { errors: {}}
 }
 export const ComparePasswords = async (password:string,hasedPassword:string) => {
     const isCorrect = await compare(password,hasedPassword)
     return isCorrect
 }
 
-export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],diffucultyLevel:string,ispartoftraining:boolean,trainingPlanId?:string) => {
-    //TODO fetch user id in auth
+export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],diffucultyLevel:string,ispartoftraining:boolean,trainingPlanId?:string,) => {
     const user = await auth()
     const userID = user?.user?.id
     if(!userID) return
@@ -84,7 +95,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     const userExercises = await getUserExercises()
 
     userExercises.forEach(item=>{
-        arr.push(item.id)
+        arr.push(item.exercisename)
     })
 
     const AddExerciseZodSchema = z.object({
@@ -105,7 +116,6 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     })
 
     if(!validData.success) {
-        console.log(validData.error.flatten().fieldErrors)
         if(validData.error.flatten().fieldErrors.sets){
             return {
                 errors: validData.error.flatten().fieldErrors.sets![0]
@@ -117,13 +127,17 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     }
     let trainingid = null
     if(trainingPlanId) trainingid = trainingPlanId
+    let id = exerciseid
+    if(userExercises[userExercises.findIndex(x=>x.exercisename===exerciseid)]){
+        id = userExercises[userExercises.findIndex(x=>x.exercisename===exerciseid)].id
+    }
+
     try{
         await sql`
-        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid) VALUES (${userID},${exerciseid},${stringDate},${JSON.stringify(setsObject)},${ispartoftraining},${trainingid})
+        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename) VALUES (${userID},${id},${stringDate},${JSON.stringify(setsObject)},${ispartoftraining},${trainingid},${exerciseid})
         `
-        console.log('inserted')
     }catch(e){
-        console.log('Error occured: ',e)
+        console.log('Error occured: AddExerciseAction func actions.ts ',e)
         return {
             errors: 'Coś poszło nie tak'
         }
@@ -163,7 +177,7 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
             WHERE id = ${userID};
         `
     }catch(e){
-        console.log(e)
+        console.log('Error occured FirstSetupFinish func actions.ts',e)
         return { error : 'Coś poszło nie tak'}
     }
     redirect('/home')
@@ -183,7 +197,7 @@ export const getUserExercises = async () => {
         `
         AllExercises = [...exercises.rows]
     }catch(e){
-        console.log(e)
+        console.log('Error occured getUserExercises func actions.ts',e)
         return []
     }
     return AllExercises as UserExercise[]
@@ -243,7 +257,6 @@ export const DeleteUserExercise = async (id:string) => {
                 //IT SEEMS THAT IN THIS TRAINING IS THE ID OF SOON TO DELETE ITEM
                 const exercises1 = [...training.exercises.exercises]
                 const exercises = exercises1.filter(x=>x.exerciseid!==id)
-                console.log(exercises)
                 await sql`
                     UPDATE gymuserstrainingplans
                     SET exercises = ${JSON.stringify({exercises})}
@@ -260,7 +273,7 @@ export const DeleteUserExercise = async (id:string) => {
         `
        
     }catch(e){
-        console.log(e)
+        console.log('Error occured DeleteUserExercise func actions.ts',e)
         return {
             error :'Coś poszło nie tak'
         }
@@ -382,7 +395,7 @@ export const AddOrUpdateTempo = async (exerciceid:string,tempos:TempoType) => {
             `
         }
     }catch(e){
-        console.log(e)
+        console.log('Error occured AddOrUpdateTempo func actions.ts',e)
         return { error: "Coś poszło nie tak3" }
     }
     revalidatePath('/home/profile/set-tempo')
@@ -564,7 +577,7 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
             INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userID},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify({})})
         `
     }catch(e){
-        console.log(e)
+        console.log('Error occured CreateUserTraining func actions.ts',e)
         return { error: 'Coś poszło nie tak3'}
     }
     revalidatePath('/home/profile/my-training-plans')
@@ -584,7 +597,7 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
         
             `
     }catch(e){
-        console.log(e)
+        console.log('Error occured EditUserTraining func actions.ts',e)
         return { error: 'Coś poszło nie tak'}
     }
     revalidatePath('/home/profile/my-training-plans')
@@ -600,12 +613,7 @@ export const DeleteUserTraining = async (trainingid:string) => {
         SELECT id FROM gymuserstrainings WHERE trainingid = ${trainingid}
         ` 
         const idsArray = exercisesIDs.rows as {id: string}[]
-        console.log(idsArray)
-        idsArray.forEach(async item=>{
-            await sql`
-                DELETE FROM gymexercises WHERE trainingid = ${item.id}
-            `
-        })
+
         await Promise.all(idsArray.map(async item=>{
             await sql`
                 DELETE FROM gymexercises WHERE trainingid = ${item.id}
@@ -618,7 +626,7 @@ export const DeleteUserTraining = async (trainingid:string) => {
             DELETE FROM gymuserstrainingplans WHERE id = ${trainingid};
             `
     }catch(e){
-        console.log(e)
+        console.log('Error occured DeleteUserTraining func actions.ts',e)
         return { error: 'Coś poszło nie tak2'}
     }
     revalidatePath('/home/profile/my-training-plans')
@@ -670,7 +678,6 @@ export const getTrainingInProgressData = async () => {
     }
 }
 export const closeTraining = async (redirectToTraining:string) => {
-    console.log('NAME OF TRAINING "actions.ts" COMPONENT',redirectToTraining)
     const user = await auth()
     const userID = user?.user?.id
     try{
@@ -680,7 +687,7 @@ export const closeTraining = async (redirectToTraining:string) => {
             WHERE userid = ${userID} AND iscompleted = false ;
         `
     }catch(e){
-        console.log(e)
+        console.log('Error occured closeTraining func actions.ts',e)
         return {error: 'Coś poszło nie tak'}
     }finally{
         redirect(redirectToTraining)
@@ -693,17 +700,15 @@ export const createTraining = async (trainingPlanId:string) => {
     const date = new Date()
 
     try{
-        console.log(trainingPlanId,userID)
         const training = await sql`
         INSERT INTO gymuserstrainings (userid,iscompleted,trainingid,datetime) VALUES (${userID},false,${trainingPlanId},${JSON.stringify(date)})
     `
         const trainingID = await sql`
             SELECT id FROM gymuserstrainings WHERE userid = ${userID} ORDER BY datetime DESC LIMIT 1;
         `
-        console.log(trainingID)
         return trainingID.rows[0].id
     }catch(e){
-        console.log(e)
+        console.log('Error occured createTraining func actions.ts',e)
     }
 
 }
@@ -742,9 +747,9 @@ export const getLastTrainigs = async (limit:number) => {
         INNER JOIN gymuserstrainingplans ON gymuserstrainings.trainingid=gymuserstrainingplans.id 
         WHERE gymuserstrainings.userid = ${userID} ORDER BY datetime DESC LIMIT ${limit};
         `
-        console.log('rows',lastTrainings.rows)
         return lastTrainings.rows as LastExerciseType[]
     }catch(e){
+        console.log('Error occured getLastTrainigs func actions.ts',e)
         return []
     }
 
@@ -755,14 +760,13 @@ export const fetchIncomingTrainings = async () => {
     const userID = user?.user?.id
 
     const today = new Date()
-    const dayOfWeekIndex = -1 === today.getDay() - 1 ? 6 : today.getDay() // 0 = monday , 6 = sunday
-    let finalArray = []
+
     try{
         const trainings = await sql`
             SELECT * FROM gymuserstrainingplans WHERE userid = ${userID}
         `
         const trainingPlansArray = trainings.rows as UserTrainingPlan[]
-        if(trainingPlansArray.length<=2) return trainingPlansArray
+        if(trainingPlansArray.length<2) return trainingPlansArray
 
         return trainingPlansArray.sort((a,b)=>{
             let aDiff = new Date(a.date).getDay() - today.getDay()
@@ -772,8 +776,9 @@ export const fetchIncomingTrainings = async () => {
             }else{
                 return - 1 
             }
-        })
-    }catch{
+        }).filter(pre=>Object.keys(pre.exercises).length>0)
+    }catch(e){
+        console.log('Error occured fetchIncomingTrainings func actions.ts',e)
         return []
     }
 }
@@ -827,7 +832,7 @@ export const getTwoLatestTrainings = async () => {
         })
         return {newArr, trainingNames:lastTrainings.rows as {id: string, datetime:Date,trainingname:string}[]}
     }catch(e){
-        console.log(e)
+        console.log('Error occured getTwoLatestTrainings func actions.ts',e)
         return {error: 'Coś poszło nie tak'}
     }
 }
@@ -862,34 +867,142 @@ const userID = async () => {
     return user?.user?.id
 }
 
-export const fetchUserExercises = async (from:Date,to:Date,exerciseName?:string) => {
-    console.log(from,to)
+export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:string) => {
     const userid = await userID()
-    const fetchAll = !!exerciseName
-    console.log(exerciseName,fetchAll)
-    
-    let name = exerciseName
+    if( (from && Object.prototype.toString.call(from) !== '[object Date]') || (to && Object.prototype.toString.call(to) !== '[object Date]')){
+        return '0'
+    }
+    if(exerciseName && typeof exerciseName !== 'string') {
+        return '0' 
+    }
     try{
-        if(!fetchAll){
-            //todo when fetching all exercises, inner join names from gymuserexercises
-            const exercises = await sql`
-            SELECT id,exerciseid,date,sets FROM gymexercises WHERE userid = ${userid} AND date < ${JSON.stringify(to)} AND date > ${JSON.stringify(from)}
+        if(from && to && exerciseName){
+            const count = await sql`
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName}
+            `
+            return count.rows[0].count as string
+        }
+
+        if(from && exerciseName){
+            const count = await sql`
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName}
+            `
+            return count.rows[0].count as string
+        }
+
+        if(to && exerciseName){
+            const count = await sql`
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND exercisename = ${exerciseName}
+            `
+            return count.rows[0].count as string
+        }
+        if(to && from){
+            const count = await sql`
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)}
+            `
+            return count.rows[0].count as string
+        }
+        if(to){
+            const count = await sql`
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))}
+            `
+            return count.rows[0].count as string
+        }
+
+        if(from){
+            const count = await sql`
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)}
+            `
+            return count.rows[0].count as string
+        }
+
+        if(exerciseName){
+            const count = await sql`
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName}
+            `
+            return count.rows[0].count as string
+        }
+
+        //all
+        const count = await sql`
+            SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid}
         `
+        return count.rows[0].count as string
+    }catch{
+        return '0'
+    }
+}
+export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
+    const userid = await userID()
+
+    if(!page) page = 0
+    if(!limit) limit = 20
+
+    if( (from && Object.prototype.toString.call(from) !== '[object Date]') || (to && Object.prototype.toString.call(to) !== '[object Date]')){
+        return [] as ExerciseType[]
+    }
+    if(exerciseName && typeof exerciseName !== 'string') {
+        return [] as ExerciseType[]
+    }
+    try{
+        //TODO MAKE SEPARATE FUNCTION FOR FETCHING COUNT
+        if(from && to && exerciseName){
+            const exercises = await sql`
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName} LIMIT ${limit} OFFSET ${page*limit}
+            `
             return exercises.rows as ExerciseType[]
         }
 
-        const isUserOwnExercise = !exercisesArr.includes(exerciseName!)
-        if(isUserOwnExercise) {
-            const exercise = await sql`
-                SELECT id FROM gymusersexercises WHERE userid = ${userid} AND exercisename = ${exerciseName}
+        if(from && exerciseName){
+            const exercises = await sql`
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName} LIMIT ${limit} OFFSET ${page*limit}
             `
-            name = exercise.rows[0].id
+            return exercises.rows as ExerciseType[]
+        }
+
+        if(to && exerciseName){
+            const exercises = await sql`
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND exercisename = ${exerciseName} LIMIT ${limit} OFFSET ${page*limit}
+            `
+            return exercises.rows as ExerciseType[]
+        }
+        if(to && from){
+            const exercises = await sql`
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} LIMIT ${limit} OFFSET ${page*limit}
+            `
+            return exercises.rows as ExerciseType[]
+        }
+        if(to){
+            const exercises = await sql`
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} LIMIT ${limit} OFFSET ${page*limit}
+            `
+            return exercises.rows as ExerciseType[]
+        }
+
+        if(from){
+            const exercises = await sql`
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} LIMIT ${limit} OFFSET ${page*limit}
+            `
+            return exercises.rows as ExerciseType[]
+        }
+
+        if(exerciseName){
+            const exercises = await sql`
+            SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName} LIMIT ${limit} OFFSET ${page*limit}
+            `
+            return exercises.rows as ExerciseType[]
         }
         const exercises = await sql`
-            SELECT id,exerciseid,date,sets FROM gymexercises WHERE userid = ${userid} AND exerciseid = ${name} AND date < ${JSON.stringify(to)} AND date > ${JSON.stringify(from)}
+            SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} LIMIT ${limit} OFFSET ${page*limit}
         `
         return exercises.rows as ExerciseType[]
-    }catch{
-        return []
+    }catch(e){
+        console.log('Error occured fetchUserExercises func actions.ts',e)
+        return [] as ExerciseType[]
     }
+}
+
+type ReturnFetchUserExercisesType = {
+    rows: ExerciseType[], 
+    count: number 
 }

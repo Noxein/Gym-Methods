@@ -9,9 +9,7 @@ type Pagetypes = {
     searchParams: { inProgress: string }
 }
 export default async function page({params,searchParams}:Pagetypes){
-    //console.log(params,searchParams)
     const decodedName = decodeURI(params.trainingName)
-    console.log(decodedName)
     const isAnyTrainingInProgress = await checkTrainingInProgress()
     const training = await GetUserTrainingByName(decodedName)
     

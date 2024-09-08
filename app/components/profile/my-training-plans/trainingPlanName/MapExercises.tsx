@@ -1,16 +1,13 @@
-import { SearchExercises } from '@/app/components/add-exercise/SearchExercises'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import React, { useContext, useState } from 'react'
-import { ListExercises } from '../../my-exercises/ListExercises'
-import { ExerciceTypes, TrainingExerciseType, UserExercise } from '@/app/types'
+import { ExerciseTypes, TrainingExerciseType, UserExercise } from '@/app/types'
 import { SearchExercisesTraining } from './SearchExercisesTraining'
 import { ListExercisesTraining } from './ListExercisesTraining'
-import { BlurBackgroundModal } from '@/app/components/BlurBackgroundModal'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 
 type MapExercisesTypes = {
-    exercises:ExerciceTypes,
+    exercises:ExerciseTypes,
     allExercisesInOneArray: (string | UserExercise)[],
     setPlanExercises: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     setShowAddExercise: React.Dispatch<React.SetStateAction<boolean>>,

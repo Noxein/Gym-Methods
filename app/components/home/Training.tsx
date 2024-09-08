@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useContext } from "react"
 import { Icon } from "../Icon"
 import { StartWorkoutIcon } from "@/app/ui/icons/ExpandIcon"
-import { ConvertEnglishWeekDayToPolish, WeekDayArray, WeekDayArrayPL } from "@/app/lib/utils"
+import { ConvertEnglishWeekDayToPolish, WeekDayArrayPL } from "@/app/lib/utils"
 
 type TrainingTypes = {
     training:  UserTrainingPlan,

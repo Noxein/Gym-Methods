@@ -1,8 +1,8 @@
 'use client'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { HideShowHTMLScrollbar, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
-import { ExerciceTypes, TrainingExerciseType, UserExercise, UserTrainingPlan, WeekDay } from '@/app/types'
-import React, { useCallback, useContext, useRef, useState } from 'react'
+import { ExerciseTypes, TrainingExerciseType, UserExercise, UserTrainingPlan, WeekDay } from '@/app/types'
+import React, { useContext, useState } from 'react'
 import { MapExercises } from './MapExercises'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ListedAddedExercises } from './ListedAddedExercises'
@@ -12,7 +12,7 @@ import { LoaderFullScreen } from '@/app/components/Loading/LoaderFullScreen'
 
 type SpecificTrainingType = {
     training: UserTrainingPlan,
-    exercises: ExerciceTypes,
+    exercises: ExerciseTypes,
     allExercisesInOneArray: (string | UserExercise)[],
 }
 export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:SpecificTrainingType) => {

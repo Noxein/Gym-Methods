@@ -2,7 +2,7 @@ import React from 'react'
 
 export const CenterComponent = ({children}:{children:React.ReactNode}) => {
   return (
-    <div className='w-[calc(100vw-17px)] h-screen flex items-center flex-col'>
+    <div className='w-screen h-screen flex justify-center flex-col'>
         {children}
     </div>
   )

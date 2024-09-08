@@ -1,6 +1,4 @@
-import React, { useContext } from 'react'
 import { TrainingExerciseType, UserExercise } from '@/app/types'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { AddExercise } from './AddSingleExercise'
 
 type SearchExercisesTypes = {

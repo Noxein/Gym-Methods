@@ -22,12 +22,12 @@ export const FilteredTempos = ({filteredExercises,tempos,setSelectedExercise,set
         {filteredExercises.map((x,i)=>{
             if(typeof x === 'object'){
                 return (
-                    <SingleExercise exerciceid={x.id} mLeft='' isFirst={i===0} text={x.exercisename} tempo={tempos[x.id]?tempos[x.id].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
+                    <SingleExercise key={x.id} exerciceid={x.id} mLeft='' isFirst={i===0} text={x.exercisename} tempo={tempos[x.id]?tempos[x.id].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
                 )
             }
             if(typeof x === 'string'){
                 return (
-                    <SingleExercise exerciceid={x} mLeft='' isFirst={i===0} text={x} tempo={tempos[x]?tempos[x].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
+                    <SingleExercise key={x} exerciceid={x} mLeft='' isFirst={i===0} text={x} tempo={tempos[x]?tempos[x].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
                 )
             }
         })}

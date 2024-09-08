@@ -1,6 +1,5 @@
 'use client'
 import React from 'react'
-import { CreateAccountOrLogin } from './CreateAccountOrLogin'
 import { FormWrapper } from './FormWrapper'
 import { InputGroup } from './InputGroup'
 import { FormInputErrors } from './FormInputErrors'
@@ -21,6 +20,7 @@ export const RegisterForm = () => {
     headerLabel='Rejestracja'
     submitBtnText='Zarejestruj'
     action={dispach}
+    hasAccount={true}
     >
       <InputGroup id='email' text='Email' type='email'/>
       <FormInputErrors errors={state?.errors.email}/>
@@ -32,7 +32,5 @@ export const RegisterForm = () => {
       <FormInputErrors errors={state?.errors.confirmpassword} />
     
     </FormWrapper>
-
-    <CreateAccountOrLogin hasAccount={true}/>
     </>)
 }

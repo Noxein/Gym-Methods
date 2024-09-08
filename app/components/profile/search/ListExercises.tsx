@@ -13,8 +13,6 @@ type ListExercisesTypes = {
 export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListExercisesTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `${currentLevel*3}`
-
-    const theme = useContext(ThemeContext)
     
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`flex flex-col gap-1 font-bold`}>

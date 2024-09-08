@@ -1,5 +1,3 @@
-import { ThemeContext } from '@/app/context/ThemeContext'
-import { UserTrainingPlan } from '@/app/types'
 import Link from 'next/link'
 import React, { useContext } from 'react'
 import { TrainingLink } from './TrainingLink'

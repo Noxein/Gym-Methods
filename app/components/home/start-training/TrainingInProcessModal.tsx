@@ -10,7 +10,6 @@ type TrainingInProcessModalTypes = {
 }
 export const TrainingInProcessModal = ({trainingInProgressData,currentTrainingNeed}:TrainingInProcessModalTypes) => {
 
-  console.log('NAME OF TRAINING "TrainingInProcessModal" COMPONENT',currentTrainingNeed)
     const[error,setError] = useState('')
     const[isLoading,setIsLoading] = useState(false)
 

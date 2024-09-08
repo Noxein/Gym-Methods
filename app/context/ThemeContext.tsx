@@ -13,7 +13,7 @@ export const ThemeContextProvider = ({children}:{children:React.ReactNode}) => {
     }
     const ligtPalette = {
         primary: '#E7E7E7',
-        secondary: '#576CA8',
+        secondary: 'dark',
         accent: 'marmur',
     }
     const[theme,setTheme] = useState<'dark'|'light'>('light')
@@ -29,7 +29,6 @@ export const ThemeContextProvider = ({children}:{children:React.ReactNode}) => {
             }else{
                 setColorPalette(ligtPalette)
             }
-            
         }
     },[])
 

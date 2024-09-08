@@ -1,6 +1,6 @@
 'use client'
 import { ThemeContext } from '@/app/context/ThemeContext'
-import { HomeIcon, PlusIcon, ProfileIcon, SettingsIcon, StartWorkoutIcon } from '@/app/ui/icons/ExpandIcon'
+import { HomeIcon, PlusIcon, ProfileIcon, StartWorkoutIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
 import React, { useContext } from 'react'
 

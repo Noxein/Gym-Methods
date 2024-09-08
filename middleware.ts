@@ -18,28 +18,29 @@ export default auth(async(req) =>{
     const isApiAuthRoute = apiAuthPrefix.includes(nextUrl.pathname)
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
     const isAuthRoute = authRoutes.includes(nextUrl.pathname)
+
     const isSetupRoute = nextUrl.pathname.includes('/first-setup')
     const isSetupCompleted = user?.user?.setupcompleted
-    console.log(isLoggedIn,isAuthRoute,isApiAuthRoute)
+
     if(isApiAuthRoute){
         return
     }
+    if(!isLoggedIn && isAuthRoute) return
 
-    if(isAuthRoute){
-        if(isLoggedIn){
-            return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl))
-        }
-        return
-    }
-
-    if(!isLoggedIn && !isPublicRoute) {
+    if(!isLoggedIn && !isAuthRoute){
         return Response.redirect(new URL('/login',nextUrl))
     }
 
     if(!isSetupCompleted && !isSetupRoute){
         return Response.redirect(new URL('/first-setup',nextUrl))
     }
-    if(isSetupRoute&&isSetupCompleted){
+
+    if(isAuthRoute && isLoggedIn){
+        return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl))
+    }
+
+
+    if(isSetupRoute && isSetupCompleted){
         return Response.redirect(new URL('/home',nextUrl))
     }
     return

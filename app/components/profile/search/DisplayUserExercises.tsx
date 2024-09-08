@@ -3,17 +3,35 @@ import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL,
 import { ExerciseType, Series } from '@/app/types'
 import { format } from 'date-fns'
 import React, { useContext } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { SmallLoader } from '../../Loading/SmallLoader'
 
 type DisplayUserExercisesTypes = {
     fetchedExercises: ExerciseType[],
     manyExercises:boolean,
+    handleSearch: () => void,
+    dataLength: number,
+    totalItems: number,
 }
-export const DisplayUserExercises = ({fetchedExercises,manyExercises}:DisplayUserExercisesTypes) => {
+export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
   return (
-    <div className='mt-16 mx-5'>
-        {fetchedExercises.map(exercise=>(
-            <SingleExercise exercise={exercise} manyExercises={manyExercises} key={exercise.id}/>
-        ))}
+   
+    <div className='mt-16 mx-5 mb-20'>
+         <InfiniteScroll
+         dataLength={dataLength}
+         hasMore={!(totalItems===dataLength)}
+         loader={<SmallLoader />} 
+         next={()=>handleSearch()}
+         endMessage={
+            <p style={{ textAlign: 'center' }}>
+              <b>To już wszystkie ćwiczenia</b>
+            </p>
+          }
+         >
+            {fetchedExercises.map(exercise=>(
+                <SingleExercise exercise={exercise} manyExercises={manyExercises} key={exercise.id}/>
+            ))}
+        </InfiniteScroll>
     </div>
   )
 }
@@ -39,7 +57,7 @@ const SingleExercise = ({exercise,manyExercises}:SingleExerciseTypes) => {
 
             <div className='py-4 pl-4 grid grid-cols-[2fr_5fr]'>
                 <div>
-                    {manyExercises?<span>{exercise.exerciseid}</span>:null}
+                    {manyExercises?<span>{exercise.exercisename}</span>:null}
                 </div>
                 <div>
                     {exercise.sets.sets.map((set,index)=>(

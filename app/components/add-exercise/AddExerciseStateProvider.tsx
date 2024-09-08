@@ -21,7 +21,6 @@ type AddExerciseStateProviderTypes = {
 }
 export const AddExerciseStateProvider = ({name,showTempo,showTimeMesure}:AddExerciseStateProviderTypes) => {
     const[state,dispatch] = useReducer<(state: AddExerciceReducerType, action: ActionTypes) => AddExerciceReducerType>(AddExerciceReducer,init)
-    console.log(state,"STATE MOTHER")
   return (
     <AddExercise name={name} showTempo={showTempo} showTimeMesure={showTimeMesure} dispatch={dispatch} state={state}/>
   )
