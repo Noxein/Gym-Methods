@@ -28,6 +28,9 @@ export default async function page({params,searchParams}:Pagetypes){
     if(training.error){
         return <TrainingError message={training.error}/>
     }
+    if(Object.keys(training.training?.exercises!).length===0){
+        return <TrainingError message={'Coś poszło nie tak'}/>
+    }
     return(
         <Training name={decodedName} training={training.training} lastid={0} trainingid=""/>
     )
