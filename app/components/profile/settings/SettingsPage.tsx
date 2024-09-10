@@ -115,7 +115,7 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         </div>
 
         <div className='flex flex-col flex-1 relative'>
-            <Label htmlFor='advancmentlevel'>Cel</Label>
+            <Label htmlFor='advancmentlevel'>Poziom zaawansowania</Label>
             <Select id='advancmentlevel' list={advancmentlevel} defaultValue={userSettings.advancmentlevel} onChange={e=>handleAdvancmentLevelChange(e.target.value as advancmentlevelType)}/>
         </div>
 
