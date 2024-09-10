@@ -7,7 +7,8 @@ import { CenterComponent } from '@/app/components/CenterComponent'
 export type dataType = {
     goal:string,
     advancmentlevel:string,
-    daysexercising:string
+    daysexercising:string,
+    showtempo: string,
 }
 type SetupOneOfThree = {
     setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
@@ -20,6 +21,7 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
     const goal = ['Siła','Hipertrofia','Oba']
     const advancmentlevel = ['Początkujący','Średniozaawansowany','Zaawansowany']
     const daysexercising = ['1','2','3','4','5','6','7']
+    const showTempo = ['Tak','Nie']
     const theme = useContext(ThemeContext)
 
     const ValidateData = async () => {
@@ -46,6 +48,12 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
                 labelText='Ile dni w tygodniu chcesz ćwiczyć?'
                 options={daysexercising}
                 name='daysexercising'
+                errors={[]}
+                setData={setData}/>
+            <Select 
+                labelText='Czy pokazywać tempo dodane przez ciebie?'
+                options={showTempo}
+                name='showtempo'
                 errors={[]}
                 setData={setData}/>
             <div className='text-red-500'>{error}</div>
@@ -82,7 +90,7 @@ const Input = ({labelText,type,name,errors}:InputTypes) => {
 type SelectTypes = {
     labelText: string,
     options: string[],
-    name:'goal'|'advancmentlevel'|'daysexercising',
+    name:'goal'|'advancmentlevel'|'daysexercising'|'showtempo',
     errors: string[],
     setData: React.Dispatch<React.SetStateAction<dataType>>
 }
