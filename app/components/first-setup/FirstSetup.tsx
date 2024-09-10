@@ -6,7 +6,7 @@ import { StepThreeOutOfThree } from './StepThreeOutOfThree'
 
 export const FirstSetup = () => {
     const[currentStep,setCurrentStep] = useState(1)
-    const[data,setData] = useState<dataType>({goal:'Siła',advancmentlevel:'Początkujący',daysexercising:'2'})
+    const[data,setData] = useState<dataType>({goal:'Siła',advancmentlevel:'Początkujący',daysexercising:'2',showtempo: 'false'})
     const[exercisesToDelete,setExercisesToDelete] = useState<string[]>([])
     const[favouriteExercises,setFavouriteExercises] = useState<string[]>([])
 

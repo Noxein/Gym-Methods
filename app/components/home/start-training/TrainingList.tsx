@@ -7,10 +7,9 @@ type TrainingListTypes = {
 }
 export const TrainingList = async ({}:TrainingListTypes) => {
   const trainingList = await userTrainingsList()
-  const filteredList = trainingList.filter(x=>Object.keys(x.exercises).length>0)
   return (
     <div className='flex flex-col mx-5 mt-2 gap-2'>
-        {filteredList && filteredList.map(x=>(
+        {trainingList && trainingList.map(x=>(
             <Link href={`/home/start-training/${x.trainingname}`} key={x.id}>
               <TrainingLink plan={x}/>
             </Link>

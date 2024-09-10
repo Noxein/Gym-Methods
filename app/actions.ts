@@ -4,7 +4,7 @@ import { compare, hash } from 'bcryptjs'
 import { FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL } from "@/app/types";
+import { ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, timeMesureExercises } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -170,10 +170,11 @@ export const SecondStepDataValidation = (exercises:string[]) => {
 export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],favourtiteExercises:string[]) => {
     const user = await auth()
     const userID = user?.user?.id
+    const showtempo = data.showtempo.toLowerCase() === 'tak'
     try{
         await sql`
             UPDATE gymusers
-            SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
+            SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true, showtempo = ${showtempo}
             WHERE id = ${userID};
         `
     }catch(e){
@@ -776,7 +777,7 @@ export const fetchIncomingTrainings = async () => {
             }else{
                 return - 1 
             }
-        }).filter(pre=>Object.keys(pre.exercises).length>0)
+        })
     }catch(e){
         console.log('Error occured fetchIncomingTrainings func actions.ts',e)
         return []
@@ -1005,4 +1006,66 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
 type ReturnFetchUserExercisesType = {
     rows: ExerciseType[], 
     count: number 
+}
+
+export const getAccountSettings = async () => {
+    const userid = await userID()
+
+    try{
+        const setting = await sql`
+            SELECT showtempo, goal, advancmentlevel, daysexercising, favouriteexercises, notfavouriteexercises FROM gymusers WHERE id = ${userid}
+        `
+        return setting.rows[0] as UserSettings
+    }catch(e){
+        console.log('Error occured getAccountSettings func actions.ts',e)
+        return {} as UserSettings
+    }
+}
+
+export const fiflakQuery = async () => {
+    const training = await sql`
+        SELECT * FROM gymuserstrainingplans WHERE id = 'a14afc77-4d8a-4924-821b-826f738fb710'
+    `
+    console.log(training.rows[0])
+}
+
+export const saveNewUserSetting = async (newSettings : UserSettings) => {
+    const userid = await userID()
+
+    const daysexercisingArr = ['1' , '2' , '3' , '4' , '5' , '6' , '7']
+    const goalArr = ['Siła','Hipertrofia','Oba']
+    const advancmentlevelArr = ['Początkujący','Średniozaawansowany','Zaawansowany']
+
+    const { advancmentlevel, daysexercising, favouriteexercises, goal, notfavouriteexercises, showtempo } = newSettings
+
+    let goalcopy = false
+    showtempo===null ? goalcopy = false : goalcopy = true
+    if(typeof goal !== 'string' || !goalArr.includes(goal)) return
+    if(typeof advancmentlevel !== 'string' || !advancmentlevelArr.includes(advancmentlevel)) return
+    if(typeof daysexercising !== 'string' || !daysexercisingArr.includes(daysexercising)) return
+
+    if(favouriteexercises){
+        for(let i = 0 ; i< favouriteexercises.length ; i++ ){
+            if(!exercisesArr.includes(favouriteexercises[i])) return
+        }
+    }
+    if(notfavouriteexercises){
+        for(let i = 0 ; i< notfavouriteexercises.length ; i++ ){
+            if(!exercisesArr.includes(notfavouriteexercises[i])) return
+        }
+    }
+    
+    try{
+        await sql`
+            UPDATE gymusers SET showtempo = ${showtempo}, goal = ${goal}, advancmentlevel = ${advancmentlevel}, daysexercising = ${daysexercising}, favouriteexercises = ${JSON.stringify(favouriteexercises)}, notfavouriteexercises = ${JSON.stringify(notfavouriteexercises)}  WHERE id = ${userid}
+        `
+        return {
+            error: false
+        }
+    }catch(e){
+        console.log('Error occured saveNewUserSetting func actions.ts',e)
+        return {
+            error: 'Coś poszło nie tak'
+        }
+    }
 }

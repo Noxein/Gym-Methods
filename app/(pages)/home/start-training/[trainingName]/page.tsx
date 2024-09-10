@@ -4,6 +4,7 @@ import { Training } from "@/app/components/home/start-training/Training"
 import { TrainingError } from "@/app/components/home/start-training/TrainingError"
 import { ContinueTraining } from "@/app/components/home/start-training/ContinueTraining"
 import { Metadata } from "next"
+import Link from "next/link"
 
 export const metadata: Metadata = {
     title: "Trening",
@@ -29,7 +30,9 @@ export default async function page({params,searchParams}:Pagetypes){
         return <TrainingError message={training.error}/>
     }
     if(Object.keys(training.training?.exercises!).length===0){
-        return <TrainingError message={'Coś poszło nie tak'}/>
+        return <TrainingError message={'Ten trening niema żadnych ćwiczeń!'}>
+            <Link href={`/home/profile/my-training-plans/${decodedName}`} className="text-white text-center bg-green w-full mt-5 rounded-lg py-2">Dodaj je teraz</Link>
+            </TrainingError>
     }
     return(
         <Training name={decodedName} training={training.training} lastid={0} trainingid=""/>

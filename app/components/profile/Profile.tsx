@@ -1,7 +1,7 @@
 import { auth, signOut } from '@/auth'
 import { LinkBtn, UserEmail } from './LinkBtn'
 import { SignOutBtn } from './SignOutBtn'
-import { BookIcon, CalendarIcon, ExerciseIcon, LockIcon, LogoutIcon, StarIcon, SummaryIcon, TimerIcon } from '@/app/ui/icons/ExpandIcon'
+import { BookIcon, CalendarIcon, ExerciseIcon, LockIcon, LogoutIcon, SettingsIcon, StarIcon, SummaryIcon, TimerIcon } from '@/app/ui/icons/ExpandIcon'
 
 export const Profile = async () => {
   const session = await auth()
@@ -25,6 +25,9 @@ export const Profile = async () => {
           </LinkBtn>
           <LinkBtn href='/home/profile' text='Podsumowanie'>
             <SummaryIcon width={width} height={height}/>
+          </LinkBtn>
+          <LinkBtn href='/home/profile/settings' text='Ustawienia konta'>
+            <SettingsIcon width={width} height={height}/>
           </LinkBtn>
           <LinkBtn href='/home/profile' text='Ulubione ćwiczenia'>
             <StarIcon width={width} height={height}/>
