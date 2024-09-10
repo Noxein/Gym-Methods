@@ -10,6 +10,7 @@ import { SettingsMapper } from './SettingsMapper'
 import { fiflakQuery, saveNewUserSetting } from '@/app/actions'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { useRouter } from 'next/navigation'
+import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 
 type SettingsPageTypes = {
     settings: UserSettings
@@ -84,6 +85,15 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         if(result?.error) setError('Coś poszło nie tak')
         return router.push('/home/profile')
     }
+
+    const handleShowFavModal = () => {
+        setShowFavourtieExercisesModal(true)
+        HideShowHTMLScrollbar('hide')
+    }
+    const handleShowNotFavModal = () => {
+        setShowNotFavourtieExercisesModal(true)
+        HideShowHTMLScrollbar('hide')
+    }
   return (
     <div className='mt-10 flex flex-col gap-4 mx-5'>
         <h1 className='text-xl text-center text-white font-semibold'>USTAWIENIA</h1>
@@ -109,7 +119,7 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
             <Select id='advancmentlevel' list={advancmentlevel} defaultValue={userSettings.advancmentlevel} onChange={e=>handleAdvancmentLevelChange(e.target.value as advancmentlevelType)}/>
         </div>
 
-        <div className='mt-10 bg-marmur p-[1px] flex items-center rounded-lg' onClick={()=>setShowFavourtieExercisesModal(true)}>
+        <div className='mt-10 bg-marmur p-[1px] flex items-center rounded-lg' onClick={handleShowFavModal}>
             <button className='bg-dark flex-1 rounded-lg py-3 text-white'>
                 Zmień lubiane ćwiczenia
             </button>
@@ -118,7 +128,7 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
             </Icon>
         </div>
 
-        <div className='bg-marmur p-[1px] flex items-center rounded-lg' onClick={()=>setShowNotFavourtieExercisesModal(true)}>
+        <div className='bg-marmur p-[1px] flex items-center rounded-lg mb-40' onClick={handleShowNotFavModal}>
             <button className='bg-dark flex-1 rounded-lg py-3 text-white'>
                 Zmień nie lubiane ćwiczenia
             </button>
@@ -174,10 +184,14 @@ const Select = ({list,...rest}:SelectType) => {
 }
 
 const FixedDiv = ({children,showModal}:{children:React.ReactNode,showModal:React.Dispatch<React.SetStateAction<boolean>>}) => {
+    const handleCloseModal = () => {
+        HideShowHTMLScrollbar('show')
+        showModal(false)
+    }
     return(
         <div className='fixed left-0 top-0 w-screen z-20 backdrop-blur-sm flex justify-center overflow-auto bottom-20'>
             <div className='flex flex-col w-full overflow-y-auto'>
-                <button onClick={()=>showModal(false)} className='py-3 text-white bg-dark border-1 border-marmur mx-5 my-5 rounded-lg'>
+                <button onClick={handleCloseModal} className='py-3 text-white bg-dark border-1 border-marmur mx-5 my-5 rounded-lg'>
                     Powrót
                 </button>
                 <div className='mx-5'>{children}</div>
