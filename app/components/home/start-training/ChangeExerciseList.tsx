@@ -27,8 +27,8 @@ export const ChangeExerciseList = ({list,closeList,setExercisesLeft,setCurrentEx
         closeList(false)
     }
   return (
-    <div className='fixed left-0 top-0 w-screen z-20 backdrop-blur-sm flex justify-center overflow-auto bottom-20'>
-    <div className='bg-dark z-10 pt-10 px-5 flex flex-col gap-2 overflow-y-auto'>
+    <div className='fixed left-0 top-0 right-0 w-screen z-20 backdrop-blur-sm flex justify-center overflow-auto bottom-20'>
+    <div className='bg-dark z-10 w-full pt-10 px-5 flex flex-col gap-2 overflow-y-auto'>
         <h1 className='text-center text-xl text-white font-semibold mb-5'>Wybierz ćwiczenie</h1>
 
             {list?.map((exercise,index)=>(
