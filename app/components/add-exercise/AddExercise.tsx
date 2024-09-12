@@ -33,7 +33,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
             const parsedData = JSON.parse(data)
             dispatch({type:"SETSERIESFROMMEMORY",payload:parsedData})
         }
-    },[])
+    },[name])
     const AddSeries = () => {
         dispatch({type:'ADDSERIES'})
         localStorage.setItem(name,JSON.stringify([...state.series,{

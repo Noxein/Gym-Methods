@@ -714,13 +714,27 @@ export const createTraining = async (trainingPlanId:string) => {
 
 }
 
-export const updateCurrentTraining = async (exerciseid:string,id:string) => {
+export const updateCurrentTraining = async (id:string,exercisesLeft: TrainingExerciseType[]) => {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////CHANGE THIS FUNC OR APP WILL BUG////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////COLUMN RENAMED TO exercisesleft  ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    let idString: string = ''
+    exercisesLeft.forEach((id,index)=>{
+        if(index === 0) return
+        if(index === exercisesLeft.length-1){
+            idString = idString + `'${id.id}'`
+            return
+        }
+        idString = idString + `'${id.id}',`
+    })
+    console.log(idString)
     try{
         await sql`
-            UPDATE gymuserstrainings SET lastexerciseid = ${exerciseid} WHERE id=${id}
+            UPDATE gymuserstrainings SET exercisesleft = ARRAY[${idString}] WHERE id=${id}
         `
-    }catch{
-
+    }catch(e){
+        console.log(e)
     }
 }
 
@@ -1020,13 +1034,6 @@ export const getAccountSettings = async () => {
         console.log('Error occured getAccountSettings func actions.ts',e)
         return {} as UserSettings
     }
-}
-
-export const fiflakQuery = async () => {
-    const training = await sql`
-        SELECT * FROM gymuserstrainingplans WHERE id = 'a14afc77-4d8a-4924-821b-826f738fb710'
-    `
-    console.log(training.rows[0])
 }
 
 export const saveNewUserSetting = async (newSettings : UserSettings) => {
