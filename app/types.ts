@@ -115,7 +115,7 @@ export type TrainingExerciseType = {
 export type UserTrainingInProgress = {
     id: string,
     userid: string,
-    lastexerciseid: string,
+    exercisesleft: string[],
     iscompleted: boolean,
     trainingid: string,
     datetime: Date,
