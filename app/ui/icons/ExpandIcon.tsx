@@ -1,6 +1,6 @@
 const iconWidth = 25
 const iconHeight = 25
-const iconFill = '#fff'
+const iconFill = '#0D1317'
 
 export const ExpandIcon = ({expanded,fill = '#E7E7E7'}:{expanded: boolean,fill?:string}) => {
     return(
@@ -14,9 +14,9 @@ export const ExpandIcon2 = ({expanded,fill = '#E7E7E7'}:{expanded: boolean,fill?
     )
 }
 
-export const ProfileIcon = () => {
+export const ProfileIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
     return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={iconWidth} height={iconHeight} fill={iconFill}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={width?width:iconWidth} height={height?height:iconHeight} fill={fill?fill:iconFill}>
         <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/>
     </svg>
     )
@@ -24,7 +24,7 @@ export const ProfileIcon = () => {
 
 export const PlusIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={width?width:iconWidth} height={height?height:iconHeight} fill={fill?fill:iconFill}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={width?width:iconWidth} height={height?height:iconHeight} fill={fill?fill:'#d9d9d9'}>
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
         </svg>
     )
@@ -75,9 +75,9 @@ export const TrashIcon = ({width,height,fill}:{width?:string,height?:string,fill
         </svg>
     )
 }
-export const LeftAngle = ({width,height}:{width?:string,height?:string}) => {
+export const LeftAngle = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
     return (
-        <svg fill={iconFill} width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24">
+        <svg fill={fill?fill:iconFill} width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24">
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
             <g id="SVGRepo_iconCarrier">

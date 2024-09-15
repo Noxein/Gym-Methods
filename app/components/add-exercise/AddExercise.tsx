@@ -128,7 +128,7 @@ const DifficultyLevel = ({dispach,state,showTimeMesure}:{dispach:React.Dispatch<
     return(<div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='difficulty' className={`text-${theme?.colorPallete.accent} font-light text-sm px-2 absolute -top-1/3 left-2 bg-${theme?.colorPallete.primary}`}>Ciężkość serii</label>
-            <select name="difficulty" id="difficulty" className={`bg-${theme?.colorPallete.primary} text-${theme?.colorPallete.accent} border-white border-[1px] rounded-md h-10`} onChange={e=>{dispach({type:"DIFFICULTY",payload:e.target.value as 'easy'|'medium'|'hard'})}}>
+            <select name="difficulty" id="difficulty" className={`bg-${theme?.colorPallete.primary} pl-3 text-${theme?.colorPallete.accent} border-white border-[1px] rounded-md h-10`} onChange={e=>{dispach({type:"DIFFICULTY",payload:e.target.value as 'easy'|'medium'|'hard'})}}>
                 <option value="easy">Łatwa</option>
                 <option value="medium">Średnia</option>
                 <option value="hard">Trudna</option>

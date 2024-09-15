@@ -1,7 +1,7 @@
 import { TrainingExerciseType } from '@/app/types'
 import React from 'react'
 import { Icon } from '../../Icon'
-import { LeftAngle, RightTriangle } from '@/app/ui/icons/ExpandIcon'
+import { LeftAngle, PlusIcon, RightTriangle } from '@/app/ui/icons/ExpandIcon'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 
 type ChangeExerciseListTypes = {
@@ -9,8 +9,9 @@ type ChangeExerciseListTypes = {
     closeList: React.Dispatch<React.SetStateAction<boolean>>,
     setExercisesLeft: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     setCurrentExercise: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
+    setShowAddExerciseModal: React.Dispatch<React.SetStateAction<boolean>>,
 }
-export const ChangeExerciseList = ({list,closeList,setExercisesLeft,setCurrentExercise}:ChangeExerciseListTypes) => {
+export const ChangeExerciseList = ({list,closeList,setExercisesLeft,setCurrentExercise,setShowAddExerciseModal}:ChangeExerciseListTypes) => {
 
     const handleChangeExercisesOrder = (indexToStartWith:number) => {
         if(indexToStartWith === 0) return handleCloseList()
@@ -26,6 +27,10 @@ export const ChangeExerciseList = ({list,closeList,setExercisesLeft,setCurrentEx
     const handleCloseList = () => {
         closeList(false)
     }
+
+    const handleShowModal = () => {
+        setShowAddExerciseModal(true)
+    }
   return (
     <div className='fixed left-0 top-0 right-0 w-screen z-20 backdrop-blur-sm flex justify-center overflow-auto bottom-20'>
     <div className='bg-dark z-10 w-full pt-10 px-5 flex flex-col gap-2 overflow-y-auto'>
@@ -35,7 +40,16 @@ export const ChangeExerciseList = ({list,closeList,setExercisesLeft,setCurrentEx
                 <SingleExercise key={exercise.id} exerciseName={exercise.exercisename} handleChangeExercisesOrder={handleChangeExercisesOrder} index={index}/>
             ))}
 
-        <div className='mt-5 mb-24'>
+
+        <div className='mt-5 mb-24 flex flex-col gap-2'>
+            <div className='bg-green p-[1px] rounded-lg flex items-center cursor-pointer' onClick={handleShowModal}>
+                <div className='bg-green text-white py-2 px-4 rounded-lg flex-1'>
+                    Inne ćwiczenie
+                </div>
+                <Icon>
+                    <PlusIcon fill='#fff'/>
+                </Icon>
+            </div>
             <button className='bg-red text-white flex-1 w-full rounded-lg py-3' onClick={handleCloseList}>Anuluj</button>
         </div>
     </div>

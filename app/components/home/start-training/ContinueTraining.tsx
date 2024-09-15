@@ -13,7 +13,6 @@ export const ContinueTraining = async ({name,training}:ContinueTrainingTypes) =>
     const trainingLeft = training?.exercises.exercises.filter(x=>loadPlan?.exercisesleft[0].includes(x.id))
     console.log(training?.exercises.exercises,loadPlan?.exercisesleft,trainingLeft)
 
-    
   return (
     <Training name={name} training={training} lastid={1} trainingid={loadPlan?.id!} exercisesLeft={trainingLeft}/>
   )

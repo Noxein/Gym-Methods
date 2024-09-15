@@ -25,11 +25,7 @@ export const ListedAddedExercises = ({planExercises,setPlanExercises}:ListedAdde
         })
     }
     const sensors = useSensors(
-        useSensor(PointerSensor,{
-            activationConstraint: {
-                distance: 8
-            }
-        }),
+        useSensor(PointerSensor),
         useSensor(TouchSensor),
         useSensor(KeyboardSensor,{
             coordinateGetter: sortableKeyboardCoordinates

@@ -50,7 +50,7 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
       <div className='mt-10 min-h-[calc(100dvh-180px)]'>
         <button onClick={addExercise}
           className={`text-left px-2 pl-4 pr-4 w-full bg-green text-white rounded-md py-3 flex justify-between`}
-        >Dodaj nowe ćwiczenie <PlusIcon width='20'/> </button>
+        >Dodaj nowe ćwiczenie <PlusIcon width='20' fill='#D9D9D9'/> </button>
 
         {planExercises && <ListedAddedExercises planExercises={planExercises} setPlanExercises={setPlanExercises}/>}
 

@@ -1,5 +1,5 @@
 'use client'
-import { ActionTypes, AddExerciceReducerType, TrainingExerciseType } from '@/app/types'
+import { ActionTypes, AddExerciceReducerType, ExerciseTypes, TrainingExerciseType, UserExercise } from '@/app/types'
 import React, { useReducer, useState } from 'react'
 import { AddExercise } from '../../add-exercise/AddExercise'
 import { AddExerciceReducer } from '@/app/lib/reducers'
@@ -7,6 +7,7 @@ import { AddExerciseAction, closeTraining, createTraining, updateCurrentTraining
 import { usePathname } from 'next/navigation'
 import { DisplayTrainingSkeleton } from '../../Loading/home/start-training/trainingName/DisplayTrainingSkeleton'
 import { ChangeExerciseList } from './ChangeExerciseList'
+import { MapExercises } from '../../profile/my-training-plans/trainingPlanName/MapExercises'
 
 type DisplayTrainingTypes = {
     training?: TrainingExerciseType[],
@@ -16,6 +17,8 @@ type DisplayTrainingTypes = {
     lastid: number,
     trainingid: string,
     trainingName:string,
+    exercises: ExerciseTypes,
+    allExercisesInOneArray: (string | UserExercise)[],
 }
 
 const init = {
@@ -28,10 +31,11 @@ const init = {
     time: ''
 }
 
-export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesure,trainingPlanId,lastid,trainingid,trainingName}:DisplayTrainingTypes) => {
+export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesure,trainingPlanId,lastid,trainingid,trainingName,exercises,allExercisesInOneArray}:DisplayTrainingTypes) => {
     const[exercisesLeft,setExercisesLeft] = useState<TrainingExerciseType[]>(training!)
     const[currentExercise,setCurrentExercise] = useState(exercisesLeft[0])
-    console.log(exercisesLeft)
+    const[totalNumberOfTrainigs,setTotalNumberOfTrainigs] = useState(training?.length||1)
+    const[exercisesDone,setExercisesDone] = useState(1)
 
     const showTimeMesure = exercisesThatRequireTimeMesure.includes(currentExercise.exercisename)
     const pathname = usePathname()
@@ -41,6 +45,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
     const[state,dispatch] = useReducer<(state: AddExerciceReducerType, action: ActionTypes) => AddExerciceReducerType>(AddExerciceReducer,init)
     const[isLoading,setIsLoading] = useState(false)
     const[showExerciseList,setShowExerciseList] = useState(false)
+    const[showAddExerciseModal,setShowAddExerciseModal] = useState(false)
 
     const skipExercise = async () => {
         setIsLoading(true)
@@ -53,6 +58,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
         await updateCurrentTraining(id,exercisesLeft)
         
         setExercisesLeft(exercisesLeft.slice(1,exercisesLeft.length))
+        setExercisesDone(prev=>prev+1)
         setCurrentExercise(exercisesLeft[1])
         setIsLoading(false)
     }
@@ -77,6 +83,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
         setError('')
         if(goToNextExercise) {
             setExercisesLeft(exercisesLeft.slice(1,exercisesLeft.length))
+            setExercisesDone(prev=>prev+1)
             setCurrentExercise(exercisesLeft[1])
         }
         setIsLoading(false)
@@ -100,7 +107,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
             </div>
             <div className='text-gray-400 flex gap-2 items-center'>
                 <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowExerciseList}>Zmień</button>
-                <span>{training!.length - exercisesLeft.length + 1} z {training!.length}</span>
+                <span>{exercisesDone} z {totalNumberOfTrainigs}</span>
             </div>
         </div>
         {
@@ -120,6 +127,25 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
             </>}
         </div>
         
-        {showExerciseList && <ChangeExerciseList list={exercisesLeft} closeList={setShowExerciseList} setExercisesLeft={setExercisesLeft} setCurrentExercise={setCurrentExercise}/>}
+        {showExerciseList && 
+        <ChangeExerciseList 
+            list={exercisesLeft} 
+            closeList={setShowExerciseList}
+            setExercisesLeft={setExercisesLeft} 
+            setCurrentExercise={setCurrentExercise} 
+            setShowAddExerciseModal={setShowAddExerciseModal}
+            />}
+        
+        {showAddExerciseModal && 
+        <MapExercises 
+            setShowAddExercise={setShowAddExerciseModal} 
+            setPlanExercises={setExercisesLeft} 
+            allExercisesInOneArray={allExercisesInOneArray} 
+            exercises={exercises} 
+            isTrainingInProgressPage={true} 
+            setCurrentExercise={setCurrentExercise} 
+            setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
+            setShowExerciseList={setShowExerciseList}
+            />}
     </div>)
 }

@@ -11,15 +11,33 @@ type AddExerciseType = {
     isFirst:boolean,
     id:string,
     setPlanExercises: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
+    isTrainingInProgressPage?: boolean,
+    setCurrentExercise?: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
+    setTotalNumberOfTrainigs?: React.Dispatch<React.SetStateAction<number>>,
+    setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
+    setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
 }
-export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises}:AddExerciseType) => {
+export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setTotalNumberOfTrainigs,setShowExerciseList,setShowAddExercise}:AddExerciseType) => {
     const theme = useContext(ThemeContext)
 
     const addExercise = () => {
+        if(isTrainingInProgressPage){
+            setTotalNumberOfTrainigs && setTotalNumberOfTrainigs(prev=>{
+                console.log(prev)
+                return prev+1
+            })
+            setCurrentExercise && setCurrentExercise({exerciseid:id,exercisename:text,id:uuidv4()})
+            setPlanExercises(x=>{
+                if(x) return [{exerciseid:id,exercisename:text,id:uuidv4()},...x]
+                return [{exerciseid:id,exercisename:text,id:uuidv4()}]
+            })
+            setShowExerciseList && setShowExerciseList(false)
+            setShowAddExercise && setShowAddExercise(false)
+            return
+        }
         setPlanExercises(x=>{
             if(x) return [...x,{exerciseid:id,exercisename:text,id:uuidv4()}]
             return [{exerciseid:id,exercisename:text,id:uuidv4()}]
-            
         })
     }
     return(

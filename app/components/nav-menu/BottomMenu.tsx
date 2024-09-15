@@ -13,15 +13,15 @@ export const BottomMenu = () => {
         </MenuBtn>
 
         <MenuBtn hrefTo={'/home/start-training'}>
-            <StartWorkoutIcon />
+            <StartWorkoutIcon fill='#D9D9D9'/>
         </MenuBtn>
 
         <MenuBtn hrefTo={'/home/add-exercise'}>
-            <PlusIcon />
+            <PlusIcon fill='#D9D9D9'/>
         </MenuBtn>
 
         <MenuBtn hrefTo={'/home/profile'}>
-            <ProfileIcon />
+            <ProfileIcon fill='#D9D9D9'/>
         </MenuBtn>
     </nav>
   )

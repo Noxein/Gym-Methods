@@ -1,6 +1,6 @@
 import React from 'react'
 import { DisplayTraining } from './DisplayTraining'
-import { ExercisesThatRequireTimeMesure } from '@/app/actions'
+import { AllExercisesInOneArray, ExercisesThatRequireTimeMesure, getAllExercises } from '@/app/actions'
 import { TrainingExerciseType, UserTrainingPlan } from '@/app/types'
 import { auth } from '@/auth'
 
@@ -15,9 +15,21 @@ export const Training = async ({name,training,lastid,trainingid,exercisesLeft}:T
     const user = await auth()
     const showTempo = !!user?.user?.showTempo
     const exercisesThatRequireTimeMesure = await ExercisesThatRequireTimeMesure()
+    const exercises = await getAllExercises()
+    const allExercisesInOneArray = await AllExercisesInOneArray()
     return(
         <main>
-            <DisplayTraining trainingName={name} training={exercisesLeft?exercisesLeft:training?.exercises.exercises} trainingPlanId={training?.id!} showTempo={showTempo} exercisesThatRequireTimeMesure={exercisesThatRequireTimeMesure} lastid={lastid} trainingid={trainingid}/>
+            <DisplayTraining 
+                trainingName={name} 
+                training={exercisesLeft?exercisesLeft:training?.exercises.exercises} 
+                trainingPlanId={training?.id!} 
+                showTempo={showTempo} 
+                exercisesThatRequireTimeMesure={exercisesThatRequireTimeMesure} 
+                lastid={lastid} 
+                trainingid={trainingid} 
+                exercises={exercises}
+                allExercisesInOneArray={allExercisesInOneArray}
+                />
         </main>
     )
 }
