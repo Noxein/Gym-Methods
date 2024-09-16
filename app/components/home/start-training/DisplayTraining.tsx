@@ -26,6 +26,7 @@ const init = {
     repeat: 0,
     tempoUp: 0,
     tempoDown: 0,
+    side: 'Both' as const,
     series:[],
     difficultyLevel: "easy" as const,
     time: ''
@@ -72,7 +73,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
             setTrainingID(id)
         }
         
-        const possibleError = await AddExerciseAction(false,currentExercise.exercisename,state.series,state.difficultyLevel,pathname.includes('training'),id)
+        const possibleError = await AddExerciseAction(false,currentExercise.exercisename,state.series,pathname.includes('training'),id)
         if(possibleError && possibleError.errors){
             setIsLoading(false)
             return setError(possibleError.errors)
@@ -116,7 +117,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
         {exercisesLeft && <AddExercise name={currentExercise.exercisename} isLoading={isLoading} showTempo={showTempo} showTimeMesure={showTimeMesure} isTraining={true} state={state} dispatch={dispatch}/>}
         </>
         }
-        {error && <div className='text-red-500'>{error}</div>}
+        {error && <div className='text-red'>{error}</div>}
         <div className='mb-24 text-white mt-auto flex mx-5 gap-4'>
             
             {exercisesLeft.length===1? <>

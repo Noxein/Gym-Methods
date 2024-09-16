@@ -2,7 +2,7 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
 import React, { useContext, useEffect, useState } from 'react'
 import { ExerciseList } from './ExerciseList'
-import { ExerciseType, ExerciseTypes, UserExercise } from '@/app/types'
+import { ExerciseType, ExerciseTypes, HistoryExercise, UserExercise } from '@/app/types'
 import { SelectedExerciseContext } from './SelectedExerciseContext'
 import { Icon } from '../../Icon'
 import { ExpandIcon2 } from '@/app/ui/icons/ExpandIcon'
@@ -29,7 +29,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
 
     const theme = useContext(ThemeContext)
 
-    const [fetchedExercises,setFetchedExercises] = useState<ExerciseType[]>([])
+    const [fetchedExercises,setFetchedExercises] = useState<HistoryExercise[]>([])
     const [totalItems,setTotalItems] = useState<number>(0)
 
     const[isLoadingExercises,setIsLoadingExercises] = useState(true)
@@ -42,11 +42,11 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         if(reset){
             const result = await fetchUserExercises(from,to,selectedExercise,0)
             await handleSearchCount()
-            setFetchedExercises(result)
+            setFetchedExercises(SortItems(result))
             setCurrentPage(1)
         }else{
             const result = await fetchUserExercises(from,to,selectedExercise,currentPage)
-            setFetchedExercises([...fetchedExercises,...result])
+            setFetchedExercises(SortItems(result))
             setCurrentPage(currentPage+1)
         }
 
@@ -64,6 +64,30 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         handleSearch(false)
         setCurrentPage(currentPage+1)
     },[])
+    const getDataLenght = () => {
+        let total = 0
+        fetchedExercises.forEach(day=>{
+            total = total + day.exercises.length
+        })
+        return total
+    }
+    const SortItems = (unsortedExerciseArray:ExerciseType[]) => {
+        let obj: HistoryExercise[] = [...fetchedExercises]
+
+        unsortedExerciseArray.forEach((item,index)=>{
+            const formatDate = format(item.date,'dd,MM')
+            let indexOF = obj.findIndex(x=>format(x.day,'dd,MM') === formatDate)
+            if(indexOF >= 0){
+                obj[indexOF].exercises.push(item)
+            }else{
+                obj.push({
+                    day: item.date,
+                    exercises: [item]
+                })
+            }
+        })
+        return obj
+    }
   return (
 <>
     <div className='text-white'>
@@ -99,7 +123,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                             {from && format(from,'dd.MM.yyyy')} - {to && format(to,'dd.MM.yyyy')}
                         </span>
                         <span className={`text-${theme?.colorPallete.primary} text-right font-semibold text-xl`}>
-                            {selectedExercise}
+                            {selectedExercise && selectedExercise?.length > 30? selectedExercise?.slice(0,30) + '...' : selectedExercise}
                         </span>
 
                     </div>
@@ -110,7 +134,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
 
         {isLoadingExercises?
         <SmallLoader sClassParent='h-screen flex items-center'/>:
-        <DisplayUserExercises fetchedExercises={fetchedExercises} manyExercises={selectedExercise===''} handleSearch={()=>handleSearch(false)} dataLength={fetchedExercises.length} totalItems={totalItems}/>
+        <DisplayUserExercises fetchedExercises={fetchedExercises} manyExercises={selectedExercise===''} handleSearch={()=>handleSearch(false)} dataLength={getDataLenght()} totalItems={totalItems}/>
         }
     </div>
     {showExerciseList && 

@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState, useContext, useRef } from 'react'
-import { ActionTypes, AddExerciceReducerType, Series } from '../../types'
+import { ActionTypes, AddExerciceReducerType, Series, Side as SideType } from '../../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
 import { AddExerciseAction } from '../../actions'
 import { usePathname } from 'next/navigation'
@@ -42,6 +42,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
             tempoUp: state.tempoUp,
             tempoDown: state.tempoDown,
             time: state.time,
+            side: state.side
         }]))
     }
     const ResetLocalStorage = () => {
@@ -50,7 +51,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
     const FinishTraining = async () => {
         ResetLocalStorage()
 
-        const possibleError = await AddExerciseAction(true,name,state.series,state.difficultyLevel,pathname.includes('training'))
+        const possibleError = await AddExerciseAction(true,name,state.series,pathname.includes('training'))
         if(possibleError) {
             setError(possibleError.errors)
         }
@@ -62,6 +63,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
             <div className='flex flex-col gap-6'>
                <WeightAndRepeatInputs dispach={dispatch} state={state}/>
                <DifficultyLevel dispach={dispatch} state={state} showTimeMesure={showTimeMesure}/>
+               <Side dispach={dispatch} state={state} />
             </div>
             
             <button onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl bg-green text-white rounded-md py-4 flex items-center justify-between px-5 `} disabled={isLoading}>
@@ -72,7 +74,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
             </button>
         </div>
 
-        <DisplayCurrentSeries seriesname={name} currentSeries={state.series} dispachSeries={dispatch} showTimeMesure={showTimeMesure}/>
+        <DisplayCurrentSeries seriesname={name} currentSeries={state.series} dispatchSeries={dispatch} showTimeMesure={showTimeMesure}/>
 
         {error && <div>
             {error}
@@ -140,4 +142,29 @@ const DifficultyLevel = ({dispach,state,showTimeMesure}:{dispach:React.Dispatch<
                 <Input type="text" id='time' onChange={e=>dispach({type:"TIME",payload:e.target.value})} value={state.time}/>
             </div>}
         </div>)
+}
+
+type SideTypes = {
+    dispach:React.Dispatch<ActionTypes>,
+    state:AddExerciceReducerType,
+}
+const Side = ({dispach,state}:SideTypes) => {
+    const theme = useContext(ThemeContext)
+    const handleChange = (payload:string) => {
+        console.log(payload)
+        dispach({type:"SIDE",payload:payload as SideType})
+    }
+    console.log('STATESIDE',state)
+    return(
+        <div className='flex gap-2'>
+            <div className='flex-1 flex flex-col text-lg relative'>
+                <label htmlFor='side' className={`text-${theme?.colorPallete.accent} font-light text-sm px-2 absolute -top-1/3 left-2 bg-${theme?.colorPallete.primary}`}>Strona</label>
+                <select name="side" value={state.side} id="side" className={`bg-${theme?.colorPallete.primary} pl-3 text-${theme?.colorPallete.accent} border-white border-[1px] rounded-md h-10`} onChange={e=>handleChange(e.target.value)}>
+                    <option value="Both">Obie</option>
+                    <option value="Left">Lewa</option>
+                    <option value="Right">Prawa</option>
+                </select>
+            </div>
+        </div>
+    )
 }

@@ -3,6 +3,7 @@ export type Series = {
     repeat:number,
     difficulty: DifficultyLevel,
     time?:string,
+    side?: Side
 }
 
 export type ColorPalleteType = {
@@ -21,10 +22,13 @@ export type AddExerciceReducerType = {
     repeat: number,
     tempoUp: number,
     tempoDown: number,
+    side: Side,
     series: Series[],
     difficultyLevel: DifficultyLevel,
     time: string,
 }
+
+export type Side = 'Both' | 'Left' | 'Right'
 
 export type DifficultyLevel = 'easy'|'medium'|'hard'
 
@@ -34,7 +38,7 @@ export type ActionTypes = {
     index?: number
 }
 
-export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES' | 'EDITSERIESKG' | 'EDITSERIESREPEAT' | 'EDITSERIESDIFFICULTY' | 'TIME' | 'EDITSERIESTIME' | 'RESETSTATE'
+export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES' | 'EDITSERIESKG' | 'EDITSERIESREPEAT' | 'EDITSERIESSIDE' | 'EDITSERIESDIFFICULTY' | 'TIME' | 'EDITSERIESTIME' | 'RESETSTATE' | 'SIDE'
 
 export type UserExercise = {
     id:string,
@@ -144,9 +148,7 @@ export type GymExercisesDbResult = {
     userid: string,
     exerciseid: string,
     date: Date,
-    sets: { 
-        sets: Series[], diffucultyLevel: DifficultyLevel
-    },
+    sets: Series[],
     ispartoftraining: boolean
     trainingid: string,
 }
@@ -155,9 +157,7 @@ export type ExerciseType = {
     id: string,
     exercisename: string,
     date: Date,
-    sets: { 
-        sets: Series[], diffucultyLevel: DifficultyLevel
-    }
+    sets: Series[],
 }
 
 export type UserSettings = {
@@ -167,4 +167,9 @@ export type UserSettings = {
     daysexercising: '1' | '2' | '3' | '4' | '5' | '6' | '7',
     favouriteexercises?: string[],
     notfavouriteexercises?: string[],
+}
+
+export type HistoryExercise = {
+    day: Date,
+    exercises:ExerciseType[]
 }

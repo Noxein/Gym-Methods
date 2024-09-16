@@ -1,4 +1,4 @@
-import { ActionTypes, AddExerciceReducerType, DifficultyLevel } from "../types";
+import { ActionTypes, AddExerciceReducerType, DifficultyLevel, Side } from "../types";
 
 export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTypes):AddExerciceReducerType => {
     if(typeof action.payload === 'number'){
@@ -45,6 +45,14 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
                 arr[index].difficulty = changeValue as 'easy'|'medium'|'hard'
                 return {...state, series: arr}
             };
+            case 'EDITSERIESSIDE':{
+                let index = action.index!
+                let changeValue = action.payload
+
+                const arr = [...state.series]
+                arr[index].side = changeValue as Side
+                return {...state, series: arr}
+            }
             case 'EDITSERIESTIME':{
                 let index = action.index!
                 let changeValue = action.payload
@@ -53,7 +61,10 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
                 arr[index].time = changeValue
                 return {...state, series: arr}
             };
-            case 'TIME' :{
+            case 'SIDE' :{
+                return { ...state, side: action.payload as Side };
+            }
+            case 'TIME':{
                 return { ...state, time: action.payload };
             }
         }
@@ -65,7 +76,8 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
                 weight: state.weight,
                 repeat: state.repeat,
                 difficulty: state.difficultyLevel,
-                time: state.time
+                time: state.time,
+                side: state.side
             }]};
         case 'SETSERIESFROMMEMORY':
             if(action.payload && typeof action.payload !== 'number' && typeof action.payload !== 'string'){
@@ -77,7 +89,7 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
             return {...state, series: state.series.filter((set,i)=>i!==action.payload)};
         case 'RESETSTATE' :{
             return {
-                ...state, series : [], repeat: 0, difficultyLevel: 'easy', tempoDown: 0, tempoUp: 0, time: '', weight: 0
+                ...state, series : [], repeat: 0, difficultyLevel: 'easy', tempoDown: 0, tempoUp: 0, time: '', weight: 0, side: 'Both'
             }
         }
         default:

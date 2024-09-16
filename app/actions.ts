@@ -4,14 +4,14 @@ import { compare, hash } from 'bcryptjs'
 import { FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL } from "@/app/types";
+import { ExerciseType, ExerciseTypes, GymExercisesDbResult, HistoryExercise, LastExerciseType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, timeMesureExercises } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { WeekDayArray, WeekDayArrayPL } from "./lib/utils";
 import { z } from "zod";
-import { addDays } from "date-fns";
+import { addDays, format } from "date-fns";
 import { AuthError } from "next-auth"; 
 
 type State = {
@@ -82,15 +82,12 @@ export const ComparePasswords = async (password:string,hasedPassword:string) => 
     return isCorrect
 }
 
-export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],diffucultyLevel:string,ispartoftraining:boolean,trainingPlanId?:string,) => {
+export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,) => {
     const user = await auth()
     const userID = user?.user?.id
     if(!userID) return
     const stringDate = JSON.stringify(new Date())
-    const setsObject = {
-        sets,
-        diffucultyLevel
-    }
+
     let arr = [...exercisesArr]
     const userExercises = await getUserExercises()
 
@@ -104,14 +101,12 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
             weight: z.number(),
             repeat: z.number(),
         })).nonempty('Dodaj minimum jedną serię'),
-        diffucultyLevel: z.enum(['easy','medium','hard']),
         ispartoftraining: z.boolean()
     })
     
     const validData = AddExerciseZodSchema.safeParse({
         exerciseid,
         sets,
-        diffucultyLevel,
         ispartoftraining
     })
 
@@ -134,7 +129,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
 
     try{
         await sql`
-        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename) VALUES (${userID},${id},${stringDate},${JSON.stringify(setsObject)},${ispartoftraining},${trainingid},${exerciseid})
+        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename) VALUES (${userID},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid})
         `
     }catch(e){
         console.log('Error occured: AddExerciseAction func actions.ts ',e)
@@ -953,11 +948,13 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
     if(!page) page = 0
     if(!limit) limit = 20
 
+    let unsortedExerciseArray:ExerciseType[] = []
+
     if( (from && Object.prototype.toString.call(from) !== '[object Date]') || (to && Object.prototype.toString.call(to) !== '[object Date]')){
-        return [] as ExerciseType[]
+        unsortedExerciseArray = [] as ExerciseType[]
     }
     if(exerciseName && typeof exerciseName !== 'string') {
-        return [] as ExerciseType[]
+       unsortedExerciseArray = [] as ExerciseType[]
     }
     try{
         //TODO MAKE SEPARATE FUNCTION FOR FETCHING COUNT
@@ -965,61 +962,58 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            unsortedExerciseArray = exercises.rows as ExerciseType[]
         }
 
         if(from && exerciseName){
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            unsortedExerciseArray = exercises.rows as ExerciseType[]
         }
 
         if(to && exerciseName){
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            unsortedExerciseArray = exercises.rows as ExerciseType[]
         }
         if(to && from){
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            unsortedExerciseArray = exercises.rows as ExerciseType[]
         }
         if(to){
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            unsortedExerciseArray = exercises.rows as ExerciseType[]
         }
 
         if(from){
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            unsortedExerciseArray = exercises.rows as ExerciseType[]
         }
 
         if(exerciseName){
             const exercises = await sql`
             SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            unsortedExerciseArray = exercises.rows as ExerciseType[]
         }
         const exercises = await sql`
             SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
         `
-        return exercises.rows as ExerciseType[]
+        unsortedExerciseArray = exercises.rows as ExerciseType[]
+
+        return unsortedExerciseArray as ExerciseType[]
     }catch(e){
         console.log('Error occured fetchUserExercises func actions.ts',e)
         return [] as ExerciseType[]
     }
-}
-
-type ReturnFetchUserExercisesType = {
-    rows: ExerciseType[], 
-    count: number 
 }
 
 export const getAccountSettings = async () => {
@@ -1075,4 +1069,12 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
             error: 'Coś poszło nie tak'
         }
     }
+}
+
+export const updateingRows = async () => {
+    const rows = await sql`
+        SELECT id,sets FROM gymexercises
+    `
+    console.log(rows.rows[0].sets)
+
 }

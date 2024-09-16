@@ -9,6 +9,7 @@ import Link from 'next/link'
 export const IncomingTrainings = async () => {
     const trainings = await fetchIncomingTrainings()
     const currentWeekDay = -1 === getDay(new Date()) - 1 ? 6 : getDay(new Date()) - 1
+
   return (
     <div className='flex flex-col px-5 gap-4 mt-8'>
       <h2 className='text-center text-2xl text-marmur'>Najbliższe treningi</h2>

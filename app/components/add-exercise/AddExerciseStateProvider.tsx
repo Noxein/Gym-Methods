@@ -9,6 +9,7 @@ const init = {
     repeat: 0,
     tempoUp: 0,
     tempoDown: 0,
+    side: 'Both' as const,
     series:[],
     difficultyLevel: "easy" as const,
     time: ''

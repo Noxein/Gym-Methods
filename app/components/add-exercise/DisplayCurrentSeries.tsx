@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from 'react'
-import { ActionTypes, ActionTypesEnum, DifficultyLevel, Series } from '../../types'
+import { ActionTypes, ActionTypesEnum, DifficultyLevel, Series, Side } from '../../types'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { Icon } from '../Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
@@ -7,41 +7,48 @@ import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 type DisplayCurrentSeriesTypes = {
     seriesname:string,
     currentSeries:Series[],
-    dispachSeries:React.Dispatch<ActionTypes>,
+    dispatchSeries:React.Dispatch<ActionTypes>,
     showTimeMesure:boolean
 }
-export const DisplayCurrentSeries = ({seriesname,currentSeries,dispachSeries,showTimeMesure}:DisplayCurrentSeriesTypes) => {
+export const DisplayCurrentSeries = ({seriesname,currentSeries,dispatchSeries,showTimeMesure}:DisplayCurrentSeriesTypes) => {
     const theme = useContext(ThemeContext)
     const deleteSet = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,index:number) => {
         e.preventDefault()
-        dispachSeries({type:"DELETESERIES",payload:index})
+        dispatchSeries({type:"DELETESERIES",payload:index})
         localStorage.setItem(seriesname,JSON.stringify(currentSeries.filter((set,i)=>i!==index)))
     }
     const editInput = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,index:number,field:ActionTypesEnum) => {
         const arrayCopy = [...currentSeries]
         if(field === 'EDITSERIESKG'){
             if(e.target.value.length > 3) return
-            dispachSeries({type:field,index, payload:Number(e.target.value)});
+            dispatchSeries({type:field,index, payload:Number(e.target.value)});
             arrayCopy[index].weight = Number(e.target.value)
         }
         if(field === 'EDITSERIESREPEAT'){
             if(e.target.value.length > 3) return
-            dispachSeries({type:field,index, payload:Number(e.target.value)});
+            dispatchSeries({type:field,index, payload:Number(e.target.value)});
             arrayCopy[index].repeat = Number(e.target.value)
         }
         if(field === "EDITSERIESDIFFICULTY"){
-            dispachSeries({type:field,index, payload:e.target.value as DifficultyLevel}); 
+            dispatchSeries({type:field,index, payload:e.target.value as DifficultyLevel}); 
             arrayCopy[index].difficulty = e.target.value as DifficultyLevel
         }
         if(field === 'EDITSERIESTIME'){
-            dispachSeries({type:field,index, payload:e.target.value});
+            dispatchSeries({type:field,index, payload:e.target.value});
             arrayCopy[index].time = e.target.value
         }
         localStorage.setItem(seriesname,JSON.stringify(arrayCopy))
     }
+    const handleChangeSide = (index:number,side:Side) => {
+        let newSide:Side = side
+        if(side === 'Both') newSide = 'Left'
+        if(side === 'Left') newSide = 'Right'
+        if(side === 'Right') newSide = 'Both'
+        dispatchSeries({type:'EDITSERIESSIDE',index,payload:newSide})
+    }
   return (
     <div className='flex flex-col gap-2 mt-2 text-white'>
-        <div className={`justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 `}>
+        <div className={`justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 ml-7`}>
             <div className='font-light'>Ciężar</div>
             <div className='font-light'>Powtórzenia</div>
             <div className='font-light'>Ciężkość</div>
@@ -49,6 +56,9 @@ export const DisplayCurrentSeries = ({seriesname,currentSeries,dispachSeries,sho
         </div>
         {currentSeries.map((series,index)=>(
             <div className={`flex bg-${theme?.colorPallete.accent} rounded-md`} key={index}>
+                <div className='text-dark text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
+                    {series.side === 'Left'? 'L' : series.side === 'Right'? 'P' : 'O'}
+                </div>
                 <div className={`flex-1 bg-${theme?.colorPallete.primary} px-2 py-3 grid ml-[1px] my-[1px] rounded-md ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'}`}>
                     <div className='flex'>
                         <Input type="number" maxLength={3} max={3} value={series.weight} className={`w-full mr-1 bg-${theme?.colorPallete.primary}`} onChange={(e)=>{editInput(e,index,'EDITSERIESKG')}}/> 

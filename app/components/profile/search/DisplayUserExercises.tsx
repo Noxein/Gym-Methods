@@ -1,19 +1,20 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
-import { ExerciseType, Series } from '@/app/types'
+import { ExerciseType, HistoryExercise, Series } from '@/app/types'
 import { format } from 'date-fns'
 import React, { useContext } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { SmallLoader } from '../../Loading/SmallLoader'
 
 type DisplayUserExercisesTypes = {
-    fetchedExercises: ExerciseType[],
+    fetchedExercises: HistoryExercise[],
     manyExercises:boolean,
     handleSearch: () => void,
     dataLength: number,
     totalItems: number,
 }
 export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
+    console.log(fetchedExercises)
   return (
    
     <div className='mt-16 mx-5 mb-20'>
@@ -27,9 +28,10 @@ export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearc
               <b>To już wszystkie ćwiczenia</b>
             </p>
           }
+          style={{overflow:''}}
          >
-            {fetchedExercises.map(exercise=>(
-                <SingleExercise exercise={exercise} manyExercises={manyExercises} key={exercise.id}/>
+            {fetchedExercises.map((exercise,index)=>(
+                <SingleExercise exercise={exercise} key={index}/>
             ))}
         </InfiniteScroll>
     </div>
@@ -37,38 +39,52 @@ export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearc
 }
 
 type SingleExerciseTypes = {
-    exercise: ExerciseType,
-    manyExercises:boolean,
+    exercise: HistoryExercise,
 }
-const SingleExercise = ({exercise,manyExercises}:SingleExerciseTypes) => {
+const SingleExercise = ({exercise}:SingleExerciseTypes) => {
     const theme = useContext(ThemeContext)
     return(
-        <div>
-            <div className={`bg-green text-${theme?.colorPallete.primary} flex justify-between px-2 font-bold`}> 
-                <span className='flex gap-1'>
-                    <span>{WeekDayArrayPL[WeekDayArray.indexOf(format(exercise.date,'cccc'))]}</span>
-                    <span>{MonthNamesArrayPL[MonthNamesArray.indexOf(format(exercise.date,'LLLL'))]}</span>
-                    <span>{format(exercise.date,'dd')}</span>
-                </span>
-                <span>
-                    {format(exercise.date,'yyyy')} 
-                </span>
+        <div className='flex flex-col h-fit'>
+            <div className='sticky flex gap-1 top-8 h-fit bg-marmur text-black px-2'>
+                <span>{WeekDayArrayPL[WeekDayArray.indexOf(format(exercise.exercises[0].date,'cccc'))]}</span>
+                <span>{format(exercise.exercises[0].date,'dd')}</span>
+                <span>{MonthNamesArrayPL[MonthNamesArray.indexOf(format(exercise.exercises[0].date,'LLLL'))]}</span>
             </div>
-
-            <div className='py-4 pl-4 grid grid-cols-[2fr_5fr]'>
-                <div>
-                    {manyExercises?<span>{exercise.exercisename}</span>:null}
-                </div>
-                <div>
-                    {exercise.sets.sets.map((set,index)=>(
-                        <SingleSet set={set} key={index}/>
-                    ))}
-                </div>
+            <div className='flex flex-col'>
+                {exercise.exercises.map(exercise=>(
+                    <ExercisesMap exercise={exercise} key={exercise.id}/>
+                ))}
             </div>
         </div>
     )
 }
 
+type ExercisesMapType = {
+    exercise: ExerciseType,
+}
+
+const ExercisesMap = ({exercise}:ExercisesMapType) => {
+    return (
+        <div>
+            <div className={`bg-green text-marmur flex justify-between px-2 font-bold`}> 
+            <span>
+                {exercise.exercisename}
+            </span>
+        </div>
+
+        <div className='py-4 pl-4 grid grid-cols-[2fr_5fr]'>
+            <div>
+                
+            </div>
+            <div>
+                {exercise.sets.map((set,index)=>(
+                    <SingleSet set={set} key={index}/>
+                ))}
+            </div>
+        </div>
+    </div>
+    )
+}
 type SingleSetType = {
     set: Series
 }
