@@ -72,15 +72,10 @@ const ExercisesMap = ({exercise}:ExercisesMapType) => {
             </span>
         </div>
 
-        <div className='py-4 pl-4 grid grid-cols-[2fr_5fr]'>
-            <div>
-                
-            </div>
-            <div>
-                {exercise.sets.map((set,index)=>(
-                    <SingleSet set={set} key={index}/>
-                ))}
-            </div>
+        <div className='py-4 px-2 flex flex-col gap-1'>
+            {exercise.sets.map((set,index)=>(
+                <SingleSet set={set} key={index}/>
+            ))}
         </div>
     </div>
     )
@@ -91,6 +86,7 @@ type SingleSetType = {
 const SingleSet = ({set}:SingleSetType) => {
     return(
         <div className='flex pr-2'>
+            <TranslateSide text={set.side}/>
             <SpanElement text={set.weight} additionalText='kg'/>
             {
             set.time?<SpanElement text={set.time} additionalText='czas'/>:
@@ -108,3 +104,13 @@ const SpanElement = ({text,additionalText}:{text?:string|number,additionalText?:
         </span>
     )
 } 
+
+const TranslateSide = ({text}:{text:string}) => {
+    const EngArr = ['Both','Left','Right']
+    const PlArr = ['Obie','Lewa','Prawa']
+
+    const translatedText = PlArr[EngArr.indexOf(text)]
+    return (
+        <SpanElement text={translatedText}/>
+    )
+}

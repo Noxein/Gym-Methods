@@ -3,7 +3,7 @@ export type Series = {
     repeat:number,
     difficulty: DifficultyLevel,
     time?:string,
-    side?: Side
+    side: Side
 }
 
 export type ColorPalleteType = {
