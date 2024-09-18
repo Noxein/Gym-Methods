@@ -1,10 +1,11 @@
 'use client'
-import { useContext, useState } from 'react'
+import { use, useContext, useEffect, useState } from 'react'
 import { ListExercises } from './ListExercises'
 import { ExerciseTypes, UserExercise } from '@/app/types'
 import { SearchExercises } from './SearchExercises'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import Link from 'next/link'
+import { LinkToExercise } from './LinkToExercise'
 
 type ExerciseListMappedTypes = {
   exercises:ExerciseTypes,
@@ -12,7 +13,15 @@ type ExerciseListMappedTypes = {
 }
 export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseListMappedTypes) => {
   const[searchField,setSearchField] = useState('')
+  const[lastExercises,setLastExercises] = useState<string[]>([])
   const theme = useContext(ThemeContext)
+  useEffect(()=>{
+    const lastExercisesA = localStorage.getItem('lastexercises')
+    if(!lastExercisesA) return
+
+    const parsedData: string[] = JSON.parse(lastExercisesA)
+    setLastExercises(parsedData)
+  },[])
   return (
     <div className='flex flex-col mb-20 mt-10'>
         <h1 className='text-white text-center text-2xl'>DODAJ ĆWICZENIE</h1>
@@ -31,6 +40,12 @@ export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseLi
           :
           <ListExercises item={exercises}/>
           }
+          <div className='mt-20 flex flex-col gap-3 text-white text-center text-xl'>
+            OSTATNIE ĆWICZENIA
+            {lastExercises.map((exercise,index)=>(
+              <LinkToExercise isFirst={index===0} mLeft={'0'} key={index} text={exercise}/>
+            ))}
+          </div>
       </div>
     </div>
   )
