@@ -39,7 +39,6 @@ export const CompletedTraining = ({training,trainingName,trainingDate}:Completed
                     </div>
                 ))}
             </div>
-                <button onClick={func}>ooooo</button>
     </div>
   )
 }

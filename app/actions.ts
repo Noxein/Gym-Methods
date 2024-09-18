@@ -1078,3 +1078,19 @@ export const updateingRows = async () => {
     console.log(rows.rows[0].sets)
 
 }
+
+export const fetchPreviousExercise = async (exercisename:string) => {
+    const userid = await userID()
+
+    if(typeof exercisename !== 'string') return null
+    try{
+        const result = await sql`
+            SELECT id,date,sets,exercisename FROM gymexercises WHERE userid = ${userid} AND exerciseid = ${exercisename} ORDER BY date DESC LIMIT 1;
+        `
+        if(result.rowCount === 0) return null
+        return result.rows[0] as ExerciseType
+    }catch(e){
+        console.log('Error occured fetchPreviousExercise func actions.ts',e)
+        return null
+    }
+}

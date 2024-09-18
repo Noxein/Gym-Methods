@@ -1,17 +1,17 @@
 import { TrainingExerciseType } from '@/app/types'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Icon } from '../../Icon'
 import { LeftAngle, PlusIcon, RightTriangle } from '@/app/ui/icons/ExpandIcon'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
+import { ModalContexts } from './ModalContexts'
 
 type ChangeExerciseListTypes = {
     list?: TrainingExerciseType[],
-    closeList: React.Dispatch<React.SetStateAction<boolean>>,
     setExercisesLeft: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     setCurrentExercise: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
-    setShowAddExerciseModal: React.Dispatch<React.SetStateAction<boolean>>,
 }
-export const ChangeExerciseList = ({list,closeList,setExercisesLeft,setCurrentExercise,setShowAddExerciseModal}:ChangeExerciseListTypes) => {
+export const ChangeExerciseList = ({list,setExercisesLeft,setCurrentExercise}:ChangeExerciseListTypes) => {
+    const modalsContext = useContext(ModalContexts)
 
     const handleChangeExercisesOrder = (indexToStartWith:number) => {
         if(indexToStartWith === 0) return handleCloseList()
@@ -25,11 +25,11 @@ export const ChangeExerciseList = ({list,closeList,setExercisesLeft,setCurrentEx
     }
 
     const handleCloseList = () => {
-        closeList(false)
+        modalsContext?.setShowExerciseList(false)
     }
 
     const handleShowModal = () => {
-        setShowAddExerciseModal(true)
+        modalsContext?.setShowAddExerciseModal(true)
     }
   return (
     <div className='fixed left-0 top-0 right-0 w-screen z-20 backdrop-blur-sm flex justify-center overflow-auto bottom-20'>

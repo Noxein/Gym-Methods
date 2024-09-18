@@ -3,6 +3,7 @@ import { DisplayTraining } from './DisplayTraining'
 import { AllExercisesInOneArray, ExercisesThatRequireTimeMesure, getAllExercises } from '@/app/actions'
 import { TrainingExerciseType, UserTrainingPlan } from '@/app/types'
 import { auth } from '@/auth'
+import { ModalContextsProvider } from './ModalContexts'
 
 type TrainingTypes = {
     name: string,
@@ -19,17 +20,19 @@ export const Training = async ({name,training,lastid,trainingid,exercisesLeft}:T
     const allExercisesInOneArray = await AllExercisesInOneArray()
     return(
         <main>
-            <DisplayTraining 
-                trainingName={name} 
-                training={exercisesLeft?exercisesLeft:training?.exercises.exercises} 
-                trainingPlanId={training?.id!} 
-                showTempo={showTempo} 
-                exercisesThatRequireTimeMesure={exercisesThatRequireTimeMesure} 
-                lastid={lastid} 
-                trainingid={trainingid} 
-                exercises={exercises}
-                allExercisesInOneArray={allExercisesInOneArray}
-                />
+            <ModalContextsProvider>
+                <DisplayTraining 
+                    trainingName={name} 
+                    training={exercisesLeft?exercisesLeft:training?.exercises.exercises} 
+                    trainingPlanId={training?.id!} 
+                    showTempo={showTempo} 
+                    exercisesThatRequireTimeMesure={exercisesThatRequireTimeMesure} 
+                    lastid={lastid} 
+                    trainingid={trainingid} 
+                    exercises={exercises}
+                    allExercisesInOneArray={allExercisesInOneArray}
+                    />
+            </ModalContextsProvider>
         </main>
     )
 }

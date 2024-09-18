@@ -19,6 +19,7 @@ type MapExercisesTypes = {
 
 export const MapExercises = ({exercises,allExercisesInOneArray,setPlanExercises,setShowAddExercise,isTrainingInProgressPage = false,setCurrentExercise,setTotalNumberOfTrainigs,setShowExerciseList}:MapExercisesTypes) => {
     const[searchField,setSearchField] = useState('')
+    
     const CloseExercises = () => {
         setShowAddExercise && setShowAddExercise(false)
         HideShowHTMLScrollbar('show')

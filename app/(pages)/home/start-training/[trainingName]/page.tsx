@@ -30,7 +30,7 @@ export default async function page({params,searchParams}:Pagetypes){
         return <TrainingError message={training.error}/>
     }
     if(Object.keys(training.training?.exercises!).length===0){
-        return <TrainingError message={'Ten trening niema żadnych ćwiczeń!'}>
+        return <TrainingError message={'Ten trening nie ma żadnych ćwiczeń!'}>
             <Link href={`/home/profile/my-training-plans/${decodedName}`} className="text-white text-center bg-green w-full mt-5 rounded-lg py-2">Dodaj je teraz</Link>
             </TrainingError>
     }

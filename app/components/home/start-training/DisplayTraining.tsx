@@ -1,6 +1,6 @@
 'use client'
 import { ActionTypes, AddExerciceReducerType, ExerciseTypes, TrainingExerciseType, UserExercise } from '@/app/types'
-import React, { useReducer, useState } from 'react'
+import React, { useContext, useReducer, useState } from 'react'
 import { AddExercise } from '../../add-exercise/AddExercise'
 import { AddExerciceReducer } from '@/app/lib/reducers'
 import { AddExerciseAction, closeTraining, createTraining, updateCurrentTraining } from '@/app/actions'
@@ -8,6 +8,8 @@ import { usePathname } from 'next/navigation'
 import { DisplayTrainingSkeleton } from '../../Loading/home/start-training/trainingName/DisplayTrainingSkeleton'
 import { ChangeExerciseList } from './ChangeExerciseList'
 import { MapExercises } from '../../profile/my-training-plans/trainingPlanName/MapExercises'
+import { PreviousExercise } from './PreviousExercise'
+import { ModalContexts } from './ModalContexts'
 
 type DisplayTrainingTypes = {
     training?: TrainingExerciseType[],
@@ -45,8 +47,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
     const[trainingID,setTrainingID] = useState(trainingid)
     const[state,dispatch] = useReducer<(state: AddExerciceReducerType, action: ActionTypes) => AddExerciceReducerType>(AddExerciceReducer,init)
     const[isLoading,setIsLoading] = useState(false)
-    const[showExerciseList,setShowExerciseList] = useState(false)
-    const[showAddExerciseModal,setShowAddExerciseModal] = useState(false)
+    const modalsContext = useContext(ModalContexts)
 
     const skipExercise = async () => {
         setIsLoading(true)
@@ -98,7 +99,10 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
         setIsLoading(false)
     }
     const handleShowExerciseList = () => {
-        setShowExerciseList(true)
+        modalsContext?.setShowExerciseList(true)
+    }
+    const handleShowPreviousExercise = () => {
+        modalsContext?.setShowPreviousExercise(true)
     }
   return (
     <div className='flex flex-col min-h-[calc(100dvh-25px)]'>
@@ -107,6 +111,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
                 <h1 className='text-2xl'>{trainingName}</h1>
             </div>
             <div className='text-gray-400 flex gap-2 items-center'>
+                <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowPreviousExercise}>Historia</button>
                 <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowExerciseList}>Zmień</button>
                 <span>{exercisesDone} z {totalNumberOfTrainigs}</span>
             </div>
@@ -128,25 +133,25 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
             </>}
         </div>
         
-        {showExerciseList && 
+        {modalsContext?.showExerciseList && 
         <ChangeExerciseList 
             list={exercisesLeft} 
-            closeList={setShowExerciseList}
             setExercisesLeft={setExercisesLeft} 
             setCurrentExercise={setCurrentExercise} 
-            setShowAddExerciseModal={setShowAddExerciseModal}
             />}
         
-        {showAddExerciseModal && 
+        {modalsContext?.showAddExerciseModal && 
         <MapExercises 
-            setShowAddExercise={setShowAddExerciseModal} 
+            setShowAddExercise={modalsContext?.setShowAddExerciseModal} 
             setPlanExercises={setExercisesLeft} 
             allExercisesInOneArray={allExercisesInOneArray} 
             exercises={exercises} 
             isTrainingInProgressPage={true} 
             setCurrentExercise={setCurrentExercise} 
             setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
-            setShowExerciseList={setShowExerciseList}
+            setShowExerciseList={modalsContext?.setShowExerciseList}
             />}
+        {modalsContext?.showPreviousExercise && 
+        <PreviousExercise exerciseid={currentExercise.exerciseid}/>}
     </div>)
 }
