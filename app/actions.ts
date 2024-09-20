@@ -1094,3 +1094,34 @@ export const fetchPreviousExercise = async (exercisename:string) => {
         return null
     }
 }
+
+export const changePassword = async (password:string,newpassword:string,repeatnewpassword:string) => {
+    const userid = await userID()
+
+    if(typeof password!== 'string' || typeof newpassword!== 'string' || typeof repeatnewpassword!== 'string') return
+    if(newpassword!==repeatnewpassword) return {error: 'Hasła różnią się'}
+    if(newpassword.length<8) return {error: 'Hasło powinno mieć conajmniej 8 znaków'}
+    let userEncryptedPassword
+    try{
+        const userData = await sql`
+            SELECT password FROM gymusers WHERE id = ${userid}
+        `
+    userEncryptedPassword = userData.rowCount && userData.rowCount > 0 ? userData.rows[0].password : null
+    }catch(e){
+        return {error: 'Coś poszło nie tak'}
+    }
+
+    if(!userEncryptedPassword) return {error: 'Coś poszło nie tak'}
+    const isPasswordCorrect = await ComparePasswords(password,userEncryptedPassword)
+    if(!isPasswordCorrect) return {error: 'Złe hasło'}
+
+    const hasedPassword = await hash(newpassword,10)
+    try{
+        await sql`
+            UPDATE gymusers SET password = ${hasedPassword} WHERE id = ${userid}
+        `
+    }catch{
+        return {error: 'Coś poszło nie tak'}
+    }
+
+}
