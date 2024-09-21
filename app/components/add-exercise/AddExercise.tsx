@@ -22,6 +22,7 @@ type AddExerciseType = {
 export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=false,state,dispatch,isLoading= false}:AddExerciseType) => {
 
     const[error,setError] = useState<string>('')
+    const[checked,setChecked] = useState(false)
     const theme = useContext(ThemeContext)
     const tempos = useContext(TempoContext)
 
@@ -49,6 +50,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
         localStorage.removeItem(name)
     }
     const FinishTraining = async () => {
+        if(!checked) return
         ResetLocalStorage()
 
         const possibleError = await AddExerciseAction(true,name,state.series,pathname.includes('training'))
@@ -59,7 +61,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
   return (
     <div className='px-4 pt-4 mb-4'>
         <h1 className={`text-${theme?.colorPallete.accent} text-xl text-center font-medium`}>{name}</h1>
-        <div className={`flex flex-col sticky top-0 pt-2 mt-2`}>
+        <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2`}>
             <div className='flex flex-col gap-6'>
                <WeightAndRepeatInputs dispach={dispatch} state={state}/>
                <DifficultyLevel dispach={dispatch} state={state} showTimeMesure={showTimeMesure}/>
@@ -79,7 +81,12 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
         {error && <div>
             {error}
             </div>}
-        {!isTraining && <button onClick={FinishTraining} className={`bottom-0 left-0 fixed mb-20 py-6 w-full text-xl bg-${theme?.colorPallete.secondary} text-white border-2 rounded-md`}>Zakończ ćwiczenie</button>}
+        {!isTraining && 
+        <div className='flex w-full gap-2'>
+            <input type="checkbox" className='w-16 h-16 rounded-xl accent-dark border-marmur checked:before:bg-dark checked:after:bg-dark' onChange={e=>setChecked(e.target.checked)} value={String(checked)}/>
+            <button onClick={FinishTraining} className={`sticky bottom-20 mb-20 py-4 flex-1 text-xl bg-dark text-white border-2 rounded-md`}>Zakończ ćwiczenie</button>
+        </div>
+        }
     </div>
     )
 }

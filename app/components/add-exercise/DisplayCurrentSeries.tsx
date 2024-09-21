@@ -47,7 +47,7 @@ export const DisplayCurrentSeries = ({seriesname,currentSeries,dispatchSeries,sh
         dispatchSeries({type:'EDITSERIESSIDE',index,payload:newSide})
     }
   return (
-    <div className='flex flex-col gap-2 mt-2 text-white'>
+    <div className='flex flex-col gap-2 mt-2 text-white mb-2'>
         <div className={`justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 ml-7`}>
             <div className='font-light'>Ciężar</div>
             <div className='font-light'>Powtórzenia</div>
