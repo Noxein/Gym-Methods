@@ -11,44 +11,32 @@ type PreviousExerciseTypes = {
 }
 
 export const PreviousExercise = ({exerciseid}:PreviousExerciseTypes) => {
-    const modalsContext = useContext(ModalContexts)
     const[data,setData] = useState<ExerciseType|null>()
     const[loading,setLoading] = useState(false)
 
     useEffect(()=>{
-        if(modalsContext?.prevExerciseId === exerciseid){
-            setData(modalsContext?.prevExercise)
-            return
-        } 
         const func = async () => {
             setLoading(true)
             await fetchData()
             setLoading(false)
         }
         func()
-        modalsContext?.setPrevExerciseId(exerciseid)
     },[exerciseid])
 
-    const close = () => {
-        modalsContext?.setShowPreviousExercise(false)
-    }
     const fetchData = async () => { 
         const result = await fetchPreviousExercise(exerciseid)
         if(result) setData(result)
-        modalsContext?.setPrevExercise(result)
     }
+
   return (
-    <div className='fixed flex-col left-0 top-0 pt-20  right-0 w-screen z-20 backdrop-blur-sm flex bottom-20 text-white px-5'>
+    <div className='text-white'>
         {loading?<SmallLoader/>:
-        !data?<div className='fixed flex-col left-0 top-0 pt-20 pb-20 right-0 w-screen z-20 backdrop-blur-sm flex bottom-20 text-white px-5 text-center text-2xl gap-4 justify-center'>
+        !data?<div className=''>
             Nie ma historii tego ćwiczenia
-            <button className='w-full bg-red text-xl py-2 rounded-xl mb-4' onClick={close}>Zamknij</button>
         </div>:
         <div>
-            <button className='w-full bg-red text-xl py-2 rounded-xl mb-4' onClick={close}>Zamknij</button>
             <div className='flex mb-4'>
-                <div className='text-2xl text-left'>{data?.exercisename}</div>
-                <div className='flex gap-1 ml-auto'>
+                <div className='flex gap-1'>
                     <span className='ml-auto'>{WeekDayArrayPL[WeekDayArray.indexOf(format(data?.date!,'cccc'))]}</span>
                     <span>{format(data?.date!,'dd')}</span>
                     <span>{MonthNamesArrayPL[MonthNamesArray.indexOf(format(data?.date!,'LLLL'))]}</span>

@@ -8,9 +8,10 @@ type DisplayCurrentSeriesTypes = {
     seriesname:string,
     currentSeries:Series[],
     dispatchSeries:React.Dispatch<ActionTypes>,
-    showTimeMesure:boolean
+    showTimeMesure:boolean,
+    isTraining: boolean,
 }
-export const DisplayCurrentSeries = ({seriesname,currentSeries,dispatchSeries,showTimeMesure}:DisplayCurrentSeriesTypes) => {
+export const DisplayCurrentSeries = ({seriesname,currentSeries,dispatchSeries,showTimeMesure,isTraining}:DisplayCurrentSeriesTypes) => {
     const theme = useContext(ThemeContext)
     const deleteSet = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,index:number) => {
         e.preventDefault()
@@ -47,15 +48,15 @@ export const DisplayCurrentSeries = ({seriesname,currentSeries,dispatchSeries,sh
         dispatchSeries({type:'EDITSERIESSIDE',index,payload:newSide})
     }
   return (
-    <div className='flex flex-col gap-2 mt-2 text-white mb-2'>
-        <div className={`justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 sticky top-[264px] pl-7 w-[100vw-28px] bg-dark`}>
+    <div className='flex flex-col gap-2 mt-3 text-white mb-2'>
+        <div className={`justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 sticky ${isTraining?'top-[264px]':'top-[264px]'} pl-7 w-[100vw-28px] bg-dark`}>
             <div className='font-light'>Ciężar</div>
             <div className='font-light'>Powtórzenia</div>
             <div className='font-light'>Ciężkość</div>
             {showTimeMesure && <div className='font-light'>Czas</div>}
         </div>
         {currentSeries.map((series,index)=>(
-            <div className={`flex bg-${theme?.colorPallete.accent} rounded-md`} key={index}>
+            <div className={`flex bg-${theme?.colorPallete.accent} rounded-md ${index===0?'mt-2':null}`} key={index}>
                 <div className='text-dark text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
                     {series.side === 'Left'? 'L' : series.side === 'Right'? 'P' : 'O'}
                 </div>

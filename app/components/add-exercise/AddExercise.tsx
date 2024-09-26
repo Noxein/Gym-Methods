@@ -6,8 +6,10 @@ import { AddExerciseAction } from '../../actions'
 import { usePathname } from 'next/navigation'
 import { ThemeContext } from '../../context/ThemeContext'
 import { Icon } from '../Icon'
-import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
+import { CheckIcon, PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { TempoContext } from '@/app/context/TempoContext'
+import { ShowHistoryButton } from './ShowHistoryButton'
+import { PreviousExercise } from '../home/start-training/PreviousExercise'
 
 type AddExerciseType = {
     name:string,
@@ -17,11 +19,13 @@ type AddExerciseType = {
     state: AddExerciceReducerType,
     dispatch: React.Dispatch<ActionTypes>,
     isLoading?: boolean,
+    exerciseid: string
 }
 
-export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=false,state,dispatch,isLoading= false}:AddExerciseType) => {
-
+export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=false,state,dispatch,isLoading= false,exerciseid}:AddExerciseType) => {
+    console.log(name)
     const[error,setError] = useState<string>('')
+    const[showHistory,setShowHistory] = useState(false)
     const[checked,setChecked] = useState(false)
     const theme = useContext(ThemeContext)
     const tempos = useContext(TempoContext)
@@ -58,8 +62,9 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
             setError(possibleError.errors)
         }
     }
+    console.log(checked)
   return (
-    <div className='px-4 pt-4 mb-4'>
+    <div className={`px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'}`}>
         <h1 className={`text-${theme?.colorPallete.accent} text-xl text-center font-medium`}>{name}</h1>
         <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2`}>
             <div className='flex flex-col gap-6'>
@@ -76,15 +81,25 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
             </button>
         </div>
 
-        <DisplayCurrentSeries seriesname={name} currentSeries={state.series} dispatchSeries={dispatch} showTimeMesure={showTimeMesure}/>
+        <DisplayCurrentSeries seriesname={name} currentSeries={state.series} dispatchSeries={dispatch} isTraining={isTraining} showTimeMesure={showTimeMesure}/>
+        <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory}/>
+        {showHistory && <PreviousExercise exerciseid={exerciseid} />}
 
         {error && <div>
             {error}
             </div>}
         {!isTraining && 
-        <div className='flex w-full gap-2'>
-            <input type="checkbox" className='w-16 h-16 rounded-xl accent-dark border-marmur checked:before:bg-dark checked:after:bg-dark' onChange={e=>setChecked(e.target.checked)} value={String(checked)}/>
-            <button onClick={FinishTraining} className={`sticky bottom-20 mb-20 py-4 flex-1 text-xl bg-dark text-white border-2 rounded-md`}>Zakończ ćwiczenie</button>
+        <div className='flex w-full gap-2 mt-auto pt-4'>
+            <button  className='w-16 h-16 rounded accent-dark border-marmur border-2' onClick={()=>setChecked(x=>!x)}> 
+            {checked?
+                <Icon className='flex justify-center'>
+                    <CheckIcon fill='#fff' height='40' width='40'/>
+                </Icon>:
+                null   
+                }
+            </button>
+
+            <button onClick={FinishTraining} className={`py-4 flex-1 text-xl bg-dark text-white border-2 rounded-md`}>Zakończ ćwiczenie</button>
         </div>
         }
     </div>
