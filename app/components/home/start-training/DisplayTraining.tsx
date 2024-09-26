@@ -103,9 +103,6 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
     const handleShowExerciseList = () => {
         modalsContext?.setShowExerciseList(true)
     }
-    const handleShowPreviousExercise = () => {
-        modalsContext?.setShowPreviousExercise(true)
-    }
   return (
     <div className='flex flex-col min-h-[calc(100dvh-100px)] mb-24'>
         <div className='text-white flex justify-between mt-2 mx-4 items-center'>
@@ -118,7 +115,6 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
                         <SpeedIcon width='20'/>
                     </Icon>
                 </button>
-                <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowPreviousExercise}>Historia</button>
                 <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowExerciseList}>Zmień</button>
                 <span className='text-nowrap'>{exercisesDone} z {totalNumberOfTrainigs}</span>
             </div>
