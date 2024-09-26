@@ -10,6 +10,8 @@ import { ChangeExerciseList } from './ChangeExerciseList'
 import { MapExercises } from '../../profile/my-training-plans/trainingPlanName/MapExercises'
 import { PreviousExercise } from './PreviousExercise'
 import { ModalContexts } from './ModalContexts'
+import { Icon } from '../../Icon'
+import { SettingsIcon, SpeedIcon } from '@/app/ui/icons/ExpandIcon'
 
 type DisplayTrainingTypes = {
     training?: TrainingExerciseType[],
@@ -111,9 +113,14 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
                 <h1 className='text-2xl'>{trainingName}</h1>
             </div>
             <div className='text-gray-400 flex gap-2 items-center'>
+                <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowExerciseList}>
+                    <Icon className='py-0 flex items-center'>
+                        <SpeedIcon width='20'/>
+                    </Icon>
+                </button>
                 <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowPreviousExercise}>Historia</button>
                 <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowExerciseList}>Zmień</button>
-                <span>{exercisesDone} z {totalNumberOfTrainigs}</span>
+                <span className='text-nowrap'>{exercisesDone} z {totalNumberOfTrainigs}</span>
             </div>
         </div>
         {

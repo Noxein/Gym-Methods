@@ -808,7 +808,7 @@ export const getTwoLatestTrainings = async () => {
         if(x.length === 0) return {newArr:null, trainingNames:lastTrainings.rows}
 
         let result:GymExercisesDbResult[] = []
-
+        
         if(x.length === 1){
             const gymexercises = await sql`
                 SELECT * FROM gymexercises
@@ -822,8 +822,10 @@ export const getTwoLatestTrainings = async () => {
         `
             result = gymexercises.rows as GymExercisesDbResult[]
         }
+        
         const userExercises = await getUserExercises()
         let newArr:GymExercisesDbResult[][] = [[]]
+        
         let IdA = result[0].trainingid
         result.forEach(item=>{
             if(!exercisesArr.includes(item.exerciseid)){

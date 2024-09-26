@@ -90,7 +90,7 @@ const SingleSet = ({set}:SingleSetType) => {
             <SpanElement text={set.weight} additionalText='kg'/>
             {
             set.time?<SpanElement text={set.time} additionalText='czas'/>:
-            <SpanElement text={set.repeat} additionalText={set.repeat===0?'serii':set.repeat===1?'seria':set.repeat>=5?'serii':set.repeat>=2?'serie':'seria'}/>
+            <SpanElement text={set.repeat} additionalText={'x'}/>
             }
             <SpanElement additionalText={DifficultyArrayPL[DifficultyArray.indexOf(set.difficulty)]}/>
         </div>
