@@ -1127,3 +1127,20 @@ export const changePassword = async (password:string,newpassword:string,repeatne
     }
 
 }
+
+export const getUserExerciseIdUsingName = async (exercisename:string) => {
+    const userid = await userID()
+
+    try{
+        const rows = await sql`
+        SELECT id FROM gymusersexercises WHERE userid = ${userid} AND exercisename = ${exercisename}
+    `
+    if(rows.rowCount === 0) return ''
+    return rows.rows[0].id
+    }catch{
+        return ''
+    }
+
+    
+
+} 

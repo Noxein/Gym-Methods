@@ -17,7 +17,7 @@ export const MyTrainingPlans = ({UserTrainings,showAddModalUrl}:MyTrainingPlansT
   const[showDeleteModal,setShowDeleteModal] = useState(false)
   const[currentSelectedTraining,setCurrentSelectedTrainign] = useState<UserTrainingPlan|null>()
   const theme = useContext(ThemeContext)
-
+  
   const HandleShowAddModal = () => {
     setShowAddModal(true)
     HideShowHTMLScrollbar('hide')

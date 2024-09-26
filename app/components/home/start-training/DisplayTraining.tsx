@@ -103,11 +103,8 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
     const handleShowExerciseList = () => {
         modalsContext?.setShowExerciseList(true)
     }
-    const handleShowPreviousExercise = () => {
-        modalsContext?.setShowPreviousExercise(true)
-    }
   return (
-    <div className='flex flex-col min-h-[calc(100dvh-25px)]'>
+    <div className='flex flex-col min-h-[calc(100dvh-100px)] mb-24'>
         <div className='text-white flex justify-between mt-2 mx-4 items-center'>
             <div>
                 <h1 className='text-2xl'>{trainingName}</h1>
@@ -118,7 +115,6 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
                         <SpeedIcon width='20'/>
                     </Icon>
                 </button>
-                <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowPreviousExercise}>Historia</button>
                 <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowExerciseList}>Zmień</button>
                 <span className='text-nowrap'>{exercisesDone} z {totalNumberOfTrainigs}</span>
             </div>
@@ -126,19 +122,19 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
         {
             isLoading? <DisplayTrainingSkeleton isTraining={true}/> :
         <>
-        {exercisesLeft && <AddExercise name={currentExercise.exercisename} isLoading={isLoading} showTempo={showTempo} showTimeMesure={showTimeMesure} isTraining={true} state={state} dispatch={dispatch}/>}
+        {exercisesLeft && <AddExercise name={currentExercise.exercisename} exerciseid={currentExercise.exerciseid} isLoading={isLoading} showTempo={showTempo} showTimeMesure={showTimeMesure} isTraining={true} state={state} dispatch={dispatch}/>}
         </>
         }
         {error && <div className='text-red'>{error}</div>}
-        <div className='mb-24 text-white mt-auto flex mx-5 gap-4'>
-            
-            {exercisesLeft.length===1? <>
-                <button onClick={handleCloseTraining} disabled={isLoading}  className='flex-1 bg-green py-4 rounded-lg'>Zakończ Trening</button>
-            </>:<>
-                <button className='flex-1 bg-red py-4 rounded-lg' onClick={skipExercise} disabled={isLoading}>Pomiń ćwiczenie</button>
-                <button onClick={()=>nextExercise(true)} className='flex-1 bg-green py-4 rounded-lg' disabled={isLoading}>Następne ćwiczenie</button>
-            </>}
-        </div>
+
+            <div className='mx-5 text-white flex gap-4 mt-auto pt-4'>
+                {exercisesLeft.length===1? <>
+                    <button onClick={handleCloseTraining} disabled={isLoading}  className='flex-1 bg-green py-4 rounded-lg'>Zakończ Trening</button>
+                </>:<>
+                    <button className='flex-1 bg-red py-4 rounded-lg' onClick={skipExercise} disabled={isLoading}>Pomiń ćwiczenie</button>
+                    <button onClick={()=>nextExercise(true)} className='flex-1 bg-green py-4 rounded-lg' disabled={isLoading}>Następne ćwiczenie</button>
+                </>}
+            </div>
         
         {modalsContext?.showExerciseList && 
         <ChangeExerciseList 
@@ -158,7 +154,5 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
             setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
             setShowExerciseList={modalsContext?.setShowExerciseList}
             />}
-        {modalsContext?.showPreviousExercise && 
-        <PreviousExercise exerciseid={currentExercise.exerciseid}/>}
     </div>)
 }
