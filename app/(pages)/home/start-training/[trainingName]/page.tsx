@@ -19,6 +19,7 @@ export default async function page({params,searchParams}:Pagetypes){
     const decodedName = decodeURI(params.trainingName)
     const isAnyTrainingInProgress = await checkTrainingInProgress()
     const training = await GetUserTrainingByName(decodedName)
+    console.log(training)
     
     if(searchParams.inProgress && isAnyTrainingInProgress){
         return <ContinueTraining name={decodedName} training={training.training} />

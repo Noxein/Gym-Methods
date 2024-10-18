@@ -6,6 +6,10 @@ export type Series = {
     side: Side
 }
 
+export type WidgetHomeTypes = {
+    sets: Series[],
+    date: Date
+}
 export type ColorPalleteType = {
     primary: string,
     secondary: string,
@@ -96,6 +100,8 @@ export type SelectedExerciseWithTempo = {
         downhold:number,
     }
 }
+
+export type WidgetHomeDaysSum = {[key:string]:{dayWeight:number,dayRepeats:number}}
 export type WeekDay = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday'
 export type WeekDayPL = 'Poniedziałek' | 'Wtorek' | 'Środa' | 'Czwartek' | 'Piątek' | 'Sobota' | 'Niedziela'
 

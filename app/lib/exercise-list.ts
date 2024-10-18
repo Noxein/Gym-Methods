@@ -28,6 +28,7 @@ export const exerciseList = {
             "Martwy ciąg sumo",
             "Martwy ciąg na prostych nogach",
             "Martwy ciąg rumuński",
+            "Martwy ciąg z podwyższenia",
             "Martwy ciąg z hantlami",
             "Przysiad ze sztangą z tyłu",
             "Przysiad ze sztangą z przodu",
@@ -39,6 +40,7 @@ export const exerciseList = {
             "Wykroki z hantlami",
             "Wykroki ze sztangą",
             "Unoszenie nóg w zwisie",
+            "Suwalnica na nogi(leg press)"
 
             
         ]
@@ -48,7 +50,8 @@ export const exerciseList = {
         Ramiona:[
             "Wznosy bokiem",
             "Wyciskanie nad głowę na maszynie",
-            "Wznosy bokiem w opadzie" 
+            "Wznosy bokiem w opadzie",
+            "Maszyna wycisanie nad głowę(OHP)"
         ],
 
         Przedramiona:[

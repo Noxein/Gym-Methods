@@ -8,10 +8,9 @@ import { usePathname } from 'next/navigation'
 import { DisplayTrainingSkeleton } from '../../Loading/home/start-training/trainingName/DisplayTrainingSkeleton'
 import { ChangeExerciseList } from './ChangeExerciseList'
 import { MapExercises } from '../../profile/my-training-plans/trainingPlanName/MapExercises'
-import { PreviousExercise } from './PreviousExercise'
 import { ModalContexts } from './ModalContexts'
 import { Icon } from '../../Icon'
-import { SettingsIcon, SpeedIcon } from '@/app/ui/icons/ExpandIcon'
+import { SpeedIcon } from '@/app/ui/icons/ExpandIcon'
 
 type DisplayTrainingTypes = {
     training?: TrainingExerciseType[],
@@ -37,6 +36,7 @@ const init = {
 }
 
 export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesure,trainingPlanId,lastid,trainingid,trainingName,exercises,allExercisesInOneArray}:DisplayTrainingTypes) => {
+    console.log(training)
     const[exercisesLeft,setExercisesLeft] = useState<TrainingExerciseType[]>(training!)
     const[currentExercise,setCurrentExercise] = useState(exercisesLeft[0])
     const[totalNumberOfTrainigs,setTotalNumberOfTrainigs] = useState(training?.length||1)

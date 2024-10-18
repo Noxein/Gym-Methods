@@ -6,6 +6,7 @@ import { SearchExercises } from './SearchExercises'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import Link from 'next/link'
 import { LinkToExercise } from './LinkToExercise'
+import { createTrainingPlans } from '@/app/actions'
 
 type ExerciseListMappedTypes = {
   exercises:ExerciseTypes,
@@ -22,8 +23,12 @@ export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseLi
     const parsedData: string[] = JSON.parse(lastExercisesA)
     setLastExercises(parsedData)
   },[])
+  const uw = async () => {
+    await createTrainingPlans([],[],2)
+  }
   return (
     <div className='flex flex-col mb-20 mt-10'>
+      <button onClick={uw}>dfsbidsfvbfs</button>
         <h1 className='text-white text-center text-2xl'>DODAJ ĆWICZENIE</h1>
 
       <div className='flex gap-2 my-5 max-w-[100dvw] mx-5'>        

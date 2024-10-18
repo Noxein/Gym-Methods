@@ -8,7 +8,6 @@ export type dataType = {
     goal:string,
     advancmentlevel:string,
     daysexercising:string,
-    showtempo: string,
 }
 type SetupOneOfThree = {
     setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
@@ -21,7 +20,6 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
     const goal = ['Siła','Hipertrofia','Oba']
     const advancmentlevel = ['Początkujący','Średniozaawansowany','Zaawansowany']
     const daysexercising = ['1','2','3','4','5','6','7']
-    const showTempo = ['Tak','Nie']
     const theme = useContext(ThemeContext)
 
     const ValidateData = async () => {
@@ -50,12 +48,6 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
                 name='daysexercising'
                 errors={[]}
                 setData={setData}/>
-            <Select 
-                labelText='Czy pokazywać tempo dodane przez ciebie?'
-                options={showTempo}
-                name='showtempo'
-                errors={[]}
-                setData={setData}/>
             <div className='text-red-500'>{error}</div>
             <div className={`fixed bottom-0 left-0 right-0 flex mx-5 mb-5 bg-${theme?.colorPallete.primary}`}>
                 <button onClick={e=>{e.preventDefault();ValidateData()}} className='flex-1 text-white bg-green py-3 rounded-lg font-semibold text-2xl'>Dalej</button>
@@ -65,32 +57,10 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
   )
 }
 
-
-type InputTypes = {
-    labelText: string,
-    type: string,
-    name: string,
-    errors: string[]
-}
-
-const Input = ({labelText,type,name,errors}:InputTypes) => {
-    return(
-        <div>
-            <label htmlFor={name}>{labelText}</label>
-            <input type={type} name={name} id={name} />
-            <div>
-                {errors.map(e=>(
-                    <span key={e}>{e}</span>
-                ))}
-            </div>
-        </div>
-    )
-}
-
 type SelectTypes = {
     labelText: string,
     options: string[],
-    name:'goal'|'advancmentlevel'|'daysexercising'|'showtempo',
+    name:'goal'|'advancmentlevel'|'daysexercising',
     errors: string[],
     setData: React.Dispatch<React.SetStateAction<dataType>>
 }

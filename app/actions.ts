@@ -4,15 +4,16 @@ import { compare, hash } from 'bcryptjs'
 import { FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExerciseType, ExerciseTypes, GymExercisesDbResult, HistoryExercise, LastExerciseType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL } from "@/app/types";
+import { ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, timeMesureExercises } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { WeekDayArray, WeekDayArrayPL } from "./lib/utils";
 import { z } from "zod";
-import { addDays, format } from "date-fns";
+import { addDays, format, isSameDay, isSameWeek, subDays } from "date-fns";
 import { AuthError } from "next-auth"; 
+import { Begginer1_3FBW_FirstVariation, Begginer1_3FBW_SecondVariation, Beginner4_7Lower_FirstVariation, Beginner4_7Lower_SecondVariation, Beginner4_7Upper_FirstVariation, Beginner4_7Upper_SecondVariation } from "./lib/TrainingPlansData";
 
 type State = {
     error?: string
@@ -152,7 +153,7 @@ export const FistStepDataValidation = (data:dataType) => {
 
 export const SecondStepDataValidation = (exercises:string[]) => {
     let error = false
-    exercises.forEach(exercise=>{
+    exercises.map(exercise=>{
         if(!exercisesArr.includes(exercise)) error = true
     })
     if(error){
@@ -165,18 +166,17 @@ export const SecondStepDataValidation = (exercises:string[]) => {
 export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],favourtiteExercises:string[]) => {
     const user = await auth()
     const userID = user?.user?.id
-    const showtempo = data.showtempo.toLowerCase() === 'tak'
     try{
         await sql`
             UPDATE gymusers
-            SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true, showtempo = ${showtempo}
+            SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
             WHERE id = ${userID};
         `
+        return
     }catch(e){
         console.log('Error occured FirstSetupFinish func actions.ts',e)
         return { error : 'Coś poszło nie tak'}
     }
-    redirect('/home')
 }
 
 export const logout = async () => {
@@ -510,7 +510,7 @@ export const GetUserTrainingByName = async (trainingname:string) => {
     if(typeof trainingname !== 'string') return { error: "Coś poszło nie tak"}
     const user = await auth()
     const userID = user?.user?.id
-
+    console.log('hit there')
     try{
         const Training = await sql`
             SELECT id,trainingname,date,exercises,weekday FROM gymuserstrainingplans WHERE userid = ${userID} AND trainingname = ${trainingname}
@@ -543,9 +543,10 @@ export const AddUserTraining = async (trainingplanname:string,exercises:Training
         return { error: 'Coś poszło nie tak'}
     }
 }
-export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDayPL) => {
+export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDayPL,exercisesuwu?:TrainingExerciseType[]) => {
     const user = await auth()
     const userID = user?.user?.id
+    console.log(userID)
 
     if(typeof trainingplanname !== 'string'){
         return {error:'Coś poszło nie tak1'}
@@ -563,18 +564,21 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
             return { error: 'Trening o tej nazwie już istnieje, wybierz inną'}
         }
     }catch(e){
-        return {error:'Coś poszło nie tak2'}
+        return {error:'Coś poszło nie tak'}
     }
 
     const date = new Date()
     const endlishWeekDay = WeekDayArray[WeekDayArrayPL.indexOf(weekday)]
+    let exercises = exercisesuwu
+    if(!exercisesuwu) exercises = []
+    console.log(exercises)
     try{
         await sql`
-            INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userID},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify({})})
+            INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userID},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify({exercises})})
         `
     }catch(e){
         console.log('Error occured CreateUserTraining func actions.ts',e)
-        return { error: 'Coś poszło nie tak3'}
+        return { error: 'Coś poszło nie tak'}
     }
     revalidatePath('/home/profile/my-training-plans')
 }
@@ -1140,7 +1144,159 @@ export const getUserExerciseIdUsingName = async (exercisename:string) => {
     }catch{
         return ''
     }
-
-    
-
 } 
+
+const FilterTraining = (training:{[key:string]:{exercises:string[],fallback:string}},fav:string[],notfav:string[]) => {
+    let finalTraining:TrainingExerciseType[] = []
+    let id = 0
+    for(const [key, value] of Object.entries(training)){
+        let indexOfExercise = 0
+
+        loop2: 
+        for(let i = 0 ; i<value.exercises.length ; i++){
+            if(fav.includes(value.exercises[i])){
+                indexOfExercise = i;
+                break loop2
+            } 
+            if(notfav.includes(value.exercises[i])){ 
+                //USER DONT LIKE THIS EXERCISE SO FUNCTION INCREMENT INDEX OF EXERCISE 
+                if(i === value.exercises.length-1) indexOfExercise = -2 // ITS LAST ITERATION OF LOOP SO FUNCTION MAKES SURE THAT INDEX OF EXERCISE WILL BE -1, THUS USER LIKE NON OF EXERCIES
+                indexOfExercise = indexOfExercise + 1
+            }else{
+                break loop2
+            }
+        }
+
+        if(indexOfExercise === -1){
+            finalTraining.push({exercisename:value.fallback,id:value.fallback,exerciseid:String(id)})
+        }else{
+            finalTraining.push({exercisename:value.exercises[indexOfExercise],id:value.exercises[indexOfExercise],exerciseid:String(id)})
+        }
+        
+    }
+    return finalTraining
+}
+export const createTrainingPlans = async (fav:string[],notfav:string[],days:number) => {
+    const plans:TrainingExerciseType[][] = []
+    if(days<=3){
+        plans.push(            
+            FilterTraining(Begginer1_3FBW_FirstVariation,fav,notfav),
+            FilterTraining(Begginer1_3FBW_SecondVariation,fav,notfav)
+        )
+    }
+    if(days>3){
+        plans.push(
+            FilterTraining(Beginner4_7Upper_FirstVariation,fav,notfav),
+            FilterTraining(Beginner4_7Upper_SecondVariation,fav,notfav),
+            FilterTraining(Beginner4_7Lower_FirstVariation,fav,notfav),
+            FilterTraining(Beginner4_7Lower_SecondVariation,fav,notfav)
+        )
+    }
+    //make plans
+    try{
+        plans.map(async(plan,index)=>{
+            let name:string
+            if(days<=2){
+                name = `Trening całego ciała ${index+1}`
+            }else{
+                name = index<=1?`Trening góry ${index+1}`:`Trening dołu ${index+1}`
+            }
+
+            let result = await CreateUserTraining(name,'Poniedziałek',plan)
+        })
+    }catch(e){
+        console.log('Error occured line 1204 actions.ts',e)
+    }
+}
+
+export const SelectedDayExercisesForWidget = async (selectedDate:Date) => {
+    const userid = await userID()
+    try{
+        const exercisesResult = await sql`
+            SELECT sets,date_trunc('day',date) FROM gymexercises WHERE userid = ${userid} AND date between ${JSON.stringify(format(selectedDate,'yyyy-MM-dd'))} and ${JSON.stringify(format(addDays(selectedDate,1),'yyyy-MM-dd'))}
+        `
+        const result = exercisesResult.rows as WidgetHomeTypes[]
+        let KGToday = 0
+        let SeriesToday = 0
+        result.map(set=>{
+            set.sets.forEach(item=>{
+                KGToday = KGToday + item.weight
+                SeriesToday = SeriesToday + item.repeat
+            })
+        })
+        return {
+            KGToday , SeriesToday
+        }
+    }catch{
+        return {
+            KGToday: 0 , SeriesToday: 0
+        }
+    }
+}
+
+export const Last30DaysExercises = async () => {
+    const userid = await userID()
+    const today = new Date()
+    const a30daysago = subDays(today,30)
+
+    try{
+        const exercisesResult = await sql`
+            SELECT sets,date FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(today)} AND date >= ${JSON.stringify(a30daysago)};
+        `
+        const result = exercisesResult.rows as WidgetHomeTypes[]
+        let totalKGThisMonth = 0
+        let totalSeriesThisMonth = 0
+        let toalKGToday = 0
+        let totalSeriesToday = 0
+        let totalKGThisWeek = 0
+        let totalSeriesThisWeek = 0
+        let groupedDays = {
+
+        } as WidgetHomeDaysSum
+
+        result.map(set=>{
+            let totalKGThisSet = 0
+            let totalSeriesThisSet = 0
+
+            set.sets.forEach(item=>{
+                totalKGThisSet = totalKGThisSet + item.weight
+                totalSeriesThisSet = totalSeriesThisSet + item.repeat
+            })
+
+            if(isSameDay(set.date,today)){
+                    toalKGToday = toalKGToday + totalKGThisSet
+                    totalSeriesToday = totalSeriesToday + totalSeriesThisSet
+            }
+
+            if(isSameWeek(set.date,today,{weekStartsOn:1})){
+                    totalKGThisWeek = totalKGThisWeek + totalKGThisSet
+                    totalSeriesThisWeek = totalSeriesThisWeek + totalSeriesThisSet
+            }
+
+            totalKGThisMonth = totalKGThisMonth + totalKGThisSet
+            totalSeriesThisMonth = totalKGThisMonth + totalSeriesThisSet
+
+            const formattedDate = format(set.date,'dd,MM')
+
+            if(groupedDays[formattedDate]){
+                groupedDays[formattedDate] = {dayWeight: groupedDays[formattedDate].dayWeight + totalKGThisSet , dayRepeats: groupedDays[formattedDate].dayRepeats + totalSeriesThisSet}
+            }else{
+                groupedDays[formattedDate] = {dayWeight: totalKGThisSet , dayRepeats: totalSeriesThisSet}
+            }
+        })
+        const len = result.length ? result.length : 1 
+        let returnObj = {
+            totalKGThisWeek,
+            totalSeriesThisWeek,
+            totalKGThisMonth,
+            totalSeriesThisMonth,
+            averageThisMonthDayKG: Math.round(totalKGThisMonth/len),
+            averageThisMonthSeries: Math.round(totalSeriesThisMonth/len),
+            groupedDays
+        }
+        console.log(returnObj.groupedDays)
+        return returnObj
+    }catch(e){
+        console.log(e)
+    }
+}

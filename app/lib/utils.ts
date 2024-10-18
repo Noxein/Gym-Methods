@@ -5,6 +5,7 @@ export const WeekDayArrayPL = ['Poniedziałek','Wtorek','Środa','Czwartek','Pi�
 
 export const MonthNamesArray = ['January','February','March','April','May',"June","July","August",'September','October','November','December']
 export const MonthNamesArrayPL = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień']
+export const MonthNamesArrayVariantPL = ['Stycznia','Lutego','Marca','Kwietnia','Maja','Czerwica','Lipica','Sierpinia','Wrzesienia','Października','Listopada','Grudzieńa']
 
 export const DifficultyArray = ['easy','medium','hard']
 export const DifficultyArrayPL = ['Łatwa','Średnia','Trudna']

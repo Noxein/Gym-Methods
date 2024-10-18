@@ -130,3 +130,9 @@ input[type='checkbox']:after {
   content: '';
   color: #0D1317;
 }
+
+.me-shadow{
+  -webkit-box-shadow: 2px 5px 12px -3px rgba(0, 0, 0, 1);
+  -moz-box-shadow: 2px 5px 12px -3px rgba(0, 0, 0, 1);
+  box-shadow: 2px 5px 12px -3px rgba(0, 0, 0, 1);
+}
