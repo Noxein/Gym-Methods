@@ -34,24 +34,24 @@ export const SelectedDateInfo = ({dayData,selectedDay,Last30DaysExercises}:Selec
     const odmianaSerii1 = dayData.SeriesToday 
   return (
     <div>
-        <div className='text-marmur py-1 px-5'>
+        <div className='text-marmur py-1 px-5 text-sm'>
             {weekDay} <b>{dayOfMonth}</b> {month} - Tego dnia
         </div>
-        <div className='bg-marmur flex gap-4 px-5 py-2'>
+        <div className='bg-marmur flex gap-4 px-5 py-2 text-sm'>
             <div className='flex-1'>
-                <p>Przerzuciłeś <b>{dayData.KGToday}</b> { odmianaKilogram1 }</p>
+                <p>Przerzuciłeś <b>{dayData.KGToday}</b> KG</p>
                 <div className='bg-[#8A8A8A] rounded-lg h-7 me-shadow border-1 border-dark'>
-                    <div style={{width:`${DayToWeekKGProcentage}%`}} className='bg-dark text-white text-center font-light rounded-lg h-full border-1 border-dark'>{DayToWeekKGProcentage}%</div>
+                    <div style={{width:`${DayToWeekKGProcentage}%`}} className='bg-dark text-white flex items-center justify-center font-light rounded-lg h-full'>{DayToWeekKGProcentage}%</div>
                 </div>
                 <p className='mt-2'>
-                    To o { averageWeight } kilogramów { averageWeightWord } niż typowy dzień z 30 dni temu
+                    To o { averageWeight } KG { averageWeightWord } niż typowy dzień z 30 dni temu
                 </p>
             </div>
 
             <div className='flex-1'>
                 <p>Wykonałeś <b>{dayData.SeriesToday}</b> serie</p>
                 <div className='bg-[#8A8A8A] rounded-lg h-7 me-shadow border-1 border-dark'>
-                    <div style={{width:`${DayToWeekSeriesProcentage}%`}} className='bg-dark text-white w-[21%] text-center font-light rounded-lg h-full border-1 border-dark'>{DayToWeekSeriesProcentage}%</div>
+                    <div style={{width:`${DayToWeekSeriesProcentage}%`}} className='bg-dark text-white w-[21%] flex items-center justify-center font-light rounded-lg h-full'>{DayToWeekSeriesProcentage}%</div>
                 </div>
                 <p className='mt-2'>
                     To o { averageSeries } serii { averageSeriesWord } niż typowy dzień z 30 dni temu
