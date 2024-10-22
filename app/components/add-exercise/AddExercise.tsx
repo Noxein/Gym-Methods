@@ -19,13 +19,20 @@ type AddExerciseType = {
     state: AddExerciceReducerType,
     dispatch: React.Dispatch<ActionTypes>,
     isLoading?: boolean,
-    exerciseid: string
+    exerciseid: string,
+    requiresHandle: boolean,
+    allHandles: {
+        id: string;
+        handlename: string;
+    }[],
+    setParnetHandle?: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=false,state,dispatch,isLoading= false,exerciseid}:AddExerciseType) => {
+export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=false,state,dispatch,isLoading= false,exerciseid,requiresHandle,allHandles,setParnetHandle}:AddExerciseType) => {
     console.log(name)
     const[error,setError] = useState<string>('')
     const[showHistory,setShowHistory] = useState(false)
+    const[handle,setHandle] = useState(requiresHandle?'Sznur':'')
     const[checked,setChecked] = useState(false)
     const theme = useContext(ThemeContext)
     const tempos = useContext(TempoContext)
@@ -57,20 +64,20 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
         if(!checked) return
         ResetLocalStorage()
 
-        const possibleError = await AddExerciseAction(true,name,state.series,pathname.includes('training'))
+        const possibleError = await AddExerciseAction(true,name,state.series,pathname.includes('training'),'',handle)
         if(possibleError) {
             setError(possibleError.errors)
         }
     }
-    console.log(checked)
   return (
     <div className={`px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'}`}>
         <h1 className={`text-${theme?.colorPallete.accent} text-xl text-center font-medium`}>{name}</h1>
-        <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2`}>
+        <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2 z-10`}>
             <div className='flex flex-col gap-6'>
                <WeightAndRepeatInputs dispach={dispatch} state={state}/>
                <DifficultyLevel dispach={dispatch} state={state} showTimeMesure={showTimeMesure}/>
-               <Side dispach={dispatch} state={state} />
+               <Side dispatch={dispatch} state={state} />
+               {requiresHandle && <Handle handle={handle} setHandle={setHandle} setParnetHandle={setParnetHandle} allHandles={allHandles}/>}
             </div>
             
             <button onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl bg-green text-white rounded-md py-4 flex items-center justify-between px-5 `} disabled={isLoading}>
@@ -79,6 +86,15 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
                     <PlusIcon /> 
                 </Icon>
             </button>
+            <div className='grid mt-3 text-white w-full'>
+                <div className={` justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 pl-7 w-[100vw-28px] bg-dark`}>
+                <div className='font-light'>Ciężar</div>
+                <div className='font-light'>Powtórzenia</div>
+                <div className='font-light'>Ciężkość</div>
+            {showTimeMesure && <div className='font-light'>Czas</div>}
+            </div>
+
+        </div>
         </div>
 
         <DisplayCurrentSeries seriesname={name} currentSeries={state.series} dispatchSeries={dispatch} isTraining={isTraining} showTimeMesure={showTimeMesure}/>
@@ -167,26 +183,56 @@ const DifficultyLevel = ({dispach,state,showTimeMesure}:{dispach:React.Dispatch<
 }
 
 type SideTypes = {
-    dispach:React.Dispatch<ActionTypes>,
+    dispatch:React.Dispatch<ActionTypes>,
     state:AddExerciceReducerType,
 }
-const Side = ({dispach,state}:SideTypes) => {
-    const theme = useContext(ThemeContext)
+const Side = ({dispatch,state}:SideTypes) => {
     const handleChange = (payload:string) => {
         console.log(payload)
-        dispach({type:"SIDE",payload:payload as SideType})
+        dispatch({type:"SIDE",payload:payload as SideType})
     }
     console.log('STATESIDE',state)
     return(
         <div className='flex gap-2'>
             <div className='flex-1 flex flex-col text-lg relative'>
-                <label htmlFor='side' className={`text-${theme?.colorPallete.accent} font-light text-sm px-2 absolute -top-1/3 left-2 bg-${theme?.colorPallete.primary}`}>Strona</label>
-                <select name="side" value={state.side} id="side" className={`bg-${theme?.colorPallete.primary} pl-3 text-${theme?.colorPallete.accent} border-white border-[1px] rounded-md h-10`} onChange={e=>handleChange(e.target.value)}>
+                <label htmlFor='side' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Strona</label>
+                <select name="side" value={state.side} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value)}>
                     <option value="Both">Obie</option>
                     <option value="Left">Lewa</option>
                     <option value="Right">Prawa</option>
                 </select>
             </div>
         </div>
+    )
+}
+
+type HandleTypes = {
+    handle: string,
+    setHandle: React.Dispatch<React.SetStateAction<string>>,
+    setParnetHandle?: React.Dispatch<React.SetStateAction<string>>,
+    allHandles: {
+        id: string;
+        handlename: string;
+    }[]
+}
+
+const Handle = ({handle,setHandle,setParnetHandle,allHandles}:HandleTypes) => {
+    const handleChange = (payload:string) => {
+        console.log(payload)
+        setHandle(payload)
+        setParnetHandle && setParnetHandle(payload)
+    }
+    return (
+    <div className='flex gap-2'>
+        <div className='flex-1 flex flex-col text-lg relative'>
+            <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Uchwyt</label>
+            <select name="handle" value={handle} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value)}>
+                {/* TODO FETCH THIS SHIT LATER */}
+                {allHandles.map(handle=>(
+                    <option value={handle.id} key={handle.id}>{handle.handlename}</option>
+                ))}
+            </select>
+        </div>
+    </div>
     )
 }

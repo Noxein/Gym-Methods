@@ -20,8 +20,13 @@ type AddExerciseStateProviderTypes = {
     showTempo: boolean,
     showTimeMesure: boolean,
     exerciseid:string,
+    requiresHandle: boolean,
+    allHandles: {
+      id: string;
+      handlename: string;
+    }[]
 }
-export const AddExerciseStateProvider = ({name,showTempo,showTimeMesure,exerciseid}:AddExerciseStateProviderTypes) => {
+export const AddExerciseStateProvider = ({name,showTempo,showTimeMesure,exerciseid,requiresHandle,allHandles}:AddExerciseStateProviderTypes) => {
     const[state,dispatch] = useReducer<(state: AddExerciceReducerType, action: ActionTypes) => AddExerciceReducerType>(AddExerciceReducer,init)
     useEffect(()=>{
       const data = localStorage.getItem('lastexercises')
@@ -34,6 +39,6 @@ export const AddExerciseStateProvider = ({name,showTempo,showTimeMesure,exercise
       localStorage.setItem('lastexercises',JSON.stringify([name,parsedData[0]]))
     },[])
   return (
-    <AddExercise name={name} exerciseid={exerciseid} showTempo={showTempo} showTimeMesure={showTimeMesure} dispatch={dispatch} state={state}/>
+    <AddExercise name={name} exerciseid={exerciseid} showTempo={showTempo} showTimeMesure={showTimeMesure} dispatch={dispatch} state={state} requiresHandle={requiresHandle} allHandles={allHandles}/>
   )
 }

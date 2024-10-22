@@ -70,11 +70,9 @@ export const exerciseList = {
         ],
 
         Triceps:[
-            "Ściąganie wyciągu warkoczem przodem",
-            "Ściąganie wyciągu uchwytem prostym przodem", 
-            "Ściąganie wyciągu warkoczem zza głowy", 
-            "Ściąganie wyciągu uchwytem prostym zza głowy", 
-            "Ściąganie wyciągu jednorącz", 
+            "Ściąganie wyciągu przodem",
+            "Ściąganie wyciągu zza głowy", 
+            "Ściąganie wyciągu", 
             "Maszyna na triceps",
             "Wyciskanie hantla nad głowę",
             ],
@@ -88,8 +86,7 @@ export const exerciseList = {
 
         Plecy:[
             "Maszyna 'Smigolowska' na plecy",
-            "Wiosłowanie na maszynie oburącz siedząc",
-            "Wiosłowanie na maszynie jednorącz siedząc",
+            "Wiosłowanie na maszynie siedząc",
             ],
 
         Dwuglowe:[
@@ -128,6 +125,7 @@ export const exercisesArr:string[] =
     "Wznosy bokiem",
     "Wyciskanie nad głowę na maszynie",
     "Wznosy bokiem w opadzie",
+    "Maszyna wycisanie nad głowę(OHP)",
     "Skręcanie' ciężaru na lince",
     "Zginanie nadgarstków z obciążeniem",
     "Zginanie nadgarstków z obciążeniem tyłem",
@@ -137,11 +135,9 @@ export const exercisesArr:string[] =
     "Uginanie ramion na modlitewniku",
     "Maszyna na biceps",
     "Uginanie ramion z hantlami młotkowo",
-    "Ściąganie wyciągu warkoczem przodem",
-    "Ściąganie wyciągu uchwytem prostym przodem",
-    "Ściąganie wyciągu warkoczem zza głowy",
-    "Ściąganie wyciągu uchwytem prostym zza głowy",
-    "Ściąganie wyciągu jednorącz",
+    "Ściąganie wyciągu przodem",
+    "Ściąganie wyciągu zza głowy",
+    "Ściąganie wyciągu",
     "Maszyna na triceps",
     "Wyciskanie hantla nad głowę",
     "Rozpiętki hantlami",
@@ -149,8 +145,7 @@ export const exercisesArr:string[] =
     "Wyciskanie stojąc na maszynie",
     "Rozpiętki na wyciągu",
     "Maszyna 'Smigolowska' na plecy",
-    "Wiosłowanie na maszynie oburącz siedząc",
-    "Wiosłowanie na maszynie jednorącz siedząc",
+    "Wiosłowanie na maszynie siedząc",
     "Hamstring curl",
     "Uginanie nóg leżąc na maszynie",
     "Prostowanie nóg na maszynie",
@@ -189,6 +184,7 @@ export const exercisesArr:string[] =
     "Martwy ciąg sumo",
     "Martwy ciąg na prostych nogach",
     "Martwy ciąg rumuński",
+    "Martwy ciąg z podwyższenia",
     "Martwy ciąg z hantlami",
     "Przysiad ze sztangą z tyłu",
     "Przysiad ze sztangą z przodu",
@@ -199,11 +195,35 @@ export const exercisesArr:string[] =
     "Przysiad Bułgarski",
     "Wykroki z hantlami",
     "Wykroki ze sztangą",
-    "Unoszenie nóg w zwisie"
+    "Unoszenie nóg w zwisie",
+    "Suwalnica na nogi(leg press)"
 ] as const
+
 export const timeMesureExercises:string[] = [
     "Deska",
     "Unoszenie nóg w zwisie",
+]
+export const handleTypes:string[] = [
+    "Sznur",
+    "Jednorącz",
+    "Prosty",
+    "Prosty szeroki",
+    "Opaska",
+    "Szeroki łamany",
+    "Równoległy V szeroki",
+    "Szeroki, chwyt boczny"
+]
+export const exercisesUsingHandles: string[] = [
+    "Ściąganie wyciągu dolnego",
+    "Ściąganie wyciągu przodem",
+    "Ściąganie wyciągu zza głowy", 
+    "Ściąganie wyciągu",
+    "Rozpiętki na wyciągu",
+    "Allahy",
+    "Wymachy nóg do tyłu na wyciągu",
+    "Ściąganie drążka wyciągu górnego", //różne są drążki
+    "Ściąganie drążka wyciągu dolnego", //różne są drążki
+    "Face pulle",
 ]
 // function FillArray(){
 //     exercisesArr = []

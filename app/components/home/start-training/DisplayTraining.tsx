@@ -1,6 +1,6 @@
 'use client'
-import { ActionTypes, AddExerciceReducerType, ExerciseTypes, TrainingExerciseType, UserExercise } from '@/app/types'
-import React, { useContext, useReducer, useState } from 'react'
+import { ActionTypes, AddExerciceReducerType, ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, TrainingExerciseType, UserExercise } from '@/app/types'
+import React, { useContext, useEffect, useReducer, useState } from 'react'
 import { AddExercise } from '../../add-exercise/AddExercise'
 import { AddExerciceReducer } from '@/app/lib/reducers'
 import { AddExerciseAction, closeTraining, createTraining, updateCurrentTraining } from '@/app/actions'
@@ -15,13 +15,18 @@ import { SpeedIcon } from '@/app/ui/icons/ExpandIcon'
 type DisplayTrainingTypes = {
     training?: TrainingExerciseType[],
     showTempo: boolean,
-    exercisesThatRequireTimeMesure: string[],
     trainingPlanId: string,
     lastid: number,
     trainingid: string,
     trainingName:string,
     exercises: ExerciseTypes,
     allExercisesInOneArray: (string | UserExercise)[],
+    allHandles: {
+        id: string;
+        handlename: string;
+    }[],
+    ExercisesThatRequireHandle: ExercisesThatRequireTimeMesureOrHandle[],
+    ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[],
 }
 
 const init = {
@@ -35,14 +40,16 @@ const init = {
     time: ''
 }
 
-export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesure,trainingPlanId,lastid,trainingid,trainingName,exercises,allExercisesInOneArray}:DisplayTrainingTypes) => {
+export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,trainingid,trainingName,exercises,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure}:DisplayTrainingTypes) => {
     console.log(training)
     const[exercisesLeft,setExercisesLeft] = useState<TrainingExerciseType[]>(training!)
     const[currentExercise,setCurrentExercise] = useState(exercisesLeft[0])
     const[totalNumberOfTrainigs,setTotalNumberOfTrainigs] = useState(training?.length||1)
     const[exercisesDone,setExercisesDone] = useState(1)
 
-    const showTimeMesure = exercisesThatRequireTimeMesure.includes(currentExercise.exercisename)
+    const showTimeMesure = ExercisesThatRequireTimeMesure.some(x=>x.id === currentExercise.exerciseid)
+    const requiresHandle = ExercisesThatRequireHandle.some(x=>x.id === currentExercise.exerciseid)
+
     const pathname = usePathname()
 
     const[error,setError] = useState('')
@@ -51,6 +58,13 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
     const[isLoading,setIsLoading] = useState(false)
     const modalsContext = useContext(ModalContexts)
 
+    const[handle,setHandle] = useState(requiresHandle?'Sznur':'')
+
+    useEffect(()=>{
+        if(!requiresHandle) return setHandle('')
+            setHandle('Sznur')
+    },[currentExercise])
+    
     const skipExercise = async () => {
         setIsLoading(true)
         let id = trainingID
@@ -76,7 +90,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
             setTrainingID(id)
         }
         
-        const possibleError = await AddExerciseAction(false,currentExercise.exercisename,state.series,pathname.includes('training'),id)
+        const possibleError = await AddExerciseAction(false,currentExercise.exercisename,state.series,pathname.includes('training'),id,handle)
         if(possibleError && possibleError.errors){
             setIsLoading(false)
             return setError(possibleError.errors)
@@ -122,7 +136,7 @@ export const DisplayTraining = ({training,showTempo,exercisesThatRequireTimeMesu
         {
             isLoading? <DisplayTrainingSkeleton isTraining={true}/> :
         <>
-        {exercisesLeft && <AddExercise name={currentExercise.exercisename} exerciseid={currentExercise.exerciseid} isLoading={isLoading} showTempo={showTempo} showTimeMesure={showTimeMesure} isTraining={true} state={state} dispatch={dispatch}/>}
+        {exercisesLeft && <AddExercise name={currentExercise.exercisename} exerciseid={currentExercise.exerciseid} isLoading={isLoading} showTempo={showTempo} showTimeMesure={showTimeMesure} isTraining={true} state={state} dispatch={dispatch} requiresHandle={requiresHandle} allHandles={allHandles} setParnetHandle={setHandle}/>}
         </>
         }
         {error && <div className='text-red'>{error}</div>}

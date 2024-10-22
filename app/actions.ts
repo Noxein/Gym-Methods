@@ -4,9 +4,9 @@ import { compare, hash } from 'bcryptjs'
 import { FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
-import { exerciseList, exercisesArr, timeMesureExercises } from "./lib/exercise-list";
+import { exerciseList, exercisesArr, exercisesUsingHandles, handleTypes, timeMesureExercises } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { WeekDayArray, WeekDayArrayPL } from "./lib/utils";
@@ -14,6 +14,7 @@ import { z } from "zod";
 import { addDays, format, isSameDay, isSameWeek, subDays } from "date-fns";
 import { AuthError } from "next-auth"; 
 import { Begginer1_3FBW_FirstVariation, Begginer1_3FBW_SecondVariation, Beginner4_7Lower_FirstVariation, Beginner4_7Lower_SecondVariation, Beginner4_7Upper_FirstVariation, Beginner4_7Upper_SecondVariation } from "./lib/TrainingPlansData";
+import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
 
 type State = {
     error?: string
@@ -83,10 +84,9 @@ export const ComparePasswords = async (password:string,hasedPassword:string) => 
     return isCorrect
 }
 
-export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,) => {
-    const user = await auth()
-    const userID = user?.user?.id
-    if(!userID) return
+export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:string) => {
+    const userid = await userID()
+    if(!userid) return
     const stringDate = JSON.stringify(new Date())
 
     let arr = [...exercisesArr]
@@ -123,14 +123,18 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     }
     let trainingid = null
     if(trainingPlanId) trainingid = trainingPlanId
+
     let id = exerciseid
     if(userExercises[userExercises.findIndex(x=>x.exercisename===exerciseid)]){
         id = userExercises[userExercises.findIndex(x=>x.exercisename===exerciseid)].id
     }
 
+    let doesUserUsesHandle = null
+    if(usesHandle) doesUserUsesHandle = usesHandle
+
     try{
         await sql`
-        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename) VALUES (${userID},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid})
+        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid},${doesUserUsesHandle})
         `
     }catch(e){
         console.log('Error occured: AddExerciseAction func actions.ts ',e)
@@ -164,13 +168,12 @@ export const SecondStepDataValidation = (exercises:string[]) => {
     }
 }
 export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],favourtiteExercises:string[]) => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
     try{
         await sql`
             UPDATE gymusers
             SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
-            WHERE id = ${userID};
+            WHERE id = ${userid};
         `
         return
     }catch(e){
@@ -184,12 +187,11 @@ export const logout = async () => {
 }
 
 export const getUserExercises = async () => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
     let AllExercises = []
     try{
         const exercises = await sql`
-        SELECT exercisename,id FROM gymusersexercises WHERE userid = ${userID}
+        SELECT exercisename,id FROM gymusersexercises WHERE userid = ${userid}
         `
         AllExercises = [...exercises.rows]
     }catch(e){
@@ -200,8 +202,7 @@ export const getUserExercises = async () => {
 }
 
 export const AddNewUserExercise = async (exercisename:string,timeExercise:boolean) => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
 
     if(exercisename.length>=254){
         return {error : 'Nazwa ćwiczenia jest za długa'}
@@ -217,7 +218,7 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
     }
     try{
         await sql`
-            INSERT INTO gymusersexercises (userid,exercisename,timemesure) VALUES (${userID},${exercisename},${JSON.stringify(timeExercise)})
+            INSERT INTO gymusersexercises (userid,exercisename,timemesure) VALUES (${userid},${exercisename},${JSON.stringify(timeExercise)})
         `
         revalidatePath('/home/profile/my-exercises')
     }catch(e){
@@ -320,9 +321,8 @@ const checkTempoErrors = (tempos:TempoType) => {
     return TempoError
 }
 export const AddNewUserTempo = async (exercicename:string,tempo:TempoType) => {
-    const user = await auth()
-    const userID = user?.user?.id
-    const userExercises = await sql`SELECT exercicename FROM gymusersexercises WHERE userid = ${userID}`
+    const userid = await userID()
+    const userExercises = await sql`SELECT exercicename FROM gymusersexercises WHERE userid = ${userid}`
     const allExercises = [...userExercises.rows,...exercisesArr]
 
     const TempoError = checkTempoErrors(tempo)
@@ -335,7 +335,7 @@ export const AddNewUserTempo = async (exercicename:string,tempo:TempoType) => {
 
     try{
         sql`
-            INSERT INTO gymuserstempos (userid,exercicename,tempo) VALUES (${userID},${exercicename},${JSON.stringify(tempo)})
+            INSERT INTO gymuserstempos (userid,exercicename,tempo) VALUES (${userid},${exercicename},${JSON.stringify(tempo)})
         `
     }catch(e){
         return {error:'Coś poszło nie tak'}
@@ -345,11 +345,10 @@ export const AddNewUserTempo = async (exercicename:string,tempo:TempoType) => {
 }
 
 export const getAllTempos = async () => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
     try{
         const tempos = await sql`
-            SELECT * FROM gymuserstempos WHERE userid = ${userID}
+            SELECT * FROM gymuserstempos WHERE userid = ${userid}
         `
         let temposObject:{[key: string]:{id:string,tempo:TempoType}} = {}
         const newTempos = tempos.rows as UserExerciseTempo[]
@@ -370,24 +369,23 @@ export const AddOrUpdateTempo = async (exerciceid:string,tempos:TempoType) => {
     const TempoError = checkTempoErrors(tempos)
     if(TempoError) return { error: "Coś poszło nie tak2" }
 
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
 
     try{
         const exisingTempo = await sql`
-            SELECT 1 FROM gymuserstempos WHERE userid = ${userID} AND exerciseid = ${exerciceid}
+            SELECT 1 FROM gymuserstempos WHERE userid = ${userid} AND exerciseid = ${exerciceid}
         `
         if(exisingTempo.rows.length>0){
             //TEMPO ALREDY EXIST IN DB AND NEEDS TO BE UPDATED
             await sql`
                 UPDATE gymuserstempos
                 SET tempo = ${JSON.stringify(tempos)}
-                WHERE userid = ${userID} AND exerciseid = ${exerciceid};
+                WHERE userid = ${userid} AND exerciseid = ${exerciceid};
             `
         }else{
             //TEMPO DONT EXIST IN DB AND NEEDS TO BE CREATED
             await sql`
-                INSERT INTO gymuserstempos (userid,exerciseid,tempo) VALUES (${userID},${exerciceid},${JSON.stringify(tempos)})
+                INSERT INTO gymuserstempos (userid,exerciseid,tempo) VALUES (${userid},${exerciceid},${JSON.stringify(tempos)})
             `
         }
     }catch(e){
@@ -400,11 +398,10 @@ export const AddOrUpdateTempo = async (exerciceid:string,tempos:TempoType) => {
 export const DeleteTempoFromDb = async (exerciceid:string) => {
     if(typeof exerciceid !== 'string') return { error: "Coś poszło nie tak1" }
 
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
     try{
         await sql`
-            DELETE FROM gymuserstempos WHERE userid = ${userID} AND exerciseid = ${exerciceid};
+            DELETE FROM gymuserstempos WHERE userid = ${userid} AND exerciseid = ${exerciceid};
         `
     }catch(e){
         return { error: 'Coś poszło nie tak' }
@@ -427,23 +424,50 @@ export const ArrayOfAllExercises = async () => {
     return arr
 }
 
-export const ExercisesThatRequireTimeMesure = async () => {
-    const user = await auth()
-    const userID = user?.user?.id
-    let TimeMesureExerciseArr:string[] = [...timeMesureExercises]
+
+export const userExercisesThatRequireHandlesOrTimeMesure = async () => {
+    const userid = await userID()
+
+    const ExercisesThatRequireTimeMesure:ExercisesThatRequireTimeMesureOrHandle[] = [...DefaultTimeMesureExercies]
+    const ExercisesThatRequireHandle:    ExercisesThatRequireTimeMesureOrHandle[] = [...DefaultHandleExercises]
+
     try{
         const userExercisesThatRequireTimeMesure = await sql`
-        SELECT * FROM gymusersexercises WHERE userid = ${userID} AND timemesure = true
+            SELECT id,exercisename,timemesure,useshandle FROM gymusersexercises WHERE userid = ${userid} AND (timemesure = true OR useshandle = true)
         `
-        const rows = userExercisesThatRequireTimeMesure.rows as UserExercise[]
-        rows.forEach((item)=>{
-            TimeMesureExerciseArr.push(item.exercisename)
-        })
-        return TimeMesureExerciseArr
-    }catch{
-        return []
-    }
 
+        const userExercisesThatRequireEitherTimeMesureOrHandle = userExercisesThatRequireTimeMesure.rows as {id:string,exercisename:string,timemesure:boolean,useshandle:boolean}[]
+
+        userExercisesThatRequireEitherTimeMesureOrHandle.map(x=>{
+            if(x.timemesure) ExercisesThatRequireTimeMesure.push({id: x.id,exercisename:x.exercisename})
+            if(x.useshandle) ExercisesThatRequireHandle.push({id: x.id,exercisename:x.exercisename})
+        })
+        return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
+    }catch(e){
+        console.log(e,'Error occured actions.ts file function userExercisesThatRequireHandlesOrTimeMesure')
+        return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
+    }
+}
+
+export const getUserHandles = async () => {
+    const userid = await userID()
+    try{
+        const data = await sql`
+            SELECT id, handlename FROM gymusershandles WHERE userid = ${userid}
+        `
+        return data.rows as {id: string,handlename: string}[]
+    }catch(e){
+        console.log(e,'Error occured actions.ts file getUserHandles function')
+        return [] as {id: string,handlename: string}[]
+    }
+}
+
+export const getAllHandleTypes = async () => {
+    const userHandles = await getUserHandles()
+    const defaultHandles = handleTypes.map(handle=>{
+        return {id: handle,handlename:handle}
+    })
+    return [...userHandles,...defaultHandles] as {id: string,handlename: string}[]
 }
 export const getAllIdsExercisesInArray = async () => {
     let array = [...exercisesArr]
@@ -453,6 +477,91 @@ export const getAllIdsExercisesInArray = async () => {
     })
 
     return array
+}
+const isNotEmptyString = (...strings:string[]) => {
+    let error = null
+
+    strings.map(string=>{
+        if(typeof string !== 'string') error = 'Coś poszło nie tak' 
+        if(string === '') error = 'Nazwa nie może być pusta'
+    })
+
+    if(!error) return
+
+    return { error: error }
+}
+export const addNewUserHandle = async (handlename:string) => {
+    const userid = await userID()
+    let notEmptyString = isNotEmptyString(handlename)
+    if(notEmptyString) return notEmptyString
+    let redirectUser = true
+    try{
+        const exitsData = await sql`
+            SELECT * FROM gymusershandles WHERE userid = ${userid} AND handlename = ${handlename}
+        `
+       
+        if(exitsData.rowCount && exitsData.rowCount>0){
+            redirectUser = false
+            return { error: 'Taki uchwyt już istnieje' }
+        } 
+        
+        await sql`
+            INSERT INTO gymusershandles  (userid,handlename) VALUES (${userid},${handlename})
+        `
+
+    }catch(e){
+        redirectUser = false
+        return {error: 'Coś poszło nie tak'}
+    }finally{
+        if(redirectUser){
+            revalidatePath('/home/profile/my-handles')
+        }
+    }
+}
+
+export const deleteUserHandle = async (handleid:string,) => {
+    //remember to delete all exercises that uses this handle
+    //TODO
+    const userid = await userID()
+    let notEmptyString = isNotEmptyString(handleid)
+    if(notEmptyString) return notEmptyString
+    let redirectUser = true
+
+    try{
+        await sql`
+             DELETE FROM gymusershandles WHERE id = ${handleid} AND userid = ${userid}
+        `
+    }catch(e){
+        return{ error: 'Coś poszło nie tak'}
+    }finally{
+        if(redirectUser){
+            revalidatePath('/home/profile/my-handles')
+        }
+    }
+}
+
+export const editUserHandle = async (handlename:string,handleid: string) => {
+    const userid = await userID()
+    let redirectUser = true
+    let notEmptyString = isNotEmptyString(handlename)
+    if(notEmptyString) return notEmptyString
+
+    if(!handleid) return {error: 'Potrzebne jest id uchwytu'}
+
+    try{
+        await sql`
+            UPDATE gymusershandles
+            SET handlename = ${handlename}
+            WHERE id = ${handleid} AND userid = ${userid};
+        `
+    }catch(e){
+        redirectUser = false
+        return{ error: 'Coś poszło nie tak'}
+    }finally{
+        if(redirectUser){
+            revalidatePath('/home/profile/my-handles')
+        }
+    }
 }
 
 export const getAllExerciseNamesInArray = async () => {
@@ -494,11 +603,10 @@ const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExe
 }
 
 export const GetUserTrainings = async () => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
     try{
         const UserTrainings = await sql`
-            SELECT id,trainingname,date,exercises,weekday FROM gymuserstrainingplans WHERE userid = ${userID}
+            SELECT id,trainingname,date,exercises,weekday FROM gymuserstrainingplans WHERE userid = ${userid}
         `
         return UserTrainings.rows as UserTrainingPlan[]
     }catch(e){
@@ -508,12 +616,11 @@ export const GetUserTrainings = async () => {
 
 export const GetUserTrainingByName = async (trainingname:string) => {
     if(typeof trainingname !== 'string') return { error: "Coś poszło nie tak"}
-    const user = await auth()
-    const userID = user?.user?.id
-    console.log('hit there')
+    const userid = await userID()
+
     try{
         const Training = await sql`
-            SELECT id,trainingname,date,exercises,weekday FROM gymuserstrainingplans WHERE userid = ${userID} AND trainingname = ${trainingname}
+            SELECT id,trainingname,date,exercises,weekday FROM gymuserstrainingplans WHERE userid = ${userid} AND trainingname = ${trainingname}
         `
         if(Training.rows.length===0){
             return {
@@ -529,24 +636,21 @@ export const GetUserTrainingByName = async (trainingname:string) => {
     }
 }
 export const AddUserTraining = async (trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay) => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
 
-    checkTrainingFields(trainingplanname,exercises,weekday,userID as string)
+    checkTrainingFields(trainingplanname,exercises,weekday,userid as string)
 
     const date = new Date()
     try{
         await sql`
-            INSERT INTO gymuserstrainingplans (userid, trainingname, date, exercises, weekday) VALUES (${userID},${trainingplanname},${JSON.stringify(date)},${JSON.stringify({exercises})},${weekday})
+            INSERT INTO gymuserstrainingplans (userid, trainingname, date, exercises, weekday) VALUES (${userid},${trainingplanname},${JSON.stringify(date)},${JSON.stringify({exercises})},${weekday})
         `
     }catch(e){
         return { error: 'Coś poszło nie tak'}
     }
 }
 export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDayPL,exercisesuwu?:TrainingExerciseType[]) => {
-    const user = await auth()
-    const userID = user?.user?.id
-    console.log(userID)
+    const userid = await userID()
 
     if(typeof trainingplanname !== 'string'){
         return {error:'Coś poszło nie tak1'}
@@ -558,7 +662,7 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
 
     try{
         const userExercice = await sql`
-        SELECT 1 FROM gymuserstrainingplans WHERE userid = ${userID} AND trainingname = ${trainingplanname}
+        SELECT 1 FROM gymuserstrainingplans WHERE userid = ${userid} AND trainingname = ${trainingplanname}
         `
         if(userExercice.rows.length>0){
             return { error: 'Trening o tej nazwie już istnieje, wybierz inną'}
@@ -574,7 +678,7 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
     console.log(exercises)
     try{
         await sql`
-            INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userID},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify({exercises})})
+            INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userid},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify({exercises})})
         `
     }catch(e){
         console.log('Error occured CreateUserTraining func actions.ts',e)
@@ -583,10 +687,9 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
     revalidatePath('/home/profile/my-training-plans')
 }
 export const EditUserTraining = async (trainingid:string,trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay) => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
 
-    const checkvalue = await checkTrainingFields(trainingplanname,exercises,weekday,userID as string)
+    const checkvalue = await checkTrainingFields(trainingplanname,exercises,weekday,userid as string)
     if(checkvalue?.error) return  checkvalue
     const date = new Date()
     try{
@@ -634,11 +737,10 @@ export const DeleteUserTraining = async (trainingid:string) => {
 }
 
 export const checkTrainingInProgress = async () => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
     try{
         const trainingInProgress = await sql`
-            SELECT 1 FROM gymuserstrainings WHERE userid = ${userID} AND iscompleted = false
+            SELECT 1 FROM gymuserstrainings WHERE userid = ${userid} AND iscompleted = false
         `
         if(trainingInProgress.rows.length>0) return true
         return false
@@ -648,12 +750,11 @@ export const checkTrainingInProgress = async () => {
 }
 
 export const userTrainingsList = async () => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
 
     try{
         const list = await sql`
-            SELECT * FROM gymuserstrainingplans WHERE userid = ${userID}
+            SELECT * FROM gymuserstrainingplans WHERE userid = ${userid}
         `
         return list.rows as UserTrainingPlan[]
     }catch{
@@ -662,11 +763,10 @@ export const userTrainingsList = async () => {
 }
 
 export const getTrainingInProgressData = async () => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
     try{
         const trainingInProgess = await sql`
-        SELECT * FROM gymuserstrainings WHERE userid = ${userID} AND iscompleted = false
+        SELECT * FROM gymuserstrainings WHERE userid = ${userid} AND iscompleted = false
         `
         const trainingID = trainingInProgess.rows[0].trainingid
         const training = await sql `
@@ -678,13 +778,12 @@ export const getTrainingInProgressData = async () => {
     }
 }
 export const closeTraining = async (redirectToTraining:string) => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
     try{
         await sql`
             UPDATE gymuserstrainings
             SET iscompleted = true
-            WHERE userid = ${userID} AND iscompleted = false ;
+            WHERE userid = ${userid} AND iscompleted = false ;
         `
     }catch(e){
         console.log('Error occured closeTraining func actions.ts',e)
@@ -695,16 +794,15 @@ export const closeTraining = async (redirectToTraining:string) => {
 }
 
 export const createTraining = async (trainingPlanId:string) => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
     const date = new Date()
 
     try{
         const training = await sql`
-        INSERT INTO gymuserstrainings (userid,iscompleted,trainingid,datetime) VALUES (${userID},false,${trainingPlanId},${JSON.stringify(date)})
+        INSERT INTO gymuserstrainings (userid,iscompleted,trainingid,datetime) VALUES (${userid},false,${trainingPlanId},${JSON.stringify(date)})
     `
         const trainingID = await sql`
-            SELECT id FROM gymuserstrainings WHERE userid = ${userID} ORDER BY datetime DESC LIMIT 1;
+            SELECT id FROM gymuserstrainings WHERE userid = ${userid} ORDER BY datetime DESC LIMIT 1;
         `
         return trainingID.rows[0].id
     }catch(e){
@@ -738,11 +836,10 @@ export const updateCurrentTraining = async (id:string,exercisesLeft: TrainingExe
 }
 
 export const getExistingTraining = async () => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
     try{
         const training = await sql`
-            SELECT * FROM gymuserstrainings WHERE userid = ${userID} AND iscompleted = false
+            SELECT * FROM gymuserstrainings WHERE userid = ${userid} AND iscompleted = false
         `
         return training.rows[0] as UserTrainingInProgress
     }catch{
@@ -751,15 +848,14 @@ export const getExistingTraining = async () => {
 }
 
 export const getLastTrainigs = async (limit:number) => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
 
     try{
         const lastTrainings = await sql`
         SELECT gymuserstrainings.trainingid, gymuserstrainings.datetime, gymuserstrainingplans.trainingname, gymuserstrainingplans.weekday
         FROM gymuserstrainings
         INNER JOIN gymuserstrainingplans ON gymuserstrainings.trainingid=gymuserstrainingplans.id 
-        WHERE gymuserstrainings.userid = ${userID} ORDER BY datetime DESC LIMIT ${limit};
+        WHERE gymuserstrainings.userid = ${userid} ORDER BY datetime DESC LIMIT ${limit};
         `
         return lastTrainings.rows as LastExerciseType[]
     }catch(e){
@@ -770,14 +866,13 @@ export const getLastTrainigs = async (limit:number) => {
 }
 
 export const fetchIncomingTrainings = async () => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
 
     const today = new Date()
 
     try{
         const trainings = await sql`
-            SELECT * FROM gymuserstrainingplans WHERE userid = ${userID}
+            SELECT * FROM gymuserstrainingplans WHERE userid = ${userid}
         `
         const trainingPlansArray = trainings.rows as UserTrainingPlan[]
         if(trainingPlansArray.length<2) return trainingPlansArray
@@ -798,14 +893,13 @@ export const fetchIncomingTrainings = async () => {
 }
 
 export const getTwoLatestTrainings = async () => {
-    const user = await auth()
-    const userID = user?.user?.id
+    const userid = await userID()
 
     try{
         const lastTrainings = await sql`    
             SELECT gymuserstrainings.id, gymuserstrainings.datetime, gymuserstrainingplans.trainingname FROM gymuserstrainings
             INNER JOIN gymuserstrainingplans ON gymuserstrainings.trainingid = gymuserstrainingplans.id
-            WHERE gymuserstrainings.userid = ${userID} AND gymuserstrainings.iscompleted = true ORDER BY datetime DESC LIMIT 2
+            WHERE gymuserstrainings.userid = ${userid} AND gymuserstrainings.iscompleted = true ORDER BY datetime DESC LIMIT 2
             ` 
         const x = lastTrainings.rows as {id: string, datetime:Date,trainingname:string}[]
 

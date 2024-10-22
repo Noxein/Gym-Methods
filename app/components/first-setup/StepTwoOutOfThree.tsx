@@ -33,10 +33,10 @@ export const StepTwoOutOfThree = ({setCurrentStep,exercisesToDelete,setExercises
     }
     return (
         <div className='flex flex-col text-white gap-8 mx-5 justify-center h-screen'>
-            <Button className='border-green border-4 text-xl' onClick={redirectToCreateTraining}>
+            <Button className='border-green border-4 text-xl' onClick={redirectToCreateTraining} isPrimary>
                 Chcę stworzyć własny trening
             </Button>
-            <Button className='border-green border-4 text-xl' onClick={()=>setCurrentStep(page=>page+1)}>
+            <Button className='border-green border-4 text-xl' onClick={()=>setCurrentStep(page=>page+1)} isPrimary>
                 Chcę gotowy trening
             </Button>
 

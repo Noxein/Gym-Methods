@@ -59,6 +59,7 @@ export const MapDays = ({Last30DaysExercises}:MapDaysTypes) => {
         
         setDayData({KGToday:KGSelectedDay,SeriesToday:SeriesSelectedDay})
     }
+
     useEffect(()=>{
         getData(new Date())
     },[])

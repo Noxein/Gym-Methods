@@ -116,6 +116,11 @@ export type UserTrainingPlan = {
     weekday: WeekDay
 }
 
+export type ExercisesThatRequireTimeMesureOrHandle = {
+    id:string,
+    exercisename:string
+}
+
 export type TrainingExerciseType = {
     exercisename: string,
     exerciseid:string,

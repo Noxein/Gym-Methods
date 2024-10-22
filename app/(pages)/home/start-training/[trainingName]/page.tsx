@@ -36,6 +36,6 @@ export default async function page({params,searchParams}:Pagetypes){
             </TrainingError>
     }
     return(
-        <Training name={decodedName} training={training.training} lastid={0} trainingid=""/>
+        <Training trainingName={decodedName} training={training.training} lastid={0} trainingid=""/>
     )
 }
