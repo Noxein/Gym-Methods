@@ -1,27 +1,25 @@
 'use client'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { UserSettings } from '@/app/types'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Icon } from '../../Icon'
 import { CheckIcon, CrossIcon } from '@/app/ui/icons/ExpandIcon'
-import { Mapper } from '../../first-setup/Mapper'
 import { exerciseList,exercisesArr } from '@/app/lib/exercise-list'
 import { SettingsMapper } from './SettingsMapper'
 import { saveNewUserSetting } from '@/app/actions'
-import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { useRouter } from 'next/navigation'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
+import { Select } from '@/app/components/ui/SelectField'
+import { Button } from '../../ui/Button'
+import { ErrorDiv } from '../../ui/ErrorDiv'
 
 type SettingsPageTypes = {
     settings: UserSettings
 }
 
-const showTempo = ['Tak','Nie']
 const daysexercising = ['1' , '2' , '3' , '4' , '5' , '6' , '7']
 const goal = ['Siła','Hipertrofia','Oba']
 const advancmentlevel = ['Początkujący','Średniozaawansowany','Zaawansowany']
 
-type showTempoType = 'Tak'|'Nie'
 type daysexercisingType = '1' | '2' | '3' | '4' | '5' | '6' | '7'
 type goalType = 'Siła' | 'Hipertrofia' | 'Oba'
 type advancmentlevelType = 'Początkujący' | 'Średniozaawansowany' | 'Zaawansowany'
@@ -33,14 +31,6 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
     const[error, setError] = useState('')
 
     const router = useRouter()
-    console.log(settings)
-    const handleTempoChange = (value:'Tak'|'Nie') => {
-        if(!showTempo.includes(value)) return
-        const bool = value === 'Tak'
-        let copy = {...userSettings}
-        copy.showtempo = bool
-        setUserSettings(copy)
-    }
     const handleDaysExercisingChange = (value:'1' | '2' | '3' | '4' | '5' | '6' | '7') => {
         if(!daysexercising.includes(value)) return
         let copy = {...userSettings}
@@ -95,29 +85,18 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         HideShowHTMLScrollbar('hide')
     }
   return (
-    <div className='mt-10 flex flex-col gap-4 mx-5'>
+    <div className='mt-10 flex flex-col gap-4 mx-5 text-white'>
         <h1 className='text-xl text-center text-white font-semibold'>USTAWIENIA</h1>
 
-        <div className='flex gap-4'>
-            <div className='flex flex-col flex-1 relative'>
-                <Label htmlFor='tempo'>Pokazuj tempo</Label>
-                <Select id='tempo' list={showTempo} defaultValue={userSettings.showtempo?'Tak':'Nie'} onChange={e=>handleTempoChange(e.target.value as showTempoType)}/>
-            </div>
-            <div className='flex flex-col flex-1 relative'>
-                <Label htmlFor='daysexercising'>Treningi w tygodniu</Label>
-                <Select id='daysexercising'  list={daysexercising} defaultValue={userSettings.daysexercising} onChange={e=>handleDaysExercisingChange(e.target.value as daysexercisingType)}/>
-            </div>
-        </div>
+            <div className='flex flex-col gap-4 mb-20'>
 
-        <div className='flex flex-col flex-1 relative'>
-            <Label htmlFor='goal'>Cel</Label>
-            <Select id='goal' list={goal} defaultValue={userSettings.goal} onChange={e=>handleGoalChange(e.target.value as goalType)}/>
-        </div>
-
-        <div className='flex flex-col flex-1 relative'>
-            <Label htmlFor='advancmentlevel'>Poziom zaawansowania</Label>
-            <Select id='advancmentlevel' list={advancmentlevel} defaultValue={userSettings.advancmentlevel} onChange={e=>handleAdvancmentLevelChange(e.target.value as advancmentlevelType)}/>
-        </div>
+                <Select labelName='Treningi w tygodniu' valuesToLoop={daysexercising} onChange={e=>handleDaysExercisingChange(e.target.value as daysexercisingType)} defaultValue={userSettings.daysexercising}/>
+    
+                <Select labelName='Cel' valuesToLoop={goal} onChange={e=>handleGoalChange(e.target.value as goalType)} defaultValue={userSettings.goal}/>
+            
+                <Select labelName='Poziom zaawansowania' valuesToLoop={advancmentlevel} onChange={e=>handleAdvancmentLevelChange(e.target.value as advancmentlevelType)} defaultValue={userSettings.advancmentlevel}/>
+            
+            </div>
 
         <div className='mt-10 bg-marmur p-[1px] flex items-center rounded-lg' onClick={handleShowFavModal}>
             <button className='bg-dark flex-1 rounded-lg py-3 text-white'>
@@ -138,10 +117,11 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         </div>
 
         <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
-          <button className={`flex-1 bg-green text-white py-3 rounded-md`} onClick={handleSave}>Zapisz zmiany</button>
-          <button className={`flex-1 bg-red text-white rounded-md`} onClick={()=>router.push('/home/profile')}>Anuluj</button>
+            <Button className='flex-1' onClick={handleSave} isPrimary>Zapisz zmiany</Button>
+            <Button className='flex-1' onClick={()=>router.push('/home/profile')}>Anuluj</Button>
         </div>
-        {error && <div className='text-red'>{error}</div>}
+
+        <ErrorDiv  error={error}/>
 
             {showFavourtieExercisesModal && 
                 <FixedDiv showModal={setShowFavourtieExercisesModal}>
@@ -154,33 +134,6 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
                 </FixedDiv>}
     </div>
   )
-}
-
-
-type LabelType = {
-    sClass?:string
-} & React.DetailedHTMLProps<React.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>
-
-const Label = ({sClass,...rest}:LabelType) => {
-    const theme = useContext(ThemeContext)
-
-    return(
-        <label htmlFor=""  className={`text-${theme?.colorPallete.accent} font-light absolute -top-1/3 left-2 bg-${theme?.colorPallete.primary} px-2 ${sClass}`} {...rest}></label>
-    )
-}
-
-type SelectType = {
-    list: string[],
-} & React.DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>
-
-const Select = ({list,...rest}:SelectType) => {
-    return(
-        <select {...rest} className='py-3 bg-dark border-1 border-marmur rounded-lg text-white px-2'>
-            {list.map(item=>(
-                <option key={item} value={item}>{item}</option>
-            ))}
-        </select>
-    )
 }
 
 const FixedDiv = ({children,showModal}:{children:React.ReactNode,showModal:React.Dispatch<React.SetStateAction<boolean>>}) => {

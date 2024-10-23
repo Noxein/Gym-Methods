@@ -2,10 +2,10 @@
 import React, { useState } from 'react'
 import { FormWrapper } from './FormWrapper'
 import { InputGroup } from './InputGroup'
-import { FormInputErrors } from './FormInputErrors'
 import { useFormState } from 'react-dom'
 import { Login } from '../actions'
 import { useRouter } from 'next/navigation'
+import { ErrorDiv } from './ui/ErrorDiv'
 
 export const LoginForm = () => {
   const[status,dispach] = useFormState(Login,{error:''})
@@ -21,10 +21,9 @@ export const LoginForm = () => {
       hasAccount={false}
       >
         <InputGroup id='email' text='Email' type='email'/>
-        <FormInputErrors/>
         
         <InputGroup id='password' text='Hasło' type={showPassword?'text':'password'} showPassword={showPassword} setShowPassword={setShowPassword}/>
-        <FormInputErrors errors={[status.error]}/>
+        <ErrorDiv error={status.error}/>
 
       </FormWrapper>
       

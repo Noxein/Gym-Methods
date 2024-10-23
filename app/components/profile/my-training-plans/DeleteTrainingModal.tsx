@@ -5,6 +5,8 @@ import { ThemeContext } from '@/app/context/ThemeContext'
 import { DeleteUserTraining } from '@/app/actions'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { SmallLoader } from '../../Loading/SmallLoader'
+import { Button } from '../../ui/Button'
+import { ErrorDiv } from '../../ui/ErrorDiv'
 
 type DeleteTrainingModalTypes = {
     setShowDeleteModal: React.Dispatch<React.SetStateAction<boolean>>,
@@ -31,19 +33,23 @@ export const DeleteTrainingModal = ({setShowDeleteModal,currentSelectedTraining}
     HideShowHTMLScrollbar('show')
   }
   return (
-    <BlurBackgroundModal onClick={HandleCloseModal}>
-        <div onClick={e=>e.stopPropagation()} className={`border-2 border-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent} px-10 py-6 rounded-md text-xl flex flex-col gap-2 mb-20`}>
-        <div className='text-center'>
-                Czy napewno chcesz usunąć <br />
-                <strong>{currentSelectedTraining?.trainingname}</strong>
-            </div>
+    <BlurBackgroundModal>
+        <div className={`text-white px-5 py-6 rounded-md text-xl flex flex-col gap-4 mb-20 w-full`}>
+
+          <div className='text-center'>
+            Czy napewno chcesz usunąć <br />
+            <strong>{currentSelectedTraining?.trainingname}</strong>
+          </div>
+
             {isLoading?
             <SmallLoader/>:
-            <div className='flex gap-2'>
-                <button className='flex-1 bg-red py-2' onClick={deleteExercise}>Usuń</button>
-                <button onClick={HandleCloseModal} className='flex-1 bg-gray-600'>Anuluj</button>
+            
+            <div className='flex gap-4'>
+              <Button onClick={deleteExercise} isPrimary className='flex-1'>Usuń</Button>
+              <Button onClick={HandleCloseModal}  className='flex-1'>Anuluj</Button>
             </div>}
-            {error && <div className='text-red-500'>${error}</div>}
+
+            <ErrorDiv error={error}/>
         </div>
     </BlurBackgroundModal>
   )

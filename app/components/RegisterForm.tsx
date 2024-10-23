@@ -1,11 +1,11 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { FormWrapper } from './FormWrapper'
 import { InputGroup } from './InputGroup'
-import { FormInputErrors } from './FormInputErrors'
 import { useFormState } from 'react-dom'
 import { Register } from '../actions'
 import { useRouter } from 'next/navigation'
+import { ErrorDiv } from './ui/ErrorDiv'
 
 export const RegisterForm = () => {
   const initState = {
@@ -16,6 +16,8 @@ export const RegisterForm = () => {
     }
   }
   const[state,dispach] = useFormState(Register,initState)
+  const[showPassword,setShowPassword] = useState(false)
+  const[showRepeatPassword,setShowRepeatPassword] = useState(false)
   const router = useRouter()
   if(Object.keys(state.errors).length === 0) router.push('/login')
   return (<>
@@ -26,13 +28,13 @@ export const RegisterForm = () => {
     hasAccount={true}
     >
       <InputGroup id='email' text='Email' type='email'/>
-      <FormInputErrors errors={state?.errors.email}/>
+      <ErrorDiv error={state?.errors.email && state?.errors.email[0]} className='text-lg -mt-3'/>
 
-      <InputGroup id='password' text='Hasło' type='password'/>
-      <FormInputErrors errors={state?.errors.password} />
+      <InputGroup id='password' text='Hasło' type={showPassword?'text':'password'} setShowPassword={setShowPassword} showPassword={showPassword}/>
+      <ErrorDiv error={state?.errors.password && state?.errors.password[0]} className='text-lg -mt-3'/>
 
-      <InputGroup id='confirmpassword' text='Powtórz hasło' type='password'/>
-      <FormInputErrors errors={state?.errors.confirmpassword} />
+      <InputGroup id='confirmpassword' text='Powtórz hasło' type={showRepeatPassword?'text':'password'} setShowPassword={setShowRepeatPassword} showPassword={showRepeatPassword}/>
+      <ErrorDiv error={state?.errors.confirmpassword && state?.errors.confirmpassword[0]} className='text-lg -mt-3'/>
     
     </FormWrapper>
     </>)

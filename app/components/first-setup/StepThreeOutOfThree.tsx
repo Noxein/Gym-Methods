@@ -5,6 +5,7 @@ import { FirstSetupFinish, SecondStepDataValidation } from '@/app/actions'
 import { dataType } from './SetupOneOfThree'
 import { useRouter } from 'next/navigation'
 import { ThemeContext } from '@/app/context/ThemeContext'
+import { Button } from '../ui/Button'
 
 type StepTwoOutOfThree = {
     setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
@@ -33,9 +34,9 @@ export const StepThreeOutOfThree = ({setCurrentStep,favouriteExercises,setExerci
         </div>
         
         <div className='text-red-500'>{error}</div>
-        <div className={`fixed bottom-0 left-0 right-0 flex gap-2 px-5 py-5 bg-${theme?.colorPallete.primary}`}>
-            <button onClick={ValidateData} className='flex-1 text-white bg-green py-3 rounded-lg font-semibold text-2xl'>Dalej</button>
-            <button onClick={()=>setCurrentStep(step=>step-1)} className='flex-1 text-white bg-red py-3 rounded-lg font-semibold text-2xl'>Wstecz</button>
+        <div className={`fixed bottom-0 left-0 right-0 flex gap-2 px-5 pb-5 bg-${theme?.colorPallete.primary}`}>
+            <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)}>Wstecz</Button>
+            <Button className='flex-1 text-2xl' onClick={ValidateData} isPrimary >Dalej</Button>
         </div>
     </div>
     )

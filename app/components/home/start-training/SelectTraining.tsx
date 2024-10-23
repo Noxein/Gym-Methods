@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import { TrainingListSkeleton } from '../../Loading/home/start-training/TrainingListSkeleton'
 import { LatestTrainingSkeleton } from '../../Loading/home/start-training/LatestTrainingSkeleton'
+import { LinkWithIcon } from '../../ui/LinkWithIcon'
 
 export const SelectTraining = async () => {
     
@@ -13,15 +14,16 @@ export const SelectTraining = async () => {
   return (
     <div className='flex flex-col min-h-[calc(100dvh-40px)]'>
         <h1 className='text-2xl text-center mt-10'>ROZPOCZNIJ TRENING</h1>
-
-        <button className='bg-green mx-5 mt-5 px-4 py-4 rounded-lg text-xl'>
-          <Link href={`/home/profile/my-training-plans?showAddModal=true`} className='flex justify-between'>
-            <span>Dodaj nowy trening</span>
+        <LinkWithIcon
+          childrenIcon={
             <Icon className='bg-opacity-0'>
-              <PlusIcon />
-            </Icon>
-          </Link>
-        </button>
+            <PlusIcon />
+          </Icon>
+          }
+          href={'/home/profile/my-training-plans?showAddModal=true'}
+          linkText='Dodaj nowy trening'
+          className='bg-green mx-5 py-4 text-xl mt-4'
+        />
 
         <Suspense fallback={<TrainingListSkeleton />}>
           <TrainingList/>

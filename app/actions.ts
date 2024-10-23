@@ -191,7 +191,7 @@ export const getUserExercises = async () => {
     let AllExercises = []
     try{
         const exercises = await sql`
-        SELECT exercisename,id FROM gymusersexercises WHERE userid = ${userid}
+        SELECT exercisename,id,timemesure,useshandle FROM gymusersexercises WHERE userid = ${userid}
         `
         AllExercises = [...exercises.rows]
     }catch(e){
@@ -201,13 +201,16 @@ export const getUserExercises = async () => {
     return AllExercises as UserExercise[]
 }
 
-export const AddNewUserExercise = async (exercisename:string,timeExercise:boolean) => {
+export const AddNewUserExercise = async (exercisename:string,timeExercise:boolean,usesHandle:boolean) => {
     const userid = await userID()
 
     if(exercisename.length>=254){
         return {error : 'Nazwa ćwiczenia jest za długa'}
     }
     if(typeof timeExercise !== 'boolean'){
+        return {error: 'Coś poszło nie tak'}
+    }
+    if(typeof usesHandle !== 'boolean'){
         return {error: 'Coś poszło nie tak'}
     }
     if( typeof exercisename !== 'string'){
@@ -218,7 +221,7 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
     }
     try{
         await sql`
-            INSERT INTO gymusersexercises (userid,exercisename,timemesure) VALUES (${userid},${exercisename},${JSON.stringify(timeExercise)})
+            INSERT INTO gymusersexercises (userid,exercisename,timemesure,useshandle) VALUES (${userid},${exercisename},${timeExercise},${usesHandle})
         `
         revalidatePath('/home/profile/my-exercises')
     }catch(e){
@@ -279,18 +282,24 @@ export const DeleteUserExercise = async (id:string) => {
     }
 }
 
-export const EditUserExercise = async (exerciseid:string,newname:string) => {
+export const EditUserExercise = async (exerciseid:string,newname:string,timeExercise:boolean,usesHandle:boolean) => {
     if(newname === ''){
         return {error :'Wpisz nową nazwę ćwiczenia'}
     }
     if(typeof exerciseid !== 'string' || typeof newname !== 'string'){
         return {error :'Coś poszło nie tak'}
     }
+    if(typeof timeExercise !== 'boolean') {
+        return {error :'Coś poszło nie tak'}
+    }
+    if(typeof usesHandle !== 'boolean') {
+        return {error :'Coś poszło nie tak'}
+    }
 
     try{
         sql`
             UPDATE gymusersexercises
-            SET exercisename = ${newname}
+            SET exercisename = ${newname}, timemesure = ${timeExercise}, useshandle = ${usesHandle}
             WHERE id = ${exerciseid};
         `
         revalidatePath('/home/profile/my-exercises')
@@ -1137,10 +1146,8 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
     const goalArr = ['Siła','Hipertrofia','Oba']
     const advancmentlevelArr = ['Początkujący','Średniozaawansowany','Zaawansowany']
 
-    const { advancmentlevel, daysexercising, favouriteexercises, goal, notfavouriteexercises, showtempo } = newSettings
+    const { advancmentlevel, daysexercising, favouriteexercises, goal, notfavouriteexercises } = newSettings
 
-    let goalcopy = false
-    showtempo===null ? goalcopy = false : goalcopy = true
     if(typeof goal !== 'string' || !goalArr.includes(goal)) return
     if(typeof advancmentlevel !== 'string' || !advancmentlevelArr.includes(advancmentlevel)) return
     if(typeof daysexercising !== 'string' || !daysexercisingArr.includes(daysexercising)) return
@@ -1158,7 +1165,7 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
     
     try{
         await sql`
-            UPDATE gymusers SET showtempo = ${showtempo}, goal = ${goal}, advancmentlevel = ${advancmentlevel}, daysexercising = ${daysexercising}, favouriteexercises = ${JSON.stringify(favouriteexercises)}, notfavouriteexercises = ${JSON.stringify(notfavouriteexercises)}  WHERE id = ${userid}
+            UPDATE gymusers SET goal = ${goal}, advancmentlevel = ${advancmentlevel}, daysexercising = ${daysexercising}, favouriteexercises = ${JSON.stringify(favouriteexercises)}, notfavouriteexercises = ${JSON.stringify(notfavouriteexercises)}  WHERE id = ${userid}
         `
         return {
             error: false

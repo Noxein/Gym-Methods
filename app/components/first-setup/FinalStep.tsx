@@ -46,9 +46,9 @@ export const FinalStep = ({data,exercisesToDelete,favouriteExercises,notfavourit
         <h1 className='text-white font-bold text-xl text-center mt-20 mb-10'>Zaznacz jakie ćwiczenia <br/> muszą być w Twoim planie:</h1>
         <Mapper item={exerciseList} currentLevel={0} stateSetter={setFavouriteExercises} state={favouriteExercises} filterExercises={exercisesToDelete} favourite={true}/>
         <div className='text-white'>{error}</div>
-        <div className={`fixed bottom-0 left-0 right-0 gap-2 flex mx-5 mb-5 bg-${theme?.colorPallete.primary}`}>
-            <button onClick={async()=>{ValidateData()}} className={`flex-1 text-white bg-green py-3 rounded-lg font-semibold text-2xl`}>Zakończ</button>
-            <button onClick={()=>setCurrentStep(page=>page-1)} className='flex-1 text-white bg-red py-3 rounded-lg font-semibold text-2xl'>Wstecz</button>
+        <div className={`fixed bottom-0 left-0 right-0 gap-2 flex mx-5 pb-5 bg-${theme?.colorPallete.primary}`}>
+            <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)}>Wstecz</Button>
+            <Button className='flex-1 text-2xl' onClick={async()=>{ValidateData()}} isPrimary >Zakończ</Button>
         </div>
     </div>
   )

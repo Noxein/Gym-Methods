@@ -48,6 +48,7 @@ export type UserExercise = {
     id:string,
     exercisename:string,
     timemesure: boolean,
+    useshandle: boolean,
 }
 
 export type TempoType = {
@@ -172,7 +173,6 @@ export type ExerciseType = {
 }
 
 export type UserSettings = {
-    showtempo: boolean,
     goal:  'Siła' | 'Hipertrofia' | 'Oba',
     advancmentlevel: 'Początkujący' | 'Średniozaawansowany' | 'Zaawansowany',
     daysexercising: '1' | '2' | '3' | '4' | '5' | '6' | '7',

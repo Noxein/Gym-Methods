@@ -1,8 +1,8 @@
 'use client'
 import { FistStepDataValidation } from '@/app/actions'
-import { ThemeContext } from '@/app/context/ThemeContext'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { CenterComponent } from '@/app/components/CenterComponent'
+import { Button } from '../ui/Button'
 
 export type dataType = {
     goal:string,
@@ -20,7 +20,6 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
     const goal = ['Siła','Hipertrofia','Oba']
     const advancmentlevel = ['Początkujący','Średniozaawansowany','Zaawansowany']
     const daysexercising = ['1','2','3','4','5','6','7']
-    const theme = useContext(ThemeContext)
 
     const ValidateData = async () => {
         const validatedData = FistStepDataValidation(data)
@@ -49,8 +48,8 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
                 errors={[]}
                 setData={setData}/>
             <div className='text-red-500'>{error}</div>
-            <div className={`fixed bottom-0 left-0 right-0 flex mx-5 mb-5 bg-${theme?.colorPallete.primary}`}>
-                <button onClick={e=>{e.preventDefault();ValidateData()}} className='flex-1 text-white bg-green py-3 rounded-lg font-semibold text-2xl'>Dalej</button>
+            <div className={`fixed bottom-0 left-0 right-0 flex mx-5 mb-5`}>
+                <Button className='flex-1 text-2xl' isPrimary onClick={e=>{e.preventDefault();ValidateData()}}>Dalej</Button>
             </div>
         </form>
     </CenterComponent>
@@ -65,7 +64,6 @@ type SelectTypes = {
     setData: React.Dispatch<React.SetStateAction<dataType>>
 }
 const Select = ({labelText, options, name, errors, setData}:SelectTypes) => {
-    const theme = useContext(ThemeContext)
     const setDataFunc = (value:string) => {
         setData(callbackData=>{
             let callbackDataCopy = {...callbackData}
@@ -77,7 +75,7 @@ const Select = ({labelText, options, name, errors, setData}:SelectTypes) => {
         <div className='flex flex-col text-white gap-1'>
             <label htmlFor={name} className='text-xl'>{labelText}</label>
             <select name={name} id={name} defaultValue={options[0]} onChange={e=>setDataFunc(e.target.value)}
-                className={`rounded-lg px-2 py-2 bg-${theme?.colorPallete.primary} border-${theme?.colorPallete.accent} border-1 text-xl`}
+                className={`rounded-lg px-2 py-2 bg-dark border-marmur border-1 text-xl`}
                 >
                 {options.map((option,index)=>(
                     <option value={option} key={option}>

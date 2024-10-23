@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import React, { DetailedHTMLProps, HTMLAttributes, useContext, useState } from 'react'
 import { Icon } from '../../Icon'
 import { EyeIcon } from '@/app/ui/icons/ExpandIcon'
+import { ErrorDiv } from '../../ui/ErrorDiv'
+import { Button } from '../../ui/Button'
 
 export const ChangePasswordPage = () => {
     const[password,setPassword] = useState('')
@@ -39,12 +41,11 @@ export const ChangePasswordPage = () => {
             <Input type={showRepeatnewpassword?'text':'password'} id='repeatnewpassword' value={repeatnewpassword} onChange={e=>setRepeatnewpassword(e.target.value)} />
             <ShowPassword isOpen={showRepeatnewpassword} onClick={()=>setShowRepeatnewpassword(!showRepeatnewpassword)}/>
         </div>
-        {error && 
-            <div className='text-[#ff4444] text-xl'>
-                {error}
-            </div>}
-        <button className='bg-green text-white rounded-xl py-2 text-xl mt-2' onClick={handleSave}>Zapisz</button>
-        <button className='bg-red text-white rounded-xl py-2 text-xl' onClick={()=>router.push('/home/profile')}>Anuluj</button>
+
+        <ErrorDiv error={error}/>
+
+        <Button className='mt-5' onClick={handleSave} isPrimary>Zapisz</Button>
+        <Button onClick={()=>router.push('/home/profile')}>Anuluj</Button>
     </div>
   )
 }

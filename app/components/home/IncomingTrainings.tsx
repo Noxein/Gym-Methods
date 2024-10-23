@@ -5,6 +5,8 @@ import { getDay } from 'date-fns'
 import { Icon } from '../Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
+import { ButtonWithIcon } from '../ui/ButtonWithIcon'
+import { LinkWithIcon } from '../ui/LinkWithIcon'
 
 export const IncomingTrainings = async () => {
     const trainings = await fetchIncomingTrainings()
@@ -16,12 +18,11 @@ export const IncomingTrainings = async () => {
       {trainings.map(training=>(
         <Training training={training} currentWeekDay={currentWeekDay} key={training.id}/>
       ))}
-      <Link className={`flex justify-between px-5 bg-green text-white py-2 rounded-lg items-center`} href={'/home/profile/my-training-plans?showAddModal=true'}>
-        <span>Dodaj nowy trening</span>
+      <LinkWithIcon className='bg-green' linkText='Dodaj nowy trening' href={'/home/profile/my-training-plans?showAddModal=true'} childrenIcon={
         <Icon>
           <PlusIcon />
         </Icon>
-      </Link>
+      }/>
     </div>
   )
 }

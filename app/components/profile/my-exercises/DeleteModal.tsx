@@ -5,6 +5,7 @@ import { ThemeContext } from '@/app/context/ThemeContext'
 import { DeleteUserExercise } from '@/app/actions'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { SmallLoader } from '../../Loading/SmallLoader'
+import { Button } from '../../ui/Button'
 
 export const DeleteModal = ({selectedExercise,setShowDeleteModal}:{selectedExercise:UserExercise,setShowDeleteModal:React.Dispatch<React.SetStateAction<boolean>>}) => {
     const theme = useContext(ThemeContext)
@@ -27,8 +28,8 @@ export const DeleteModal = ({selectedExercise,setShowDeleteModal}:{selectedExerc
         setShowDeleteModal(false)
     }
     return (
-    <BlurBackgroundModal onClick={HandleCloseModal}>
-        <div onClick={e=>e.stopPropagation()} className={`border-1 border-${theme?.colorPallete.accent} text-white bg-${theme?.colorPallete.primary} px-10 py-6 rounded-md text-xl flex flex-col gap-2`}>
+    <BlurBackgroundModal>
+        <div onClick={e=>e.stopPropagation()} className={`text-white px-5 py-6 rounded-md text-xl flex flex-col gap-2 w-full`}>
             <div className='text-center'>
                 Czy napewno chcesz usunąć <br />
                 <strong>{selectedExercise.exercisename}</strong>
@@ -36,8 +37,10 @@ export const DeleteModal = ({selectedExercise,setShowDeleteModal}:{selectedExerc
             {isLoading?
             <SmallLoader />:
             <div className='flex gap-2'>
-                <button className='flex-1 bg-red py-2' onClick={deleteExercise}>Usuń</button>
-                <button onClick={HandleCloseModal} className='flex-1 bg-gray-600'>Anuluj</button>
+                <Button onClick={deleteExercise} className='flex-1' isPrimary>Usuń</Button>
+                {/* <button className='flex-1 bg-red py-2' onClick={deleteExercise}>Usuń</button>
+                <button onClick={HandleCloseModal} className='flex-1 bg-gray-600'>Anuluj</button> */}
+                <Button onClick={HandleCloseModal} className='flex-1'>Anuluj</Button>
             </div>}
             {error && <div className='text-red-500'>${error}</div>}
         </div>

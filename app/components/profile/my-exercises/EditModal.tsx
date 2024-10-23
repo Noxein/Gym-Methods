@@ -5,16 +5,25 @@ import { ThemeContext } from '@/app/context/ThemeContext'
 import { EditUserExercise } from '@/app/actions'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { SmallLoader } from '../../Loading/SmallLoader'
+import { Button } from '../../ui/Button'
+import { Input } from '../../ui/Input'
+import { CheckBox } from '../../ui/CheckBox'
 
-export const EditModal = ({selectedExercise,setShowEditModal}:{selectedExercise:UserExercise,setShowEditModal:React.Dispatch<React.SetStateAction<boolean>>}) => {
-    const [newName,setNewName] = useState(selectedExercise.exercisename)
+interface EditModal {
+    selectedExercise:UserExercise,
+    setShowEditModal:React.Dispatch<React.SetStateAction<boolean>>,
+}
+
+export const EditModal = ({selectedExercise,setShowEditModal}:EditModal) => {
+    const[newName,setNewName] = useState(selectedExercise.exercisename)
     const[error,setError] = useState('')
     const[isLoading,setIsLoading] = useState(false)
-    const theme = useContext(ThemeContext)
+    const[timeExercise,setTimeExercise] = useState(selectedExercise.timemesure)
+    const[usesHandle,setUsesHandle] = useState(selectedExercise.useshandle)
 
     const editExercise = async () => {
         setIsLoading(true)
-        const isError = await EditUserExercise(selectedExercise.id,newName)
+        const isError = await EditUserExercise(selectedExercise.id,newName,timeExercise,usesHandle)
         if(isError && isError.error){
             setIsLoading(false)
             return setError(isError.error)
@@ -28,15 +37,20 @@ export const EditModal = ({selectedExercise,setShowEditModal}:{selectedExercise:
         HideShowHTMLScrollbar('show')
         setShowEditModal(false)
     }
+    console.log(selectedExercise,timeExercise)
   return (
-    <BlurBackgroundModal onClick={HandleCloseModal}>
-        <div onClick={e=>e.stopPropagation()} className={`border-[1px] border-${theme?.colorPallete.accent} bg-${theme?.colorPallete.primary} text-white px-10 py-6 rounded-md text-xl flex flex-col gap-2`}>
-            <input type="text" value={newName} onChange={e=>setNewName(e.target.value)} className={`px-2 py-1 bg-${theme?.colorPallete.primary} border-[1px] rounded-md border-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent}`}/>
+    <BlurBackgroundModal>
+        <div onClick={e=>e.stopPropagation()} className={`text-white px-5 py-6 rounded-md text-xl flex flex-col gap-4 w-full`}>
+            <Input labelName='Nazwa ćwiczenia' value={newName} onChange={e=>setNewName(e.target.value)}/>
+
+            <CheckBox labelText='Czy jest to ćwiczenie w którym mierzy sie czas? (np. Deska)' onChange={e=>setTimeExercise(e.target.checked)} checked={timeExercise}/>
+            <CheckBox labelText='Czy to ćwiczenie wykorzysuje uchwyty (np. Ćwiczenia na wyciągu)' onChange={e=>setUsesHandle(e.target.checked)} checked={usesHandle}/>
+
             {isLoading?
             <SmallLoader/>:
-            <div className='flex gap-2'>
-                <button className='flex-1 bg-green py-2 rounded-lg' onClick={editExercise}>Zapisz</button>
-                <button onClick={HandleCloseModal} className='flex-1 bg-red rounded-lg'>Anuluj</button>
+            <div className='flex gap-4'>
+                <Button isPrimary className='flex-1' onClick={editExercise}>Zapisz</Button>
+                <Button className='flex-1' onClick={HandleCloseModal}>Anuluj</Button>
             </div>}
             {error && <div className='text-red'>{error}</div>}
         </div>

@@ -80,17 +80,17 @@ const ExpandBtn = ({text,isExpanded,mLeft,currentLevel,...rest}:ExpandBtn) => {
 
     if(isExpanded) return (
         text && 
-        <button {...rest} className={`relative text-left ml-${mLeft} bg-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent} border-${theme?.colorPallete.secondary} rounded-lg flex justify-between p-[1px] items-center `}>
+        <button {...rest} className={`relative text-left ml-${mLeft} bg-dark text-marmur border-marmur border-1 rounded-lg flex justify-between p-[1px] items-center `}>
             <span className={`flex-1 bg-${theme?.colorPallete.primary} pl-4 py-2 rounded-lg`}>{text}</span>
 
             <Icon className={`flex items-center is`}>
-                <ExpandIcon expanded={isExpanded} fill={theme?.colorPallete.accent}/>
+                <ExpandIcon expanded={isExpanded} fill={'#D9D9D9'}/>
             </Icon>
         </button>
     )
     return (
         text && 
-        <button {...rest} className={`relative text-left ml-${mLeft} text-${theme?.colorPallete.accent} bg-${theme?.colorPallete.primary} border-${theme?.colorPallete.primary} border-[1px] rounded-lg flex justify-between p-[1px] items-center`}>
+        <button {...rest} className={`relative text-left ml-${mLeft} text-marmur bg-dark border-marmur border-1 rounded-lg flex justify-between p-[1px] items-center`}>
             <span className={`flex-1 bg-${theme?.colorPallete.primary} pl-4 py-2 rounded-lg`}>{text}</span>
 
             <Icon className={`flex items-center is`}>

@@ -7,6 +7,7 @@ import { ThemeContext } from '@/app/context/ThemeContext'
 import Link from 'next/link'
 import { LinkToExercise } from './LinkToExercise'
 import { createTrainingPlans } from '@/app/actions'
+import { LinkWithIcon } from '../ui/LinkWithIcon'
 
 type ExerciseListMappedTypes = {
   exercises:ExerciseTypes,
@@ -33,7 +34,8 @@ export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseLi
         <Link href={`/home/profile/my-exercises?showAddModal=true`} className='bg-green flex-1 text-white justify-center flex items-center px-4 rounded-lg'>
           DODAJ
         </Link>
-      </div>
+
+    </div>
       <div className='mx-5'>
           {
           searchField
