@@ -4,13 +4,13 @@ import React, { useContext, useEffect, useReducer, useState } from 'react'
 import { AddExercise } from '../../add-exercise/AddExercise'
 import { AddExerciceReducer } from '@/app/lib/reducers'
 import { AddExerciseAction, closeTraining, createTraining, updateCurrentTraining } from '@/app/actions'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { DisplayTrainingSkeleton } from '../../Loading/home/start-training/trainingName/DisplayTrainingSkeleton'
 import { ChangeExerciseList } from './ChangeExerciseList'
 import { MapExercises } from '../../profile/my-training-plans/trainingPlanName/MapExercises'
 import { ModalContexts } from './ModalContexts'
-import { Icon } from '../../Icon'
-import { SpeedIcon } from '@/app/ui/icons/ExpandIcon'
+import { Button } from '../../ui/Button'
+import { ConfirmEndTrainingModal } from './ConfirmEndTrainingModal'
 
 type DisplayTrainingTypes = {
     training?: TrainingExerciseType[],
@@ -46,11 +46,13 @@ export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,traini
     const[currentExercise,setCurrentExercise] = useState(exercisesLeft[0])
     const[totalNumberOfTrainigs,setTotalNumberOfTrainigs] = useState(training?.length||1)
     const[exercisesDone,setExercisesDone] = useState(1)
+    const[showConfirmEndTrainingModal,setShowConfirmEndTrainingModal] = useState(false)
 
     const showTimeMesure = ExercisesThatRequireTimeMesure.some(x=>x.id === currentExercise.exerciseid)
     const requiresHandle = ExercisesThatRequireHandle.some(x=>x.id === currentExercise.exerciseid)
 
     const pathname = usePathname()
+    const router = useRouter()
 
     const[error,setError] = useState('')
     const[trainingID,setTrainingID] = useState(trainingid)
@@ -106,13 +108,23 @@ export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,traini
         }
         setIsLoading(false)
     }
-    const handleCloseTraining = async() => {
+    const handleCloseTraining = async () => {
         const goToNextExercise = false
         await nextExercise(goToNextExercise)
         setIsLoading(true)
         const isError = await closeTraining('/home')
         if(isError && isError.error) return setError(isError.error)
         setIsLoading(false)
+    }
+    const handleCloseTrainingFromModal = async () => {
+        if(exercisesDone === 1){
+            router.push('/home')
+            return true
+        }  
+        const goToNextExercise = false
+        await nextExercise(goToNextExercise)
+        await closeTraining('/home')
+        return true
     }
     const handleShowExerciseList = () => {
         modalsContext?.setShowExerciseList(true)
@@ -124,12 +136,13 @@ export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,traini
                 <h1 className='text-2xl'>{trainingName}</h1>
             </div>
             <div className='text-gray-400 flex gap-2 items-center'>
-                <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowExerciseList}>
+                {/* <Button className='py-0 px-2 border-0 rounded' onClick={handleShowExerciseList} isPrimary>
                     <Icon className='py-0 flex items-center'>
                         <SpeedIcon width='20'/>
                     </Icon>
-                </button>
-                <button className='bg-green text-white px-2 py-[1px] rounded' onClick={handleShowExerciseList}>Zmień</button>
+                </Button> */}
+                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={()=>setShowConfirmEndTrainingModal(true)}>Zakończ trening</Button>
+                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList}>Zmień</Button>
                 <span className='text-nowrap'>{exercisesDone} z {totalNumberOfTrainigs}</span>
             </div>
         </div>
@@ -167,6 +180,12 @@ export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,traini
             setCurrentExercise={setCurrentExercise} 
             setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
             setShowExerciseList={modalsContext?.setShowExerciseList}
+            />}
+        {showConfirmEndTrainingModal && 
+        <ConfirmEndTrainingModal 
+            text='Czy napewno chcesz zakończyć trening?'
+            showModal={setShowConfirmEndTrainingModal}
+            handleEnd={handleCloseTrainingFromModal}
             />}
     </div>)
 }
