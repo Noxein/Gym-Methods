@@ -23,12 +23,11 @@ export default async function page({params}:{params:{exercisename:string}}){
   }
   const showTimeMesure = ExercisesThatRequireTimeMesure.some(exercise => exercise.exercisename === exerciseName)
   const requiresHandle = ExercisesThatRequireHandle.some(exercise => exercise.exercisename === exerciseName)
-  const user = await auth() 
 
   if(!isExerciseInTheList) return <ExerciseNotFound />
   return (
     <div>
-      <AddExerciseStateProvider name={exerciseName} exerciseid={exerciseid} showTempo={!!user?.user?.showTempo} showTimeMesure={showTimeMesure} requiresHandle={requiresHandle} allHandles={allHandles}/>
+      <AddExerciseStateProvider name={exerciseName} exerciseid={exerciseid} showTimeMesure={showTimeMesure} requiresHandle={requiresHandle} allHandles={allHandles}/>
     </div>
   )
 }

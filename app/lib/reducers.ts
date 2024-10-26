@@ -9,11 +9,7 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
             case "REPEAT":
                 return { ...state, repeat: action.payload };
     
-            case "TEMPOUP":
-                return { ...state, tempoUp: action.payload };
-      
-            case "TEMPODOWN":
-                return { ...state, tempoDown: action.payload };
+    
             case 'EDITSERIESKG':{
                 let index = action.index!
                 let changeValue = action.payload
@@ -89,7 +85,7 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
             return {...state, series: state.series.filter((set,i)=>i!==action.payload)};
         case 'RESETSTATE' :{
             return {
-                ...state, series : [], repeat: 0, difficultyLevel: 'easy', tempoDown: 0, tempoUp: 0, time: '', weight: 0, side: 'Both'
+                ...state, series : [], repeat: 0, difficultyLevel: 'easy', time: '', weight: 0, side: 'Both'
             }
         }
         default:

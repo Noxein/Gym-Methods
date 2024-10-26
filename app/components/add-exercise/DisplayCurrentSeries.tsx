@@ -5,18 +5,18 @@ import { Icon } from '../Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 
 type DisplayCurrentSeriesTypes = {
-    seriesname:string,
+    exercisename:string,
     currentSeries:Series[],
     dispatchSeries:React.Dispatch<ActionTypes>,
     showTimeMesure:boolean,
     isTraining: boolean,
 }
-export const DisplayCurrentSeries = ({seriesname,currentSeries,dispatchSeries,showTimeMesure,isTraining}:DisplayCurrentSeriesTypes) => {
+export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,showTimeMesure,isTraining}:DisplayCurrentSeriesTypes) => {
     const theme = useContext(ThemeContext)
     const deleteSet = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,index:number) => {
         e.preventDefault()
         dispatchSeries({type:"DELETESERIES",payload:index})
-        localStorage.setItem(seriesname,JSON.stringify(currentSeries.filter((set,i)=>i!==index)))
+        localStorage.setItem(exercisename,JSON.stringify(currentSeries.filter((set,i)=>i!==index)))
     }
     const editInput = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,index:number,field:ActionTypesEnum) => {
         const arrayCopy = [...currentSeries]
@@ -38,14 +38,19 @@ export const DisplayCurrentSeries = ({seriesname,currentSeries,dispatchSeries,sh
             dispatchSeries({type:field,index, payload:e.target.value});
             arrayCopy[index].time = e.target.value
         }
-        localStorage.setItem(seriesname,JSON.stringify(arrayCopy))
+        localStorage.setItem(exercisename,JSON.stringify(arrayCopy))
     }
     const handleChangeSide = (index:number,side:Side) => {
+        const arrayCopy = [...currentSeries]
         let newSide:Side = side
+        
         if(side === 'Both') newSide = 'Left'
         if(side === 'Left') newSide = 'Right'
         if(side === 'Right') newSide = 'Both'
+
+        arrayCopy[index].side = newSide
         dispatchSeries({type:'EDITSERIESSIDE',index,payload:newSide})
+        localStorage.setItem(exercisename,JSON.stringify(arrayCopy))
     }
   return (
     <div className='flex flex-col gap-2 mt-3 text-white mb-2'>

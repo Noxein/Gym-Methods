@@ -24,8 +24,6 @@ export type ThemeContextTypes = {
 export type AddExerciceReducerType = {
     weight: number,
     repeat: number,
-    tempoUp: number,
-    tempoDown: number,
     side: Side,
     series: Series[],
     difficultyLevel: DifficultyLevel,

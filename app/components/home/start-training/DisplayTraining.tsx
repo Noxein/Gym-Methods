@@ -14,7 +14,6 @@ import { ConfirmEndTrainingModal } from './ConfirmEndTrainingModal'
 
 type DisplayTrainingTypes = {
     training?: TrainingExerciseType[],
-    showTempo: boolean,
     trainingPlanId: string,
     lastid: number,
     trainingid: string,
@@ -32,15 +31,13 @@ type DisplayTrainingTypes = {
 const init = {
     weight: 0,
     repeat: 0,
-    tempoUp: 0,
-    tempoDown: 0,
     side: 'Both' as const,
     series:[],
     difficultyLevel: "easy" as const,
     time: ''
 }
 
-export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,trainingid,trainingName,exercises,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure}:DisplayTrainingTypes) => {
+export const DisplayTraining = ({training,trainingPlanId,lastid,trainingid,trainingName,exercises,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure}:DisplayTrainingTypes) => {
     console.log(training)
     const[exercisesLeft,setExercisesLeft] = useState<TrainingExerciseType[]>(training!)
     const[currentExercise,setCurrentExercise] = useState(exercisesLeft[0])
@@ -151,7 +148,7 @@ export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,traini
         {
             isLoading? <DisplayTrainingSkeleton isTraining={true}/> :
         <>
-        {exercisesLeft && <AddExercise name={currentExercise.exercisename} exerciseid={currentExercise.exerciseid} isLoading={isLoading} showTempo={showTempo} showTimeMesure={showTimeMesure} isTraining={true} state={state} dispatch={dispatch} requiresHandle={requiresHandle} allHandles={allHandles} setParnetHandle={setHandle}/>}
+        {exercisesLeft && <AddExercise name={currentExercise.exercisename} exerciseid={currentExercise.exerciseid} isLoading={isLoading} showTimeMesure={showTimeMesure} isTraining={true} state={state} dispatch={dispatch} requiresHandle={requiresHandle} allHandles={allHandles} setParnetHandle={setHandle}/>}
         </>
         }
         {error && <div className='text-red'>{error}</div>}

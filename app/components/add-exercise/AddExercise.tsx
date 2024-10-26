@@ -14,7 +14,6 @@ import { SmallLoaderDiv } from '../ui/SmallLoaderDiv'
 
 type AddExerciseType = {
     name:string,
-    showTempo:boolean,
     showTimeMesure:boolean,
     isTraining?: boolean,
     state: AddExerciceReducerType,
@@ -29,7 +28,7 @@ type AddExerciseType = {
     setParnetHandle?: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles,setParnetHandle}:AddExerciseType) => {
+export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles,setParnetHandle}:AddExerciseType) => {
     console.log(name)
     const[error,setError] = useState<string>('')
     const[loading,setLoading] = useState(false)
@@ -37,7 +36,6 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
     const[handle,setHandle] = useState(requiresHandle?'Sznur':'')
     const[checked,setChecked] = useState(false)
     const theme = useContext(ThemeContext)
-    const tempos = useContext(TempoContext)
 
     const pathname = usePathname()
 
@@ -53,10 +51,9 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
         localStorage.setItem(name,JSON.stringify([...state.series,{
             weight: state.weight,
             repeat: state.repeat,
-            tempoUp: state.tempoUp,
-            tempoDown: state.tempoDown,
             time: state.time,
-            side: state.side
+            side: state.side,
+            difficulty: state.difficultyLevel,
         }]))
     }
     const ResetLocalStorage = () => {
@@ -104,7 +101,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
         </div>
         </div>
 
-        <DisplayCurrentSeries seriesname={name} currentSeries={state.series} dispatchSeries={dispatch} isTraining={isTraining} showTimeMesure={showTimeMesure}/>
+        <DisplayCurrentSeries exercisename={name} currentSeries={state.series} dispatchSeries={dispatch} isTraining={isTraining} showTimeMesure={showTimeMesure}/>
         <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory} loading={loading}/>
         {showHistory && <PreviousExercise exerciseid={exerciseid} />}
 
