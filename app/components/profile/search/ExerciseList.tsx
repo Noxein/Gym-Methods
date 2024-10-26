@@ -6,6 +6,7 @@ import { SelectExercise } from './SelectExercise'
 import { Icon } from '../../Icon'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { SelectedExerciseContext } from './SelectedExerciseContext'
+import { Button } from '../../ui/Button'
 
 type ExerciseListTypes = {
     exerciseList: (string | UserExercise)[],
@@ -17,27 +18,39 @@ export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
     const theme = useContext(ThemeContext)
     const searchExercise = useContext(SelectedExerciseContext)
     const setShowExerciseList = searchExercise?.setShowExerciseList
+    const setExercise = searchExercise?.setExercise
 
     const hideList = () => {
         setShowExerciseList && setShowExerciseList(false)
+    }
+
+    const slectAllExercises = () => {
+        setExercise && setExercise('')
+        hideList()
     }
   return (
         <div className='fixed min-h-screen left-0 top-0 w-screen z-20 backdrop-blur-sm flex flex-col overflow-auto bottom-20 px-5'>
                 <div className='flex items-center my-5'>
                     <button className='flex justify-center px-2' onClick={hideList}>
                         <Icon className='flex justify-center items-center'>
-                            <LeftAngle height='30' width='30'/>
+                            <LeftAngle height='30' width='30' fill='#D9D9D9'/>
                         </Icon>
                     </button>
                     <input type="text" placeholder='Szukaj' value={searchField} id="Szukaj" onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-${theme?.colorPallete.primary} border-2 rounded-md border-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent}`}/>
                 </div>
+
+                <Button className='mb-4 text-white bg-dark border-white' onClick={slectAllExercises}>
+                    Wszystkie ćwiczenia
+                </Button>
                
                 {
                     searchField
                     ?
                     <SearchExercises allExercisesInOneArray={exerciseList} searchTerm={searchField}/>
                     :
-                    <ListExercises item={exercises}/>
+                    <div className='mb-20'>
+                        <ListExercises item={exercises}/>
+                    </div>
                 }
         </div>
   )

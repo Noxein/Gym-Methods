@@ -1,28 +1,10 @@
 'use client'
 import { ThemeContext } from '@/app/context/ThemeContext'
-import { WeekDayArrayPL } from '@/app/lib/utils'
-import { addDays, format, getDay, isSameDay, subDays } from 'date-fns'
+import { dayArrayInitializer, WeekDayArrayPL } from '@/app/lib/utils'
+import { format, getDay, isSameDay, subDays } from 'date-fns'
 import React, { useContext, useEffect, useState } from 'react'
 import { SelectedDateInfo } from './SelectedDateInfo'
-import { SelectedDayExercisesForWidget } from '@/app/actions'
 import { WidgetHomeDaysSum } from '@/app/types'
-
-const dayArrayInitializer = () => {
-    const dayOfWeekIndex = -1 === getDay(new Date()) - 1 ? 6 : getDay(new Date()) - 1
-    let newArr:Date[] = []
-    const today = new Date()
-    for(let i = 0; i <= 6 ; i++){
-        if(i===dayOfWeekIndex){
-            newArr.push(today)
-        }else if(i<dayOfWeekIndex){
-            newArr.push(subDays(today,dayOfWeekIndex-i))
-        }else if(i>dayOfWeekIndex){
-            newArr.push(addDays(today,i-dayOfWeekIndex))
-        }else{
-        }
-    }
-    return newArr
-}
 
 type MapDaysTypes = {
     Last30DaysExercises?: {
@@ -35,6 +17,7 @@ type MapDaysTypes = {
         groupedDays: WidgetHomeDaysSum,
     }
 }
+
 export const MapDays = ({Last30DaysExercises}:MapDaysTypes) => {
     const theme = useContext(ThemeContext)
     const days = dayArrayInitializer()

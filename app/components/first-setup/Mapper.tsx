@@ -11,30 +11,36 @@ type StepTwoOutOfThree = {
     stateSetter: React.Dispatch<React.SetStateAction<string[]>>,
     state: string[],
     filterExercises: string[],
-    favourite: boolean
+    favourite: boolean,
+    disableFuncitions?: boolean,
 }
 
-export const Mapper = ({item,objectName,currentLevel=0,stateSetter,state,filterExercises,favourite}:StepTwoOutOfThree) => {
+export const Mapper = ({item,objectName,currentLevel=0,stateSetter,state,filterExercises,favourite,disableFuncitions = false}:StepTwoOutOfThree) => {
     
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `${currentLevel*3}`
 
     const theme = useContext(ThemeContext)
     
-
+    const ExpandBtnFunc = () => {
+        if(disableFuncitions) return
+        setShowChildren(!showChildren)
+    }
     if(Array.isArray(item)){
         return (<div className={`flex flex-col bg-${theme?.colorPallete.primary} ${mLeft} font-semibold`}>
             <ExpandBtn 
                 text={objectName} 
                 isExpanded={showChildren} 
-                onClick={()=>setShowChildren(!showChildren)} 
-                mLeft={mLeft}/>
+                onClick={ExpandBtnFunc} 
+                mLeft={mLeft}
+                disableFuncitions={disableFuncitions}
+                />
 
         {showChildren && 
             <div className='flex flex-col font-normal'>
                 {item.map((x,index)=>{
                     if(filterExercises.includes(x)) return null
-                    return <SelectExercise isFirst={index===0} text={x} mLeft={`ml-${(currentLevel+1)*2}`} key={x} isLast={index+1===item.length} setExercisesToDelete={stateSetter} selected={state.includes(x)} favourite={favourite}/>
+                    return <SelectExercise isFirst={index===0} text={x} mLeft={`ml-${(currentLevel+1)*2}`} key={x} isLast={index+1===item.length} setExercisesToDelete={stateSetter} selected={state.includes(x)} favourite={favourite} disableFuncitions={disableFuncitions}/>
                 })}
             </div>}
         </div>)
@@ -47,12 +53,14 @@ export const Mapper = ({item,objectName,currentLevel=0,stateSetter,state,filterE
             <ExpandBtn 
                 text={objectName||''} 
                 isExpanded={showChildren} 
-                onClick={()=>setShowChildren(!showChildren)} 
-                mLeft={mLeft}/>
+                onClick={ExpandBtnFunc} 
+                mLeft={mLeft}
+                disableFuncitions={disableFuncitions}
+                />
 
 
             {showChildren && Object.keys(item).map((key,index)=>(
-                 <Mapper item={item[key]} objectName={Object.keys(item)[index]} key={key} currentLevel={currentLevel+1} isLast={index+1===Object.keys(item).length} stateSetter={stateSetter} state={state} filterExercises={filterExercises} favourite={favourite}/>
+                 <Mapper item={item[key]} objectName={Object.keys(item)[index]} key={key} currentLevel={currentLevel+1} isLast={index+1===Object.keys(item).length} stateSetter={stateSetter} state={state} filterExercises={filterExercises} favourite={favourite} disableFuncitions={disableFuncitions}/>
             ))}
             
 
@@ -64,9 +72,10 @@ type ExpandBtn = {
     text?:string,
     isExpanded:boolean,
     mLeft: string,
+    disableFuncitions?: boolean
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 
-const ExpandBtn = ({text,isExpanded,mLeft,...rest}:ExpandBtn) => {
+const ExpandBtn = ({text,isExpanded,mLeft,disableFuncitions = false,...rest}:ExpandBtn) => {
     const theme = useContext(ThemeContext)
 
     if(isExpanded) return (
@@ -99,11 +108,13 @@ type SelectExerciseTypes = {
     isLast:boolean,
     setExercisesToDelete:React.Dispatch<React.SetStateAction<string[]>>,
     selected:boolean,
-    favourite: boolean
+    favourite: boolean,
+    disableFuncitions?: boolean
 }
-const SelectExercise = ({text,mLeft,isFirst,setExercisesToDelete,selected,favourite}:SelectExerciseTypes) => {
+const SelectExercise = ({text,mLeft,isFirst,setExercisesToDelete,selected,favourite,disableFuncitions}:SelectExerciseTypes) => {
     const theme = useContext(ThemeContext)
     const Toggle = () => {
+        if(disableFuncitions) return
         setExercisesToDelete(arr=>{
             if(arr.includes(text)) return arr.filter(exercise=>exercise!==text)
             return [...arr,text]

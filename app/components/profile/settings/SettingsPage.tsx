@@ -11,6 +11,7 @@ import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { Select } from '@/app/components/ui/SelectField'
 import { Button } from '../../ui/Button'
 import { ErrorDiv } from '../../ui/ErrorDiv'
+import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 
 type SettingsPageTypes = {
     settings: UserSettings
@@ -28,6 +29,7 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
     const[userSettings,setUserSettings] = useState<UserSettings>(settings)
     const[showFavourtieExercisesModal,setShowFavourtieExercisesModal] = useState<boolean>(false)
     const[showNotFavourtieExercisesModal,setShowNotFavourtieExercisesModal] = useState<boolean>(false)
+    const[loading,setLoading] = useState(false)
     const[error, setError] = useState('')
 
     const router = useRouter()
@@ -71,8 +73,13 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
     }
 
     const handleSave = async () => {
+        setLoading(true)
         const result = await saveNewUserSetting(userSettings)
-        if(result?.error) setError('Coś poszło nie tak')
+        if(result?.error){
+            setLoading(false)
+            return setError('Coś poszło nie tak')
+        } 
+        setLoading(false)
         return router.push('/home/profile')
     }
 
@@ -90,35 +97,36 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
 
             <div className='flex flex-col gap-4 mb-20'>
 
-                <Select labelName='Treningi w tygodniu' valuesToLoop={daysexercising} onChange={e=>handleDaysExercisingChange(e.target.value as daysexercisingType)} defaultValue={userSettings.daysexercising}/>
+                <Select labelName='Treningi w tygodniu' valuesToLoop={daysexercising} onChange={e=>handleDaysExercisingChange(e.target.value as daysexercisingType)} defaultValue={userSettings.daysexercising} disabled={loading}/>
     
-                <Select labelName='Cel' valuesToLoop={goal} onChange={e=>handleGoalChange(e.target.value as goalType)} defaultValue={userSettings.goal}/>
+                <Select labelName='Cel' valuesToLoop={goal} onChange={e=>handleGoalChange(e.target.value as goalType)} defaultValue={userSettings.goal} disabled={loading}/>
             
-                <Select labelName='Poziom zaawansowania' valuesToLoop={advancmentlevel} onChange={e=>handleAdvancmentLevelChange(e.target.value as advancmentlevelType)} defaultValue={userSettings.advancmentlevel}/>
+                <Select labelName='Poziom zaawansowania' valuesToLoop={advancmentlevel} onChange={e=>handleAdvancmentLevelChange(e.target.value as advancmentlevelType)} defaultValue={userSettings.advancmentlevel} disabled={loading}/>
             
             </div>
 
-        <div className='mt-10 bg-marmur p-[1px] flex items-center rounded-lg' onClick={handleShowFavModal}>
-            <button className='bg-dark flex-1 rounded-lg py-3 text-white'>
+        <button className='mt-10 bg-marmur p-[1px] flex items-center rounded-lg' onClick={handleShowFavModal} disabled={loading}>
+            <span className='bg-dark flex-1 rounded-lg py-3 text-white'>
                 Zmień lubiane ćwiczenia
-            </button>
+            </span>
             <Icon className='flex items-center px-2 w-10'>
                 <CheckIcon height='25'/>
             </Icon>
-        </div>
+        </button>
 
-        <div className='bg-marmur p-[1px] flex items-center rounded-lg mb-40' onClick={handleShowNotFavModal}>
-            <button className='bg-dark flex-1 rounded-lg py-3 text-white'>
+        <button className='bg-marmur p-[1px] flex items-center rounded-lg mb-40' onClick={handleShowNotFavModal} disabled={loading}>
+            <span className='bg-dark flex-1 rounded-lg py-3 text-white'>
                 Zmień nie lubiane ćwiczenia
-            </button>
+            </span>
             <Icon className='flex items-center px-2 w-10'>
                 <CrossIcon width='20' />
             </Icon>
-        </div>
+        </button>
 
+        <SmallLoaderDiv loading={loading}/>
         <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
-            <Button className='flex-1' onClick={handleSave} isPrimary>Zapisz zmiany</Button>
-            <Button className='flex-1' onClick={()=>router.push('/home/profile')}>Anuluj</Button>
+            <Button className='flex-1' onClick={handleSave} isPrimary disabled={loading}>Zapisz zmiany</Button>
+            <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>Anuluj</Button>
         </div>
 
         <ErrorDiv  error={error}/>

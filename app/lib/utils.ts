@@ -1,3 +1,4 @@
+import { addDays, getDay, subDays } from "date-fns"
 import { WeekDay, WeekDayPL } from "../types"
 
 export const WeekDayArray = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
@@ -36,4 +37,21 @@ export const ConvertEnglishWeekDayToPolish = (weekday:WeekDay) => {
 
 export const ConvertPolishWeekDayToEnglish = (weekday:WeekDayPL) => {
   return WeekDayArray[WeekDayArrayPL.indexOf(weekday)]
+}
+
+export const dayArrayInitializer = () => {
+  const dayOfWeekIndex = -1 === getDay(new Date()) - 1 ? 6 : getDay(new Date()) - 1
+  let newArr:Date[] = []
+  const today = new Date()
+  for(let i = 0; i <= 6 ; i++){
+      if(i===dayOfWeekIndex){
+          newArr.push(today)
+      }else if(i<dayOfWeekIndex){
+          newArr.push(subDays(today,dayOfWeekIndex-i))
+      }else if(i>dayOfWeekIndex){
+          newArr.push(addDays(today,i-dayOfWeekIndex))
+      }else{
+      }
+  }
+  return newArr
 }

@@ -11,7 +11,7 @@ import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { WeekDayArray, WeekDayArrayPL } from "./lib/utils";
 import { z } from "zod";
-import { addDays, format, isSameDay, isSameWeek, subDays } from "date-fns";
+import { addDays, format, formatDate, isSameDay, isSameWeek, subDays } from "date-fns";
 import { AuthError } from "next-auth"; 
 import { Begginer1_3FBW_FirstVariation, Begginer1_3FBW_SecondVariation, Beginner4_7Lower_FirstVariation, Beginner4_7Lower_SecondVariation, Beginner4_7Upper_FirstVariation, Beginner4_7Upper_SecondVariation } from "./lib/TrainingPlansData";
 import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
@@ -22,6 +22,7 @@ type State = {
 }
 export const Login = async (prevState:State,formData:FormData) => {
     //check if user exist 
+    await timeout()
     try{
         const response = await signIn('credentials',{
             email: formData.get('email'),
@@ -37,7 +38,30 @@ export const Login = async (prevState:State,formData:FormData) => {
            }
            return { error: 'Coś poszło nie tak'}
         }
+        return { error: 'Coś poszło nie tak'}
     }
+}
+
+export const LoginNoFormData = async (email:string,password:string) => {
+    try{
+        const response = await signIn('credentials',{
+            email,
+            password,
+            redirect: false,
+        })
+        return response
+       
+    }catch(e){
+        if(e instanceof AuthError){
+            // @ts-ignore
+           if(e.cause?.err!.code === 'credentials'){
+            return { error: 'Zły login lub hasło'}
+           }
+           return { error: 'Coś poszło nie tak'}
+        }
+        return { error: 'Coś poszło nie tak'}
+    }
+    
 }
 
 type RegisterState = {
@@ -48,43 +72,67 @@ type RegisterState = {
     }
 }
 
-export const Register = async (prevState:RegisterState,formData:FormData) => {
-    const validatedFields = RegisterUserZodSchema.safeParse({
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
-        confirmpassword: formData.get('confirmpassword') as string,
-    })
+const validateEmail = (email:string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
 
-    if(!validatedFields.success){
-        return {
-            errors: validatedFields.error.flatten().fieldErrors
-        }
+export const Register = async (email:string,password:string,confirmpassword:string) => {
+    let error = {
+        email: '',
+        password: '',
+        confirmpassword: '',
+        isError: false
     }
 
-    const { email, password } = validatedFields.data
+    const validatedEmail = validateEmail(email)
+
+    if(!validatedEmail){
+        error.email = 'Zły format adresu email'
+        error.isError = true
+    }
+    if(password !== confirmpassword){
+        error.confirmpassword = 'Hasła różnią się'
+        error.isError = true
+    }
+    if(password.length < 8){
+        error.password = 'Hasło powinno się składać z minimum 8 znaków'
+        error.isError = true
+    }
+
+    if(error.isError){
+        return { error }
+    }
 
     const emailExist = await sql`
         SELECT FROM gymusers WHERE email = ${email}
     `
 
     if(emailExist.rows[0]){
-        return { 
-            errors: {email:['Ten adres email jest zajęty']}
-        }
+
+        error.email = 'Ten adres email jest zajęty'
+        error.isError = true
+
+        return { error }
+        
     }
 
     const hasedPassword = await hash(password,10)
+
     await sql`
         INSERT INTO gymusers (email,password) VALUES (${email},${hasedPassword})
     `
-    return { errors: {}}
+    return { error }
 }
 export const ComparePasswords = async (password:string,hasedPassword:string) => {
     const isCorrect = await compare(password,hasedPassword)
     return isCorrect
 }
 
-export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:string) => {
+export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:string,isLastExercise=false) => {
     const userid = await userID()
     if(!userid) return
     const stringDate = JSON.stringify(new Date())
@@ -111,7 +159,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
         ispartoftraining
     })
 
-    if(!validData.success) {
+    if(!validData.success && !isLastExercise) {
         if(validData.error.flatten().fieldErrors.sets){
             return {
                 errors: validData.error.flatten().fieldErrors.sets![0]
@@ -321,7 +369,7 @@ export const getAllExercises = async () => {
 }
 
 const checkTempoErrors = (tempos:TempoType) => {
-    let TempoError =false
+    let TempoError = false
     for(const tempoentry in tempos){
         if(typeof tempos[tempoentry as keyof TempoType] !== 'number'){
             TempoError = true
@@ -602,6 +650,7 @@ const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExe
         if(typeof x !== 'string') NotStringError = true
 
         if(!allExerciseIdsArray.includes(exercises[x].exerciseid)){
+            console.log(allExerciseIdsArray,exercises[x])
             UnknownExerciseError = true 
             unknownExercice = exercises[x].exerciseid
         }
@@ -786,7 +835,7 @@ export const getTrainingInProgressData = async () => {
         return null
     }
 }
-export const closeTraining = async (redirectToTraining:string) => {
+export const closeTraining = async (redirectToTraining?:string) => {
     const userid = await userID()
     try{
         await sql`
@@ -798,7 +847,7 @@ export const closeTraining = async (redirectToTraining:string) => {
         console.log('Error occured closeTraining func actions.ts',e)
         return {error: 'Coś poszło nie tak'}
     }finally{
-        redirect(redirectToTraining)
+        redirectToTraining && redirect(redirectToTraining)
     }
 }
 
@@ -994,43 +1043,54 @@ export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:
     if(exerciseName && typeof exerciseName !== 'string') {
         return '0' 
     }
+
+    let toFormatted = ''
+    let fromFormatted = ''
+
+    if(to){
+        toFormatted = format(addDays(to,1),'yyyy-MM-dd kk:mm:ss')
+    }
+    if(from){
+        fromFormatted = format(from,'yyyy-MM-dd kk:mm:ss')
+    }
+
     try{
         if(from && to && exerciseName){
             const count = await sql`
-                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName}
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date AND exercisename = ${exerciseName}
             `
             return count.rows[0].count as string
         }
 
         if(from && exerciseName){
             const count = await sql`
-                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName}
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date >= ${fromFormatted} AND exercisename = ${exerciseName}
             `
             return count.rows[0].count as string
         }
 
         if(to && exerciseName){
             const count = await sql`
-                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND exercisename = ${exerciseName}
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted} AND exercisename = ${exerciseName}
             `
             return count.rows[0].count as string
         }
         if(to && from){
             const count = await sql`
-                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)}
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date
             `
             return count.rows[0].count as string
         }
         if(to){
             const count = await sql`
-                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))}
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted}
             `
             return count.rows[0].count as string
         }
 
         if(from){
             const count = await sql`
-                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)}
+                SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date >= ${fromFormatted}
             `
             return count.rows[0].count as string
         }
@@ -1056,69 +1116,77 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
 
     if(!page) page = 0
     if(!limit) limit = 20
+    let toFormatted = ''
+    let fromFormatted = ''
+
+    if(to){
+        toFormatted = format(addDays(to,1),'yyyy-MM-dd kk:mm:ss')
+    }
+    if(from){
+        fromFormatted = format(from,'yyyy-MM-dd kk:mm:ss')
+    }
 
     let unsortedExerciseArray:ExerciseType[] = []
 
     if( (from && Object.prototype.toString.call(from) !== '[object Date]') || (to && Object.prototype.toString.call(to) !== '[object Date]')){
-        unsortedExerciseArray = [] as ExerciseType[]
+        return unsortedExerciseArray
     }
     if(exerciseName && typeof exerciseName !== 'string') {
-       unsortedExerciseArray = [] as ExerciseType[]
+       return unsortedExerciseArray
     }
     try{
         //TODO MAKE SEPARATE FUNCTION FOR FETCHING COUNT
         if(from && to && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            unsortedExerciseArray = exercises.rows as ExerciseType[]
+            return exercises.rows as ExerciseType[]
         }
 
         if(from && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${fromFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            unsortedExerciseArray = exercises.rows as ExerciseType[]
+            return exercises.rows as ExerciseType[]
         }
 
         if(to && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            unsortedExerciseArray = exercises.rows as ExerciseType[]
+            return exercises.rows as ExerciseType[]
         }
         if(to && from){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} AND date >= ${JSON.stringify(from)} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            unsortedExerciseArray = exercises.rows as ExerciseType[]
+            return exercises.rows as ExerciseType[]
         }
         if(to){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${JSON.stringify(addDays(to,1))} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            unsortedExerciseArray = exercises.rows as ExerciseType[]
+            return exercises.rows as ExerciseType[]
         }
 
         if(from){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            unsortedExerciseArray = exercises.rows as ExerciseType[]
+            console.log('from',exercises.rows)
+            return exercises.rows as ExerciseType[]
         }
 
         if(exerciseName){
             const exercises = await sql`
             SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            unsortedExerciseArray = exercises.rows as ExerciseType[]
+            return exercises.rows as ExerciseType[]
         }
         const exercises = await sql`
             SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
         `
-        unsortedExerciseArray = exercises.rows as ExerciseType[]
-
-        return unsortedExerciseArray as ExerciseType[]
+        return exercises.rows as ExerciseType[]
     }catch(e){
         console.log('Error occured fetchUserExercises func actions.ts',e)
         return [] as ExerciseType[]
@@ -1269,9 +1337,11 @@ const FilterTraining = (training:{[key:string]:{exercises:string[],fallback:stri
         }
 
         if(indexOfExercise === -1){
-            finalTraining.push({exercisename:value.fallback,id:value.fallback,exerciseid:String(id)})
+            finalTraining.push({exercisename:value.fallback,id:String(id),exerciseid:value.fallback})
+            id = id + 1
         }else{
-            finalTraining.push({exercisename:value.exercises[indexOfExercise],id:value.exercises[indexOfExercise],exerciseid:String(id)})
+            finalTraining.push({exercisename:value.exercises[indexOfExercise],id:String(id),exerciseid:value.exercises[indexOfExercise]})
+            id = id + 1
         }
         
     }
@@ -1303,7 +1373,7 @@ export const createTrainingPlans = async (fav:string[],notfav:string[],days:numb
                 name = index<=1?`Trening góry ${index+1}`:`Trening dołu ${index+1}`
             }
 
-            let result = await CreateUserTraining(name,'Poniedziałek',plan)
+            await CreateUserTraining(name,'Poniedziałek',plan)
         })
     }catch(e){
         console.log('Error occured line 1204 actions.ts',e)

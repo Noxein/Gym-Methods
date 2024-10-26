@@ -14,7 +14,6 @@ type DisplayUserExercisesTypes = {
     totalItems: number,
 }
 export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
-    console.log(fetchedExercises)
   return (
    
     <div className='mt-16 mx-5 mb-20'>

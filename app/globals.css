@@ -30,6 +30,11 @@ input[type=number] {
   background-size: 120% 120%;
   animation: gradient-animation 1s ease infinite;
 }
+.gradient-background-light {
+  background: linear-gradient(267deg,hsl(204, 28%, 50%),hsl(203, 26%, 82%));
+  background-size: 120% 120%;
+  animation: gradient-animation 1s ease infinite;
+}
 
 @keyframes gradient-animation {
   0% {
@@ -135,4 +140,15 @@ input[type='checkbox']:after {
   -webkit-box-shadow: 2px 5px 12px -3px rgba(0, 0, 0, 1);
   -moz-box-shadow: 2px 5px 12px -3px rgba(0, 0, 0, 1);
   box-shadow: 2px 5px 12px -3px rgba(0, 0, 0, 1);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #0D1317 inset !important;
+}
+
+input:-webkit-autofill{
+  -webkit-text-fill-color: white !important;
 }

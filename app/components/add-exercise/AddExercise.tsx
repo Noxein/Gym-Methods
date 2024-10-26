@@ -10,6 +10,7 @@ import { CheckIcon, PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { TempoContext } from '@/app/context/TempoContext'
 import { ShowHistoryButton } from './ShowHistoryButton'
 import { PreviousExercise } from '../home/start-training/PreviousExercise'
+import { SmallLoaderDiv } from '../ui/SmallLoaderDiv'
 
 type AddExerciseType = {
     name:string,
@@ -28,9 +29,10 @@ type AddExerciseType = {
     setParnetHandle?: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=false,state,dispatch,isLoading= false,exerciseid,requiresHandle,allHandles,setParnetHandle}:AddExerciseType) => {
+export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles,setParnetHandle}:AddExerciseType) => {
     console.log(name)
     const[error,setError] = useState<string>('')
+    const[loading,setLoading] = useState(false)
     const[showHistory,setShowHistory] = useState(false)
     const[handle,setHandle] = useState(requiresHandle?'Sznur':'')
     const[checked,setChecked] = useState(false)
@@ -62,12 +64,17 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
     }
     const FinishTraining = async () => {
         if(!checked) return
-        ResetLocalStorage()
+        setLoading(true)
+        
 
         const possibleError = await AddExerciseAction(true,name,state.series,pathname.includes('training'),'',handle)
         if(possibleError) {
             setError(possibleError.errors)
+            setLoading(false)
+            return
         }
+        ResetLocalStorage()
+        setLoading(false)
     }
   return (
     <div className={`px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'}`}>
@@ -80,7 +87,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
                {requiresHandle && <Handle handle={handle} setHandle={setHandle} setParnetHandle={setParnetHandle} allHandles={allHandles}/>}
             </div>
             
-            <button onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl bg-green text-white rounded-md py-4 flex items-center justify-between px-5 `} disabled={isLoading}>
+            <button onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl bg-green text-white rounded-md py-4 flex items-center justify-between px-5 `} disabled={isLoading || loading}>
                 Dodaj serie
                 <Icon className='bg-opacity-0 flex'>
                     <PlusIcon /> 
@@ -98,7 +105,7 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
         </div>
 
         <DisplayCurrentSeries seriesname={name} currentSeries={state.series} dispatchSeries={dispatch} isTraining={isTraining} showTimeMesure={showTimeMesure}/>
-        <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory}/>
+        <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory} loading={loading}/>
         {showHistory && <PreviousExercise exerciseid={exerciseid} />}
 
         {error && <div>
@@ -115,7 +122,9 @@ export const AddExercise = ({name,showTempo=false,showTimeMesure,isTraining=fals
                 }
             </button>
 
-            <button onClick={FinishTraining} className={`py-4 flex-1 text-xl bg-dark text-white border-2 rounded-md`}>Zakończ ćwiczenie</button>
+            <button onClick={FinishTraining} className={`py-4 flex-1 text-xl bg-dark text-white border-2 rounded-md`} disabled={loading}>
+                {loading? <SmallLoaderDiv loading={loading}/> : 'Zakończ ćwiczenie'}
+            </button>
         </div>
         }
     </div>

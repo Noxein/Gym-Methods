@@ -7,45 +7,58 @@ import { Icon } from '../../Icon'
 import { EyeIcon } from '@/app/ui/icons/ExpandIcon'
 import { ErrorDiv } from '../../ui/ErrorDiv'
 import { Button } from '../../ui/Button'
+import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 
 export const ChangePasswordPage = () => {
     const[password,setPassword] = useState('')
     const[newpassword,setNewpassword] = useState('')
     const[repeatnewpassword,setRepeatnewpassword] = useState('')
+
+    const[loading,setLoading] = useState(false)
     const[error,setError] = useState('')
+
     const[showPassword,setShowPassword] = useState(false)
     const[showNewpassword,setShowNewpassword] = useState(false)
     const[showRepeatnewpassword,setShowRepeatnewpassword] = useState(false)
 
     const router = useRouter()
     const handleSave = async () => {
-        const result = await changePassword(password,newpassword,repeatnewpassword)
-        if(result) return setError(result.error)
+        setLoading(true)
+        const data = await changePassword(password,newpassword,repeatnewpassword)
+        if(data){
+            setLoading(false)
+            return setError(data.error)
+        } 
+        setLoading(false)
         router.push('/home')
     }
     
   return (
-    <div className='mt-20 mx-5 flex flex-col gap-4'>
-        <div className='flex flex-col flex-1 relative'>
+    <div className='pt-20 mx-5 flex flex-col gap-4 h-screen'>
+        <h1 className='text-white text-center text-2xl'>Zmień hasło</h1>
+        <div className='flex flex-col relative'>
             <Label htmlFor='password'>Obecne hasło</Label>
-            <Input type={showPassword?'text':'password'} id='password' value={password} onChange={e=>setPassword(e.target.value)}/>
-            <ShowPassword isOpen={showPassword} onClick={()=>setShowPassword(!showPassword)}/>
+            <Input type={showPassword?'text':'password'} id='password' value={password} onChange={e=>setPassword(e.target.value)} disabled={loading}/>
+            <ShowPassword isOpen={showPassword} onClick={()=>!loading && setShowPassword(!showPassword)}/>
         </div>
-        <div className='flex flex-col flex-1 relative'>
+        <div className='flex flex-col relative'>
             <Label htmlFor='newpassword'>Nowe hasło</Label>
-            <Input type={showNewpassword?'text':'password'} id='newpassword' value={newpassword} onChange={e=>setNewpassword(e.target.value)} />
-            <ShowPassword isOpen={showNewpassword} onClick={()=>setShowNewpassword(!showNewpassword)}/>
+            <Input type={showNewpassword?'text':'password'} id='newpassword' value={newpassword} onChange={e=>setNewpassword(e.target.value)} disabled={loading}/>
+            <ShowPassword isOpen={showNewpassword} onClick={()=>!loading && setShowNewpassword(!showNewpassword)}/>
         </div>
-        <div className='flex flex-col flex-1 relative'>
+        <div className='flex flex-col relative'>
             <Label htmlFor='repeatnewpassword'>Powtórz nowe hasło</Label>
-            <Input type={showRepeatnewpassword?'text':'password'} id='repeatnewpassword' value={repeatnewpassword} onChange={e=>setRepeatnewpassword(e.target.value)} />
-            <ShowPassword isOpen={showRepeatnewpassword} onClick={()=>setShowRepeatnewpassword(!showRepeatnewpassword)}/>
+            <Input type={showRepeatnewpassword?'text':'password'} id='repeatnewpassword' value={repeatnewpassword} onChange={e=>setRepeatnewpassword(e.target.value)} disabled={loading}/>
+            <ShowPassword isOpen={showRepeatnewpassword} onClick={()=>!loading && setShowRepeatnewpassword(!showRepeatnewpassword)}/>
         </div>
 
-        <ErrorDiv error={error}/>
+        <ErrorDiv error={error} className='text-xl text-center'/>
+        <SmallLoaderDiv loading={loading}/>
 
-        <Button className='mt-5' onClick={handleSave} isPrimary>Zapisz</Button>
-        <Button onClick={()=>router.push('/home/profile')}>Anuluj</Button>
+        <div className='mt-auto flex gap-4 mb-24'>
+            <Button className=' flex-1' onClick={handleSave} isPrimary disabled={loading}>Zapisz</Button>
+            <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>Anuluj</Button>
+        </div>
     </div>
   )
 }

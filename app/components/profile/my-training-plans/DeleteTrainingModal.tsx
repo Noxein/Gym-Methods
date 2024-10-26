@@ -1,34 +1,35 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { UserTrainingPlan } from '@/app/types'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { DeleteUserTraining } from '@/app/actions'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
-import { SmallLoader } from '../../Loading/SmallLoader'
 import { Button } from '../../ui/Button'
 import { ErrorDiv } from '../../ui/ErrorDiv'
+import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 
 type DeleteTrainingModalTypes = {
     setShowDeleteModal: React.Dispatch<React.SetStateAction<boolean>>,
     currentSelectedTraining: UserTrainingPlan | null | undefined,
 }
 export const DeleteTrainingModal = ({setShowDeleteModal,currentSelectedTraining}:DeleteTrainingModalTypes) => {
-  const theme = useContext(ThemeContext)
   const[error,setError]= useState('')
-  const[isLoading,setIsLoading] = useState(false)
+  const[loading,setLoading] = useState(false)
 
   const deleteExercise = async () => {
-    setIsLoading(true)
-      const isError = await DeleteUserTraining(currentSelectedTraining?.id!)
-      if(isError && isError.error){
-        setIsLoading(false)
-        return setError(isError.error)
-      } 
-      HandleCloseModal()
-      setIsLoading(false)
+    setLoading(true)
+
+    const isError = await DeleteUserTraining(currentSelectedTraining?.id!)
+
+    if(isError && isError.error){
+      setLoading(false)
+      return setError(isError.error)
+    } 
+
+    HandleCloseModal()
+    setLoading(false)
+
   }
   const HandleCloseModal = () => {
-    if(isLoading) return
     setShowDeleteModal(false)
     HideShowHTMLScrollbar('show')
   }
@@ -41,16 +42,16 @@ export const DeleteTrainingModal = ({setShowDeleteModal,currentSelectedTraining}
             <strong>{currentSelectedTraining?.trainingname}</strong>
           </div>
 
-            {isLoading?
-            <SmallLoader/>:
+          <SmallLoaderDiv loading={loading}/>
             
-            <div className='flex gap-4'>
-              <Button onClick={deleteExercise} isPrimary className='flex-1'>Usuń</Button>
-              <Button onClick={HandleCloseModal}  className='flex-1'>Anuluj</Button>
-            </div>}
+          <div className='flex gap-4'>
+            <Button onClick={deleteExercise} isPrimary className='flex-1' disabled={loading}>Usuń</Button>
+            <Button onClick={HandleCloseModal}  className='flex-1' disabled={loading}>Anuluj</Button>
+          </div>
 
-            <ErrorDiv error={error}/>
-        </div>
+          <ErrorDiv error={error}/>
+
+      </div>
     </BlurBackgroundModal>
   )
 }

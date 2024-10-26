@@ -83,7 +83,7 @@ export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,traini
         setIsLoading(false)
     }
 
-    const nextExercise = async (goToNextExercise:boolean) => {
+    const nextExercise = async (goToNextExercise:boolean,isLastExercise?:boolean) => {
         setIsLoading(true)
         let id = trainingID
         if(!trainingID){
@@ -92,7 +92,7 @@ export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,traini
             setTrainingID(id)
         }
         
-        const possibleError = await AddExerciseAction(false,currentExercise.exercisename,state.series,pathname.includes('training'),id,handle)
+        const possibleError = await AddExerciseAction(false,currentExercise.exercisename,state.series,pathname.includes('training'),id,handle,isLastExercise)
         if(possibleError && possibleError.errors){
             setIsLoading(false)
             return setError(possibleError.errors)
@@ -110,10 +110,12 @@ export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,traini
     }
     const handleCloseTraining = async () => {
         const goToNextExercise = false
-        await nextExercise(goToNextExercise)
+        const isLastExercise = true
+        await nextExercise(goToNextExercise,isLastExercise)
         setIsLoading(true)
-        const isError = await closeTraining('/home')
+        const isError = await closeTraining()
         if(isError && isError.error) return setError(isError.error)
+        router.push('/home')
         setIsLoading(false)
     }
     const handleCloseTrainingFromModal = async () => {
@@ -141,8 +143,8 @@ export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,traini
                         <SpeedIcon width='20'/>
                     </Icon>
                 </Button> */}
-                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={()=>setShowConfirmEndTrainingModal(true)}>Zakończ trening</Button>
-                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList}>Zmień</Button>
+                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={()=>setShowConfirmEndTrainingModal(true)} disabled={isLoading}>Zakończ trening</Button>
+                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList} disabled={isLoading}>Zmień</Button>
                 <span className='text-nowrap'>{exercisesDone} z {totalNumberOfTrainigs}</span>
             </div>
         </div>
@@ -156,10 +158,10 @@ export const DisplayTraining = ({training,showTempo,trainingPlanId,lastid,traini
 
             <div className='mx-5 text-white flex gap-4 mt-auto pt-4'>
                 {exercisesLeft.length===1? <>
-                    <button onClick={handleCloseTraining} disabled={isLoading}  className='flex-1 bg-green py-4 rounded-lg'>Zakończ Trening</button>
+                    <Button className='flex-1' onClick={handleCloseTraining} disabled={isLoading} isPrimary>Zakończ Trening</Button>
                 </>:<>
-                    <button className='flex-1 bg-red py-4 rounded-lg' onClick={skipExercise} disabled={isLoading}>Pomiń ćwiczenie</button>
-                    <button onClick={()=>nextExercise(true)} className='flex-1 bg-green py-4 rounded-lg' disabled={isLoading}>Następne ćwiczenie</button>
+                    <Button className='flex-1' onClick={skipExercise} disabled={isLoading}>Pomiń ćwiczenie</Button>
+                    <Button className='flex-1' onClick={()=>nextExercise(true)} disabled={isLoading} isPrimary>Następne ćwiczenie</Button>
                 </>}
             </div>
         

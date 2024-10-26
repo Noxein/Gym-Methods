@@ -2,6 +2,7 @@ import React, { DetailedHTMLProps, HTMLAttributes, useContext, useRef } from 're
 import { ThemeContext } from '../context/ThemeContext'
 import { Icon } from './Icon'
 import { EyeIcon } from '../ui/icons/ExpandIcon'
+import { Input } from './ui/Input'
 
 type InputGroupTypes = {
     id:string,
@@ -9,12 +10,13 @@ type InputGroupTypes = {
     type?:string,
     showPassword?: boolean,
     setShowPassword?: React.Dispatch<React.SetStateAction<boolean>>,
-}
-export const InputGroup = ({id,text,type='text',showPassword,setShowPassword}:InputGroupTypes) => {
+} & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+
+export const InputGroup = ({id,text,type='text',showPassword,setShowPassword,...rest}:InputGroupTypes) => {
   return (
     <div className='flex flex-col flex-1 relative text-white w-full'>
-        <Label htmlFor={id}>{text}</Label>
-        <Input type={type} id={id} name={id} />
+        <Input labelName={text} type={type} id={id} name={id} {...rest} />
+
         {setShowPassword && <ShowPassword isOpen={showPassword!} onClick={()=>setShowPassword && setShowPassword(!showPassword)}/>}
     </div>
   )
@@ -32,18 +34,18 @@ const ShowPassword = ({isOpen,...rest}:ShowPasswordTypes) => {
     )
 }
 
-type InputType = {
+// type InputType = {
 
-} & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+// } & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 
-const Input = ({...rest}:InputType) => {
-    const inputRef = useRef<HTMLInputElement|null>(null)
+// const Input = ({...rest}:InputType) => {
+//     const inputRef = useRef<HTMLInputElement|null>(null)
 
-    const theme = useContext(ThemeContext)
-    return(
-        <input  className={`w-full text-${theme?.colorPallete.accent} border-white bg-${theme?.colorPallete.primary} border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
-    )
-}
+//     const theme = useContext(ThemeContext)
+//     return(
+//         <input  className={`w-full text-${theme?.colorPallete.accent} border-white bg-${theme?.colorPallete.primary} border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
+//     )
+// }
 
 type LabelType = {
     sClass?:string
