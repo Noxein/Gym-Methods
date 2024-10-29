@@ -29,13 +29,15 @@ export const DeleteHandleModal = ({handle,hideModal}:DeleteHandleModal) => {
         hideModal(false)
     }
   return (
-    <div className='flex flex-col gap-4 text-center text-xl'>
+    <div className='flex flex-col gap-4 text-center text-xl w-full mx-5'>
         <p>Czy napewno chcesz usunąć uchwyt o naziwe <br/> <b>{handle && handle.handlename}</b></p>
         {isLoading && <SmallLoader />}
         <ErrorDiv error={error}/>
         <div className='flex gap-2'>
-            <Button isPrimary className='flex-1' onClick={handleDelete} disabled={isLoading}>Usuń</Button>
+
             <Button isPrimary={false} className='flex-1' onClick={handleHideModal} disabled={isLoading}>Anuluj</Button>
+            <Button isPrimary className='flex-1' onClick={handleDelete} disabled={isLoading}>Usuń</Button>
+            
         </div>
     </div>
   )

@@ -11,6 +11,9 @@ import { TempoContext } from '@/app/context/TempoContext'
 import { ShowHistoryButton } from './ShowHistoryButton'
 import { PreviousExercise } from '../home/start-training/PreviousExercise'
 import { SmallLoaderDiv } from '../ui/SmallLoaderDiv'
+import { ErrorDiv } from '../ui/ErrorDiv'
+import { Button } from '../ui/Button'
+import { ButtonWithIcon } from '../ui/ButtonWithIcon'
 
 type AddExerciseType = {
     name:string,
@@ -61,6 +64,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
     }
     const FinishTraining = async () => {
         if(!checked) return
+        setError('')
         setLoading(true)
         
 
@@ -84,12 +88,16 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
                {requiresHandle && <Handle handle={handle} setHandle={setHandle} setParnetHandle={setParnetHandle} allHandles={allHandles}/>}
             </div>
             
-            <button onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl bg-green text-white rounded-md py-4 flex items-center justify-between px-5 `} disabled={isLoading || loading}>
-                Dodaj serie
-                <Icon className='bg-opacity-0 flex'>
+            <ButtonWithIcon onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading || loading}
+                buttonText='Dodaj serie'
+                childrenIcon={
+                    <Icon className='bg-opacity-0 flex'>
                     <PlusIcon /> 
                 </Icon>
-            </button>
+                }
+                >
+
+            </ButtonWithIcon>
             <div className='grid mt-3 text-white w-full'>
                 <div className={` justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 pl-7 w-[100vw-28px] bg-dark`}>
                 <div className='font-light'>Ciężar</div>
@@ -105,9 +113,8 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
         <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory} loading={loading}/>
         {showHistory && <PreviousExercise exerciseid={exerciseid} />}
 
-        {error && <div>
-            {error}
-            </div>}
+        <ErrorDiv error={error}/>
+        
         {!isTraining && 
         <div className='flex w-full gap-2 mt-auto pt-4'>
             <button  className='w-16 h-16 rounded accent-dark border-marmur border-2' onClick={()=>setChecked(x=>!x)}> 
@@ -119,9 +126,9 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
                 }
             </button>
 
-            <button onClick={FinishTraining} className={`py-4 flex-1 text-xl bg-dark text-white border-2 rounded-md`} disabled={loading}>
+            <Button onClick={FinishTraining} disabled={loading} isPrimary className='w-full text-xl'>
                 {loading? <SmallLoaderDiv loading={loading}/> : 'Zakończ ćwiczenie'}
-            </button>
+            </Button>
         </div>
         }
     </div>

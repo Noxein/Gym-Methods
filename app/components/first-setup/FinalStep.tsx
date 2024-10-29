@@ -7,6 +7,7 @@ import { exerciseList } from '@/app/lib/exercise-list'
 import { createTrainingPlans, FirstSetupFinish, SecondStepDataValidation } from '@/app/actions'
 import { useRouter } from 'next/navigation'
 import { ThemeContext } from '@/app/context/ThemeContext'
+import { ErrorDiv } from '../ui/ErrorDiv'
 
 interface FinalStep {
     setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
@@ -17,8 +18,6 @@ interface FinalStep {
     data: dataType,
 }
 
-
-
 export const FinalStep = ({data,exercisesToDelete,favouriteExercises,notfavouriteExercises,setCurrentStep,setFavouriteExercises}:FinalStep) => {
     const router = useRouter()
     const[error,setError] = useState('')
@@ -27,9 +26,10 @@ export const FinalStep = ({data,exercisesToDelete,favouriteExercises,notfavourit
     
     const ValidateData = async () => {
         setLoading(true)
-        await createTrainingPlans(favouriteExercises,notfavouriteExercises,Number(data.daysexercising))
+
+
         const validData = SecondStepDataValidation(favouriteExercises)
-        if(validData.error){
+        if(validData && validData.error){
             setLoading(false)
             return setError(validData.error)
         } 
@@ -37,16 +37,21 @@ export const FinalStep = ({data,exercisesToDelete,favouriteExercises,notfavourit
         const sendData = await FirstSetupFinish(data,exercisesToDelete,favouriteExercises)
         if(sendData && sendData.error){
             setLoading(false)
-            return setError('Coś poszło nie tak')
+            return setError(sendData.error)
         }
-        setLoading(false)
-        router.push('/home')
+       
+        // it wasnt workking befor
+        
+        //setLoading(false)
     }
   return (
     <div className='mb-24 mx-5 '>
         <h1 className='text-white font-bold text-xl text-center mt-20 mb-10'>Zaznacz jakie ćwiczenia <br/> muszą być w Twoim planie:</h1>
+
         <Mapper item={exerciseList} currentLevel={0} stateSetter={setFavouriteExercises} state={favouriteExercises} filterExercises={exercisesToDelete} favourite={true} disableFuncitions={loading}/>
-        <div className='text-white'>{error}</div>
+
+        <ErrorDiv error={error}/>
+
         <div className={`fixed bottom-0 left-0 right-0 gap-2 flex mx-5 pb-5 bg-${theme?.colorPallete.primary}`}>
             <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)} disabled={loading}>Wstecz</Button>
             <Button className='flex-1 text-2xl' onClick={async()=>{ValidateData()}} isPrimary disabled={loading}>Zakończ</Button>

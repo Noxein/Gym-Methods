@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { Mapper } from './Mapper'
 import { exerciseList } from '@/app/lib/exercise-list'
-import { FirstSetupFinish, SecondStepDataValidation } from '@/app/actions'
+import { SecondStepDataValidation } from '@/app/actions'
 import { dataType } from './SetupOneOfThree'
-import { useRouter } from 'next/navigation'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { Button } from '../ui/Button'
+import { ErrorDiv } from '../ui/ErrorDiv'
 
 type StepTwoOutOfThree = {
     setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
@@ -17,12 +17,11 @@ type StepTwoOutOfThree = {
 
 export const StepThreeOutOfThree = ({setCurrentStep,favouriteExercises,setExercisesToDelete,exercisesToDelete,data}:StepTwoOutOfThree) => {
     const[error,setError] = useState('')
-    const router = useRouter()
     const theme = useContext(ThemeContext)
 
     const ValidateData = async () => {
         const validData = SecondStepDataValidation(favouriteExercises)
-        if(validData.error) return setError(validData.error)
+        if(validData && validData.error) return setError(validData.error)
 
         setCurrentStep(step=>step+1)
     }
@@ -33,7 +32,8 @@ export const StepThreeOutOfThree = ({setCurrentStep,favouriteExercises,setExerci
             <Mapper item={exerciseList} currentLevel={0} stateSetter={setExercisesToDelete} state={exercisesToDelete} filterExercises={favouriteExercises} favourite={false}/>
         </div>
         
-        <div className='text-red-500'>{error}</div>
+        <ErrorDiv error={error}/>
+
         <div className={`fixed bottom-0 left-0 right-0 flex gap-2 px-5 pb-5 bg-${theme?.colorPallete.primary}`}>
             <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)}>Wstecz</Button>
             <Button className='flex-1 text-2xl' onClick={ValidateData} isPrimary >Dalej</Button>

@@ -49,8 +49,10 @@ export const EditModal = ({selectedExercise,setShowEditModal}:EditModal) => {
 
 
             <div className='flex gap-4'>
-                <Button isPrimary className='flex-1' onClick={editExercise} disabled={loading}>Zapisz</Button>
+
                 <Button className='flex-1' onClick={HandleCloseModal} disabled={loading}>Anuluj</Button>
+                <Button isPrimary className='flex-1' onClick={editExercise} disabled={loading}>Zapisz</Button>
+                
             </div>
 
             <ErrorDiv error={error}/>

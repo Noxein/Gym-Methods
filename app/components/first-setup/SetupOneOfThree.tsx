@@ -3,6 +3,7 @@ import { FistStepDataValidation } from '@/app/actions'
 import React, { useState } from 'react'
 import { CenterComponent } from '@/app/components/CenterComponent'
 import { Button } from '../ui/Button'
+import { ErrorDiv } from '../ui/ErrorDiv'
 
 export type dataType = {
     goal:string,
@@ -16,14 +17,24 @@ type SetupOneOfThree = {
 }
 
 export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) => {
-    const[error,setError] = useState('')
+    const[error,setError] = useState<{
+        goal: string;
+        advancmentlevel: string;
+        daysexercising: string;
+        isError: boolean;
+    }>({
+        goal: '',
+        advancmentlevel: '',
+        daysexercising: '',
+        isError: false
+    })
     const goal = ['Siła','Hipertrofia','Oba']
     const advancmentlevel = ['Początkujący','Średniozaawansowany','Zaawansowany']
     const daysexercising = ['1','2','3','4','5','6','7']
 
     const ValidateData = async () => {
         const validatedData = FistStepDataValidation(data)
-        if(validatedData?.error) return setError(validatedData.error)
+        if(validatedData?.error && validatedData?.error.isError) return setError(validatedData.error)
         setCurrentStep(x=>x+1)
     }
   return (
@@ -33,21 +44,20 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
                 labelText='Jaki cel treningu Cię interesuje?'
                 options={goal}
                 name='goal'
-                errors={[]}
+                error={error.goal}
                 setData={setData}/>
             <Select 
                 labelText='Jaki jest Twój poziom zaawansowania?' 
                 options={advancmentlevel}
                 name='advancmentlevel'
-                errors={[]}
+                error={error.advancmentlevel}
                 setData={setData}/>
             <Select 
                 labelText='Ile dni w tygodniu chcesz ćwiczyć?'
                 options={daysexercising}
                 name='daysexercising'
-                errors={[]}
+                error={error.daysexercising}
                 setData={setData}/>
-            <div className='text-red-500'>{error}</div>
             <div className={`fixed bottom-0 left-0 right-0 flex mx-5 mb-5`}>
                 <Button className='flex-1 text-2xl' isPrimary onClick={e=>{e.preventDefault();ValidateData()}}>Dalej</Button>
             </div>
@@ -60,10 +70,10 @@ type SelectTypes = {
     labelText: string,
     options: string[],
     name:'goal'|'advancmentlevel'|'daysexercising',
-    errors: string[],
+    error: string,
     setData: React.Dispatch<React.SetStateAction<dataType>>
 }
-const Select = ({labelText, options, name, errors, setData}:SelectTypes) => {
+const Select = ({labelText, options, name, error, setData}:SelectTypes) => {
     const setDataFunc = (value:string) => {
         setData(callbackData=>{
             let callbackDataCopy = {...callbackData}
@@ -83,11 +93,7 @@ const Select = ({labelText, options, name, errors, setData}:SelectTypes) => {
                     </option>
                 ))}
             </select>
-            <div>
-                {errors.map(e=>(
-                    <span key={e}>{e}</span>
-                ))}
-            </div>
+            <ErrorDiv error={error}/>
         </div>
     )
 }

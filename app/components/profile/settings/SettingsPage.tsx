@@ -77,7 +77,7 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         const result = await saveNewUserSetting(userSettings)
         if(result?.error){
             setLoading(false)
-            return setError('Coś poszło nie tak')
+            return setError(result.error)
         } 
         setLoading(false)
         return router.push('/home/profile')
@@ -125,8 +125,10 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
 
         <SmallLoaderDiv loading={loading}/>
         <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
-            <Button className='flex-1' onClick={handleSave} isPrimary disabled={loading}>Zapisz zmiany</Button>
+
             <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>Anuluj</Button>
+            <Button className='flex-1' onClick={handleSave} isPrimary disabled={loading}>Zapisz zmiany</Button>
+
         </div>
 
         <ErrorDiv  error={error}/>

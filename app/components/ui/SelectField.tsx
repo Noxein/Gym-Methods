@@ -7,7 +7,7 @@ interface Input extends React.DetailedHTMLProps<React.SelectHTMLAttributes<HTMLS
 
 export const Select = ({labelName,valuesToLoop,...rest}:Input) => {
   return (
-    <div className='relative w-full'>
+    <div className='relative w-full text-white'>
         <label htmlFor={labelName} className='absolute -top-1/4 text-base left-4 px-1 z-20'>
           <div className='z-20 relative'>{labelName}</div>
           <div className='absolute h-1 w-[105%] bg-dark bottom-[10px] -left-1 text-base text-opacity-0 z-10'></div>

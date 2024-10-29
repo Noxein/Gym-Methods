@@ -45,8 +45,10 @@ export const DeleteTrainingModal = ({setShowDeleteModal,currentSelectedTraining}
           <SmallLoaderDiv loading={loading}/>
             
           <div className='flex gap-4'>
-            <Button onClick={deleteExercise} isPrimary className='flex-1' disabled={loading}>Usuń</Button>
+
             <Button onClick={HandleCloseModal}  className='flex-1' disabled={loading}>Anuluj</Button>
+            <Button onClick={deleteExercise} isPrimary className='flex-1' disabled={loading}>Usuń</Button>
+            
           </div>
 
           <ErrorDiv error={error}/>

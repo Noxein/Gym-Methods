@@ -46,8 +46,10 @@ export const AddTrainingModal = ({setShowAddModal,trainingCount}:AddTrainingModa
             <SmallLoaderDiv loading={loading}/>
 
             <div className='mt-5 flex gap-4'>
-                <Button onClick={AddTraining} className='flex-1' isPrimary disabled={loading}>Dodaj</Button>
+
                 <Button onClick={HandleCloseModal} className='flex-1' disabled={loading}>Anuluj</Button>
+                <Button onClick={AddTraining} className='flex-1' isPrimary disabled={loading}>Dodaj</Button>
+                
             </div>
 
             <ErrorDiv error={error}/>

@@ -33,8 +33,10 @@ export const AddHanleModal = ({hideModal}:DeleteHandleModal) => {
         {isLoading && <SmallLoader />}
         <ErrorDiv error={error}/>
         <div className='flex gap-2 w-full'>
-            <Button isPrimary className='flex-1' onClick={handleAdd} disabled={isLoading}>Dodaj</Button>
+
             <Button isPrimary={false} className='flex-1' onClick={handleHideModal} disabled={isLoading}>Anuluj</Button>
+            <Button isPrimary className='flex-1' onClick={handleAdd} disabled={isLoading}>Dodaj</Button>
+            
         </div>
     </div>
   )

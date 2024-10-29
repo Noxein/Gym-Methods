@@ -1,5 +1,4 @@
 'use client'
-import { updateingRows } from '@/app/actions'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { GymExercisesDbResult } from '@/app/types'
 import { format, subHours } from 'date-fns'
@@ -13,10 +12,6 @@ type CompletedTrainingTypes = {
 
 export const CompletedTraining = ({training,trainingName,trainingDate}:CompletedTrainingTypes) => {
 
-    const func = async () => {
-        await updateingRows()
-      }
-      
     const theme = useContext(ThemeContext)
     const offset = new Date(trainingDate).getTimezoneOffset()/60
     const finishHour = subHours(new Date(trainingDate),offset)

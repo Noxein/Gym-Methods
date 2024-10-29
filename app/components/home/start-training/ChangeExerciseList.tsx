@@ -4,6 +4,8 @@ import { Icon } from '../../Icon'
 import { LeftAngle, PlusIcon, RightTriangle } from '@/app/ui/icons/ExpandIcon'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { ModalContexts } from './ModalContexts'
+import { Button } from '../../ui/Button'
+import { ButtonWithIcon } from '../../ui/ButtonWithIcon'
 
 type ChangeExerciseListTypes = {
     list?: TrainingExerciseType[],
@@ -41,16 +43,19 @@ export const ChangeExerciseList = ({list,setExercisesLeft,setCurrentExercise}:Ch
             ))}
 
 
-        <div className='mt-5 mb-24 flex flex-col gap-2'>
-            <div className='bg-green p-[1px] rounded-lg flex items-center cursor-pointer' onClick={handleShowModal}>
-                <div className='bg-green text-white py-2 px-4 rounded-lg flex-1'>
-                    Inne ćwiczenie
-                </div>
-                <Icon>
+        <div className='mt-5 mb-24 flex-col flex gap-2'>
+            <ButtonWithIcon 
+                className='flex-1'
+                onClick={handleShowModal}
+                buttonText='Inne ćwiczenie'
+                isPrimary
+                childrenIcon= {
                     <PlusIcon fill='#fff'/>
-                </Icon>
-            </div>
-            <button className='bg-red text-white flex-1 w-full rounded-lg py-3' onClick={handleCloseList}>Anuluj</button>
+                }
+            />
+
+            <Button className='flex-1' onClick={handleCloseList}>Anuluj</Button>
+
         </div>
     </div>
     </div>)

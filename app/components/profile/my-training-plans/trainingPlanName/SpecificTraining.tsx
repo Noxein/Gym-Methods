@@ -60,6 +60,7 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
         childrenIcon={
           <PlusIcon width='20' fill='#D9D9D9'/>
         }
+        isPrimary
         className='bg-green w-full'
         disabled={loading}
         />
@@ -67,8 +68,10 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
         {planExercises && <ListedAddedExercises planExercises={planExercises} setPlanExercises={setPlanExercises}/>}
 
         <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
-          <Button className='flex-1' isPrimary onClick={handleSave} disabled={loading}>Zapisz zmiany</Button>
+
           <Button className='flex-1' onClick={()=>router.push('/home/profile/my-training-plans')} disabled={loading}>Anuluj</Button>
+          <Button className='flex-1' isPrimary onClick={handleSave} disabled={loading}>Zapisz zmiany</Button>
+          
         </div>
 
       </div>

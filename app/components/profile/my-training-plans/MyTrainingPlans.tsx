@@ -33,6 +33,7 @@ export const MyTrainingPlans = ({UserTrainings,showAddModalUrl}:MyTrainingPlansT
           </Icon>
         }
         className='bg-green w-full text-xl mt-4 items-center flex'
+        isPrimary
         onClick={HandleShowAddModal}
         />
 

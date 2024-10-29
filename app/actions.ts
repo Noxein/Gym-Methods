@@ -9,7 +9,7 @@ import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, exercisesUsingHandles, handleTypes, timeMesureExercises } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
-import { WeekDayArray, WeekDayArrayPL } from "./lib/utils";
+import { Advancmentlevel, Daysexercising, Goal, WeekDayArray, WeekDayArrayPL } from "./lib/utils";
 import { z } from "zod";
 import { addDays, format, formatDate, isSameDay, isSameWeek, subDays } from "date-fns";
 import { AuthError } from "next-auth"; 
@@ -194,13 +194,28 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
 }
 
 export const FistStepDataValidation = (data:dataType) => {
-    const validatedFields = FirstSetupZodSchema.safeParse(data)
-    if(!validatedFields.success){
-        return { error : 'Coś poszło nie tak'}
+    let error = {
+        goal: '',
+        advancmentlevel: '',
+        daysexercising: '',
+        isError: false
     }
-    return {
-        succes: 'Dobre dane'
+    if(!Goal.includes(data.goal)) {
+        error.goal = 'Został wybrany zły cel, wybierz inny'
+        error.isError = true
     }
+    if(!Advancmentlevel.includes(data.advancmentlevel)){
+        error.advancmentlevel = 'Został wybrany zły poziom zaawansowania, wybierz inny'
+        error.isError = true
+    }
+    if(!Daysexercising.includes(data.daysexercising)){
+        error.daysexercising = 'Zła liczba treningów w tygodniu, wybierz inną'
+        error.isError = true
+    }
+    if(error.isError){
+        return { error }
+    }
+
 }
 
 export const SecondStepDataValidation = (exercises:string[]) => {
@@ -209,24 +224,31 @@ export const SecondStepDataValidation = (exercises:string[]) => {
         if(!exercisesArr.includes(exercise)) error = true
     })
     if(error){
-        return { error: 'Coś poszło nie tak'}
-    }
-    return {
-        succes: 'Wszystko w porządku'
+        return { error: 'Zostały zaznaczone ćwiczenia którcyh niema w bazie, spróbuj ponownie'}
     }
 }
 export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],favourtiteExercises:string[]) => {
+    let isError = false
     const userid = await userID()
+    const validateData = FistStepDataValidation(data)
+    if(validateData?.error){
+        return { error: 'Coś poszło nie tak w pierwszym kroku' }
+    } 
+
     try{
         await sql`
             UPDATE gymusers
             SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
             WHERE id = ${userid};
         `
+        await createTrainingPlans(favourtiteExercises,deleteExercises,Number(data.daysexercising))
         return
     }catch(e){
+        isError = true
         console.log('Error occured FirstSetupFinish func actions.ts',e)
         return { error : 'Coś poszło nie tak'}
+    }finally{
+        if(!isError) redirect('/home')
     }
 }
 
@@ -650,7 +672,6 @@ const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExe
         if(typeof x !== 'string') NotStringError = true
 
         if(!allExerciseIdsArray.includes(exercises[x].exerciseid)){
-            console.log(allExerciseIdsArray,exercises[x])
             UnknownExerciseError = true 
             unknownExercice = exercises[x].exerciseid
         }
@@ -733,7 +754,6 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
     const endlishWeekDay = WeekDayArray[WeekDayArrayPL.indexOf(weekday)]
     let exercises = exercisesuwu
     if(!exercisesuwu) exercises = []
-    console.log(exercises)
     try{
         await sql`
             INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userid},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify({exercises})})
@@ -883,13 +903,12 @@ export const updateCurrentTraining = async (id:string,exercisesLeft: TrainingExe
         }
         idString = idString + `'${id.id}',`
     })
-    console.log(idString)
     try{
         await sql`
             UPDATE gymuserstrainings SET exercisesleft = ARRAY[${idString}] WHERE id=${id}
         `
     }catch(e){
-        console.log(e)
+        console.log('Error occured action.ts file updateCurrentTraining function',e)
     }
 }
 
@@ -1038,10 +1057,10 @@ const userID = async () => {
 export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:string) => {
     const userid = await userID()
     if( (from && Object.prototype.toString.call(from) !== '[object Date]') || (to && Object.prototype.toString.call(to) !== '[object Date]')){
-        return '0'
+        return {error: 'Zły format dat', data : '0' }
     }
     if(exerciseName && typeof exerciseName !== 'string') {
-        return '0' 
+        return {error: 'Zły format dat', data : '0' }
     }
 
     let toFormatted = ''
@@ -1059,56 +1078,56 @@ export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:
             const count = await sql`
                 SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date AND exercisename = ${exerciseName}
             `
-            return count.rows[0].count as string
+            return { error: '', data: count.rows[0].count as string }
         }
 
         if(from && exerciseName){
             const count = await sql`
                 SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date >= ${fromFormatted} AND exercisename = ${exerciseName}
             `
-            return count.rows[0].count as string
+            return { error: '', data: count.rows[0].count as string }
         }
 
         if(to && exerciseName){
             const count = await sql`
                 SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted} AND exercisename = ${exerciseName}
             `
-            return count.rows[0].count as string
+            return { error: '', data: count.rows[0].count as string }
         }
         if(to && from){
             const count = await sql`
                 SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date
             `
-            return count.rows[0].count as string
+            return { error: '', data: count.rows[0].count as string }
         }
         if(to){
             const count = await sql`
                 SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted}
             `
-            return count.rows[0].count as string
+            return { error: '', data: count.rows[0].count as string }
         }
 
         if(from){
             const count = await sql`
                 SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND date >= ${fromFormatted}
             `
-            return count.rows[0].count as string
+            return { error: '', data: count.rows[0].count as string }
         }
 
         if(exerciseName){
             const count = await sql`
                 SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName}
             `
-            return count.rows[0].count as string
+            return { error: '', data: count.rows[0].count as string }
         }
 
         //all
         const count = await sql`
             SELECT COUNT(*) FROM gymexercises WHERE userid = ${userid}
         `
-        return count.rows[0].count as string
+        return { error: '', data: count.rows[0].count as string }
     }catch{
-        return '0'
+        return { error: 'Coś poszło nie tak', data: '0' }
     }
 }
 export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
@@ -1129,10 +1148,10 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
     let unsortedExerciseArray:ExerciseType[] = []
 
     if( (from && Object.prototype.toString.call(from) !== '[object Date]') || (to && Object.prototype.toString.call(to) !== '[object Date]')){
-        return unsortedExerciseArray
+        return { error: 'Zły format dat' , data : []}
     }
     if(exerciseName && typeof exerciseName !== 'string') {
-       return unsortedExerciseArray
+        return { error: 'Nazwa ćwiczenia musi być textem', data : []}
     }
     try{
         //TODO MAKE SEPARATE FUNCTION FOR FETCHING COUNT
@@ -1140,56 +1159,55 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            return { error: '', data: exercises.rows as ExerciseType[] }
         }
 
         if(from && exerciseName){
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${fromFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            return { error: '', data: exercises.rows as ExerciseType[] }
         }
 
         if(to && exerciseName){
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            return { error: '', data: exercises.rows as ExerciseType[] }
         }
         if(to && from){
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            return { error: '', data: exercises.rows as ExerciseType[] }
         }
         if(to){
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            return { error: '', data: exercises.rows as ExerciseType[] }
         }
 
         if(from){
             const exercises = await sql`
                 SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            console.log('from',exercises.rows)
-            return exercises.rows as ExerciseType[]
+            return { error: '', data: exercises.rows as ExerciseType[] }
         }
 
         if(exerciseName){
             const exercises = await sql`
             SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
-            return exercises.rows as ExerciseType[]
+            return { error: '', data: exercises.rows as ExerciseType[] }
         }
         const exercises = await sql`
             SELECT id,exercisename,date,sets FROM gymexercises WHERE userid = ${userid} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
         `
-        return exercises.rows as ExerciseType[]
+        return { error: '', data: exercises.rows as ExerciseType[] }
     }catch(e){
         console.log('Error occured fetchUserExercises func actions.ts',e)
-        return [] as ExerciseType[]
+        return { error: 'Coś poszło nie tak' }
     }
 }
 
@@ -1216,18 +1234,18 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
 
     const { advancmentlevel, daysexercising, favouriteexercises, goal, notfavouriteexercises } = newSettings
 
-    if(typeof goal !== 'string' || !goalArr.includes(goal)) return
-    if(typeof advancmentlevel !== 'string' || !advancmentlevelArr.includes(advancmentlevel)) return
-    if(typeof daysexercising !== 'string' || !daysexercisingArr.includes(daysexercising)) return
+    if(typeof goal !== 'string' || !goalArr.includes(goal)) return { error: 'Zły cel, poprawne cele to jedno z "Siła","Hipertrofia","Oba" ' }
+    if(typeof advancmentlevel !== 'string' || !advancmentlevelArr.includes(advancmentlevel)) return { error: 'Zły poziom zaawansowania, poprawne poziomy to jedno z "Początkujący","Średniozaawansowany","Zaawansowany" ' }
+    if(typeof daysexercising !== 'string' || !daysexercisingArr.includes(daysexercising)) return { error: 'Dni ćwiczeń w tygodniu musi być pomiędzy 1 a 7' }
 
     if(favouriteexercises){
         for(let i = 0 ; i< favouriteexercises.length ; i++ ){
-            if(!exercisesArr.includes(favouriteexercises[i])) return
+            if(!exercisesArr.includes(favouriteexercises[i])) return { error: 'Nieznane ćwiczenie w lubionych ćwiczeniach, nazwa to: ' + favouriteexercises[i] }
         }
     }
     if(notfavouriteexercises){
         for(let i = 0 ; i< notfavouriteexercises.length ; i++ ){
-            if(!exercisesArr.includes(notfavouriteexercises[i])) return
+            if(!exercisesArr.includes(notfavouriteexercises[i])) return { error: 'Nieznane ćwiczenie w nie lubianych ćwiczeniach, nazwa to: ' + notfavouriteexercises[i] }
         }
     }
     
@@ -1235,23 +1253,12 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
         await sql`
             UPDATE gymusers SET goal = ${goal}, advancmentlevel = ${advancmentlevel}, daysexercising = ${daysexercising}, favouriteexercises = ${JSON.stringify(favouriteexercises)}, notfavouriteexercises = ${JSON.stringify(notfavouriteexercises)}  WHERE id = ${userid}
         `
-        return {
-            error: false
-        }
     }catch(e){
         console.log('Error occured saveNewUserSetting func actions.ts',e)
         return {
             error: 'Coś poszło nie tak'
         }
     }
-}
-
-export const updateingRows = async () => {
-    const rows = await sql`
-        SELECT id,sets FROM gymexercises
-    `
-    console.log(rows.rows[0].sets)
-
 }
 
 export const fetchPreviousExercise = async (exercisename:string) => {
@@ -1273,7 +1280,7 @@ export const fetchPreviousExercise = async (exercisename:string) => {
 export const changePassword = async (password:string,newpassword:string,repeatnewpassword:string) => {
     const userid = await userID()
 
-    if(typeof password!== 'string' || typeof newpassword!== 'string' || typeof repeatnewpassword!== 'string') return
+    if(typeof password!== 'string' || typeof newpassword!== 'string' || typeof repeatnewpassword!== 'string') return {error: 'Hasło musi być ciągiem znaków'}
     if(newpassword!==repeatnewpassword) return {error: 'Hasła różnią się'}
     if(newpassword.length<8) return {error: 'Hasło powinno mieć conajmniej 8 znaków'}
     let userEncryptedPassword
@@ -1363,21 +1370,18 @@ export const createTrainingPlans = async (fav:string[],notfav:string[],days:numb
             FilterTraining(Beginner4_7Lower_SecondVariation,fav,notfav)
         )
     }
-    //make plans
-    try{
-        plans.map(async(plan,index)=>{
-            let name:string
-            if(days<=2){
-                name = `Trening całego ciała ${index+1}`
-            }else{
-                name = index<=1?`Trening góry ${index+1}`:`Trening dołu ${index+1}`
-            }
 
-            await CreateUserTraining(name,'Poniedziałek',plan)
-        })
-    }catch(e){
-        console.log('Error occured line 1204 actions.ts',e)
-    }
+    plans.map(async(plan,index)=>{
+        let name:string
+        if(days<=2){
+            name = `Trening całego ciała ${index+1}`
+        }else{
+            name = index<=1?`Trening góry ${index+1}`:`Trening dołu ${index+1}`
+        }
+
+        await CreateUserTraining(name,'Poniedziałek',plan)
+    })
+
 }
 
 export const SelectedDayExercisesForWidget = async (selectedDate:Date) => {
@@ -1465,9 +1469,8 @@ export const Last30DaysExercises = async () => {
             averageThisMonthSeries: Math.round(totalSeriesThisMonth/len),
             groupedDays
         }
-        console.log(returnObj.groupedDays)
         return returnObj
     }catch(e){
-        console.log(e)
+        console.log('Error occured actions.ts file Last30DaysExercises function',e)
     }
 }

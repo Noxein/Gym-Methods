@@ -28,5 +28,5 @@ export const AddExerciseZodSchema = z.object({
 export const FirstSetupZodSchema = z.object({
     goal: z.enum(['Siła','Hipertrofia','Oba']),
     advancmentlevel: z.enum(['Początkujący','Średniozaawansowany','Zaawansowany']),
-    daysexercising: z.enum(['2','3','4','5'])
+    daysexercising: z.enum(['1','2','3','4','5','6','7'])
 })

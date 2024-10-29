@@ -20,7 +20,7 @@ input[type=number] {
   -moz-appearance: textfield;
 } 
 
-.gradient-background-green{
+.gradient-background-green, .gradient-background-green-animation-on-disabled:disabled{
   background: linear-gradient(267deg,#0f6932,#042e1a);
   background-size: 120% 120%;
   animation: gradient-animation 1.5s ease infinite;

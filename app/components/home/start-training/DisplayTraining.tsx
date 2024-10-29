@@ -81,6 +81,7 @@ export const DisplayTraining = ({training,trainingPlanId,lastid,trainingid,train
     }
 
     const nextExercise = async (goToNextExercise:boolean,isLastExercise?:boolean) => {
+        setError('')
         setIsLoading(true)
         let id = trainingID
         if(!trainingID){

@@ -44,7 +44,7 @@ export const MyHandles = ({handles}:MyHandlesTypes) => {
     </h1>
 
     <div className='flex flex-col gap-2'>
-        <ButtonWithIcon className='bg-green' buttonText='Dodaj nowy uchwyt' childrenIcon={
+        <ButtonWithIcon className='bg-green' isPrimary buttonText='Dodaj nowy uchwyt' childrenIcon={
             <Icon className='flex justify-center items-center px-1'>
                 <PlusIcon />
             </Icon>

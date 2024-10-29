@@ -13,6 +13,7 @@ import { format } from 'date-fns'
 import { Input } from '../../ui/Input'
 import { Button } from '../../ui/Button'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
+import { ErrorDiv } from '../../ui/ErrorDiv'
 
 type SearchComponentTypes = {
     exerciseList: (string | UserExercise)[],
@@ -36,6 +37,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     const [totalItems,setTotalItems] = useState<number>(0)
 
     const[loading,setLoading] = useState(true)
+    const[error,setError] = useState('')
 
     const handleShowExerciseList = () => {
         setShowExerciseList && setShowExerciseList(true)
@@ -44,12 +46,26 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         if(reset){
             setLoading(true)
             const result = await fetchUserExercises(from!,to!,selectedExercise,0)
-            await handleSearchCount()
-            setFetchedExercises(SortItems(result))
+            if(result.error){
+                setError(result.error)
+                setLoading(false)
+                return 
+            }
+            const count = await handleSearchCount()
+            if(count && count.error){
+                setError(count.error)
+                setLoading(false)
+                return
+            } 
+            setFetchedExercises(SortItems(result.data!))
             setCurrentPage(1)
         }else{
             const result = await fetchUserExercises(from!,to!,selectedExercise,currentPage)
-            const sortedItems = SortItems(result)
+            if(result.error){
+                setError(result.error)
+                return setLoading(false)
+            }
+            const sortedItems = SortItems(result.data!)
             setFetchedExercises(x=>[...x,...sortedItems])
             setCurrentPage(currentPage+1)
         }
@@ -58,6 +74,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     }
     const handleSearchCount = async () => {
         const count = await fetchUserExercisesCount(from!,to!,selectedExercise)
+        if(count.error) return { error : count.error }
         setTotalItems(Number(count))
     }
     const toggleSearchBar = () => {
@@ -113,28 +130,32 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                     <Button className='w-full' onClick={handleShowExerciseList} isPrimary disabled={loading}>{searchExercise?.exercise || 'Wszystkie ćwiczenia'}</Button>
                 </div>
             </div>
-            <div className={`w-full flex justify-between px-5 bg-${theme?.colorPallete.accent} mt-2 gap-10`}>
-                <button onClick={toggleSearchBar} className='flex-1'>
-                    <Icon className='flex items-center'>
-                        <ExpandIcon2 expanded={showSearch}/>
-                    </Icon>
-                </button>
-                {
-                    showSearch?
-                    <button className={`text-${theme?.colorPallete.primary} font-semibold pl-10 text-right`} onClick={()=>handleSearch(true)}>
-                        Szukaj
-                    </button>:
-                    <div className={`flex flex-col text-${theme?.colorPallete.primary}`}>
+            <div className={`w-full flex flex-col px-5 bg-marmur mt-2`}>
+                <div className='w-full flex justify-between gap-10'>
+                    <button onClick={toggleSearchBar} className='flex-1'>
+                        <Icon className='flex items-center'>
+                            <ExpandIcon2 expanded={showSearch}/>
+                        </Icon>
+                    </button>
+                    {
+                        showSearch?
+                        <button className={`text-${theme?.colorPallete.primary} font-semibold pl-10 text-right`} onClick={()=>handleSearch(true)}>
+                            Szukaj
+                        </button>:
+                        <div className={`flex flex-col text-${theme?.colorPallete.primary}`}>
+    
+                            <span className={`text-${theme?.colorPallete.primary}`}>
+                                {formattedFrom} - {formattedTo}
+                            </span>
+                            <span className={`text-${theme?.colorPallete.primary} text-right font-semibold text-xl`}>
+                                {selectedExercise && selectedExercise?.length > 30? selectedExercise?.slice(0,30) + '...' : selectedExercise}
+                            </span>
+    
+                        </div>
+                    }
+                </div>
 
-                        <span className={`text-${theme?.colorPallete.primary}`}>
-                            {formattedFrom} - {formattedTo}
-                        </span>
-                        <span className={`text-${theme?.colorPallete.primary} text-right font-semibold text-xl`}>
-                            {selectedExercise && selectedExercise?.length > 30? selectedExercise?.slice(0,30) + '...' : selectedExercise}
-                        </span>
-
-                    </div>
-                }
+                <ErrorDiv error={error} className='flex-1 flex items-center'/>
 
             </div>
         </div>

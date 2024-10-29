@@ -5,6 +5,7 @@ import { DeleteTempoFromDb } from '@/app/actions'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 import { Button } from '../../ui/Button'
+import { ErrorDiv } from '../../ui/ErrorDiv'
 
 type DeleteTempoType = {
     selectedExercise: SelectedExerciseWithTempo,
@@ -32,17 +33,21 @@ export const DeleteTempo = ({selectedExercise,setShowDeleteTempoModal}:DeleteTem
     }
   return (
     <BlurBackgroundModal>
-        <div className={`flex flex-col gap-2 mx-5 mb-20 rounded-md text-xl text-white max-w-xl`}>
+        <div className={`flex flex-col gap-2 mx-5 mb-20 rounded-md text-xl text-white w-full`}>
+            
             <div className='text-center'>Czy napewno chcesz usunąć tempo do ćwiczenia <br/> <b>{selectedExercise.name}</b>?</div>
+
             <SmallLoaderDiv loading={loading}/>
-            {loading?            
-            <div className='flex justify-center mt-4'>
-                <span className='loader1'></span>
-            </div>:
+
+            <ErrorDiv error={error}/>
+
             <div className='flex gap-2 mt-4'>
-                <Button className='flex-1' onClick={HandleDeleteTempo} isPrimary disabled={loading}>Usuń</Button>
+                
                 <Button className='flex-1' onClick={HandleCloseModal} disabled={loading}>Anuluj</Button>
-            </div>}
+                <Button className='flex-1' onClick={HandleDeleteTempo} isPrimary disabled={loading}>Usuń</Button>
+                
+            </div>
+            
         </div>
     </BlurBackgroundModal>
   )

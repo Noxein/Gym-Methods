@@ -53,8 +53,10 @@ export const EditTempo = ({selectedExercise,setShowEditTempoModal}:EditTempoType
             <SmallLoaderDiv loading={loading}/>
                 
             <div className='flex gap-4 mt-2'>
-                <Button className='flex-1' onClick={HandleAddOrUpdateTempo} isPrimary disabled={loading}>Zapisz</Button>
+                
                 <Button className='flex-1' onClick={HandleCloseModal} disabled={loading}>Anuluj</Button>
+                <Button className='flex-1' onClick={HandleAddOrUpdateTempo} isPrimary disabled={loading}>Zapisz</Button>
+                
             </div>
             {error && <div className='text-red-600'>{error}</div>}
         </div>

@@ -38,8 +38,10 @@ export const DeleteModal = ({selectedExercise,setShowDeleteModal}:{selectedExerc
             <SmallLoaderDiv loading={loading}/>
 
             <div className='flex gap-2'>
-                <Button onClick={deleteExercise} className='flex-1' isPrimary disabled={loading}>Usuń</Button>
+
                 <Button onClick={HandleCloseModal} className='flex-1' disabled={loading}>Anuluj</Button>
+                <Button onClick={deleteExercise} className='flex-1' isPrimary disabled={loading}>Usuń</Button>
+                
             </div>
             
             <ErrorDiv error={error}/>
