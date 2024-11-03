@@ -1,3 +1,6 @@
+import { cn } from "@/app/lib/cn"
+import { SVGProps } from "react"
+
 const iconWidth = 25
 const iconHeight = 25
 const iconFill = '#0D1317'
@@ -75,9 +78,9 @@ export const TrashIcon = ({width,height,fill}:{width?:string,height?:string,fill
         </svg>
     )
 }
-export const LeftAngle = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+export const LeftAngle = ({width,height,fill,className}:{width?:string,height?:string,fill?:string} & SVGProps<SVGSVGElement>) => {
     return (
-        <svg fill={fill?fill:iconFill} width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24">
+        <svg className={cn(className)} fill={fill?fill:iconFill} width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24">
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
             <g id="SVGRepo_iconCarrier">

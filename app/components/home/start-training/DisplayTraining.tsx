@@ -10,6 +10,7 @@ import { Button } from '../../ui/Button'
 import { ConfirmEndTrainingModal } from './ConfirmEndTrainingModal'
 import { AddExerciseUsingState } from '@/app/components/home/start-training/AddExerciseUsingState'
 import { localStorageSetter } from '@/app/lib/utils'
+import { ExpandIcon, LeftAngle, RightTriangle } from '@/app/ui/icons/ExpandIcon'
 
 type DisplayTrainingTypes = {
     trainingPlanData: UserTrainingPlan,
@@ -138,9 +139,13 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
         {error && <div className='text-red'>{error}</div>}
 
             <div className='mx-5 text-white flex gap-4 mt-auto pt-4'>
-                <Button className='flex-1' onClick={previousExercise}>LEWO</Button>
+                <Button className={`px-3 ${localStorageTrainingData.currentExerciseIndex===0 ? 'border-gray-700':null}`} onClick={previousExercise}>
+                    <LeftAngle fill={localStorageTrainingData.currentExerciseIndex===0 ? '#777':'#fff'} height='40' width='40'/>
+                </Button>
                 <Button className='flex-1' onClick={()=>setShowConfirmEndTrainingModal(true)} isPrimary>ZAKOŃCZ TRENING</Button>
-                <Button className='flex-1' onClick={nextExercise}>PRAWO</Button>
+                <Button className={`px-3 ${localStorageTrainingData.currentExerciseIndex===totalExercises - 1 ? 'border-gray-700':null}`} onClick={nextExercise}>
+                    <LeftAngle className='rotate-180' fill={localStorageTrainingData.currentExerciseIndex===totalExercises - 1 ? '#777':'#fff'} height='40' width='40'/>
+                </Button>
             </div>
         
         {modalsContext?.showExerciseList && 
