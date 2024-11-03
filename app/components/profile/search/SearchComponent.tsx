@@ -96,13 +96,13 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         let obj: HistoryExercise[] = []
 
         unsortedExerciseArray.forEach((item,index)=>{
-            const formatDate = format(item.date,'dd,MM') // np. '12.09'
+            const formatDate = format(item.date!,'dd,MM') // np. '12.09'
             let indexOF = obj.findIndex(x=>format(x.day,'dd,MM') === formatDate) // check if any object in array has same key
             if(indexOF >= 0){ // if there is no index, function returns -1 so we know we need to make new obj
                 obj[indexOF].exercises.push(item) //here we have
             }else{
                 obj.push({
-                    day: item.date,
+                    day: item.date!,
                     exercises: [item]
                 })
             }

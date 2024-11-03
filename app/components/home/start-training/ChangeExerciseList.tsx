@@ -9,19 +9,14 @@ import { ButtonWithIcon } from '../../ui/ButtonWithIcon'
 
 type ChangeExerciseListTypes = {
     list?: TrainingExerciseType[],
-    setExercisesLeft: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
-    setCurrentExercise: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
+    setCurrentExercise: (number:number) => void;
 }
-export const ChangeExerciseList = ({list,setExercisesLeft,setCurrentExercise}:ChangeExerciseListTypes) => {
+export const ChangeExerciseList = ({list,setCurrentExercise}:ChangeExerciseListTypes) => {
     const modalsContext = useContext(ModalContexts)
 
-    const handleChangeExercisesOrder = (indexToStartWith:number) => {
-        if(indexToStartWith === 0) return handleCloseList()
+    const handleChangeExercisesOrder = (exerciseIndexNumber:number) => {
 
-        setExercisesLeft(pre=>{
-            setCurrentExercise(pre[indexToStartWith])
-            return [(pre[indexToStartWith]),...pre.slice(0,indexToStartWith),...pre.slice(indexToStartWith+1,pre.length)]
-        })
+        setCurrentExercise(exerciseIndexNumber)
         
         handleCloseList()
     }

@@ -76,7 +76,7 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
 
       </div>
 
-      {showAddExercise && <MapExercises exercises={exercises} allExercisesInOneArray={allExercisesInOneArray} setPlanExercises={setPlanExercises} setShowAddExercise={setShowAddExercise}/>}
+      {showAddExercise && <MapExercises exercisesObject={exercises} allExercisesInOneArray={allExercisesInOneArray} setPlanExercises={setPlanExercises} setShowAddExercise={setShowAddExercise}/>}
     </div>
   )
 }

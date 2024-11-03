@@ -37,7 +37,6 @@ export const MapDays = ({Last30DaysExercises}:MapDaysTypes) => {
         if(Last30DaysExercises?.groupedDays[formattedDate]){
             KGSelectedDay = Last30DaysExercises?.groupedDays[formattedDate].dayWeight
             SeriesSelectedDay = Last30DaysExercises?.groupedDays[formattedDate].dayRepeats
-            console.log(KGSelectedDay,SeriesSelectedDay,Last30DaysExercises?.groupedDays,Last30DaysExercises?.groupedDays[formattedDate])
         }
         
         setDayData({KGToday:KGSelectedDay,SeriesToday:SeriesSelectedDay})

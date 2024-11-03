@@ -32,7 +32,6 @@ type AddExerciseType = {
 }
 
 export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles,setParnetHandle}:AddExerciseType) => {
-    console.log(name)
     const[error,setError] = useState<string>('')
     const[loading,setLoading] = useState(false)
     const[showHistory,setShowHistory] = useState(false)
@@ -201,10 +200,8 @@ type SideTypes = {
 }
 const Side = ({dispatch,state}:SideTypes) => {
     const handleChange = (payload:string) => {
-        console.log(payload)
         dispatch({type:"SIDE",payload:payload as SideType})
     }
-    console.log('STATESIDE',state)
     return(
         <div className='flex gap-2'>
             <div className='flex-1 flex flex-col text-lg relative'>
@@ -231,7 +228,6 @@ type HandleTypes = {
 
 const Handle = ({handle,setHandle,setParnetHandle,allHandles}:HandleTypes) => {
     const handleChange = (payload:string) => {
-        console.log(payload)
         setHandle(payload)
         setParnetHandle && setParnetHandle(payload)
     }

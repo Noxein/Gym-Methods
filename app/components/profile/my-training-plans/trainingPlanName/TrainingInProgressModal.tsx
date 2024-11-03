@@ -6,19 +6,23 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import { LinkBtn } from '../../LinkBtn'
 import { LinkWithIcon } from '@/app/components/ui/LinkWithIcon'
+import { ErrorDiv } from '@/app/components/ui/ErrorDiv'
 
 type TrainingInProgressModalTypes = {
     trainingName: string,
 }
 export const TrainingInProgressModal = ({trainingName}:TrainingInProgressModalTypes) => {
 
-    const[isLoading,setIsLoading] = useState(false)
+    const[loading,setLoading] = useState(false)
     const[error,setError] = useState('')
     const handleCloseTraining = async () => {
-        setIsLoading(true)
+      setLoading(true)
         const isError = await closeTraining(`/home/profile/my-training-plans/${trainingName}`)
-        if(isError && isError.error) return setError(isError.error)
-        setIsLoading(false)
+        if(isError && isError.error){
+          setLoading(false)
+          return setError(isError.error)
+        } 
+        setLoading(false)
     }
 
   return (
@@ -29,11 +33,11 @@ export const TrainingInProgressModal = ({trainingName}:TrainingInProgressModalTy
         aby edytować ten trening musisz <br/> <strong>zakończyć rozpoczęty trening</strong> 
       </p>
       <div className='flex gap-4'>
-        <Button isPrimary className='flex-1' onClick={handleCloseTraining}>
+        <Button isPrimary className='flex-1' onClick={handleCloseTraining} disabled={loading}>
           Zamknij trening
         </Button>
-        {/* <button onClick={handleCloseTraining}>Zamknij trening</button> */}
-        <LinkWithIcon href={'/home/profile/my-training-plans'} linkText='Powrót' className='flex-1 border-green border-1' centerText></LinkWithIcon>
+        <ErrorDiv error={error}/>
+        <LinkWithIcon href={'/home/profile/my-training-plans'} linkText='Powrót' className='flex-1 border-green border-1' centerText disabled={loading}></LinkWithIcon>
       </div>
     </div>
   </BlurBackgroundModal>

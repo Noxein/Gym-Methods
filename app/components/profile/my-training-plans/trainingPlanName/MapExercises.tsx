@@ -1,30 +1,29 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
 import React, { useContext, useState } from 'react'
-import { ExerciseTypes, TrainingExerciseType, UserExercise } from '@/app/types'
+import { ExerciseTypes, LocalStorageTraining, TrainingExerciseType, UserExercise } from '@/app/types'
 import { SearchExercisesTraining } from './SearchExercisesTraining'
 import { ListExercisesTraining } from './ListExercisesTraining'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 
 type MapExercisesTypes = {
-    exercises:ExerciseTypes,
+    exercisesObject:ExerciseTypes,
     allExercisesInOneArray: (string | UserExercise)[],
-    setPlanExercises: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
+    setPlanExercises: React.Dispatch<React.SetStateAction<LocalStorageTraining>> | React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
     isTrainingInProgressPage?: boolean,
-    setCurrentExercise?: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
+    setCurrentExercise?: React.Dispatch<React.SetStateAction<number>>,
     setTotalNumberOfTrainigs?: React.Dispatch<React.SetStateAction<number>>,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-export const MapExercises = ({exercises,allExercisesInOneArray,setPlanExercises,setShowAddExercise,isTrainingInProgressPage = false,setCurrentExercise,setTotalNumberOfTrainigs,setShowExerciseList}:MapExercisesTypes) => {
+export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExercises,setShowAddExercise,isTrainingInProgressPage = false,setCurrentExercise,setTotalNumberOfTrainigs,setShowExerciseList}:MapExercisesTypes) => {
     const[searchField,setSearchField] = useState('')
     
     const CloseExercises = () => {
         setShowAddExercise && setShowAddExercise(false)
         HideShowHTMLScrollbar('show')
     }
-    console.log(isTrainingInProgressPage)
     const theme = useContext(ThemeContext)
     return (
         <div className='fixed left-0 top-0 w-screen z-20 backdrop-blur-sm flex justify-center overflow-auto bottom-20'>
@@ -53,7 +52,7 @@ export const MapExercises = ({exercises,allExercisesInOneArray,setPlanExercises,
                     />
                 :
                 <ListExercisesTraining 
-                    item={exercises} 
+                    item={exercisesObject} 
                     setPlanExercises={setPlanExercises} 
                     isTrainingInProgressPage={isTrainingInProgressPage} 
                     setCurrentExercise={setCurrentExercise}

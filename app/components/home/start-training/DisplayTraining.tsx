@@ -1,9 +1,7 @@
 'use client'
-import { ActionTypes, AddExerciceReducerType, ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, TrainingExerciseType, UserExercise } from '@/app/types'
-import React, { useContext, useEffect, useReducer, useState } from 'react'
-import { AddExercise } from '../../add-exercise/AddExercise'
-import { AddExerciceReducer } from '@/app/lib/reducers'
-import { AddExerciseAction, closeTraining, createTraining, updateCurrentTraining } from '@/app/actions'
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, TrainingExerciseType, UserExercise, LocalStorageTraining, UserTrainingPlan } from '@/app/types'
+import React, { useContext, useEffect, useReducer, useRef, useState } from 'react'
+import { SaveTrainingToDatabase } from '@/app/actions'
 import { usePathname, useRouter } from 'next/navigation'
 import { DisplayTrainingSkeleton } from '../../Loading/home/start-training/trainingName/DisplayTrainingSkeleton'
 import { ChangeExerciseList } from './ChangeExerciseList'
@@ -11,14 +9,11 @@ import { MapExercises } from '../../profile/my-training-plans/trainingPlanName/M
 import { ModalContexts } from './ModalContexts'
 import { Button } from '../../ui/Button'
 import { ConfirmEndTrainingModal } from './ConfirmEndTrainingModal'
+import { AddExerciseUsingState } from '@/app/components/home/start-training/AddExerciseUsingState'
 
 type DisplayTrainingTypes = {
-    training?: TrainingExerciseType[],
-    trainingPlanId: string,
-    lastid: number,
-    trainingid: string,
-    trainingName:string,
-    exercises: ExerciseTypes,
+    trainingPlanData: UserTrainingPlan,
+    exercisesObject: ExerciseTypes,
     allExercisesInOneArray: (string | UserExercise)[],
     allHandles: {
         id: string;
@@ -28,164 +23,170 @@ type DisplayTrainingTypes = {
     ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[],
 }
 
-const init = {
-    weight: 0,
-    repeat: 0,
-    side: 'Both' as const,
-    series:[],
-    difficultyLevel: "easy" as const,
-    time: ''
-}
 
-export const DisplayTraining = ({training,trainingPlanId,lastid,trainingid,trainingName,exercises,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure}:DisplayTrainingTypes) => {
-    console.log(training)
-    const[exercisesLeft,setExercisesLeft] = useState<TrainingExerciseType[]>(training!)
-    const[currentExercise,setCurrentExercise] = useState(exercisesLeft[0])
-    const[totalNumberOfTrainigs,setTotalNumberOfTrainigs] = useState(training?.length||1)
-    const[exercisesDone,setExercisesDone] = useState(1)
+export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure}:DisplayTrainingTypes) => {
+    const initializeLocalStorageData = (trainingName:string,exercises:TrainingExerciseType[]) => {
+        const data = localStorage.getItem(trainingName+'training')
+        if(data){
+            const parsedData = JSON.parse(data) as LocalStorageTraining
+            return parsedData
+        }
+    
+        // initalize empty data here
+    
+        let objectToSaveToLocalStorage:LocalStorageTraining = {
+            currentExerciseIndex: 0,
+            exercises:[],
+            inputData: {
+                difficulty : 'easy',
+                repeat: 0,
+                side: 'Both',
+                weight: 0,
+                time: '',
+            },
+            trainingStartDate: new Date()
+            }
+    
+            exercises.map(exercise=>{
+                objectToSaveToLocalStorage.exercises.push({
+                    id: exercise.id,
+                    exerciseId: exercise.exerciseid,
+                    exerciseName: exercise.exercisename,
+                    sets: [],
+                })
+            })
+            localStorage.setItem(trainingName+'training',JSON.stringify(objectToSaveToLocalStorage))
+        return objectToSaveToLocalStorage
+    }
+    
+
+
+    const[totalExercises,setTotalExercies] = useState(trainingPlanData.exercises.exercises.length)
     const[showConfirmEndTrainingModal,setShowConfirmEndTrainingModal] = useState(false)
+    const[localStorageTrainingData,setLocalStorageTrainingData] = useState<LocalStorageTraining>(initializeLocalStorageData(trainingPlanData.trainingname,trainingPlanData.exercises.exercises) || undefined)
+    const[currentExerciseIndex, setCurrentExerciseIndex] = useState(localStorageTrainingData.currentExerciseIndex+1)
+    const saveToLocalStorage = useRef(true)
 
-    const showTimeMesure = ExercisesThatRequireTimeMesure.some(x=>x.id === currentExercise.exerciseid)
-    const requiresHandle = ExercisesThatRequireHandle.some(x=>x.id === currentExercise.exerciseid)
+    const currentExerciseName = localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseName
+    const currentExerciseId = localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseId
+
+    const showTimeMesure = ExercisesThatRequireTimeMesure.some(exercise=>exercise.id === currentExerciseId)
+    const requiresHandle = ExercisesThatRequireHandle.some(exercise=>exercise.id === currentExerciseId)
 
     const pathname = usePathname()
     const router = useRouter()
 
     const[error,setError] = useState('')
-    const[trainingID,setTrainingID] = useState(trainingid)
-    const[state,dispatch] = useReducer<(state: AddExerciceReducerType, action: ActionTypes) => AddExerciceReducerType>(AddExerciceReducer,init)
-    const[isLoading,setIsLoading] = useState(false)
+
+    const[loading,setLoading] = useState(false)
     const modalsContext = useContext(ModalContexts)
 
-    const[handle,setHandle] = useState(requiresHandle?'Sznur':'')
-
     useEffect(()=>{
-        if(!requiresHandle) return setHandle('')
-            setHandle('Sznur')
-    },[currentExercise])
+        window.onbeforeunload = function() {
+            if(saveToLocalStorage.current){
+                localStorage.setItem(trainingPlanData.trainingname+'training',JSON.stringify(localStorageTrainingData))
+            }else{
+                localStorage.removeItem(trainingPlanData.trainingname+'training')
+            }
+        };
     
-    const skipExercise = async () => {
-        setIsLoading(true)
-        let id = trainingID
-        if(!trainingID){
-            const trainingPlanid = await createTraining(trainingPlanId)
-            id = trainingPlanid
-            setTrainingID(id)
-        }
-        await updateCurrentTraining(id,exercisesLeft)
-        
-        setExercisesLeft(exercisesLeft.slice(1,exercisesLeft.length))
-        setExercisesDone(prev=>prev+1)
-        setCurrentExercise(exercisesLeft[1])
-        setIsLoading(false)
+        return () => {
+            if(saveToLocalStorage.current){
+                localStorage.setItem(trainingPlanData.trainingname+'training',JSON.stringify(localStorageTrainingData))
+            }else{
+                localStorage.removeItem(trainingPlanData.trainingname+'training')
+            }
+
+            window.onbeforeunload = null;
+        };
+    },[])
+    const nextExercise = async () => {
+        const length = trainingPlanData.exercises.exercises.length
+
+        if(localStorageTrainingData.currentExerciseIndex === length - 1) return
+        setLocalStorageTrainingData(x=>{
+            let xCopy = {...x}
+            xCopy.currentExerciseIndex = xCopy.currentExerciseIndex + 1
+            return xCopy
+        })
+        setCurrentExerciseIndex(x=>x+1)
     }
 
-    const nextExercise = async (goToNextExercise:boolean,isLastExercise?:boolean) => {
-        setError('')
-        setIsLoading(true)
-        let id = trainingID
-        if(!trainingID){
-            const trainingPlanid = await createTraining(trainingPlanId)
-            id = trainingPlanid
-            setTrainingID(id)
-        }
-        
-        const possibleError = await AddExerciseAction(false,currentExercise.exercisename,state.series,pathname.includes('training'),id,handle,isLastExercise)
-        if(possibleError && possibleError.errors){
-            setIsLoading(false)
-            return setError(possibleError.errors)
-        } 
-        await updateCurrentTraining(id,exercisesLeft)
-        dispatch({type:'RESETSTATE'});
-        localStorage.removeItem(`${currentExercise.exercisename}`)
-        setError('')
-        if(goToNextExercise) {
-            setExercisesLeft(exercisesLeft.slice(1,exercisesLeft.length))
-            setExercisesDone(prev=>prev+1)
-            setCurrentExercise(exercisesLeft[1])
-        }
-        setIsLoading(false)
+    const previousExercise = async () => {
+        if(localStorageTrainingData.currentExerciseIndex === 0) return
+        setLocalStorageTrainingData(x=>{
+            let xCopy = {...x}
+            xCopy.currentExerciseIndex = xCopy.currentExerciseIndex - 1
+            return xCopy
+        })
+        setCurrentExerciseIndex(x=>x-1)
     }
+
     const handleCloseTraining = async () => {
-        const goToNextExercise = false
-        const isLastExercise = true
-        await nextExercise(goToNextExercise,isLastExercise)
-        setIsLoading(true)
-        const isError = await closeTraining()
-        if(isError && isError.error) return setError(isError.error)
-        router.push('/home')
-        setIsLoading(false)
+        setLoading(true)
+        saveToLocalStorage.current = false
+        const data = await SaveTrainingToDatabase(trainingPlanData.id,localStorageTrainingData.exercises,localStorageTrainingData.trainingStartDate)
+        if(data && data.error){
+            setLoading(false)
+            return setError(data.error)
+        }
+        setLoading(false)
     }
-    const handleCloseTrainingFromModal = async () => {
-        if(exercisesDone === 1){
-            router.push('/home')
-            return true
-        }  
-        const goToNextExercise = false
-        await nextExercise(goToNextExercise)
-        await closeTraining('/home')
-        return true
-    }
+
     const handleShowExerciseList = () => {
         modalsContext?.setShowExerciseList(true)
     }
+
+
   return (
     <div className='flex flex-col min-h-[calc(100dvh-100px)] mb-24'>
         <div className='text-white flex justify-between mt-2 mx-4 items-center'>
             <div>
-                <h1 className='text-2xl'>{trainingName}</h1>
+                <h1 className='text-2xl'>{trainingPlanData.trainingname}</h1>
             </div>
             <div className='text-gray-400 flex gap-2 items-center'>
-                {/* <Button className='py-0 px-2 border-0 rounded' onClick={handleShowExerciseList} isPrimary>
-                    <Icon className='py-0 flex items-center'>
-                        <SpeedIcon width='20'/>
-                    </Icon>
-                </Button> */}
-                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={()=>setShowConfirmEndTrainingModal(true)} disabled={isLoading}>Zakończ trening</Button>
-                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList} disabled={isLoading}>Zmień</Button>
-                <span className='text-nowrap'>{exercisesDone} z {totalNumberOfTrainigs}</span>
+                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={()=>setShowConfirmEndTrainingModal(true)} disabled={loading}>Zakończ trening</Button>
+                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList} disabled={loading}>Zmień</Button>
+                <span className='text-nowrap'>{currentExerciseIndex} z {totalExercises}</span>
             </div>
         </div>
         {
-            isLoading? <DisplayTrainingSkeleton isTraining={true}/> :
+            loading ? <DisplayTrainingSkeleton isTraining={true}/> :
         <>
-        {exercisesLeft && <AddExercise name={currentExercise.exercisename} exerciseid={currentExercise.exerciseid} isLoading={isLoading} showTimeMesure={showTimeMesure} isTraining={true} state={state} dispatch={dispatch} requiresHandle={requiresHandle} allHandles={allHandles} setParnetHandle={setHandle}/>}
+        <AddExerciseUsingState name={currentExerciseName} exerciseid={currentExerciseId} trainingState={localStorageTrainingData} isLoading={loading} showTimeMesure={showTimeMesure} isTraining={true} requiresHandle={requiresHandle} allHandles={allHandles} setLocalStorageTrainingData={setLocalStorageTrainingData}/>
         </>
         }
         {error && <div className='text-red'>{error}</div>}
 
             <div className='mx-5 text-white flex gap-4 mt-auto pt-4'>
-                {exercisesLeft.length===1? <>
-                    <Button className='flex-1' onClick={handleCloseTraining} disabled={isLoading} isPrimary>Zakończ Trening</Button>
-                </>:<>
-                    <Button className='flex-1' onClick={skipExercise} disabled={isLoading}>Pomiń ćwiczenie</Button>
-                    <Button className='flex-1' onClick={()=>nextExercise(true)} disabled={isLoading} isPrimary>Następne ćwiczenie</Button>
-                </>}
+                <Button className='flex-1' onClick={previousExercise}>LEWO</Button>
+                <Button className='flex-1' onClick={()=>setShowConfirmEndTrainingModal(true)} isPrimary>ZAKOŃCZ TRENING</Button>
+                <Button className='flex-1' onClick={nextExercise}>PRAWO</Button>
             </div>
         
         {modalsContext?.showExerciseList && 
         <ChangeExerciseList 
-            list={exercisesLeft} 
-            setExercisesLeft={setExercisesLeft} 
-            setCurrentExercise={setCurrentExercise} 
+            list={trainingPlanData.exercises.exercises} 
+            setCurrentExercise={setCurrentExerciseIndex} 
             />}
         
         {modalsContext?.showAddExerciseModal && 
         <MapExercises 
             setShowAddExercise={modalsContext?.setShowAddExerciseModal} 
-            setPlanExercises={setExercisesLeft} 
             allExercisesInOneArray={allExercisesInOneArray} 
-            exercises={exercises} 
+            exercisesObject={exercisesObject} 
             isTrainingInProgressPage={true} 
-            setCurrentExercise={setCurrentExercise} 
-            setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
+            setCurrentExercise={setCurrentExerciseIndex} 
+            setTotalNumberOfTrainigs={setTotalExercies}
             setShowExerciseList={modalsContext?.setShowExerciseList}
+            setPlanExercises={setLocalStorageTrainingData}
+
             />}
         {showConfirmEndTrainingModal && 
         <ConfirmEndTrainingModal 
             text='Czy napewno chcesz zakończyć trening?'
             showModal={setShowConfirmEndTrainingModal}
-            handleEnd={handleCloseTrainingFromModal}
+            handleEnd={handleCloseTraining}
             />}
     </div>)
 }

@@ -1,7 +1,7 @@
 export type Series = {
     weight:number,
     repeat:number,
-    difficulty: DifficultyLevel,
+    difficulty: DifficultyLevelType,
     time?:string,
     side: Side
 }
@@ -26,17 +26,17 @@ export type AddExerciceReducerType = {
     repeat: number,
     side: Side,
     series: Series[],
-    difficultyLevel: DifficultyLevel,
+    difficultyLevel: DifficultyLevelType,
     time: string,
 }
 
 export type Side = 'Both' | 'Left' | 'Right'
 
-export type DifficultyLevel = 'easy'|'medium'|'hard'
+export type DifficultyLevelType = 'easy'|'medium'|'hard'
 
 export type ActionTypes = {
     type: ActionTypesEnum
-    payload?: number | DifficultyLevel | Series[] | string,
+    payload?: number | DifficultyLevelType | Series[] | string,
     index?: number
 }
 
@@ -148,7 +148,7 @@ export type LastTrainingType = {
     id: string,
     exerciseid: string,
     sets: { 
-        sets: Series[], diffucultyLevel: DifficultyLevel
+        sets: Series[], diffucultyLevel: DifficultyLevelType
     },
     date: Date
 }
@@ -166,7 +166,7 @@ export type GymExercisesDbResult = {
 export type ExerciseType = {
     id: string,
     exercisename: string,
-    date: Date,
+    date?: Date,
     sets: Series[],
 }
 
@@ -181,4 +181,20 @@ export type UserSettings = {
 export type HistoryExercise = {
     day: Date,
     exercises:ExerciseType[]
+}
+
+export type LocalStorageTraining = {
+    exercises:LocalStorageExercise[],
+    currentExerciseIndex: number,
+    inputData: Series,
+    trainingStartDate: Date,
+}
+
+export type LocalStorageExercise = {
+    id: string,
+    exerciseName: string,
+    exerciseId: string,
+    sets: Series[],
+    handle? :string,
+    date?: Date,
 }

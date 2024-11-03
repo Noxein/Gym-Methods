@@ -4,7 +4,7 @@ import { compare, hash } from 'bcryptjs'
 import { FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, exercisesUsingHandles, handleTypes, timeMesureExercises } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -193,6 +193,26 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     if(redirectUser) redirect('/home/add-exercise')
 }
 
+export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:LocalStorageExercise[],trainingStartDate:Date) => {
+    const userid = await userID()
+    let id = ''
+    try{
+        const dataID = await sql`
+        INSERT INTO gymuserstrainings (userid, iscompleted, trainingid, datetime) VALUES (${userid},true,${trainingPlanId},${JSON.stringify(trainingStartDate)}) RETURNING id;
+    `
+    id = dataID.rows[0].id
+    }catch(e){
+        return { error : 'Coś poszło nie tak'}
+    }
+
+    exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
+        const data = await AddExerciseAction(false,exercise.exerciseId,exercise.sets,true,id,exercise.handle,false)
+        if(data?.errors) return { error : 'Coś poszło nie tak'}
+    })
+
+    revalidatePath('/home')
+    redirect('/home')
+}
 export const FistStepDataValidation = (data:dataType) => {
     let error = {
         goal: '',
@@ -818,12 +838,30 @@ export const checkTrainingInProgress = async () => {
     const userid = await userID()
     try{
         const trainingInProgress = await sql`
-            SELECT 1 FROM gymuserstrainings WHERE userid = ${userid} AND iscompleted = false
+            SELECT gymuserstrainings.id, gymuserstrainings.trainingid, gymuserstrainingplans.id, gymuserstrainingplans.trainingname FROM gymuserstrainings 
+            INNER JOIN gymuserstrainingplans ON gymuserstrainings.trainingid = gymuserstrainingplans.id
+            WHERE gymuserstrainings.userid = ${userid} AND gymuserstrainings.iscompleted = false       
         `
-        if(trainingInProgress.rows.length>0) return true
+        console.log(trainingInProgress.rows[0])
+        if(trainingInProgress.rows.length>0) return trainingInProgress.rows[0] as { id: string, trainingid: string, trainingname: string }
         return false
+    }catch(e){
+        console.log('Error occured checkTrainingInProgress func actions.ts file',e)
+        return false
+    }
+}
+
+export const getTrainingDataByName = async (name:string) => {
+    const userid = await userID()
+
+    try{
+        const list = await sql`
+            SELECT * FROM gymuserstrainingplans WHERE userid = ${userid} AND trainingname = ${name}
+        `
+        if(list.rowCount === 0) return { error: 'Nie znaleziono treningu' }
+        return {data: list.rows[0] as UserTrainingPlan, error: ''} 
     }catch{
-        return false
+        return { error: 'Coś poszło nie tak' }
     }
 }
 

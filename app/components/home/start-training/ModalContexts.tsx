@@ -11,10 +11,6 @@ type ModalContextsTypes = {
     setShowAddExerciseModal: a,
     showPreviousExercise: boolean,
     setShowPreviousExercise: a,
-    prevExerciseId: string,
-    setPrevExerciseId: React.Dispatch<React.SetStateAction<string>>,
-    prevExercise: ExerciseType | null,
-    setPrevExercise: React.Dispatch<React.SetStateAction<ExerciseType | null>>,
 }
 
 type a = React.Dispatch<React.SetStateAction<boolean>>
@@ -27,10 +23,9 @@ export const ModalContextsProvider = ({children}:ModalContextsProviderTypes) => 
     const[showExerciseList,setShowExerciseList] = useState(false)
     const[showAddExerciseModal,setShowAddExerciseModal] = useState(false)
     const[showPreviousExercise,setShowPreviousExercise] = useState(false)
-    const[prevExerciseId,setPrevExerciseId] = useState('')
-    const[prevExercise,setPrevExercise] = useState<ExerciseType|null>(null)
+
     return(
-        <ModalContexts.Provider value={{showExerciseList,setShowExerciseList,showAddExerciseModal,setShowAddExerciseModal,showPreviousExercise,setShowPreviousExercise,prevExerciseId,setPrevExerciseId,prevExercise,setPrevExercise}}>
+        <ModalContexts.Provider value={{showExerciseList,setShowExerciseList,showAddExerciseModal,setShowAddExerciseModal,showPreviousExercise,setShowPreviousExercise}}>
             {children}
         </ModalContexts.Provider>
     )

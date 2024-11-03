@@ -1,61 +1,77 @@
 import React, { useContext, useRef } from 'react'
-import { ActionTypes, ActionTypesEnum, DifficultyLevelType, Series, Side } from '../../types'
+import { ActionTypes, ActionTypesEnum, DifficultyLevelType, LocalStorageTraining, Series, Side } from '@/app/types'
 import { ThemeContext } from '@/app/context/ThemeContext'
-import { Icon } from '../Icon'
+import { Icon } from '@/app/components/Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 
-type DisplayCurrentSeriesTypes = {
+type DisplayCurrentSeresUsingStateTypes = {
     exercisename:string,
-    currentSeries:Series[],
-    dispatchSeries:React.Dispatch<ActionTypes>,
+    trainingState: LocalStorageTraining,
     showTimeMesure:boolean,
     isTraining: boolean,
+    setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
 }
-export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,showTimeMesure,isTraining}:DisplayCurrentSeriesTypes) => {
+export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTimeMesure,isTraining,setLocalStorageTrainingData}:DisplayCurrentSeresUsingStateTypes) => {
     const theme = useContext(ThemeContext)
-    const deleteSet = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,index:number) => {
-        e.preventDefault()
-        dispatchSeries({type:"DELETESERIES",payload:index})
-        localStorage.setItem(exercisename,JSON.stringify(currentSeries.filter((set,i)=>i!==index)))
+
+    const deleteSet = (index:number) => {
+        setLocalStorageTrainingData(x=>{
+            let xCopy = {...x}
+            xCopy.exercises[xCopy.currentExerciseIndex].sets = xCopy.exercises[xCopy.currentExerciseIndex].sets.filter((exercise,exerciseIndex)=>{ return index !== exerciseIndex})
+            return xCopy
+        })
     }
+    
     const editInput = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,index:number,field:ActionTypesEnum) => {
-        const arrayCopy = [...currentSeries]
         if(field === 'EDITSERIESKG'){
             if(e.target.value.length > 3) return
-            dispatchSeries({type:field,index, payload:Number(e.target.value)});
-            arrayCopy[index].weight = Number(e.target.value)
+            setLocalStorageTrainingData(x=>{
+                let xCopy = {...x}
+                xCopy.exercises[xCopy.currentExerciseIndex].sets[index].weight = Number(e.target.value)
+                return xCopy
+            })
         }
         if(field === 'EDITSERIESREPEAT'){
             if(e.target.value.length > 3) return
-            dispatchSeries({type:field,index, payload:Number(e.target.value)});
-            arrayCopy[index].repeat = Number(e.target.value)
+
+            setLocalStorageTrainingData(x=>{
+                let xCopy = {...x}
+                xCopy.exercises[xCopy.currentExerciseIndex].sets[index].repeat = Number(e.target.value)
+                return xCopy
+            })
         }
         if(field === "EDITSERIESDIFFICULTY"){
-            dispatchSeries({type:field,index, payload:e.target.value as DifficultyLevelType}); 
-            arrayCopy[index].difficulty = e.target.value as DifficultyLevelType
+            setLocalStorageTrainingData(x=>{
+                let xCopy = {...x}
+                xCopy.exercises[xCopy.currentExerciseIndex].sets[index].difficulty = e.target.value as DifficultyLevelType
+                return xCopy
+            })
         }
         if(field === 'EDITSERIESTIME'){
-            dispatchSeries({type:field,index, payload:e.target.value});
-            arrayCopy[index].time = e.target.value
+            setLocalStorageTrainingData(x=>{
+                let xCopy = {...x}
+                xCopy.exercises[xCopy.currentExerciseIndex].sets[index].time = e.target.value
+                return xCopy
+            })
         }
-        localStorage.setItem(exercisename,JSON.stringify(arrayCopy))
     }
     const handleChangeSide = (index:number,side:Side) => {
-        const arrayCopy = [...currentSeries]
         let newSide:Side = side
         
         if(side === 'Both') newSide = 'Left'
         if(side === 'Left') newSide = 'Right'
         if(side === 'Right') newSide = 'Both'
 
-        arrayCopy[index].side = newSide
-        dispatchSeries({type:'EDITSERIESSIDE',index,payload:newSide})
-        localStorage.setItem(exercisename,JSON.stringify(arrayCopy))
+        setLocalStorageTrainingData(x=>{
+            let xCopy = {...x}
+            xCopy.exercises[xCopy.currentExerciseIndex].sets[index].side = newSide
+            return xCopy
+        })
     }
   return (
     <div className='flex flex-col gap-2 mt-3 text-white mb-2'>
 
-        {currentSeries.map((series,index)=>(
+        {trainingState.exercises[trainingState.currentExerciseIndex].sets.map((series,index)=>(
             <div className={`flex bg-${theme?.colorPallete.accent} rounded-md ${index===0?'mt-2':null}`} key={index}>
                 <div className='text-dark text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
                     {series.side === 'Left'? 'L' : series.side === 'Right'? 'P' : 'O'}
@@ -83,7 +99,7 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
                     </div>}
                 </div>
                 <div className='w-10 flex justify-center items-center'>
-                    <button onClick={e=>deleteSet(e,index)}>
+                    <button onClick={()=>deleteSet(index)}>
                         <Icon className='bg-opacity-0'>
                             <TrashIcon fill={'#0D1317'}/>
                         </Icon>

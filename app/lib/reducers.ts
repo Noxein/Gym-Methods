@@ -1,4 +1,4 @@
-import { ActionTypes, AddExerciceReducerType, DifficultyLevel, Side } from "../types";
+import { ActionTypes, AddExerciceReducerType, DifficultyLevelType, Side } from "../types";
 
 export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTypes):AddExerciceReducerType => {
     if(typeof action.payload === 'number'){

@@ -1,7 +1,7 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
 import React, { useContext, useState } from 'react'
 import { AddExercise } from './AddSingleExercise'
-import { TrainingExerciseType } from '@/app/types'
+import { LocalStorageTraining, TrainingExerciseType } from '@/app/types'
 import { ExpandIcon } from '@/app/ui/icons/ExpandIcon'
 import { Icon } from '@/app/components/Icon'
 
@@ -10,9 +10,9 @@ type ListExercisesTrainingTypes = {
     objectName?:string,
     currentLevel?:number,
     isLast?:boolean,
-    setPlanExercises: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
+    setPlanExercises: React.Dispatch<React.SetStateAction<LocalStorageTraining>> | React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     isTrainingInProgressPage?: boolean,
-    setCurrentExercise?: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
+    setCurrentExercise?: React.Dispatch<React.SetStateAction<number>>,
     setTotalNumberOfTrainigs?: React.Dispatch<React.SetStateAction<number>>,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,

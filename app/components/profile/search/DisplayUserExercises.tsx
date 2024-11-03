@@ -45,9 +45,9 @@ const SingleExercise = ({exercise}:SingleExerciseTypes) => {
     return(
         <div className='flex flex-col h-fit'>
             <div className='sticky flex gap-1 top-8 h-fit bg-marmur text-black px-2'>
-                <span>{WeekDayArrayPL[WeekDayArray.indexOf(format(exercise.exercises[0].date,'cccc'))]}</span>
-                <span>{format(exercise.exercises[0].date,'dd')}</span>
-                <span>{MonthNamesArrayPL[MonthNamesArray.indexOf(format(exercise.exercises[0].date,'LLLL'))]}</span>
+                <span>{WeekDayArrayPL[WeekDayArray.indexOf(format(exercise.exercises[0].date!,'cccc'))]}</span>
+                <span>{format(exercise.exercises[0].date!,'dd')}</span>
+                <span>{MonthNamesArrayPL[MonthNamesArray.indexOf(format(exercise.exercises[0].date!,'LLLL'))]}</span>
             </div>
             <div className='flex flex-col'>
                 {exercise.exercises.map(exercise=>(

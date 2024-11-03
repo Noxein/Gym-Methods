@@ -1,12 +1,12 @@
-import { TrainingExerciseType, UserExercise } from '@/app/types'
+import { LocalStorageTraining, TrainingExerciseType, UserExercise } from '@/app/types'
 import { AddExercise } from './AddSingleExercise'
 
 type SearchExercisesTypes = {
     allExercisesInOneArray: (string | UserExercise)[],
     searchTerm: string,
-    setPlanExercises: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
+    setPlanExercises: React.Dispatch<React.SetStateAction<LocalStorageTraining>> | React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     isTrainingInProgressPage?: boolean,
-    setCurrentExercise?: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
+    setCurrentExercise?: React.Dispatch<React.SetStateAction<number>>,
     setTotalNumberOfTrainigs?: React.Dispatch<React.SetStateAction<number>>,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
@@ -35,9 +35,9 @@ export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPl
 
 type FilteredExercisesTypes = {
     allExercisesInOneArray: (string | UserExercise)[],
-    setPlanExercises: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
+    setPlanExercises: React.Dispatch<React.SetStateAction<LocalStorageTraining>> | React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     isTrainingInProgressPage?: boolean,
-    setCurrentExercise?: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
+    setCurrentExercise?: React.Dispatch<React.SetStateAction<number>>,
     setTotalNumberOfTrainigs?: React.Dispatch<React.SetStateAction<number>>,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
