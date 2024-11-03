@@ -193,6 +193,12 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
 }
 
 export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:LocalStorageExercise[],trainingStartDate:Date) => {
+    if(typeof trainingPlanId !== 'string'){
+        return { error: 'Coś poszło nie tak'}
+    }
+    if(Object.prototype.toString.call(trainingStartDate) !== '[object Date]'){
+        return { error: 'Coś poszło nie tak'}
+    }
     const userid = await userID()
     let id = ''
     try{
@@ -205,6 +211,8 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     }
 
     exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
+        if(!exercise.exerciseId) return { error: `Brak id dla ćwiczenia ${exercise.exerciseName}`}
+        
         const data = await AddExerciseAction(false,exercise.exerciseId,exercise.sets,true,id,exercise.handle,false)
         if(data?.errors) return { error : 'Coś poszło nie tak'}
     })
