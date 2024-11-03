@@ -3,6 +3,7 @@ import { ActionTypes, ActionTypesEnum, DifficultyLevelType, LocalStorageTraining
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { Icon } from '@/app/components/Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
+import { localStorageSetter } from '@/app/lib/utils'
 
 type DisplayCurrentSeresUsingStateTypes = {
     exercisename:string,
@@ -18,6 +19,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
         setLocalStorageTrainingData(x=>{
             let xCopy = {...x}
             xCopy.exercises[xCopy.currentExerciseIndex].sets = xCopy.exercises[xCopy.currentExerciseIndex].sets.filter((exercise,exerciseIndex)=>{ return index !== exerciseIndex})
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
     }
@@ -28,6 +30,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
             setLocalStorageTrainingData(x=>{
                 let xCopy = {...x}
                 xCopy.exercises[xCopy.currentExerciseIndex].sets[index].weight = Number(e.target.value)
+                localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
                 return xCopy
             })
         }
@@ -37,6 +40,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
             setLocalStorageTrainingData(x=>{
                 let xCopy = {...x}
                 xCopy.exercises[xCopy.currentExerciseIndex].sets[index].repeat = Number(e.target.value)
+                localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
                 return xCopy
             })
         }
@@ -44,6 +48,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
             setLocalStorageTrainingData(x=>{
                 let xCopy = {...x}
                 xCopy.exercises[xCopy.currentExerciseIndex].sets[index].difficulty = e.target.value as DifficultyLevelType
+                localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
                 return xCopy
             })
         }
@@ -51,6 +56,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
             setLocalStorageTrainingData(x=>{
                 let xCopy = {...x}
                 xCopy.exercises[xCopy.currentExerciseIndex].sets[index].time = e.target.value
+                localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
                 return xCopy
             })
         }
@@ -65,6 +71,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
         setLocalStorageTrainingData(x=>{
             let xCopy = {...x}
             xCopy.exercises[xCopy.currentExerciseIndex].sets[index].side = newSide
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
     }

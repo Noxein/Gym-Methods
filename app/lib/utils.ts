@@ -59,3 +59,7 @@ export const dayArrayInitializer = () => {
   }
   return newArr
 }
+
+export const localStorageSetter = (name:string,objectToSet:any) => {
+  localStorage.setItem(name,JSON.stringify(objectToSet))
+}

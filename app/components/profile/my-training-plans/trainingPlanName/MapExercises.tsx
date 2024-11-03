@@ -9,15 +9,14 @@ import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 type MapExercisesTypes = {
     exercisesObject:ExerciseTypes,
     allExercisesInOneArray: (string | UserExercise)[],
-    setPlanExercises: React.Dispatch<React.SetStateAction<LocalStorageTraining>> | React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
+    setPlanExercises?: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
     isTrainingInProgressPage?: boolean,
-    setCurrentExercise?: React.Dispatch<React.SetStateAction<number>>,
-    setTotalNumberOfTrainigs?: React.Dispatch<React.SetStateAction<number>>,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
+    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
 
-export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExercises,setShowAddExercise,isTrainingInProgressPage = false,setCurrentExercise,setTotalNumberOfTrainigs,setShowExerciseList}:MapExercisesTypes) => {
+export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExercises,setShowAddExercise,isTrainingInProgressPage = false,setShowExerciseList,setLocalStorageTrainingData}:MapExercisesTypes) => {
     const[searchField,setSearchField] = useState('')
     
     const CloseExercises = () => {
@@ -45,20 +44,18 @@ export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExer
                     searchTerm={searchField} 
                     setPlanExercises={setPlanExercises} 
                     isTrainingInProgressPage={isTrainingInProgressPage} 
-                    setCurrentExercise={setCurrentExercise}
-                    setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
                     setShowExerciseList={setShowExerciseList}
                     setShowAddExercise={setShowAddExercise}
+                    setLocalStorageTrainingData={setLocalStorageTrainingData}
                     />
                 :
                 <ListExercisesTraining 
                     item={exercisesObject} 
                     setPlanExercises={setPlanExercises} 
                     isTrainingInProgressPage={isTrainingInProgressPage} 
-                    setCurrentExercise={setCurrentExercise}
-                    setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
                     setShowExerciseList={setShowExerciseList}
                     setShowAddExercise={setShowAddExercise}
+                    setLocalStorageTrainingData={setLocalStorageTrainingData}
                     />
                 }
             </div>

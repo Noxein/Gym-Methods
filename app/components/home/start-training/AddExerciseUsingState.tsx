@@ -1,7 +1,6 @@
 'use client'
-import React, { useEffect, useState, useContext, useRef } from 'react'
-import { ActionTypes, AddExerciceReducerType, DifficultyLevelType , LocalStorageTraining, Series, Side as SideType } from '@/app/types'
-import { DisplayCurrentSeries } from '@/app/components/add-exercise/DisplayCurrentSeries'
+import React, { useState, useContext, useRef } from 'react'
+import { DifficultyLevelType , LocalStorageTraining, Side as SideType } from '@/app/types'
 import { AddExerciseAction } from '@/app/actions'
 import { usePathname } from 'next/navigation'
 import { ThemeContext } from '@/app/context/ThemeContext'
@@ -14,6 +13,7 @@ import { ErrorDiv } from '@/app/components/ui/ErrorDiv'
 import { Button } from '@/app/components/ui/Button'
 import { ButtonWithIcon } from '@/app/components/ui/ButtonWithIcon'
 import { DisplayCurrentSeresUsingState } from './DisplayCurrentSeresUsingState'
+import { localStorageSetter } from '@/app/lib/utils'
 
 type AddExerciseUsingStateType = {
     name:string,
@@ -70,6 +70,7 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
                 weight: xCopy.inputData.weight,
                 time:  xCopy.inputData.time,
             })
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
     }
@@ -165,6 +166,7 @@ const WeightAndRepeatInputs = ({trainingState,setLocalStorageTrainingData}:Weigh
         return setLocalStorageTrainingData(x=>{
             const xCopy = {...x}
             xCopy.inputData.weight = payload
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
     }
@@ -172,6 +174,7 @@ const WeightAndRepeatInputs = ({trainingState,setLocalStorageTrainingData}:Weigh
         return setLocalStorageTrainingData(x=>{
             const xCopy = {...x}
             xCopy.inputData.repeat = payload
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
     }
@@ -206,6 +209,7 @@ const DifficultyLevel = ({showTimeMesure,trainingState,setLocalStorageTrainingDa
         return setLocalStorageTrainingData(x=>{
             const xCopy = {...x}
             xCopy.inputData.difficulty = payload
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
     }
@@ -213,6 +217,7 @@ const DifficultyLevel = ({showTimeMesure,trainingState,setLocalStorageTrainingDa
         return setLocalStorageTrainingData(x=>{
             const xCopy = {...x}
             xCopy.inputData.time = payload
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
     }
@@ -243,6 +248,7 @@ const Side = ({trainingState,setLocalStorageTrainingData}:SideTypes) => {
         return setLocalStorageTrainingData(x=>{
             const xCopy = {...x}
             xCopy.inputData.side = payload
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
     }
@@ -276,6 +282,7 @@ const Handle = ({allHandles,trainingState,setLocalStorageTrainingData}:HandleTyp
         setLocalStorageTrainingData(x=>{
             let xCopy = {...x}
             xCopy.exercises[xCopy.currentExerciseIndex].handle = payload
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
     }

@@ -188,6 +188,7 @@ export type LocalStorageTraining = {
     currentExerciseIndex: number,
     inputData: Series,
     trainingStartDate: Date,
+    trainingNameInLocalStrage: string,
 }
 
 export type LocalStorageExercise = {

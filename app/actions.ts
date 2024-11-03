@@ -1,17 +1,16 @@
 "use server"
 import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
-import { FirstSetupZodSchema, RegisterUserZodSchema } from "@/app/lib/schemas";
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
 import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
-import { exerciseList, exercisesArr, exercisesUsingHandles, handleTypes, timeMesureExercises } from "./lib/exercise-list";
+import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { Advancmentlevel, Daysexercising, Goal, WeekDayArray, WeekDayArrayPL } from "./lib/utils";
 import { z } from "zod";
-import { addDays, format, formatDate, isSameDay, isSameWeek, subDays } from "date-fns";
+import { addDays, format, isSameDay, isSameWeek, subDays } from "date-fns";
 import { AuthError } from "next-auth"; 
 import { Begginer1_3FBW_FirstVariation, Begginer1_3FBW_SecondVariation, Beginner4_7Lower_FirstVariation, Beginner4_7Lower_SecondVariation, Beginner4_7Upper_FirstVariation, Beginner4_7Upper_SecondVariation } from "./lib/TrainingPlansData";
 import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
@@ -386,11 +385,19 @@ export const EditUserExercise = async (exerciseid:string,newname:string,timeExer
         return {error :'Coś poszło nie tak'}
     }
 
+    const userid = await userID()
+
+
     try{
-        sql`
+        await sql`
             UPDATE gymusersexercises
             SET exercisename = ${newname}, timemesure = ${timeExercise}, useshandle = ${usesHandle}
-            WHERE id = ${exerciseid};
+            WHERE id = ${exerciseid} AND userid = ${userid};
+        `
+        await sql`
+            UPDATE gymexercises
+            SET exercisename = ${newname}
+            WHERE exerciseid = ${exerciseid} AND userid = ${userid};
         `
         revalidatePath('/home/profile/my-exercises')
     }catch(e){

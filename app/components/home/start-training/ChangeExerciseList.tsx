@@ -1,4 +1,4 @@
-import { TrainingExerciseType } from '@/app/types'
+import { LocalStorageExercise, LocalStorageTraining, TrainingExerciseType } from '@/app/types'
 import React, { useContext } from 'react'
 import { Icon } from '../../Icon'
 import { LeftAngle, PlusIcon, RightTriangle } from '@/app/ui/icons/ExpandIcon'
@@ -6,17 +6,24 @@ import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { ModalContexts } from './ModalContexts'
 import { Button } from '../../ui/Button'
 import { ButtonWithIcon } from '../../ui/ButtonWithIcon'
+import { localStorageSetter } from '@/app/lib/utils'
 
 type ChangeExerciseListTypes = {
     list?: TrainingExerciseType[],
-    setCurrentExercise: (number:number) => void;
+    list2?: LocalStorageExercise[],
+    setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
 }
-export const ChangeExerciseList = ({list,setCurrentExercise}:ChangeExerciseListTypes) => {
+export const ChangeExerciseList = ({list,list2,setLocalStorageTrainingData}:ChangeExerciseListTypes) => {
     const modalsContext = useContext(ModalContexts)
 
     const handleChangeExercisesOrder = (exerciseIndexNumber:number) => {
 
-        setCurrentExercise(exerciseIndexNumber)
+        setLocalStorageTrainingData(x=>{
+            let xCopy = {...x}
+            xCopy.currentExerciseIndex = exerciseIndexNumber
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
+            return xCopy
+        })
         
         handleCloseList()
     }
@@ -33,8 +40,8 @@ export const ChangeExerciseList = ({list,setCurrentExercise}:ChangeExerciseListT
     <div className='bg-dark z-10 w-full pt-10 px-5 flex flex-col gap-2 overflow-y-auto'>
         <h1 className='text-center text-xl text-white font-semibold mb-5'>Wybierz ćwiczenie</h1>
 
-            {list?.map((exercise,index)=>(
-                <SingleExercise key={exercise.id} exerciseName={exercise.exercisename} handleChangeExercisesOrder={handleChangeExercisesOrder} index={index}/>
+            {list2?.map((exercise,index)=>(
+                <SingleExercise key={exercise.id} exerciseName={exercise.exerciseName} handleChangeExercisesOrder={handleChangeExercisesOrder} index={index}/>
             ))}
 
 
