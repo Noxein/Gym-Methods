@@ -131,9 +131,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
         </div>
         {
             loading ? <DisplayTrainingSkeleton isTraining={true}/> :
-        <>
-        <AddExerciseUsingState name={currentExerciseName} exerciseid={currentExerciseId} trainingState={localStorageTrainingData} isLoading={loading} showTimeMesure={showTimeMesure} isTraining={true} requiresHandle={requiresHandle} allHandles={allHandles} setLocalStorageTrainingData={setLocalStorageTrainingData}/>
-        </>
+            <AddExerciseUsingState name={currentExerciseName} exerciseid={currentExerciseId} trainingState={localStorageTrainingData} isLoading={loading} showTimeMesure={showTimeMesure} isTraining={true} requiresHandle={requiresHandle} allHandles={allHandles} setLocalStorageTrainingData={setLocalStorageTrainingData}/>
         }
         {error && <div className='text-red'>{error}</div>}
 
