@@ -1,13 +1,12 @@
 'use client'
 import React, { useEffect, useState, useContext, useRef } from 'react'
-import { ActionTypes, AddExerciceReducerType, Series, Side as SideType } from '../../types'
+import { ActionTypes, AddExerciceReducerType, Side as SideType } from '../../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
 import { AddExerciseAction } from '../../actions'
 import { usePathname } from 'next/navigation'
 import { ThemeContext } from '../../context/ThemeContext'
 import { Icon } from '../Icon'
 import { CheckIcon, PlusIcon } from '@/app/ui/icons/ExpandIcon'
-import { TempoContext } from '@/app/context/TempoContext'
 import { ShowHistoryButton } from './ShowHistoryButton'
 import { PreviousExercise } from '../home/start-training/PreviousExercise'
 import { SmallLoaderDiv } from '../ui/SmallLoaderDiv'
@@ -28,14 +27,13 @@ type AddExerciseType = {
         id: string;
         handlename: string;
     }[],
-    setParnetHandle?: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles,setParnetHandle}:AddExerciseType) => {
+export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles}:AddExerciseType) => {
     const[error,setError] = useState<string>('')
     const[loading,setLoading] = useState(false)
     const[showHistory,setShowHistory] = useState(false)
-    const[handle,setHandle] = useState(requiresHandle?'Sznur':'')
+    const[handle,setHandle] = useState<{handleName:string,handleId:string}>(requiresHandle?{handleId: allHandles[0].id,handleName: allHandles[0].handlename}: {handleId: '', handleName:''})
     const[checked,setChecked] = useState(false)
     const theme = useContext(ThemeContext)
 
@@ -84,7 +82,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
                <WeightAndRepeatInputs dispach={dispatch} state={state}/>
                <DifficultyLevel dispach={dispatch} state={state} showTimeMesure={showTimeMesure}/>
                <Side dispatch={dispatch} state={state} />
-               {requiresHandle && <Handle handle={handle} setHandle={setHandle} setParnetHandle={setParnetHandle} allHandles={allHandles}/>}
+               {requiresHandle && <Handle handle={handle} setHandle={setHandle} allHandles={allHandles}/>}
             </div>
             
             <ButtonWithIcon onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading || loading}
@@ -114,7 +112,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
 
         <ErrorDiv error={error}/>
         
-        {!isTraining && 
+   
         <div className='flex w-full gap-2 mt-auto pt-4'>
             <button  className='w-16 h-16 rounded accent-dark border-marmur border-2' onClick={()=>setChecked(x=>!x)}> 
             {checked?
@@ -129,7 +127,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
                 {loading? <SmallLoaderDiv loading={loading}/> : 'Zakończ ćwiczenie'}
             </Button>
         </div>
-        }
+        
     </div>
     )
 }
@@ -217,28 +215,32 @@ const Side = ({dispatch,state}:SideTypes) => {
 }
 
 type HandleTypes = {
-    handle: string,
-    setHandle: React.Dispatch<React.SetStateAction<string>>,
-    setParnetHandle?: React.Dispatch<React.SetStateAction<string>>,
+    handle: {
+        handleName: string,
+        handleId: string,
+    },
+    setHandle: React.Dispatch<React.SetStateAction<
+    {
+        handleName: string,
+        handleId: string,
+    }>>,
     allHandles: {
         id: string;
         handlename: string;
     }[]
 }
 
-const Handle = ({handle,setHandle,setParnetHandle,allHandles}:HandleTypes) => {
-    const handleChange = (payload:string) => {
-        setHandle(payload)
-        setParnetHandle && setParnetHandle(payload)
+const Handle = ({handle,setHandle,allHandles}:HandleTypes) => {
+    const handleChange = (obj:{id:string,handlename:string}) => {
+        setHandle({handleId: obj.id, handleName: obj.handlename})
     }
     return (
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Uchwyt</label>
-            <select name="handle" value={handle} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value)}>
-                {/* TODO FETCH THIS SHIT LATER */}
+            <select name="handle" id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value) as {id:string, handlename: string})}>
                 {allHandles.map(handle=>(
-                    <option value={handle.id} key={handle.id}>{handle.handlename}</option>
+                    <option value={JSON.stringify(handle)} key={handle.id}>{handle.handlename}</option>
                 ))}
             </select>
         </div>

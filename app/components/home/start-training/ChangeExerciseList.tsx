@@ -1,8 +1,7 @@
-import { LocalStorageExercise, LocalStorageTraining, TrainingExerciseType } from '@/app/types'
-import React, { useContext, useEffect, useState } from 'react'
+import { LocalStorageExercise, LocalStorageTraining } from '@/app/types'
+import React, { useContext, useState } from 'react'
 import { Icon } from '../../Icon'
-import { LeftAngle, PlusIcon, RightTriangle, TrashIcon } from '@/app/ui/icons/ExpandIcon'
-import { BlurBackgroundModal } from '../../BlurBackgroundModal'
+import { PlusIcon, TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import { ModalContexts } from './ModalContexts'
 import { Button } from '../../ui/Button'
 import { ButtonWithIcon } from '../../ui/ButtonWithIcon'
@@ -10,11 +9,10 @@ import { localStorageSetter } from '@/app/lib/utils'
 import { ErrorDiv } from '../../ui/ErrorDiv'
 
 type ChangeExerciseListTypes = {
-    list?: TrainingExerciseType[],
     list2?: LocalStorageExercise[],
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
 }
-export const ChangeExerciseList = ({list,list2,setLocalStorageTrainingData}:ChangeExerciseListTypes) => {
+export const ChangeExerciseList = ({list2,setLocalStorageTrainingData}:ChangeExerciseListTypes) => {
     const modalsContext = useContext(ModalContexts)
     const[error,setError] = useState('')
 

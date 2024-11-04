@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useContext, useRef } from 'react'
+import React, { useState, useContext, useRef, useEffect } from 'react'
 import { DifficultyLevelType , LocalStorageTraining, Side as SideType } from '@/app/types'
 import { AddExerciseAction } from '@/app/actions'
 import { usePathname } from 'next/navigation'
@@ -278,21 +278,29 @@ type HandleTypes = {
 
 const Handle = ({allHandles,trainingState,setLocalStorageTrainingData}:HandleTypes) => {
     const handleInput = trainingState.exercises[trainingState.currentExerciseIndex].handle
-    const handleChange = (payload:string) => {
+    const handleChange = (id:string,name:string) => {
         setLocalStorageTrainingData(x=>{
             let xCopy = {...x}
-            xCopy.exercises[xCopy.currentExerciseIndex].handle = payload
+            xCopy.exercises[xCopy.currentExerciseIndex].handle = {handleId: id, handleName: name}
             localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
     }
+    useEffect(()=>{
+        setLocalStorageTrainingData(x=>{
+            let xCopy = {...x}
+            xCopy.exercises[xCopy.currentExerciseIndex].handle = {handleId: allHandles[0].id, handleName: allHandles[0].handlename}
+            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
+            return xCopy
+        })
+    },[])
     return (
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Uchwyt</label>
-            <select name="handle" value={handleInput} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value)}>
+            <select name="handle" value={handleInput?.handleId} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value,e.target.title)}>
                 {allHandles.map(handle=>(
-                    <option value={handle.id} key={handle.id}>{handle.handlename}</option>
+                    <option value={handle.id} title={handle.handlename} key={handle.id}>{handle.handlename}</option>
                 ))}
             </select>
         </div>

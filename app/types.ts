@@ -196,6 +196,9 @@ export type LocalStorageExercise = {
     exerciseName: string,
     exerciseId: string,
     sets: Series[],
-    handle? :string,
+    handle? :{
+        handleName: string,
+        handleId: string,
+    },
     date?: Date,
 }

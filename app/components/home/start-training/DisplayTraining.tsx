@@ -1,5 +1,5 @@
 'use client'
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, TrainingExerciseType, UserExercise, LocalStorageTraining, UserTrainingPlan } from '@/app/types'
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, TrainingExerciseType, UserExercise, LocalStorageTraining, UserTrainingPlan, LocalStorageExercise } from '@/app/types'
 import React, { useContext, useEffect, useReducer, useRef, useState } from 'react'
 import { SaveTrainingToDatabase } from '@/app/actions'
 import { DisplayTrainingSkeleton } from '../../Loading/home/start-training/trainingName/DisplayTrainingSkeleton'
@@ -50,12 +50,18 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
             }
     
             exercises.map(exercise=>{
-                objectToSaveToLocalStorage.exercises.push({
+                let exerciseObj:LocalStorageExercise = {
                     id: exercise.id,
                     exerciseId: exercise.exerciseid,
                     exerciseName: exercise.exercisename,
                     sets: [],
-                })
+                }
+
+                if(ExercisesThatRequireHandle.some((name)=>name.id === exercise.exerciseid)){
+                    exerciseObj.handle = {handleId: '', handleName: ''}
+                }
+                
+                objectToSaveToLocalStorage.exercises.push(exerciseObj)
             })
             localStorage.setItem(trainingName+'training',JSON.stringify(objectToSaveToLocalStorage))
         return objectToSaveToLocalStorage

@@ -63,14 +63,6 @@ export const LoginNoFormData = async (email:string,password:string) => {
     
 }
 
-type RegisterState = {
-    errors?: {
-        email?: string[],
-        password?: string[],
-        confirmpassword?: string[]
-    }
-}
-
 const validateEmail = (email:string) => {
     return String(email)
       .toLowerCase()
@@ -131,7 +123,7 @@ export const ComparePasswords = async (password:string,hasedPassword:string) => 
     return isCorrect
 }
 
-export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:string,isLastExercise=false) => {
+export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:{handleName:string,handleId:string},isLastExercise=false) => {
     const userid = await userID()
     if(!userid) return
     const stringDate = JSON.stringify(new Date())
@@ -176,12 +168,16 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
         id = userExercises[userExercises.findIndex(x=>x.exercisename===exerciseid)].id
     }
 
-    let doesUserUsesHandle = null
-    if(usesHandle) doesUserUsesHandle = usesHandle
+    let HandleName = null
+    let HandleId = null
+    if(usesHandle){
+        HandleName = usesHandle.handleName
+        HandleId = usesHandle.handleId
+    } 
 
     try{
         await sql`
-        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid},${doesUserUsesHandle})
+        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid,handlename) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid},${HandleId},${HandleName})
         `
     }catch(e){
         console.log('Error occured: AddExerciseAction func actions.ts ',e)
@@ -361,12 +357,16 @@ export const DeleteUserExercise = async (id:string) => {
                 `
             }
         })
+        try{
+            await sql`
+            UPDATE gymexercises SET exerciseid = null WHERE exerciseid = ${id}
+        `
+        }catch(e){
+            console.log(e)
+        }
 
         await sql`
             DELETE FROM gymusersexercises WHERE id = ${id};
-        `
-        await sql`
-            DELETE FROM gymexercises WHERE exerciseid = ${id}
         `
        
     }catch(e){
@@ -643,6 +643,9 @@ export const deleteUserHandle = async (handleid:string,) => {
 
     try{
         await sql`
+            UPDATE gymexercises SET handleid = null WHERE handleid = ${handleid}
+        `
+        await sql`
              DELETE FROM gymusershandles WHERE id = ${handleid} AND userid = ${userid}
         `
     }catch(e){
@@ -821,20 +824,21 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
 }
 
 export const DeleteUserTraining = async (trainingid:string) => {
-    if(typeof trainingid !== 'string') return { error: "Coś poszło nie tak1"}
+    if(typeof trainingid !== 'string') return { error: "Coś poszło nie tak"}
 
     try{
 
         const exercisesIDs = await sql`
-        SELECT id FROM gymuserstrainings WHERE trainingid = ${trainingid}
+            SELECT id FROM gymuserstrainings WHERE trainingid = ${trainingid}
         ` 
         const idsArray = exercisesIDs.rows as {id: string}[]
 
         await Promise.all(idsArray.map(async item=>{
             await sql`
-                DELETE FROM gymexercises WHERE trainingid = ${item.id}
+                UPDATE gymexercises SET trainingid = null WHERE trainingid = ${item.id}
             `
         }))
+
         await sql`
             DELETE FROM gymuserstrainings WHERE trainingid = ${trainingid};
         `
@@ -843,7 +847,7 @@ export const DeleteUserTraining = async (trainingid:string) => {
             `
     }catch(e){
         console.log('Error occured DeleteUserTraining func actions.ts',e)
-        return { error: 'Coś poszło nie tak2'}
+        return { error: 'Coś poszło nie tak'}
     }
     revalidatePath('/home/profile/my-training-plans')
     redirect('/home/profile/my-training-plans')
@@ -940,29 +944,6 @@ export const createTraining = async (trainingPlanId:string) => {
         console.log('Error occured createTraining func actions.ts',e)
     }
 
-}
-
-export const updateCurrentTraining = async (id:string,exercisesLeft: TrainingExerciseType[]) => {
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////CHANGE THIS FUNC OR APP WILL BUG////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////COLUMN RENAMED TO exercisesleft  ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    let idString: string = ''
-    exercisesLeft.forEach((id,index)=>{
-        if(index === 0) return
-        if(index === exercisesLeft.length-1){
-            idString = idString + `'${id.id}'`
-            return
-        }
-        idString = idString + `'${id.id}',`
-    })
-    try{
-        await sql`
-            UPDATE gymuserstrainings SET exercisesleft = ARRAY[${idString}] WHERE id=${id}
-        `
-    }catch(e){
-        console.log('Error occured action.ts file updateCurrentTraining function',e)
-    }
 }
 
 export const getExistingTraining = async () => {
@@ -1082,24 +1063,6 @@ const timeout = async () => {
         setTimeout(()=>resolve(true),3000)
     })
     return a
-}
-
-export const checkIfTrainingIsInProgress = async (trainingName:string) => {
-    const userid = await userID()
-
-    try{
-        const training = await sql`
-            SELECT id FROM gymuserstrainingplans WHERE userid = ${userid} AND trainingname = ${trainingName}
-        `
-        const id = training.rows[0].id
-        const isTrainingInProgress = await sql`
-            SELECT id FROM gymuserstrainings WHERE userid = ${userid} AND iscompleted = false AND trainingid = ${id}
-        `
-        if(isTrainingInProgress.rowCount && isTrainingInProgress.rowCount >0) return true
-        return false
-    }catch{
-        return false
-    }
 }
 
 const userID = async () => {
