@@ -1,17 +1,16 @@
-import { TrainingExerciseType, UserExercise } from '@/app/types'
+import { LocalStorageTraining, TrainingExerciseType, UserExercise } from '@/app/types'
 import { AddExercise } from './AddSingleExercise'
 
-type SearchExercisesTypes = {
+type SearchExercisesTypes = { 
     allExercisesInOneArray: (string | UserExercise)[],
     searchTerm: string,
-    setPlanExercises: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
+    setPlanExercises?: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     isTrainingInProgressPage?: boolean,
-    setCurrentExercise?: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
-    setTotalNumberOfTrainigs?: React.Dispatch<React.SetStateAction<number>>,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
+    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
-export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setTotalNumberOfTrainigs,setShowExerciseList,setShowAddExercise}:SearchExercisesTypes) => {
+export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:SearchExercisesTypes) => {
     const filtered = allExercisesInOneArray.filter(x=>{
         if(typeof x === 'object'){
           return x.exercisename.toLowerCase().includes(searchTerm.toLowerCase())
@@ -25,24 +24,22 @@ export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPl
         allExercisesInOneArray={filtered} 
         setPlanExercises={setPlanExercises} 
         isTrainingInProgressPage={isTrainingInProgressPage} 
-        setCurrentExercise={setCurrentExercise}
-        setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
         setShowExerciseList={setShowExerciseList}
         setShowAddExercise={setShowAddExercise}
+        setLocalStorageTrainingData={setLocalStorageTrainingData}
         />
   )
 }
 
 type FilteredExercisesTypes = {
     allExercisesInOneArray: (string | UserExercise)[],
-    setPlanExercises: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
+    setPlanExercises?: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     isTrainingInProgressPage?: boolean,
-    setCurrentExercise?: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
-    setTotalNumberOfTrainigs?: React.Dispatch<React.SetStateAction<number>>,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
+    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
-export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setTotalNumberOfTrainigs,setShowExerciseList,setShowAddExercise}:FilteredExercisesTypes) => {
+export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:FilteredExercisesTypes) => {
     return (
         <div className='flex flex-col gap-2 mx-3'>
             {allExercisesInOneArray.map((x,i)=>{
@@ -56,10 +53,9 @@ export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTra
                             id={x.id} 
                             setPlanExercises={setPlanExercises} 
                             isTrainingInProgressPage={isTrainingInProgressPage} 
-                            setCurrentExercise={setCurrentExercise}
-                            setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
                             setShowExerciseList={setShowExerciseList}
                             setShowAddExercise={setShowAddExercise}
+                            setLocalStorageTrainingData={setLocalStorageTrainingData}
                             />
                     )
                 }
@@ -73,10 +69,9 @@ export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTra
                             id={x} 
                             setPlanExercises={setPlanExercises} 
                             isTrainingInProgressPage={isTrainingInProgressPage} 
-                            setCurrentExercise={setCurrentExercise}
-                            setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
                             setShowExerciseList={setShowExerciseList}
                             setShowAddExercise={setShowAddExercise}
+                            setLocalStorageTrainingData={setLocalStorageTrainingData}
                             />
                     )
                 }

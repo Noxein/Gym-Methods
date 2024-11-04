@@ -1,12 +1,6 @@
 import Image from 'next/image'
-import React from 'react'
 
 export const LoaderFullScreen = () => {
-  // return (
-  //   <div className="flex justify-center items-center w-lvw h-lvh">
-  //       <span className="loader"></span>
-  //   </div>
-  // )
   return(
     <div className="loading loading02 h-screen w-screen flex items-center justify-center">
     <span className='flex justify-center'>

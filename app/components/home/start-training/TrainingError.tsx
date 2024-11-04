@@ -1,4 +1,3 @@
-import React from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 
 type TrainingErrorTypes = {
@@ -8,8 +7,10 @@ type TrainingErrorTypes = {
 export const TrainingError = ({message,children}:TrainingErrorTypes) => {
   return (
     <BlurBackgroundModal>
-        <div className='text-white text-2xl text-center'>{message}</div>
-        <div className='flex justify-center mx-5 text-2xl'>{children}</div>
+      <div className='flex flex-col gap-4'>
+          <div className='text-white text-2xl text-center'>{message}</div>
+          <div className='flex justify-center text-2xl w-full'>{children}</div>
+      </div>
     </BlurBackgroundModal>
   )
 }

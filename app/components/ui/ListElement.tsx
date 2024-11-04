@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface ListElement extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     elementName: string,
     childrenIcon: React.ReactNode,

@@ -1,8 +1,6 @@
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { UserExercise } from '@/app/types'
 import { PencilIcon, TrashIcon } from '@/app/ui/icons/ExpandIcon'
-import React, { useContext } from 'react'
 
 type ExerciseTypes = {
   exercise: UserExercise,
@@ -11,7 +9,6 @@ type ExerciseTypes = {
   setShowDeleteModal: React.Dispatch<React.SetStateAction<boolean>>,
 } 
 export const Exercise = ({exercise,setSelectedExercise,setShowEditModal,setShowDeleteModal}:ExerciseTypes) => {
-  const theme = useContext(ThemeContext)
 
   const handleTouch = (type:string) => {
     setSelectedExercise(exercise)
@@ -20,8 +17,8 @@ export const Exercise = ({exercise,setSelectedExercise,setShowEditModal,setShowD
   }
   
   return (
-    <div className={`w-full bg-${theme?.colorPallete.accent} p-[1px] rounded-lg flex`}>
-          <div className={`bg-${theme?.colorPallete.primary} text-${theme?.colorPallete.accent} rounded-lg flex-1 text-wrap py-2 pl-2`}>
+    <div className={`w-full bg-marmur p-[1px] rounded-lg flex`}>
+          <div className={`bg-dark text-marmur rounded-lg flex-1 text-wrap py-2 pl-2`}>
               {exercise.exercisename}
           </div>
           <Icon onClick={()=>handleTouch('edit')}>
@@ -35,7 +32,6 @@ export const Exercise = ({exercise,setSelectedExercise,setShowEditModal,setShowD
 }
 
 const Icon = ({children,sClass,...rest}:{children:React.ReactNode,sClass?:string}&React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
-  const theme = useContext(ThemeContext)
   
   return (
   <div className={`flex justify-center items-center rounded-md ${sClass} px-2 cursor-pointer`} {...rest}>

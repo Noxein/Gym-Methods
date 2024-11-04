@@ -1,11 +1,10 @@
 'use client'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { MappedTempoExercises } from '@/app/components/profile/set-tempo/MappedTempoExercises'
 import { SearchList } from './SearchList'
 import { EditTempo } from './EditTempo'
 import { ExerciseTypes, SelectedExerciseWithTempo, UserExercise, UserExerciseTempoReturnType } from '@/app/types'
 import { DeleteTempo } from './DeleteTempo'
-import { ThemeContext } from '@/app/context/ThemeContext'
 
 type SetTempoType = {
   exercises:ExerciseTypes,
@@ -13,7 +12,6 @@ type SetTempoType = {
   allExercisesInOneArray: (string | UserExercise)[],
 }
 export const SetTempo = ({exercises,tempos,allExercisesInOneArray}:SetTempoType) => {
-  const theme = useContext(ThemeContext)
   const[searchField,setSearchField] = useState('')
   const[showEditTempoModal,setShowEditTempoModal] = useState(false)
   const[showDeleteTempoModal,setShowDeleteTempoModal] = useState(false)
@@ -23,7 +21,7 @@ export const SetTempo = ({exercises,tempos,allExercisesInOneArray}:SetTempoType)
       <input type="text"
       placeholder='Szukaj'
       onChange={e=>setSearchField(e.target.value)}
-      className={`pl-2 w-full text-xl bg-${theme?.colorPallete.primary} border-${theme?.colorPallete.accent} border-2 rounded-md py-2 text-${theme?.colorPallete.accent}`}
+      className={`pl-2 w-full text-xl bg-dark border-marmur border-2 rounded-md py-2 text-marmur`}
       />
 
       {searchField ? 

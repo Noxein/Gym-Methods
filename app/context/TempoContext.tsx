@@ -3,7 +3,7 @@ import { createContext } from "react";
 import { TempoType } from "../types";
 
 export const TempoContext = createContext<dataType|null>(null)
-
+ 
 type dataType = {
     [key: string]: {
         id: string;

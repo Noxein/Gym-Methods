@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Button } from '../../ui/Button';
 import { deleteUserHandle } from '@/app/actions';
 import { SmallLoader } from '../../Loading/SmallLoader';

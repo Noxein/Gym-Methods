@@ -1,5 +1,3 @@
-import React from 'react'
-
 export const TrainingListSkeleton = () => {
   return (
     <div className='flex flex-col mx-5 mt-2 gap-2'>

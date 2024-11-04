@@ -1,11 +1,8 @@
 'use client'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { HomeIcon, PlusIcon, ProfileIcon, StartWorkoutIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
-import React, { useContext } from 'react'
 
 export const BottomMenu = () => {
-    const theme = useContext(ThemeContext)
   return (
     <nav className={`flex fixed bottom-0 z-20 w-screen bg-[#131C22] py-6 border-t-white border-t-2`}>
         <MenuBtn hrefTo={'/home'}>

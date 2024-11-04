@@ -1,6 +1,6 @@
 'use client'
 import { UserSettings } from '@/app/types'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Icon } from '../../Icon'
 import { CheckIcon, CrossIcon } from '@/app/ui/icons/ExpandIcon'
 import { exerciseList,exercisesArr } from '@/app/lib/exercise-list'

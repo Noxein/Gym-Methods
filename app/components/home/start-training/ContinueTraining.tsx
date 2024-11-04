@@ -1,6 +1,5 @@
 import { getExistingTraining } from '@/app/actions'
 import { UserTrainingPlan } from '@/app/types'
-import React from 'react'
 import { Training } from './Training'
 
 type ContinueTrainingTypes = {
@@ -14,6 +13,6 @@ export const ContinueTraining = async ({name,training}:ContinueTrainingTypes) =>
     console.log(training?.exercises.exercises,loadPlan?.exercisesleft,trainingLeft)
 
   return (
-    <Training trainingName={name} training={training} lastid={1} trainingid={loadPlan?.id!} exercisesLeft={trainingLeft}/>
+    <Training />
   )
 }

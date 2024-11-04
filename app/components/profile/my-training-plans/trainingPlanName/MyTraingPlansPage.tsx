@@ -1,4 +1,3 @@
-import React from 'react'
 import { SpecificTrainingDontExist } from './SpecificTrainingDontExist'
 import { ErrorTrainingQuery } from './ErrorTrainingQuery'
 import { SpecificTraining } from './SpecificTraining'

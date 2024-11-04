@@ -1,4 +1,4 @@
-import { ActionTypes, AddExerciceReducerType, DifficultyLevel, Side } from "../types";
+import { ActionTypes, AddExerciceReducerType, DifficultyLevelType, Side } from "../types";
 
 export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTypes):AddExerciceReducerType => {
     if(typeof action.payload === 'number'){
@@ -18,7 +18,7 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
                 arr[index].weight = changeValue
                 return {...state, series: arr}
             }
-
+ 
             case 'EDITSERIESREPEAT':{
                 let index = action.index!
                 let changeValue = action.payload

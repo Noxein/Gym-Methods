@@ -1,5 +1,3 @@
-import React from 'react'
-
 export const SmallLoader = ({sClass,sClassParent}:{sClass?:string,sClassParent?:string}) => {
   return (
     <div className={`flex justify-center ${sClassParent}`}>

@@ -1,6 +1,5 @@
-import { ThemeContext } from "@/app/context/ThemeContext"
 import { ExpandIcon, PlusIcon } from "@/app/ui/icons/ExpandIcon"
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { Icon } from "../../Icon"
 
 type StepTwoOutOfThree = {
@@ -18,10 +17,7 @@ export const SettingsMapper = ({item,objectName,currentLevel=0,stateSetter,state
     
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `${currentLevel*3}`
-
-    const theme = useContext(ThemeContext)
     
-
     if(Array.isArray(item)){
         return (<div className={`flex flex-col ${mLeft} font-semibold`}>
             <ExpandBtn 
@@ -67,23 +63,22 @@ type ExpandBtn = {
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 
 const ExpandBtn = ({text,isExpanded,mLeft,...rest}:ExpandBtn) => {
-    const theme = useContext(ThemeContext)
 
     if(isExpanded) return (
         text && 
-        <button {...rest} className={`relative text-left ml-${mLeft} bg-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent} border-marmur  rounded-lg flex justify-between p-[1px] items-center `}>
-            <span className={`flex-1 bg-${theme?.colorPallete.primary} pl-4 py-2 rounded-lg`}>{text}</span>
+        <button {...rest} className={`relative text-left ml-${mLeft} bg-marmur text-marmur border-marmur  rounded-lg flex justify-between p-[1px] items-center `}>
+            <span className={`flex-1 bg-dark pl-4 py-2 rounded-lg`}>{text}</span>
 
             <Icon className={`flex items-center is`}>
-                <ExpandIcon expanded={isExpanded} fill={theme?.colorPallete.accent}/>
+                <ExpandIcon expanded={isExpanded} fill={'#d9d9d9'}/>
             </Icon>
         </button>
     )
     
     return (
         text && 
-        <button {...rest} className={`text-left ml-${mLeft} text-${theme?.colorPallete.accent} bg-${theme?.colorPallete.primary} border-marmur border-1 rounded-lg flex justify-between p-[1px] items-center`}>
-            <span className={`flex-1 bg-${theme?.colorPallete.primary} pl-4 py-2 rounded-lg`}>{text}</span>
+        <button {...rest} className={`text-left ml-${mLeft} text-marmur bg-dark border-marmur border-1 rounded-lg flex justify-between p-[1px] items-center`}>
+            <span className={`flex-1 bg-dark pl-4 py-2 rounded-lg`}>{text}</span>
 
             <Icon className={`flex items-center`}>
                 <ExpandIcon  expanded={isExpanded} fill={'#D9D9D9'}/>
@@ -102,7 +97,6 @@ type SelectExerciseTypes = {
     favourite: boolean
 }
 const SelectExercise = ({text,mLeft,isFirst,setExercisesToDelete,selected,favourite}:SelectExerciseTypes) => {
-    const theme = useContext(ThemeContext)
     const Toggle = () => {
         setExercisesToDelete(text)
     }
@@ -111,7 +105,7 @@ const SelectExercise = ({text,mLeft,isFirst,setExercisesToDelete,selected,favour
             if(favourite) return `bg-green border-green`
             return `bg-red border-red`
         }
-        return `bg-${theme?.colorPallete.accent} border-${theme?.colorPallete.secondary}`
+        return `bg-marmur border-marmur`
     }
 
     const addOnClass = getFillColor()
@@ -119,8 +113,8 @@ const SelectExercise = ({text,mLeft,isFirst,setExercisesToDelete,selected,favour
 
 
     return(
-        <button className={`relative text-left ml-12 mt-1 ${addOnClass} text-${theme?.colorPallete.accent} border-${theme?.colorPallete.secondary} border-[1px] rounded flex justify-between items-center ${isFirst?'mt-2':null}`} onClick={Toggle}>
-            <span className={`flex-1 bg-${theme?.colorPallete.primary} rounded-md pl-4 py-2 flex flex-col`}>
+        <button className={`relative text-left ml-12 mt-1 ${addOnClass} text-marmur border-marmur border-[1px] rounded flex justify-between items-center ${isFirst?'mt-2':null}`} onClick={Toggle}>
+            <span className={`flex-1 bg-dark rounded-md pl-4 py-2 flex flex-col`}>
                 {text}
             </span>
             <Icon className="flex items-center px-1">

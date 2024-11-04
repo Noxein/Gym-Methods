@@ -1,5 +1,4 @@
 import { SelectedExerciseWithTempo, TempoType, UserExercise, UserExerciseTempoReturnType } from '@/app/types'
-import React from 'react'
 import { SingleExercise } from './SingleExercise'
 
 const defaultTempo = {

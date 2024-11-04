@@ -5,7 +5,7 @@ export const SelectedExerciseContext = createContext<null|dataTypes>(null)
 
 type dataTypes = {
     exercise: string,
-    setExercise: React.Dispatch<React.SetStateAction<string>>,
+    setExercise: React.Dispatch<React.SetStateAction<string>>, 
     showExerciseList: boolean,
     setShowExerciseList: React.Dispatch<React.SetStateAction<boolean>>,
 }

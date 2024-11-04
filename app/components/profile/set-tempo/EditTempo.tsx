@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { SelectedExerciseWithTempo } from '@/app/types'
 import { AddOrUpdateTempo } from '@/app/actions'
@@ -40,13 +40,11 @@ export const EditTempo = ({selectedExercise,setShowEditTempoModal}:EditTempoType
         <div className={`flex flex-col gap-4 text-xl mx-5 mb-20 py-5 text-white rounded-md w-full`}>
             <div className='text-center pb-2'>{selectedExercise.name}</div>
             <div className='flex flex-col gap-4'>
-                <div className='flex gap-4'>
-                    <Input labelName='Tempo Góra' onChange={(e)=>handleTempoChange(Number(e.target.value),'up')} value={tempos.up}/>
-                    <Input labelName='Wstrzymanie Góra' onChange={(e)=>handleTempoChange(Number(e.target.value),'uphold')} value={tempos.uphold}/>
-                </div>
-                <div className='flex gap-4'>
-                    <Input labelName='Tempo Dół' onChange={(e)=>handleTempoChange(Number(e.target.value),'down')} value={tempos.down}/>
-                    <Input labelName='Wstrzymanie Dół' onChange={(e)=>handleTempoChange(Number(e.target.value),'downhold')} value={tempos.downhold}/>
+                <div className='flex flex-col gap-4'>
+                    <Input className='flex-1' labelName='Tempo Góra' onChange={(e)=>handleTempoChange(Number(e.target.value),'up')} value={tempos.up}/>
+                    <Input className='flex-1' labelName='Wstrzymanie Góra' onChange={(e)=>handleTempoChange(Number(e.target.value),'uphold')} value={tempos.uphold}/>
+                    <Input className='flex-1' labelName='Tempo Dół' onChange={(e)=>handleTempoChange(Number(e.target.value),'down')} value={tempos.down}/>
+                    <Input className='flex-1' labelName='Wstrzymanie Dół' onChange={(e)=>handleTempoChange(Number(e.target.value),'downhold')} value={tempos.downhold}/>
                 </div>
             </div>
             

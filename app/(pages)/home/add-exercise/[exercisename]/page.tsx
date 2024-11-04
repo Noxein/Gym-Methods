@@ -1,6 +1,4 @@
-import React from 'react'
 import { ExerciseNotFound } from '@/app/components/add-exercise/ExerciseNotFound'
-import { auth } from '@/auth'
 import { ArrayOfAllExercises, getAllHandleTypes, getUserExerciseIdUsingName, userExercisesThatRequireHandlesOrTimeMesure } from '@/app/actions'
 import { AddExerciseStateProvider } from '@/app/components/add-exercise/AddExerciseStateProvider'
 import { Metadata } from 'next'

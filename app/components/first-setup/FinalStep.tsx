@@ -4,9 +4,8 @@ import { Button } from '../ui/Button'
 import { dataType } from './SetupOneOfThree'
 import { Mapper } from './Mapper'
 import { exerciseList } from '@/app/lib/exercise-list'
-import { createTrainingPlans, FirstSetupFinish, SecondStepDataValidation } from '@/app/actions'
+import { FirstSetupFinish, SecondStepDataValidation } from '@/app/actions'
 import { useRouter } from 'next/navigation'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { ErrorDiv } from '../ui/ErrorDiv'
 
 interface FinalStep {
@@ -22,7 +21,6 @@ export const FinalStep = ({data,exercisesToDelete,favouriteExercises,notfavourit
     const router = useRouter()
     const[error,setError] = useState('')
     const[loading,setLoading] = useState(false)
-    const theme = useContext(ThemeContext)
     
     const ValidateData = async () => {
         setLoading(true)
@@ -52,7 +50,7 @@ export const FinalStep = ({data,exercisesToDelete,favouriteExercises,notfavourit
 
         <ErrorDiv error={error}/>
 
-        <div className={`fixed bottom-0 left-0 right-0 gap-2 flex mx-5 pb-5 bg-${theme?.colorPallete.primary}`}>
+        <div className={`fixed bottom-0 left-0 right-0 gap-2 flex mx-5 pb-5 bg-dark`}>
             <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)} disabled={loading}>Wstecz</Button>
             <Button className='flex-1 text-2xl' onClick={async()=>{ValidateData()}} isPrimary disabled={loading}>Zakończ</Button>
         </div>

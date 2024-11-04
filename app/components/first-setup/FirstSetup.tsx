@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { dataType, SetupOneOfThree } from './SetupOneOfThree'
 import { StepTwoOutOfThree } from './StepTwoOutOfThree'
 import { StepThreeOutOfThree } from './StepThreeOutOfThree'

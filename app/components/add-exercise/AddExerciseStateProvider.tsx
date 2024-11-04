@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useReducer } from 'react'
+import { useEffect, useReducer } from 'react'
 import { AddExercise } from './AddExercise'
 import { ActionTypes, AddExerciceReducerType } from '@/app/types'
 import { AddExerciceReducer } from '@/app/lib/reducers'

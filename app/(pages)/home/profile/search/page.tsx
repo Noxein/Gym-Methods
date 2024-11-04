@@ -1,4 +1,4 @@
-import { AllExercisesInOneArray, getAllExerciseNamesInArray, getAllExercises } from "@/app/actions";
+import { AllExercisesInOneArray, getAllExercises } from "@/app/actions";
 import { SearchPage } from "@/app/components/profile/search/SearchPage";
 import { Metadata } from "next";
 

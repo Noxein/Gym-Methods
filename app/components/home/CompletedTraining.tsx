@@ -1,8 +1,6 @@
 'use client'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { GymExercisesDbResult } from '@/app/types'
 import { format, subHours } from 'date-fns'
-import React, { useContext } from 'react'
 
 type CompletedTrainingTypes = {
     training: GymExercisesDbResult[],
@@ -12,11 +10,10 @@ type CompletedTrainingTypes = {
 
 export const CompletedTraining = ({training,trainingName,trainingDate}:CompletedTrainingTypes) => {
 
-    const theme = useContext(ThemeContext)
     const offset = new Date(trainingDate).getTimezoneOffset()/60
     const finishHour = subHours(new Date(trainingDate),offset)
   return (
-    <div className={`text-marmur border-${theme?.colorPallete.accent} border-[1px] flex-1 py-2 px-2 rounded-lg min-h-36 min-w-80`}>
+    <div className={`text-marmur border-marmur border-[1px] flex-1 py-2 px-2 rounded-lg min-h-36 min-w-80`}>
         <div className='flex justify-between'>
             <span className='text-xl'>{trainingName}</span>
             <span className='text-gray-500 text-xs'>{format(finishHour,'dd-MM-yyyy')}</span>

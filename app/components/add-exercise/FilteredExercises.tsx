@@ -1,5 +1,4 @@
 import { UserExercise } from '@/app/types'
-import React from 'react'
 import { LinkToExercise } from './LinkToExercise'
 
 type FilteredExercisesTypes = {

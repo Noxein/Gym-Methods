@@ -1,6 +1,5 @@
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { ExerciseTypes, UserExercise } from '@/app/types'
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { ListExercises } from './ListExercises'
 import { SelectExercise } from './SelectExercise'
 import { Icon } from '../../Icon'
@@ -15,7 +14,7 @@ type ExerciseListTypes = {
 
 export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
     const [searchField,setSearchField] = useState('')
-    const theme = useContext(ThemeContext)
+
     const searchExercise = useContext(SelectedExerciseContext)
     const setShowExerciseList = searchExercise?.setShowExerciseList
     const setExercise = searchExercise?.setExercise
@@ -36,7 +35,7 @@ export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
                             <LeftAngle height='30' width='30' fill='#D9D9D9'/>
                         </Icon>
                     </button>
-                    <input type="text" placeholder='Szukaj' value={searchField} id="Szukaj" onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-${theme?.colorPallete.primary} border-2 rounded-md border-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent}`}/>
+                    <input type="text" placeholder='Szukaj' value={searchField} id="Szukaj" onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/>
                 </div>
 
                 <Button className='mb-4 text-white bg-dark border-white' onClick={slectAllExercises}>

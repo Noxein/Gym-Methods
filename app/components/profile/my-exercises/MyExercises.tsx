@@ -1,6 +1,6 @@
 'use client'
 import { UserExercise } from '@/app/types'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { ListExercises } from './ListExercises'
 import { Search } from './Search'
 

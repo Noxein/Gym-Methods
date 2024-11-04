@@ -15,7 +15,7 @@ export const Goal = ['Siła','Hipertrofia','Oba']
 export const Advancmentlevel = ['Początkujący','Średniozaawansowany','Zaawansowany']
 export const Daysexercising = ['1','2','3','4','5','6','7']
 
-
+ 
 export const GetMonth = (date:Date) => {
     const MonthNumber = date.getMonth()+1
     if(MonthNumber>=10) return String(MonthNumber)
@@ -58,4 +58,8 @@ export const dayArrayInitializer = () => {
       }
   }
   return newArr
+}
+
+export const localStorageSetter = (name:string,objectToSet:any) => {
+  localStorage.setItem(name,JSON.stringify(objectToSet))
 }

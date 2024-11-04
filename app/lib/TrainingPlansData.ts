@@ -17,7 +17,7 @@ export const Begginer1_3FBW_FirstVariation = {
         fallback : 'Hamstring curl'
     },
 }
-
+ 
 export const Begginer1_3FBW_SecondVariation = {
     exercise1: {
         exercises: ['Pompki','Wyciskanie hantli na ławce płaskiej'],

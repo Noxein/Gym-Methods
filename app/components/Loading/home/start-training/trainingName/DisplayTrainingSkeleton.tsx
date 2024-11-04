@@ -1,5 +1,3 @@
-import React from 'react'
-
 type DisplayTrainingSkeletonTypes = {
     isTraining: boolean
 }

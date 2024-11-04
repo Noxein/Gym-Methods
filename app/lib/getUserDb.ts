@@ -8,4 +8,4 @@ export const getUser = async(email:string) => {
     if(users.rowCount === 0) return null
 
     return users.rows[0] 
-} 
+}  

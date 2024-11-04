@@ -1,7 +1,6 @@
 import { LoadingTrainingPlanSkeleton } from '@/app/components/Loading/my-training-plans/LoadingTrainingPlanSkeleton'
 import { LinkWithIcon } from '@/app/components/ui/LinkWithIcon'
-import Link from 'next/link'
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 
 type SpecificTrainingDontExistTypes = {
     trainingName:string

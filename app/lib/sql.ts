@@ -5,4 +5,4 @@ export const getTempo =  async (id:string) => {
     SELECT setupcompleted FROM gymusers WHERE id = ${id}
     `
     return user.rows[0]
-}
+} 

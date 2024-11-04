@@ -1,9 +1,7 @@
 import { Icon } from '@/app/components/Icon'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { TrainingExerciseType } from '@/app/types'
 import { TrashIcon, VerticalDots } from '@/app/ui/icons/ExpandIcon'
 import { closestCorners, DndContext, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
-import React, { useContext} from 'react'
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
@@ -52,7 +50,6 @@ type SingleExerciseTypes = {
 }
 
 const SingleExercise = ({name,exercise,setPlanExercises}:SingleExerciseTypes) => {
-    const theme = useContext(ThemeContext)
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({id:exercise.id})
     const removeIndex = () => {
         setPlanExercises(x=>x.filter((name,index)=>name.id !== exercise.id))
@@ -62,13 +59,13 @@ const SingleExercise = ({name,exercise,setPlanExercises}:SingleExerciseTypes) =>
         transform: CSS.Transform.toString(transform)
     }
     return(
-    <div className={`py-[1px] flex rounded-lg bg-${theme?.colorPallete.accent}`} ref={setNodeRef}  style={style} {...attributes}>
-        <div className={`text-${theme?.colorPallete.accent} rounded-md flex justify-between items-center flex-1` } >
+    <div className={`py-[1px] flex rounded-lg bg-marmur`} ref={setNodeRef}  style={style} {...attributes}>
+        <div className={`text-marmur rounded-md flex justify-between items-center flex-1` } >
             <Icon className='px-0 touch-none' {...listeners} >
                 <VerticalDots />
             </Icon>
 
-           <div className={`flex-1 bg-${theme?.colorPallete.primary} px-4 py-4 rounded-lg`}> {name} </div>
+           <div className={`flex-1 bg-dark px-4 py-4 rounded-lg`}> {name} </div>
     
         </div>
 

@@ -1,7 +1,6 @@
-import { ThemeContext } from '@/app/context/ThemeContext'
-import React, { useContext, useState } from 'react'
+import { useState } from 'react'
 import { AddExercise } from './AddSingleExercise'
-import { TrainingExerciseType } from '@/app/types'
+import { LocalStorageTraining, TrainingExerciseType } from '@/app/types'
 import { ExpandIcon } from '@/app/ui/icons/ExpandIcon'
 import { Icon } from '@/app/components/Icon'
 
@@ -10,18 +9,15 @@ type ListExercisesTrainingTypes = {
     objectName?:string,
     currentLevel?:number,
     isLast?:boolean,
-    setPlanExercises: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
+    setPlanExercises?: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,
     isTrainingInProgressPage?: boolean,
-    setCurrentExercise?: React.Dispatch<React.SetStateAction<TrainingExerciseType>>,
-    setTotalNumberOfTrainigs?: React.Dispatch<React.SetStateAction<number>>,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
+    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
-export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=true,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setTotalNumberOfTrainigs,setShowExerciseList,setShowAddExercise}:ListExercisesTrainingTypes) => {
+export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=true,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:ListExercisesTrainingTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `ml-${currentLevel*2}`
-
-    const theme = useContext(ThemeContext)
     
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`flex flex-col gap-1 font-bold`}>
@@ -41,10 +37,9 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
                     setPlanExercises={setPlanExercises} 
                     key={x.id}
                     isTrainingInProgressPage={isTrainingInProgressPage}
-                    setCurrentExercise={setCurrentExercise}
-                    setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
                     setShowExerciseList={setShowExerciseList}
                     setShowAddExercise={setShowAddExercise}
+                    setLocalStorageTrainingData={setLocalStorageTrainingData}
                 />
             ))}
     </div>)
@@ -65,10 +60,9 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
                                 setPlanExercises={setPlanExercises} 
                                 key={x}
                                 isTrainingInProgressPage={isTrainingInProgressPage}
-                                setCurrentExercise={setCurrentExercise}
-                                setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
                                 setShowExerciseList={setShowExerciseList}
                                 setShowAddExercise={setShowAddExercise}
+                                setLocalStorageTrainingData={setLocalStorageTrainingData}
                             />
                     ))}
                 </div>}
@@ -98,10 +92,9 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
                         isLast={index+1===Object.keys(item).length} 
                         setPlanExercises={setPlanExercises}
                         isTrainingInProgressPage={isTrainingInProgressPage}
-                        setCurrentExercise={setCurrentExercise}
-                        setTotalNumberOfTrainigs={setTotalNumberOfTrainigs}
                         setShowExerciseList={setShowExerciseList}
                         setShowAddExercise={setShowAddExercise}
+                        setLocalStorageTrainingData={setLocalStorageTrainingData}
                     />
                 ))}
         
@@ -116,15 +109,14 @@ type ExpandBtn = {
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 
 const ExpandBtn = ({text,isExpanded,mLeft,...rest}:ExpandBtn) => {
-    const theme = useContext(ThemeContext)
 
     return (
         text && 
-        <button {...rest} className={`text-left ${mLeft} bg-${theme?.colorPallete.accent}  text-${theme?.colorPallete.accent} rounded-lg flex pl-[1px] py-[1px] items-center`}>
-            <span className={`flex-1 rounded-lg bg-${theme?.colorPallete.primary} py-3 pl-4`}>{text}</span>
+        <button {...rest} className={`text-left ${mLeft} bg-marmur  text-marmur rounded-lg flex pl-[1px] py-[1px] items-center`}>
+            <span className={`flex-1 rounded-lg bg-dark py-3 pl-4`}>{text}</span>
 
             <Icon className='p-0 -ml-1'>
-                <ExpandIcon expanded={isExpanded} fill={theme?.colorPallete.accent}/>
+                <ExpandIcon expanded={isExpanded} fill={'#d9d9d9'}/>
             </Icon>
             
         </button>

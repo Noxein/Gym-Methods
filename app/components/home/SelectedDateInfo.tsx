@@ -1,5 +1,4 @@
 import { format } from 'date-fns';
-import React from 'react'
 import { WeekDayArray, WeekDayArrayPL, MonthNamesArray, MonthNamesArrayVariantPL } from '@/app/lib/utils';
 
 type SelectedDateInfoTypes = {
@@ -30,7 +29,6 @@ export const SelectedDateInfo = ({dayData,selectedDay,Last30DaysExercises}:Selec
     const averageSeries = Math.abs(Last30DaysExercises?.averageThisMonthSeries! - dayData.SeriesToday)
     const averageSeriesWord = dayData.SeriesToday > Last30DaysExercises?.averageThisMonthSeries! ? 'więcej' : 'mniej'
 
-    console.log()
   return (
     <div>
         <div className='text-marmur py-1 px-5 text-sm'>

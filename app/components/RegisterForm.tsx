@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FormWrapper } from './FormWrapper'
 import { InputGroup } from './InputGroup'
 import { Register } from '../actions'

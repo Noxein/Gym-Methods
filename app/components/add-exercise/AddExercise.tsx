@@ -1,13 +1,11 @@
 'use client'
-import React, { useEffect, useState, useContext, useRef } from 'react'
-import { ActionTypes, AddExerciceReducerType, Series, Side as SideType } from '../../types'
+import { useEffect, useState, useRef } from 'react'
+import { ActionTypes, AddExerciceReducerType, Side as SideType } from '../../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
 import { AddExerciseAction } from '../../actions'
 import { usePathname } from 'next/navigation'
-import { ThemeContext } from '../../context/ThemeContext'
 import { Icon } from '../Icon'
 import { CheckIcon, PlusIcon } from '@/app/ui/icons/ExpandIcon'
-import { TempoContext } from '@/app/context/TempoContext'
 import { ShowHistoryButton } from './ShowHistoryButton'
 import { PreviousExercise } from '../home/start-training/PreviousExercise'
 import { SmallLoaderDiv } from '../ui/SmallLoaderDiv'
@@ -28,17 +26,14 @@ type AddExerciseType = {
         id: string;
         handlename: string;
     }[],
-    setParnetHandle?: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles,setParnetHandle}:AddExerciseType) => {
-    console.log(name)
+export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles}:AddExerciseType) => {
     const[error,setError] = useState<string>('')
     const[loading,setLoading] = useState(false)
     const[showHistory,setShowHistory] = useState(false)
-    const[handle,setHandle] = useState(requiresHandle?'Sznur':'')
+    const[handle,setHandle] = useState<{handleName:string,handleId:string}>(requiresHandle?{handleId: allHandles[0].id,handleName: allHandles[0].handlename}: {handleId: '', handleName:''})
     const[checked,setChecked] = useState(false)
-    const theme = useContext(ThemeContext)
 
     const pathname = usePathname()
 
@@ -79,13 +74,13 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
     }
   return (
     <div className={`px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'}`}>
-        <h1 className={`text-${theme?.colorPallete.accent} text-xl text-center font-medium`}>{name}</h1>
+        <h1 className={`text-marmur text-xl text-center font-medium`}>{name}</h1>
         <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2 z-10`}>
             <div className='flex flex-col gap-6'>
                <WeightAndRepeatInputs dispach={dispatch} state={state}/>
                <DifficultyLevel dispach={dispatch} state={state} showTimeMesure={showTimeMesure}/>
                <Side dispatch={dispatch} state={state} />
-               {requiresHandle && <Handle handle={handle} setHandle={setHandle} setParnetHandle={setParnetHandle} allHandles={allHandles}/>}
+               {requiresHandle && <Handle handle={handle} setHandle={setHandle} allHandles={allHandles}/>}
             </div>
             
             <ButtonWithIcon onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading || loading}
@@ -115,7 +110,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
 
         <ErrorDiv error={error}/>
         
-        {!isTraining && 
+   
         <div className='flex w-full gap-2 mt-auto pt-4'>
             <button  className='w-16 h-16 rounded accent-dark border-marmur border-2' onClick={()=>setChecked(x=>!x)}> 
             {checked?
@@ -130,7 +125,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
                 {loading? <SmallLoaderDiv loading={loading}/> : 'Zakończ ćwiczenie'}
             </Button>
         </div>
-        }
+        
     </div>
     )
 }
@@ -142,9 +137,8 @@ type InputType = {
 const Input = ({...rest}:InputType) => {
     const inputRef = useRef<HTMLInputElement|null>(null)
 
-    const theme = useContext(ThemeContext)
     return(
-        <input  className={` w-full text-${theme?.colorPallete.accent} border-white bg-${theme?.colorPallete.primary} border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
+        <input  className={` w-full text-marmur border-white bg-dark border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
     )
 }
 
@@ -153,10 +147,9 @@ type LabelType = {
 } & React.DetailedHTMLProps<React.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>
 
 const Label = ({sClass,...rest}:LabelType) => {
-    const theme = useContext(ThemeContext)
 
     return(
-        <label htmlFor=""  className={`text-${theme?.colorPallete.accent} font-light absolute -top-1/3 left-2 bg-${theme?.colorPallete.primary} px-2 ${sClass}`} {...rest}></label>
+        <label htmlFor=""  className={`text-marmur font-light absolute -top-1/3 left-2 bg-dark px-2 ${sClass}`} {...rest}></label>
     )
 }
 
@@ -177,11 +170,10 @@ const WeightAndRepeatInputs = ({dispach,state}:{dispach:React.Dispatch<ActionTyp
 }
 
 const DifficultyLevel = ({dispach,state,showTimeMesure}:{dispach:React.Dispatch<ActionTypes>,state:AddExerciceReducerType,showTimeMesure:boolean}) => {
-    const theme = useContext(ThemeContext)
     return(<div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
-            <label htmlFor='difficulty' className={`text-${theme?.colorPallete.accent} font-light text-sm px-2 absolute -top-1/3 left-2 bg-${theme?.colorPallete.primary}`}>Ciężkość serii</label>
-            <select name="difficulty" id="difficulty" className={`bg-${theme?.colorPallete.primary} pl-3 text-${theme?.colorPallete.accent} border-white border-[1px] rounded-md h-10`} onChange={e=>{dispach({type:"DIFFICULTY",payload:e.target.value as 'easy'|'medium'|'hard'})}}>
+            <label htmlFor='difficulty' className={`text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark`}>Ciężkość serii</label>
+            <select name="difficulty" id="difficulty" className={`bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10`} onChange={e=>{dispach({type:"DIFFICULTY",payload:e.target.value as 'easy'|'medium'|'hard'})}}>
                 <option value="easy">Łatwa</option>
                 <option value="medium">Średnia</option>
                 <option value="hard">Trudna</option>
@@ -201,10 +193,8 @@ type SideTypes = {
 }
 const Side = ({dispatch,state}:SideTypes) => {
     const handleChange = (payload:string) => {
-        console.log(payload)
         dispatch({type:"SIDE",payload:payload as SideType})
     }
-    console.log('STATESIDE',state)
     return(
         <div className='flex gap-2'>
             <div className='flex-1 flex flex-col text-lg relative'>
@@ -220,29 +210,32 @@ const Side = ({dispatch,state}:SideTypes) => {
 }
 
 type HandleTypes = {
-    handle: string,
-    setHandle: React.Dispatch<React.SetStateAction<string>>,
-    setParnetHandle?: React.Dispatch<React.SetStateAction<string>>,
+    handle: {
+        handleName: string,
+        handleId: string,
+    },
+    setHandle: React.Dispatch<React.SetStateAction<
+    {
+        handleName: string,
+        handleId: string,
+    }>>,
     allHandles: {
         id: string;
         handlename: string;
     }[]
 }
 
-const Handle = ({handle,setHandle,setParnetHandle,allHandles}:HandleTypes) => {
-    const handleChange = (payload:string) => {
-        console.log(payload)
-        setHandle(payload)
-        setParnetHandle && setParnetHandle(payload)
+const Handle = ({handle,setHandle,allHandles}:HandleTypes) => {
+    const handleChange = (obj:{id:string,handlename:string}) => {
+        setHandle({handleId: obj.id, handleName: obj.handlename})
     }
     return (
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Uchwyt</label>
-            <select name="handle" value={handle} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value)}>
-                {/* TODO FETCH THIS SHIT LATER */}
+            <select name="handle" id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value) as {id:string, handlename: string})}>
                 {allHandles.map(handle=>(
-                    <option value={handle.id} key={handle.id}>{handle.handlename}</option>
+                    <option value={JSON.stringify(handle)} key={handle.id}>{handle.handlename}</option>
                 ))}
             </select>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { Button } from '../../ui/Button'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv';
@@ -6,7 +6,7 @@ import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv';
 interface ConfirmEndTrainingModal {
     text: string,
     showModal: React.Dispatch<React.SetStateAction<boolean>>,
-    handleEnd?: () => Promise<boolean>;
+    handleEnd?: () => Promise<void>;
 }
 export const ConfirmEndTrainingModal = ({text,showModal,handleEnd}:ConfirmEndTrainingModal) => {
     const[loading,setLoading] = useState(false)

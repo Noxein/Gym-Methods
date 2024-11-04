@@ -1,5 +1,4 @@
 import { cn } from '@/app/lib/cn'
-import React from 'react'
 
 interface ErrorDiv extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 {

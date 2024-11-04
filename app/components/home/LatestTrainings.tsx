@@ -1,5 +1,4 @@
 import { getTwoLatestTrainings } from '@/app/actions'
-import React from 'react'
 import { CompletedTraining } from './CompletedTraining'
 
 export const LatestTrainings = async () => {

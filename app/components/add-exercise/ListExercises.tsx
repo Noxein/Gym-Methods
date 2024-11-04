@@ -1,9 +1,8 @@
 'use client'
-import { ThemeContext } from "@/app/context/ThemeContext"
 import { ExpandIcon } from "@/app/ui/icons/ExpandIcon"
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { LinkToExercise } from "./LinkToExercise"
-import { Icon } from "../Icon"
+import { Icon } from "../Icon" 
 
 type ListExercisesTypes = {
     item:any,
@@ -14,8 +13,6 @@ type ListExercisesTypes = {
 export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListExercisesTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `${currentLevel*3}`
-
-    const theme = useContext(ThemeContext)
     
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`relative flex flex-col gap-1 font-bold`}>
@@ -65,22 +62,21 @@ type ExpandBtn = {
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 
 const ExpandBtn = ({text,isExpanded,mLeft,currentLevel,...rest}:ExpandBtn) => {
-    const theme = useContext(ThemeContext)
 
     if(isExpanded) return (
         text && 
-        <button {...rest} className={`relative text-left ml-${mLeft} bg-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent} border-marmur rounded-lg flex justify-between p-[1px] items-center `}>
-            <span className={`flex-1 bg-${theme?.colorPallete.primary} pl-4 py-[10px] rounded-lg`}>{text}</span>
+        <button {...rest} className={`relative text-left ml-${mLeft} text-marmur bg-marmur rounded-lg flex justify-between p-[1px] items-center `}>
+            <span className={`flex-1 bg-dark pl-4 py-[10px] rounded-lg`}>{text}</span>
 
             <Icon className={`flex items-center is`}>
-                <ExpandIcon expanded={isExpanded} fill={theme?.colorPallete.accent}/>
+                <ExpandIcon expanded={isExpanded} fill={'#d9d9d9'}/>
             </Icon>
         </button>
     )
     return (
         text && 
-        <button {...rest} className={`relative text-left ml-${mLeft} text-${theme?.colorPallete.accent} bg-${theme?.colorPallete.primary} border-marmur border-[1px] rounded-lg flex justify-between p-[1px] items-center`}>
-            <span className={`flex-1 bg-${theme?.colorPallete.primary} pl-4 py-2 rounded-lg`}>{text}</span>
+        <button {...rest} className={`relative text-left ml-${mLeft} text-marmur bg-marmur rounded-lg flex justify-between p-[1px] items-center`}>
+            <span className={`flex-1 bg-dark pl-4 py-2 rounded-lg`}>{text}</span>
 
             <Icon className={`flex items-center is`}>
                 <ExpandIcon  expanded={isExpanded} fill={'#D9D9D9'}/>
