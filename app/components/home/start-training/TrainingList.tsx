@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import React, { useContext } from 'react'
 import { TrainingLink } from './TrainingLink'
 import { userTrainingsList } from '@/app/actions'
 

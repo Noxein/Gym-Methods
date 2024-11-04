@@ -9,7 +9,7 @@ type StepTwoOutOfThree = {
     currentLevel?:number,
     isLast?:boolean,
     stateSetter: (exerciseName: string)=> void
-    state: string[],
+    state: string[], 
     filterExercises: string[],
     favourite: boolean
 }

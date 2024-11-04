@@ -1,5 +1,5 @@
 import { UserExercise } from '@/app/types'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Exercise } from './Exercise'
 import { EditModal } from './EditModal'
 import { DeleteModal } from './DeleteModal'

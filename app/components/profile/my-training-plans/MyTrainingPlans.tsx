@@ -1,7 +1,7 @@
 'use client'
 import { UserTrainingPlan } from '@/app/types'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { UserTrainingPlans } from './UserTrainings'
 import { AddTrainingModal } from './AddTrainingModal'
 import { DeleteTrainingModal } from './DeleteTrainingModal'

@@ -1,5 +1,4 @@
 import { getLastTrainigs } from '@/app/actions'
-import React from 'react'
 import { LastTrainingItem } from './LastTrainingItem'
 
 export const LastTrainings = async () => {

@@ -1,6 +1,3 @@
-import React from 'react'
-import { SmallLoader } from '../Loading/SmallLoader'
-
 interface SmallLoaderDiv {
     loading: boolean,
     sClass?:string,

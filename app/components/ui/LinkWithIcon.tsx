@@ -1,6 +1,6 @@
 import { cn } from '@/app/lib/cn'
 import Link, { LinkProps } from 'next/link'
-import React, { HTMLProps } from 'react'
+import { HTMLProps } from 'react'
 
 type LinkWithIcon = {
     linkText: string,

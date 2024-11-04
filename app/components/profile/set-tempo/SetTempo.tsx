@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { MappedTempoExercises } from '@/app/components/profile/set-tempo/MappedTempoExercises'
 import { SearchList } from './SearchList'
 import { EditTempo } from './EditTempo'

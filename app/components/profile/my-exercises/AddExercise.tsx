@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { AddNewUserExercise } from '@/app/actions'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'

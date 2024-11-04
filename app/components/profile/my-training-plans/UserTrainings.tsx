@@ -1,5 +1,4 @@
 import { UserTrainingPlan as U } from '@/app/types'
-import React from 'react'
 import { Training } from './Training'
 
 type UserTrainingPlansTypes = {

@@ -1,7 +1,7 @@
 'use client'
 import { HideShowHTMLScrollbar, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
 import { ExerciseTypes, TrainingExerciseType, UserExercise, UserTrainingPlan, WeekDay } from '@/app/types'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { MapExercises } from './MapExercises'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ListedAddedExercises } from './ListedAddedExercises'

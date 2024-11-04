@@ -2,7 +2,7 @@
 import { changePassword } from '@/app/actions'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { useRouter } from 'next/navigation'
-import React, { DetailedHTMLProps, HTMLAttributes, useContext, useState } from 'react'
+import { DetailedHTMLProps, HTMLAttributes, useContext, useState } from 'react'
 import { Icon } from '../../Icon'
 import { EyeIcon } from '@/app/ui/icons/ExpandIcon'
 import { ErrorDiv } from '../../ui/ErrorDiv'

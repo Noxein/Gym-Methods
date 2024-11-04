@@ -1,5 +1,4 @@
 import { cn } from '@/app/lib/cn'
-import React, { HTMLAttributes } from 'react'
 
 interface Button extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
     isPrimary?: boolean,

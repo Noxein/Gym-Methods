@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { Button } from '../../ui/Button'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv';

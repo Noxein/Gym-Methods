@@ -1,5 +1,5 @@
-import React, { useContext, useRef } from 'react'
-import { ActionTypes, ActionTypesEnum, DifficultyLevelType, LocalStorageTraining, Series, Side } from '@/app/types'
+import { useContext, useRef } from 'react'
+import { ActionTypesEnum, DifficultyLevelType, LocalStorageTraining, Side } from '@/app/types'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { Icon } from '@/app/components/Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'

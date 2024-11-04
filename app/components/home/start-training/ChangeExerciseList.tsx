@@ -1,5 +1,5 @@
 import { LocalStorageExercise, LocalStorageTraining } from '@/app/types'
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Icon } from '../../Icon'
 import { PlusIcon, TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import { ModalContexts } from './ModalContexts'

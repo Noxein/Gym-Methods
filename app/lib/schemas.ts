@@ -24,7 +24,7 @@ export const AddExerciseZodSchema = z.object({
     diffucultyLevel: z.enum(['easy','medium','hard']),
     ispartoftraining: z.boolean()
 })
-
+ 
 export const FirstSetupZodSchema = z.object({
     goal: z.enum(['Siła','Hipertrofia','Oba']),
     advancmentlevel: z.enum(['Początkujący','Średniozaawansowany','Zaawansowany']),

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { SelectedExerciseWithTempo } from '@/app/types'
 import { AddOrUpdateTempo } from '@/app/actions'

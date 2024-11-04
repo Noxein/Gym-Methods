@@ -3,7 +3,7 @@ import { ThemeContext } from '@/app/context/ThemeContext'
 import { TrainingExerciseType } from '@/app/types'
 import { TrashIcon, VerticalDots } from '@/app/ui/icons/ExpandIcon'
 import { closestCorners, DndContext, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
-import React, { useContext} from 'react'
+import { useContext} from 'react'
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 

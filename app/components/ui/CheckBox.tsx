@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface CheckBox extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>{
     labelText: string,
 }

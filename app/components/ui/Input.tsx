@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface Input extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     labelName:string,
 }

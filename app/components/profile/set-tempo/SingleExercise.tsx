@@ -9,7 +9,7 @@ type SingleExerciseType = {
     mLeft?:string,
     isFirst:boolean,
     tempo:TempoType,
-    exerciceid:string,
+    exerciceid:string, 
     setSelectedExercise: React.Dispatch<React.SetStateAction<SelectedExerciseWithTempo>>,
     setShowEditTempoModal: React.Dispatch<React.SetStateAction<boolean>>,
     setShowDeleteTempoModal: React.Dispatch<React.SetStateAction<boolean>>,

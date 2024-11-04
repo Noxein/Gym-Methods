@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Mapper } from './Mapper'
 import { exerciseList } from '@/app/lib/exercise-list'
 import { SecondStepDataValidation } from '@/app/actions'

@@ -1,11 +1,8 @@
 import { fetchIncomingTrainings } from '@/app/actions'
-import React from 'react'
 import { Training } from './Training'
 import { getDay } from 'date-fns'
 import { Icon } from '../Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
-import Link from 'next/link'
-import { ButtonWithIcon } from '../ui/ButtonWithIcon'
 import { LinkWithIcon } from '../ui/LinkWithIcon'
 
 export const IncomingTrainings = async () => {

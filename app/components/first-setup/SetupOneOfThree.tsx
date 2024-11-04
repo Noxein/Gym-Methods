@@ -1,6 +1,6 @@
 'use client'
 import { FistStepDataValidation } from '@/app/actions'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { CenterComponent } from '@/app/components/CenterComponent'
 import { Button } from '../ui/Button'
 import { ErrorDiv } from '../ui/ErrorDiv'

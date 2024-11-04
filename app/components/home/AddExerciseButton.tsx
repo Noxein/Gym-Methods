@@ -1,5 +1,3 @@
-import Link from 'next/link'
-import React from 'react'
 import { Icon } from '../Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { LinkWithIcon } from '../ui/LinkWithIcon'

@@ -2,7 +2,7 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { HomeIcon, PlusIcon, ProfileIcon, StartWorkoutIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 export const BottomMenu = () => {
     const theme = useContext(ThemeContext)

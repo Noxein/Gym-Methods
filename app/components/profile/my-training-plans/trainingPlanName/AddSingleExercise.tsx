@@ -3,7 +3,7 @@ import { ThemeContext } from '@/app/context/ThemeContext'
 import { localStorageSetter } from '@/app/lib/utils';
 import { LocalStorageTraining, TrainingExerciseType } from '@/app/types'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon';
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
 type AddExerciseType = {

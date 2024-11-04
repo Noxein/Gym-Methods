@@ -1,4 +1,3 @@
-import React from 'react'
 import { CenterComponent } from '../CenterComponent'
 import { GoBackHomeComponent } from '../GoBackHomeComponent'
 

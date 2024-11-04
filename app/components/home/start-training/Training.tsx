@@ -1,7 +1,6 @@
-import React from 'react'
 import { DisplayTraining } from './DisplayTraining'
 import { AllExercisesInOneArray, getAllExercises, getAllHandleTypes, userExercisesThatRequireHandlesOrTimeMesure } from '@/app/actions'
-import { TrainingExerciseType, UserTrainingPlan } from '@/app/types'
+import { UserTrainingPlan } from '@/app/types'
 import { ModalContextsProvider } from './ModalContexts'
 
 type TrainingTypes = {

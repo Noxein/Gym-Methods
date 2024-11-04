@@ -1,5 +1,5 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { SelectedExerciseContext } from './SelectedExerciseContext'
 
 type SelectExerciseType = {

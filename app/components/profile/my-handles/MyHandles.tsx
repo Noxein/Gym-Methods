@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ListElement } from '../../ui/ListElement';
 import { Icon } from '../../Icon';
 import { PlusIcon, TrashIcon } from '@/app/ui/icons/ExpandIcon';

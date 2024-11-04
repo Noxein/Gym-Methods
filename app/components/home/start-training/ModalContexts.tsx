@@ -1,5 +1,4 @@
 'use client'
-import { ExerciseType } from "@/app/types";
 import { createContext, useState } from "react";
 
 export const ModalContexts = createContext<ModalContextsTypes|null>(null)

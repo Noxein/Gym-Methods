@@ -3,7 +3,7 @@ import { ThemeContext } from '@/app/context/ThemeContext'
 import { ConvertEnglishWeekDayToPolish } from '@/app/lib/utils'
 import { LastExerciseType } from '@/app/types'
 import { format, subHours } from 'date-fns'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 type LastTrainingItemTypes = {
     lastExercise: LastExerciseType

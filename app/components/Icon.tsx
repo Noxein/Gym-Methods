@@ -1,7 +1,7 @@
 'use client'
 import { useContext } from "react"
 import { ThemeContext } from "../context/ThemeContext"
-
+ 
 export const Icon = ({children,sClass,...rest}:{children:React.ReactNode,sClass?:string}&React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
     const theme = useContext(ThemeContext)
     

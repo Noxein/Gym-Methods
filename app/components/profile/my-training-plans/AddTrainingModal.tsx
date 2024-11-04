@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { WeekDayPL } from '@/app/types'
 import { HideShowHTMLScrollbar, WeekDayArrayPL } from '@/app/lib/utils'

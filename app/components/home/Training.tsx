@@ -6,7 +6,6 @@ import { useContext } from "react"
 import { Icon } from "../Icon"
 import { StartWorkoutIcon } from "@/app/ui/icons/ExpandIcon"
 import { ConvertEnglishWeekDayToPolish, WeekDayArrayPL } from "@/app/lib/utils"
-import { createTrainingPlans } from "@/app/actions"
 
 type TrainingTypes = {
     training:  UserTrainingPlan,

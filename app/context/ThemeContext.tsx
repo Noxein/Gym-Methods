@@ -2,7 +2,7 @@
 import { createContext, useEffect, useState } from "react"
 import { ColorPalleteType, ThemeContextTypes } from "../types"
 import { ClassMaker } from "../ui/icons/ClassMaker"
-
+ 
 export const ThemeContext = createContext<ThemeContextTypes|null>(null)
 
 export const ThemeContextProvider = ({children}:{children:React.ReactNode}) => {

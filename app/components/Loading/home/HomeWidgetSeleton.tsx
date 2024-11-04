@@ -1,6 +1,5 @@
 import { dayArrayInitializer, WeekDayArrayPL } from '@/app/lib/utils'
 import { isSameDay } from 'date-fns'
-import React from 'react'
 
 export const HomeWidgetSeleton = () => {
     const days = dayArrayInitializer()

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useContext, useRef, useEffect } from 'react'
+import { useState, useContext, useRef, useEffect } from 'react'
 import { DifficultyLevelType , LocalStorageTraining, Side as SideType } from '@/app/types'
 import { AddExerciseAction } from '@/app/actions'
 import { usePathname } from 'next/navigation'

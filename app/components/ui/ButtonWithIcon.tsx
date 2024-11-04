@@ -1,5 +1,4 @@
 import { cn } from '@/app/lib/cn'
-import React from 'react'
 
 interface ButtonWithIcon extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>{
     buttonText: string,

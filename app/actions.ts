@@ -15,32 +15,6 @@ import { AuthError } from "next-auth";
 import { Begginer1_3FBW_FirstVariation, Begginer1_3FBW_SecondVariation, Beginner4_7Lower_FirstVariation, Beginner4_7Lower_SecondVariation, Beginner4_7Upper_FirstVariation, Beginner4_7Upper_SecondVariation } from "./lib/TrainingPlansData";
 import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
 
-type State = {
-    error?: string
-    succes?: boolean
-}
-export const Login = async (prevState:State,formData:FormData) => {
-    //check if user exist 
-    await timeout()
-    try{
-        const response = await signIn('credentials',{
-            email: formData.get('email'),
-            password: formData.get('password'),
-            redirect: false,
-        })
-        return response
-    }catch(e){
-        if(e instanceof AuthError){
-            // @ts-ignore
-           if(e.cause?.err!.code === 'credentials'){
-            return { error: 'Zły login lub hasło'}
-           }
-           return { error: 'Coś poszło nie tak'}
-        }
-        return { error: 'Coś poszło nie tak'}
-    }
-}
-
 export const LoginNoFormData = async (email:string,password:string) => {
     try{
         const response = await signIn('credentials',{
@@ -118,7 +92,7 @@ export const Register = async (email:string,password:string,confirmpassword:stri
     `
     return { error }
 }
-export const ComparePasswords = async (password:string,hasedPassword:string) => {
+const ComparePasswords = async (password:string,hasedPassword:string) => {
     const isCorrect = await compare(password,hasedPassword)
     return isCorrect
 }
@@ -216,6 +190,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     revalidatePath('/home')
     redirect('/home')
 }
+
 export const FistStepDataValidation = (data:dataType) => {
     let error = {
         goal: '',
@@ -434,29 +409,6 @@ const checkTempoErrors = (tempos:TempoType) => {
     }
     return TempoError
 }
-export const AddNewUserTempo = async (exercicename:string,tempo:TempoType) => {
-    const userid = await userID()
-    const userExercises = await sql`SELECT exercicename FROM gymusersexercises WHERE userid = ${userid}`
-    const allExercises = [...userExercises.rows,...exercisesArr]
-
-    const TempoError = checkTempoErrors(tempo)
-
-    if(TempoError) return {error: 'Something went wrong'}
-    if(!tempo) return {error:'Dodaj tempo'}
-    if(!allExercises.includes(exercicename)){
-        return {error:'Zła nazwa ćwiczenia'}
-    }
-
-    try{
-        sql`
-            INSERT INTO gymuserstempos (userid,exercicename,tempo) VALUES (${userid},${exercicename},${JSON.stringify(tempo)})
-        `
-    }catch(e){
-        return {error:'Coś poszło nie tak'}
-    }
-
-
-}
 
 export const getAllTempos = async () => {
     const userid = await userID()
@@ -583,7 +535,8 @@ export const getAllHandleTypes = async () => {
     })
     return [...userHandles,...defaultHandles] as {id: string,handlename: string}[]
 }
-export const getAllIdsExercisesInArray = async () => {
+
+const getAllIdsExercisesInArray = async () => {
     let array = [...exercisesArr]
     const userExercises = await getUserExercises()
     userExercises.forEach(x=>{
@@ -592,6 +545,7 @@ export const getAllIdsExercisesInArray = async () => {
 
     return array
 }
+
 const isNotEmptyString = (...strings:string[]) => {
     let error = null
 
@@ -604,6 +558,7 @@ const isNotEmptyString = (...strings:string[]) => {
 
     return { error: error }
 }
+
 export const addNewUserHandle = async (handlename:string) => {
     const userid = await userID()
     let notEmptyString = isNotEmptyString(handlename)
@@ -634,8 +589,6 @@ export const addNewUserHandle = async (handlename:string) => {
 }
 
 export const deleteUserHandle = async (handleid:string,) => {
-    //remember to delete all exercises that uses this handle
-    //TODO
     const userid = await userID()
     let notEmptyString = isNotEmptyString(handleid)
     if(notEmptyString) return notEmptyString
@@ -679,16 +632,6 @@ export const editUserHandle = async (handlename:string,handleid: string) => {
             revalidatePath('/home/profile/my-handles')
         }
     }
-}
-
-export const getAllExerciseNamesInArray = async () => {
-    let array = [...exercisesArr]
-    const userExercises = await getUserExercises()
-    userExercises.forEach(x=>{
-        array.push(x.exercisename)
-    })
-
-    return array
 }
 
 const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay,userID:string) => {
@@ -752,20 +695,7 @@ export const GetUserTrainingByName = async (trainingname:string) => {
         return { error: 'Coś poszło nie tak'}
     }
 }
-export const AddUserTraining = async (trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay) => {
-    const userid = await userID()
 
-    checkTrainingFields(trainingplanname,exercises,weekday,userid as string)
-
-    const date = new Date()
-    try{
-        await sql`
-            INSERT INTO gymuserstrainingplans (userid, trainingname, date, exercises, weekday) VALUES (${userid},${trainingplanname},${JSON.stringify(date)},${JSON.stringify({exercises})},${weekday})
-        `
-    }catch(e){
-        return { error: 'Coś poszło nie tak'}
-    }
-}
 export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDayPL,exercisesuwu?:TrainingExerciseType[]) => {
     const userid = await userID()
 
@@ -802,6 +732,7 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
     }
     revalidatePath('/home/profile/my-training-plans')
 }
+
 export const EditUserTraining = async (trainingid:string,trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay) => {
     const userid = await userID()
 
@@ -853,23 +784,6 @@ export const DeleteUserTraining = async (trainingid:string) => {
     redirect('/home/profile/my-training-plans')
 }
 
-export const checkTrainingInProgress = async () => {
-    const userid = await userID()
-    try{
-        const trainingInProgress = await sql`
-            SELECT gymuserstrainings.id, gymuserstrainings.trainingid, gymuserstrainingplans.id, gymuserstrainingplans.trainingname FROM gymuserstrainings 
-            INNER JOIN gymuserstrainingplans ON gymuserstrainings.trainingid = gymuserstrainingplans.id
-            WHERE gymuserstrainings.userid = ${userid} AND gymuserstrainings.iscompleted = false       
-        `
-        console.log(trainingInProgress.rows[0])
-        if(trainingInProgress.rows.length>0) return trainingInProgress.rows[0] as { id: string, trainingid: string, trainingname: string }
-        return false
-    }catch(e){
-        console.log('Error occured checkTrainingInProgress func actions.ts file',e)
-        return false
-    }
-}
-
 export const getTrainingDataByName = async (name:string) => {
     const userid = await userID()
 
@@ -894,37 +808,6 @@ export const userTrainingsList = async () => {
         return list.rows as UserTrainingPlan[]
     }catch{
         return []
-    }
-}
-
-export const getTrainingInProgressData = async () => {
-    const userid = await userID()
-    try{
-        const trainingInProgess = await sql`
-        SELECT * FROM gymuserstrainings WHERE userid = ${userid} AND iscompleted = false
-        `
-        const trainingID = trainingInProgess.rows[0].trainingid
-        const training = await sql `
-            SELECT trainingname FROM gymuserstrainingplans WHERE id = ${trainingID}
-        `
-        return training.rows[0] as UserTrainingPlan
-    }catch{
-        return null
-    }
-}
-export const closeTraining = async (redirectToTraining?:string) => {
-    const userid = await userID()
-    try{
-        await sql`
-            UPDATE gymuserstrainings
-            SET iscompleted = true
-            WHERE userid = ${userid} AND iscompleted = false ;
-        `
-    }catch(e){
-        console.log('Error occured closeTraining func actions.ts',e)
-        return {error: 'Coś poszło nie tak'}
-    }finally{
-        redirectToTraining && redirect(redirectToTraining)
     }
 }
 
@@ -1370,7 +1253,7 @@ const FilterTraining = (training:{[key:string]:{exercises:string[],fallback:stri
     }
     return finalTraining
 }
-export const createTrainingPlans = async (fav:string[],notfav:string[],days:number) => {
+const createTrainingPlans = async (fav:string[],notfav:string[],days:number) => {
     const plans:TrainingExerciseType[][] = []
     if(days<=3){
         plans.push(            
@@ -1398,31 +1281,6 @@ export const createTrainingPlans = async (fav:string[],notfav:string[],days:numb
         await CreateUserTraining(name,'Poniedziałek',plan)
     })
 
-}
-
-export const SelectedDayExercisesForWidget = async (selectedDate:Date) => {
-    const userid = await userID()
-    try{
-        const exercisesResult = await sql`
-            SELECT sets,date_trunc('day',date) FROM gymexercises WHERE userid = ${userid} AND date between ${JSON.stringify(format(selectedDate,'yyyy-MM-dd'))} and ${JSON.stringify(format(addDays(selectedDate,1),'yyyy-MM-dd'))}
-        `
-        const result = exercisesResult.rows as WidgetHomeTypes[]
-        let KGToday = 0
-        let SeriesToday = 0
-        result.map(set=>{
-            set.sets.forEach(item=>{
-                KGToday = KGToday + item.weight
-                SeriesToday = SeriesToday + item.repeat
-            })
-        })
-        return {
-            KGToday , SeriesToday
-        }
-    }catch{
-        return {
-            KGToday: 0 , SeriesToday: 0
-        }
-    }
 }
 
 export const Last30DaysExercises = async () => {

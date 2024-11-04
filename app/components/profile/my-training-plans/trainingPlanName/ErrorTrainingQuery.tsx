@@ -1,6 +1,4 @@
 import { LinkWithIcon } from '@/app/components/ui/LinkWithIcon'
-import Link from 'next/link'
-import React from 'react'
 
 export const ErrorTrainingQuery = ({error}:{error:string}) => {
     return (

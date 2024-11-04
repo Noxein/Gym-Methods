@@ -17,7 +17,7 @@ export const exerciseList = {
             "Wiosłowanie hantlami",
             "Wyciskanie hantli nad głowę",
             "Wyciskanie sztangi nad głowę",
-            "Dipy",
+            "Dipy", 
             "Skull Crushery",
             "Pompki",
             "Face pulle",

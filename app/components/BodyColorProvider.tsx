@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { ThemeContext } from '../context/ThemeContext'
 
 export const BodyColorProvider = () => {

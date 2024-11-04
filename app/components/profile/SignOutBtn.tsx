@@ -1,7 +1,7 @@
 'use client'
 import { logout } from '@/app/actions'
 import { ThemeContext } from '@/app/context/ThemeContext'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Icon } from '../Icon'
 
 type SignOutBtnTypes = {

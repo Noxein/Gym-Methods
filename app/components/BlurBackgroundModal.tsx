@@ -1,4 +1,3 @@
-import React from 'react'
 import { cn } from '../lib/cn'
 
 export const BlurBackgroundModal = ({children,className,...rest}:{children:React.ReactNode}&React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {

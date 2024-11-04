@@ -1,4 +1,3 @@
-import React from 'react'
 import { SearchComponent } from './SearchComponent'
 import { ExerciseTypes, UserExercise } from '@/app/types'
 import { SelectedExerciseContextProvider } from './SelectedExerciseContext'

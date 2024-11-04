@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react'
+import { useContext, useRef } from 'react'
 import { ActionTypes, ActionTypesEnum, DifficultyLevelType, Series, Side } from '../../types'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { Icon } from '../Icon'

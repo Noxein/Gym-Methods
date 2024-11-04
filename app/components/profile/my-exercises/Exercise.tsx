@@ -2,7 +2,7 @@ import { ThemeContext } from '@/app/context/ThemeContext'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { UserExercise } from '@/app/types'
 import { PencilIcon, TrashIcon } from '@/app/ui/icons/ExpandIcon'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 type ExerciseTypes = {
   exercise: UserExercise,

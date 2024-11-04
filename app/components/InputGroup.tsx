@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, HTMLAttributes, useContext, useRef } from 'react'
+import { DetailedHTMLProps, HTMLAttributes, useContext } from 'react'
 import { ThemeContext } from '../context/ThemeContext'
 import { Icon } from './Icon'
 import { EyeIcon } from '../ui/icons/ExpandIcon'

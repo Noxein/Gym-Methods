@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { AddExercise } from './AddExercise'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'

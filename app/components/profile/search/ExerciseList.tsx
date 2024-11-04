@@ -1,6 +1,6 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { ExerciseTypes, UserExercise } from '@/app/types'
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { ListExercises } from './ListExercises'
 import { SelectExercise } from './SelectExercise'
 import { Icon } from '../../Icon'

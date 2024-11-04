@@ -1,13 +1,11 @@
 'use client'
-import { use, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { ListExercises } from './ListExercises'
 import { ExerciseTypes, UserExercise } from '@/app/types'
 import { SearchExercises } from './SearchExercises'
 import { ThemeContext } from '@/app/context/ThemeContext'
 import Link from 'next/link'
 import { LinkToExercise } from './LinkToExercise'
-import { createTrainingPlans } from '@/app/actions'
-import { LinkWithIcon } from '../ui/LinkWithIcon'
 
 type ExerciseListMappedTypes = {
   exercises:ExerciseTypes,

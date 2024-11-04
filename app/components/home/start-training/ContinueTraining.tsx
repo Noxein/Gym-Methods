@@ -1,6 +1,5 @@
 import { getExistingTraining } from '@/app/actions'
 import { UserTrainingPlan } from '@/app/types'
-import React from 'react'
 import { Training } from './Training'
 
 type ContinueTrainingTypes = {

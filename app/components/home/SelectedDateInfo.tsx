@@ -1,5 +1,4 @@
 import { format } from 'date-fns';
-import React from 'react'
 import { WeekDayArray, WeekDayArrayPL, MonthNamesArray, MonthNamesArrayVariantPL } from '@/app/lib/utils';
 
 type SelectedDateInfoTypes = {

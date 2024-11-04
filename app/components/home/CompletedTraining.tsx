@@ -2,7 +2,7 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { GymExercisesDbResult } from '@/app/types'
 import { format, subHours } from 'date-fns'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 type CompletedTrainingTypes = {
     training: GymExercisesDbResult[],

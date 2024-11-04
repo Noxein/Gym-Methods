@@ -1,5 +1,5 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { ExerciseTypes, LocalStorageTraining, TrainingExerciseType, UserExercise } from '@/app/types'
 import { SearchExercisesTraining } from './SearchExercisesTraining'
 import { ListExercisesTraining } from './ListExercisesTraining'

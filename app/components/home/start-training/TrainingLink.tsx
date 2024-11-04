@@ -2,7 +2,7 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { UserTrainingPlan } from '@/app/types'
 import { RightTriangle } from '@/app/ui/icons/ExpandIcon'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Icon } from '../../Icon'
 import { ConvertEnglishWeekDayToPolish } from '@/app/lib/utils'
 

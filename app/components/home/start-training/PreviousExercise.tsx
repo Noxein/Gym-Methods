@@ -1,10 +1,9 @@
 import { fetchPreviousExercise } from '@/app/actions'
 import { ExerciseType, Series } from '@/app/types'
 import { format } from 'date-fns'
-import React, { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SmallLoader } from '../../Loading/SmallLoader'
 import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
-import { ModalContexts } from './ModalContexts'
 
 type PreviousExerciseTypes = {
     exerciseid: string,

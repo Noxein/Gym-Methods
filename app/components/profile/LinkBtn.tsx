@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useContext } from "react"
 import { Icon } from "../Icon"
 
-type LinkBtnTypes = {
+type LinkBtnTypes = { 
   href:string,
   text:string,
   sClass?:string,

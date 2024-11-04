@@ -1,4 +1,3 @@
-import React from 'react'
 import { FilteredExercises } from './FilteredExercises'
 import { UserExercise } from '@/app/types'
 

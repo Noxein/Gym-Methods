@@ -37,4 +37,4 @@ export const DefaultTimeMesureExercies:ExercisesThatRequireTimeMesureOrHandle[] 
       id: 'Unoszenie nóg w zwisie',
       exercisename: 'Unoszenie nóg w zwisie'
     }
-  ]
+  ] 

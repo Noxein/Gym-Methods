@@ -2,7 +2,7 @@
 import { ThemeContext } from '@/app/context/ThemeContext'
 import { dayArrayInitializer, WeekDayArrayPL } from '@/app/lib/utils'
 import { format, getDay, isSameDay, subDays } from 'date-fns'
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { SelectedDateInfo } from './SelectedDateInfo'
 import { WidgetHomeDaysSum } from '@/app/types'
 

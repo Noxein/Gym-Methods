@@ -2,7 +2,7 @@ import { ThemeContext } from '@/app/context/ThemeContext'
 import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
 import { ExerciseType, HistoryExercise, Series } from '@/app/types'
 import { format } from 'date-fns'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { SmallLoader } from '../../Loading/SmallLoader'
 

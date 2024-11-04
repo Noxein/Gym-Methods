@@ -3,7 +3,7 @@ import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { UserTrainingPlan } from '@/app/types'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 type Training = {
     UserTraining: UserTrainingPlan,

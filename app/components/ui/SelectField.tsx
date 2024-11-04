@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface Input extends React.DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement> {
     labelName:string,
     valuesToLoop: string[]

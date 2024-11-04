@@ -1,5 +1,3 @@
-import React from 'react'
-
 export const ClassMaker = () => {
   return (
     <div className='hidden'>

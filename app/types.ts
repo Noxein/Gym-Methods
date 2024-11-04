@@ -10,17 +10,20 @@ export type WidgetHomeTypes = {
     sets: Series[],
     date: Date
 }
+
 export type ColorPalleteType = {
     primary: string,
     secondary: string,
     accent: string,
 }
-
+ 
 export type ThemeContextTypes = {
+    // TODO DELETE WHOLE THEME
     theme: 'dark'|'light',
     setTheme: React.Dispatch<React.SetStateAction<'dark'|'light'>>,
     colorPallete: ColorPalleteType
 }
+
 export type AddExerciceReducerType = {
     weight: number,
     repeat: number,
@@ -140,17 +143,6 @@ export type LastExerciseType = {
     datetime: Date,
     trainingname: string,
     weekday: WeekDay,
-}
-
-export type LastTrainingType = {
-    trainingid: string,
-    trainingdatetime: Date,
-    id: string,
-    exerciseid: string,
-    sets: { 
-        sets: Series[], diffucultyLevel: DifficultyLevelType
-    },
-    date: Date
 }
 
 export type GymExercisesDbResult = {

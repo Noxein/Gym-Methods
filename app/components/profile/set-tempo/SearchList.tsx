@@ -1,4 +1,3 @@
-import React from 'react'
 import { FilteredTempos } from './FilteredTempos'
 import { SelectedExerciseWithTempo, UserExercise, UserExerciseTempoReturnType } from '@/app/types'
 

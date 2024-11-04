@@ -10,7 +10,7 @@ const defaultTempo = {
     up:0,
     uphold:0,
     down:0,
-    downhold:0
+    downhold:0 
 } satisfies TempoType
 
 type MappedTempoExercisesTypes = {

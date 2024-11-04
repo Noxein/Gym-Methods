@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { UserTrainingPlan } from '@/app/types'
 import { DeleteUserTraining } from '@/app/actions'
