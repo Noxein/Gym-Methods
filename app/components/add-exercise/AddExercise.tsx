@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
-import { ActionTypes, AddExerciceReducerType, Side as SideType } from '../../types'
+import { ActionTypes, AddExerciceReducerType, ExerciseType, Side as SideType } from '../../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
 import { AddExerciseAction } from '../../actions'
 import { usePathname } from 'next/navigation'
@@ -34,6 +34,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
     const[showHistory,setShowHistory] = useState(false)
     const[handle,setHandle] = useState<{handleName:string,handleId:string}>(requiresHandle?{handleId: allHandles[0].id,handleName: allHandles[0].handlename}: {handleId: '', handleName:''})
     const[checked,setChecked] = useState(false)
+    const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
 
     const pathname = usePathname()
 
@@ -106,7 +107,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
 
         <DisplayCurrentSeries exercisename={name} currentSeries={state.series} dispatchSeries={dispatch} isTraining={isTraining} showTimeMesure={showTimeMesure}/>
         <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory} loading={loading}/>
-        {showHistory && <PreviousExercise exerciseid={exerciseid} />}
+        {showHistory && <PreviousExercise exerciseid={exerciseid} historyCache={historyCache} setHistoryCache={setHistoryCache}/>}
 
         <ErrorDiv error={error}/>
         

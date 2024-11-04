@@ -1,15 +1,10 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
-import { DifficultyLevelType , LocalStorageTraining, Side as SideType } from '@/app/types'
-import { AddExerciseAction } from '@/app/actions'
-import { usePathname } from 'next/navigation'
+import { DifficultyLevelType , ExerciseType, LocalStorageTraining, Side as SideType } from '@/app/types'
 import { Icon } from '@/app/components/Icon'
-import { CheckIcon, PlusIcon } from '@/app/ui/icons/ExpandIcon'
+import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ShowHistoryButton } from '@/app/components/add-exercise/ShowHistoryButton'
 import { PreviousExercise } from '@/app/components/home/start-training/PreviousExercise'
-import { SmallLoaderDiv } from '@/app/components/ui/SmallLoaderDiv'
-import { ErrorDiv } from '@/app/components/ui/ErrorDiv'
-import { Button } from '@/app/components/ui/Button'
 import { ButtonWithIcon } from '@/app/components/ui/ButtonWithIcon'
 import { DisplayCurrentSeresUsingState } from './DisplayCurrentSeresUsingState'
 import { localStorageSetter } from '@/app/lib/utils'
@@ -30,31 +25,10 @@ type AddExerciseUsingStateType = {
 }
 
 export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,setLocalStorageTrainingData}:AddExerciseUsingStateType) => {
-    const[error,setError] = useState<string>('')
-    const[loading,setLoading] = useState(false)
     const[showHistory,setShowHistory] = useState(false)
-    const[checked,setChecked] = useState(false)
+    const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
 
-    const pathname = usePathname()
-
-    const currentSeriesArray = trainingState.exercises[trainingState.currentExerciseIndex] && trainingState.exercises[trainingState.currentExerciseIndex].sets || []
-    const currentSelectedHandle = trainingState.exercises[trainingState.currentExerciseIndex] && trainingState.exercises[trainingState.currentExerciseIndex].handle
-
-    const FinishTraining = async () => {
-        if(!checked) return
-        setError('')
-        setLoading(true)
-        
-        
-
-        const possibleError = await AddExerciseAction(true,name,currentSeriesArray,pathname.includes('training'),'',currentSelectedHandle)
-        if(possibleError) {
-            setError(possibleError.errors)
-            setLoading(false)
-            return
-        }
-        setLoading(false)
-    }
+    console.log(historyCache)
     const handleAddSeries = () => {
         setLocalStorageTrainingData(x=>{
             let xCopy = {...x}
@@ -83,7 +57,7 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
                {requiresHandle && <Handle allHandles={allHandles} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData}/>}
             </div>
             
-            <ButtonWithIcon onClick={()=>handleAddSeries()} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading || loading}
+            <ButtonWithIcon onClick={()=>handleAddSeries()} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading}
                 buttonText='Dodaj serie'
                 childrenIcon={
                     <Icon className='bg-opacity-0 flex'>
@@ -105,27 +79,9 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
         </div>
 
         <DisplayCurrentSeresUsingState exercisename={name} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData} isTraining={isTraining} showTimeMesure={showTimeMesure}/>
-        <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory} loading={loading}/>
-        {showHistory && <PreviousExercise exerciseid={exerciseid} />}
+        <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory}/>
+        {showHistory && <PreviousExercise exerciseid={exerciseid} historyCache={historyCache} setHistoryCache={setHistoryCache}/>}
 
-        <ErrorDiv error={error}/>
-        
-        {!isTraining && 
-        <div className='flex w-full gap-2 mt-auto pt-4'>
-            <button  className='w-16 h-16 rounded accent-dark border-marmur border-2' onClick={()=>setChecked(x=>!x)}> 
-            {checked?
-                <Icon className='flex justify-center'>
-                    <CheckIcon fill='#fff' height='40' width='40'/>
-                </Icon>:
-                null   
-                }
-            </button>
-
-            <Button onClick={FinishTraining} disabled={loading} isPrimary className='w-full text-xl'>
-                {loading? <SmallLoaderDiv loading={loading}/> : 'Zakończ ćwiczenie'}
-            </Button>
-        </div>
-        }
     </div>
     )
 }

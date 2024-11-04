@@ -33,8 +33,6 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
             return parsedData
         }
     
-        // initalize empty data here
-    
         let objectToSaveToLocalStorage:LocalStorageTraining = {
             currentExerciseIndex: 0,
             exercises:[],

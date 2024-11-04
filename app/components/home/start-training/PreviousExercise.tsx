@@ -7,14 +7,19 @@ import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL,
 
 type PreviousExerciseTypes = {
     exerciseid: string,
+    historyCache: {[key: string]: ExerciseType | null} | undefined,
+    setHistoryCache: React.Dispatch<React.SetStateAction<{
+        [key: string]: ExerciseType | null
+    } | undefined>>
 }
 
-export const PreviousExercise = ({exerciseid}:PreviousExerciseTypes) => {
+export const PreviousExercise = ({exerciseid,historyCache,setHistoryCache}:PreviousExerciseTypes) => {
     const[data,setData] = useState<ExerciseType|null>()
     const[loading,setLoading] = useState(false)
 
     useEffect(()=>{
         const func = async () => {
+            setData(null)
             setLoading(true)
             await fetchData()
             setLoading(false)
@@ -22,9 +27,20 @@ export const PreviousExercise = ({exerciseid}:PreviousExerciseTypes) => {
         func()
     },[exerciseid])
 
-    const fetchData = async () => { 
+    const fetchData = async () => {
+        if((historyCache && historyCache[exerciseid] === null) || (historyCache && historyCache[exerciseid])){
+            return setData(historyCache[exerciseid])
+        }
         const result = await fetchPreviousExercise(exerciseid)
-        if(result) setData(result)
+
+
+        setHistoryCache(x=>{
+            let xCopy = {...x}
+            xCopy[exerciseid] = result
+            return xCopy
+        })
+        setData(result)
+        
     }
 
   return (
