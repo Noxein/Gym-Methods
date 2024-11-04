@@ -12,4 +12,4 @@ export default async function page({searchParams}:{searchParams:{showAddModal: s
     return(
         <MyExercises exercises={exercises} showAddModal={showModal}/>
     )
-}
+} 

@@ -1,4 +1,3 @@
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { UserTrainingPlan } from '@/app/types'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
@@ -11,16 +10,15 @@ type Training = {
     setCurrentSelectedTrainign: React.Dispatch<React.SetStateAction<UserTrainingPlan | null | undefined>>,
 }
 export const Training = ({UserTraining,setShowDeleteModal,setCurrentSelectedTrainign}:Training) => {
-    const theme = useContext(ThemeContext)
     const DeleteTraining = () => {
       setCurrentSelectedTrainign(UserTraining)
       HideShowHTMLScrollbar('hide')
       setShowDeleteModal(true)
     }
   return (
-    <div className={`text-xl rounded-lg flex items-center bg-${theme?.colorPallete.accent}`}>
+    <div className={`text-xl rounded-lg flex items-center bg-marmur`}>
       <Link href={`/home/profile/my-training-plans/${UserTraining.trainingname}`} className='flex flex-1 items-center rounded-lg p-[1px]'>
-        <div className={`bg-${theme?.colorPallete.primary} py-3 rounded-lg flex-1 px-4`}>
+        <div className={`bg-dark py-3 rounded-lg flex-1 px-4`}>
           {UserTraining.trainingname}
         </div>
       </Link>
@@ -33,10 +31,9 @@ export const Training = ({UserTraining,setShowDeleteModal,setCurrentSelectedTrai
 }
 
 const Icon = ({children,sClass,...rest}:{children:React.ReactNode,sClass?:string}&React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
-    const theme = useContext(ThemeContext)
     
     return (
-    <div className={`flex justify-center items-center bg-[${theme?.colorPallete.primary}] rounded-md my-1 ${sClass} cursor-pointer h-full px-1`} {...rest}>
+    <div className={`flex justify-center items-center bg-[dark] rounded-md my-1 ${sClass} cursor-pointer h-full px-1`} {...rest}>
       {children}
     </div>
     )

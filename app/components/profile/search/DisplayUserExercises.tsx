@@ -1,8 +1,6 @@
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
 import { ExerciseType, HistoryExercise, Series } from '@/app/types'
 import { format } from 'date-fns'
-import { useContext } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { SmallLoader } from '../../Loading/SmallLoader'
 
@@ -41,7 +39,6 @@ type SingleExerciseTypes = {
     exercise: HistoryExercise,
 }
 const SingleExercise = ({exercise}:SingleExerciseTypes) => {
-    const theme = useContext(ThemeContext)
     return(
         <div className='flex flex-col h-fit'>
             <div className='sticky flex gap-1 top-8 h-fit bg-marmur text-black px-2'>

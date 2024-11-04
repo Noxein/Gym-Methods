@@ -11,7 +11,7 @@ export default auth(async(req) =>{
     const { nextUrl } = req;
     const user = await mainauth()
 
-    if(nextUrl.pathname === '/'){
+    if(nextUrl.pathname === '/'){ 
         return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl))
     }
 

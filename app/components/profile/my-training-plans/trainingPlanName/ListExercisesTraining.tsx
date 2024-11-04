@@ -1,5 +1,4 @@
-import { ThemeContext } from '@/app/context/ThemeContext'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { AddExercise } from './AddSingleExercise'
 import { LocalStorageTraining, TrainingExerciseType } from '@/app/types'
 import { ExpandIcon } from '@/app/ui/icons/ExpandIcon'
@@ -19,8 +18,6 @@ type ListExercisesTrainingTypes = {
 export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=true,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:ListExercisesTrainingTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `ml-${currentLevel*2}`
-
-    const theme = useContext(ThemeContext)
     
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`flex flex-col gap-1 font-bold`}>
@@ -112,15 +109,14 @@ type ExpandBtn = {
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 
 const ExpandBtn = ({text,isExpanded,mLeft,...rest}:ExpandBtn) => {
-    const theme = useContext(ThemeContext)
 
     return (
         text && 
-        <button {...rest} className={`text-left ${mLeft} bg-${theme?.colorPallete.accent}  text-${theme?.colorPallete.accent} rounded-lg flex pl-[1px] py-[1px] items-center`}>
-            <span className={`flex-1 rounded-lg bg-${theme?.colorPallete.primary} py-3 pl-4`}>{text}</span>
+        <button {...rest} className={`text-left ${mLeft} bg-marmur  text-marmur rounded-lg flex pl-[1px] py-[1px] items-center`}>
+            <span className={`flex-1 rounded-lg bg-dark py-3 pl-4`}>{text}</span>
 
             <Icon className='p-0 -ml-1'>
-                <ExpandIcon expanded={isExpanded} fill={theme?.colorPallete.accent}/>
+                <ExpandIcon expanded={isExpanded} fill={'#d9d9d9'}/>
             </Icon>
             
         </button>

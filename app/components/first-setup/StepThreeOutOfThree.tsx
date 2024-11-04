@@ -1,9 +1,8 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { Mapper } from './Mapper'
 import { exerciseList } from '@/app/lib/exercise-list'
 import { SecondStepDataValidation } from '@/app/actions'
 import { dataType } from './SetupOneOfThree'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { Button } from '../ui/Button'
 import { ErrorDiv } from '../ui/ErrorDiv'
 
@@ -17,7 +16,6 @@ type StepTwoOutOfThree = {
 
 export const StepThreeOutOfThree = ({setCurrentStep,favouriteExercises,setExercisesToDelete,exercisesToDelete,data}:StepTwoOutOfThree) => {
     const[error,setError] = useState('')
-    const theme = useContext(ThemeContext)
 
     const ValidateData = async () => {
         const validData = SecondStepDataValidation(favouriteExercises)
@@ -34,7 +32,7 @@ export const StepThreeOutOfThree = ({setCurrentStep,favouriteExercises,setExerci
         
         <ErrorDiv error={error}/>
 
-        <div className={`fixed bottom-0 left-0 right-0 flex gap-2 px-5 pb-5 bg-${theme?.colorPallete.primary}`}>
+        <div className={`fixed bottom-0 left-0 right-0 flex gap-2 px-5 pb-5 bg-dark`}>
             <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)}>Wstecz</Button>
             <Button className='flex-1 text-2xl' onClick={ValidateData} isPrimary >Dalej</Button>
         </div>

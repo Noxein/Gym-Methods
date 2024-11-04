@@ -1,5 +1,4 @@
 'use client'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { useContext, useEffect, useState } from 'react'
 import { ExerciseList } from './ExerciseList'
 import { ExerciseType, ExerciseTypes, HistoryExercise, UserExercise } from '@/app/types'
@@ -29,8 +28,6 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     const showExerciseList = searchExercise?.showExerciseList
     const selectedExercise = searchExercise?.exercise
     const setShowExerciseList = searchExercise?.setShowExerciseList
-
-    const theme = useContext(ThemeContext)
 
     const [fetchedExercises,setFetchedExercises] = useState<HistoryExercise[]>([])
     const [totalItems,setTotalItems] = useState<number>(0)
@@ -119,7 +116,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
   return (
 <>
     <div className='text-white'>
-        <div className={`fixed z-20 left-0 pt-5 w-full ${showSearch?'top-0':'-top-[140px]'} transition-all bg-${theme?.colorPallete.primary}`}>
+        <div className={`fixed z-20 left-0 pt-5 w-full ${showSearch?'top-0':'-top-[140px]'} transition-all bg-dark`}>
             <div className='flex flex-col gap-4'>
                 <div className='flex gap-4 mx-5 relative'>
                     <Input labelName='Od' type='date' onChange={e=>handleDateChange(e.target.value,setFrom)} disabled={loading}/>
@@ -138,15 +135,15 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                     </button>
                     {
                         showSearch?
-                        <button className={`text-${theme?.colorPallete.primary} font-semibold pl-10 text-right`} onClick={()=>handleSearch(true)}>
+                        <button className={`text-dark font-semibold pl-10 text-right`} onClick={()=>handleSearch(true)}>
                             Szukaj
                         </button>:
-                        <div className={`flex flex-col text-${theme?.colorPallete.primary}`}>
+                        <div className={`flex flex-col text-dark`}>
     
-                            <span className={`text-${theme?.colorPallete.primary}`}>
+                            <span className={`text-dark`}>
                                 {formattedFrom} - {formattedTo}
                             </span>
-                            <span className={`text-${theme?.colorPallete.primary} text-right font-semibold text-xl`}>
+                            <span className={`text-dark text-right font-semibold text-xl`}>
                                 {selectedExercise && selectedExercise?.length > 30? selectedExercise?.slice(0,30) + '...' : selectedExercise}
                             </span>
     

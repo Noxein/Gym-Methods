@@ -7,7 +7,7 @@ import { ZodError } from "zod"
 
 
 export default { providers: [ 
-    credentials({
+    credentials({ 
         credentials: {
             email: {},
             password: {},

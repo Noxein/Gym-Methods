@@ -1,9 +1,7 @@
 import { Icon } from '@/app/components/Icon';
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { localStorageSetter } from '@/app/lib/utils';
 import { LocalStorageTraining, TrainingExerciseType } from '@/app/types'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon';
-import { useContext } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
 type AddExerciseType = {
@@ -19,8 +17,6 @@ type AddExerciseType = {
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
 export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:AddExerciseType) => {
-    const theme = useContext(ThemeContext)
-
     const addExercise = () => {
         if(isTrainingInProgressPage){
             console.log('23')
@@ -55,10 +51,10 @@ export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingIn
         })
     }
     return(
-        <button className={`text-left ${mLeft} bg-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent} py-[1px] pl-[1px] rounded flex items-center justify-between ${isFirst?'mt-2':null}`} 
+        <button className={`text-left ${mLeft} bg-marmur text-marmur py-[1px] pl-[1px] rounded flex items-center justify-between ${isFirst?'mt-2':null}`} 
         onClick={addExercise}
         >
-            <span className={`flex-1 bg-${theme?.colorPallete.primary} rounded-md pl-4 py-3 flex flex-col`}>
+            <span className={`flex-1 bg-dark rounded-md pl-4 py-3 flex flex-col`}>
                 {text}
             </span>
             <Icon className='px-[3px]'>

@@ -1,8 +1,7 @@
 'use client'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { dayArrayInitializer, WeekDayArrayPL } from '@/app/lib/utils'
 import { format, getDay, isSameDay, subDays } from 'date-fns'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SelectedDateInfo } from './SelectedDateInfo'
 import { WidgetHomeDaysSum } from '@/app/types'
 
@@ -19,7 +18,6 @@ type MapDaysTypes = {
 }
 
 export const MapDays = ({Last30DaysExercises}:MapDaysTypes) => {
-    const theme = useContext(ThemeContext)
     const days = dayArrayInitializer()
     const[dayData,setDayData] = useState<{
         KGToday: number;
@@ -55,9 +53,9 @@ export const MapDays = ({Last30DaysExercises}:MapDaysTypes) => {
     }
     
   return (<>
-    <div className={`bg-${theme?.colorPallete.accent} w-screen flex justify-evenly py-2 min-h-16`}>
+    <div className={`bg-marmur w-screen flex justify-evenly py-2 min-h-16`}>
         {days.map((day,i)=>(
-            <div key={day.getDate()} className={`leading-3 w-12 h-12 pb-1 flex flex-col items-center justify-center ${isSameDay(day,selectedDay)?`bg-${theme?.colorPallete.primary} text-${theme?.colorPallete.accent}`:null} rounded-full`} onClick={()=>handleChangeSelectedDay(day)}>
+            <div key={day.getDate()} className={`leading-3 w-12 h-12 pb-1 flex flex-col items-center justify-center ${isSameDay(day,selectedDay)?`bg-dark text-marmur`:null} rounded-full`} onClick={()=>handleChangeSelectedDay(day)}>
                 <span className='text-xl font-bold'>{WeekDayArrayPL[i].slice(0,1)}</span>
                 {day.getDate()}
             </div>

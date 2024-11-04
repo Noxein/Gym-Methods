@@ -1,6 +1,5 @@
-import { useContext, useRef } from 'react'
+import { useRef } from 'react'
 import { ActionTypesEnum, DifficultyLevelType, LocalStorageTraining, Side } from '@/app/types'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { Icon } from '@/app/components/Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import { localStorageSetter } from '@/app/lib/utils'
@@ -13,7 +12,6 @@ type DisplayCurrentSeresUsingStateTypes = {
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
 }
 export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTimeMesure,isTraining,setLocalStorageTrainingData}:DisplayCurrentSeresUsingStateTypes) => {
-    const theme = useContext(ThemeContext)
 
     const deleteSet = (index:number) => {
         setLocalStorageTrainingData(x=>{
@@ -79,21 +77,21 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
     <div className='flex flex-col gap-2 mt-3 text-white mb-2'>
 
         {trainingState.exercises[trainingState.currentExerciseIndex].sets.map((series,index)=>(
-            <div className={`flex bg-${theme?.colorPallete.accent} rounded-md ${index===0?'mt-2':null}`} key={index}>
+            <div className={`flex bg-marmur rounded-md ${index===0?'mt-2':null}`} key={index}>
                 <div className='text-dark text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
                     {series.side === 'Left'? 'L' : series.side === 'Right'? 'P' : 'O'}
                 </div>
-                <div className={`flex-1 bg-${theme?.colorPallete.primary} px-2 py-3 grid ml-[1px] my-[1px] rounded-md ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'}`}>
+                <div className={`flex-1 bg-dark px-2 py-3 grid ml-[1px] my-[1px] rounded-md ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'}`}>
                     <div className='flex'>
-                        <Input type="number" maxLength={3} max={3} value={series.weight} className={`w-full mr-1 bg-${theme?.colorPallete.primary}`} onChange={(e)=>{editInput(e,index,'EDITSERIESKG')}}/> 
+                        <Input type="number" maxLength={3} max={3} value={series.weight} className={`w-full mr-1 bg-dark`} onChange={(e)=>{editInput(e,index,'EDITSERIESKG')}}/> 
                     </div>
 
                     <div className='flex'>
-                        <Input type="text" value={series.repeat} className={`w-full mr-1 bg-${theme?.colorPallete.primary} min-w-10`} onChange={(e)=>{editInput(e,index,'EDITSERIESREPEAT')}}/>
+                        <Input type="text" value={series.repeat} className={`w-full mr-1 bg-dark min-w-10`} onChange={(e)=>{editInput(e,index,'EDITSERIESREPEAT')}}/>
                     </div>
 
                     <div>
-                        <select name="" id="" value={series.difficulty} className={`bg-${theme?.colorPallete.primary} w-full border-b-2 border-black pb-1`} onChange={(e)=>{editInput(e,index,'EDITSERIESDIFFICULTY')}}>
+                        <select name="" id="" value={series.difficulty} className={`bg-dark w-full border-b-2 border-black pb-1`} onChange={(e)=>{editInput(e,index,'EDITSERIESDIFFICULTY')}}>
                             <option value="easy">Łatwa</option>
                             <option value="medium">Średnia</option>
                             <option value="hard">Trudna</option>
@@ -102,7 +100,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
 
                     {showTimeMesure && 
                     <div>
-                        <Input type="text" value={series.time} className={`w-[calc(100%-10px)] mr-1 bg-${theme?.colorPallete.primary} ml-4`} onChange={(e)=>{editInput(e,index,'EDITSERIESTIME')}}/> 
+                        <Input type="text" value={series.time} className={`w-[calc(100%-10px)] mr-1 bg-dark ml-4`} onChange={(e)=>{editInput(e,index,'EDITSERIESTIME')}}/> 
                     </div>}
                 </div>
                 <div className='w-10 flex justify-center items-center'>

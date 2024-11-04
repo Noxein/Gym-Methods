@@ -11,19 +11,6 @@ export type WidgetHomeTypes = {
     date: Date
 }
 
-export type ColorPalleteType = {
-    primary: string,
-    secondary: string,
-    accent: string,
-}
- 
-export type ThemeContextTypes = {
-    // TODO DELETE WHOLE THEME
-    theme: 'dark'|'light',
-    setTheme: React.Dispatch<React.SetStateAction<'dark'|'light'>>,
-    colorPallete: ColorPalleteType
-}
-
 export type AddExerciceReducerType = {
     weight: number,
     repeat: number,

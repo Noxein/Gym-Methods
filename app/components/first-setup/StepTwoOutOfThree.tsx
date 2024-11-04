@@ -1,5 +1,4 @@
-import { ThemeContext } from '@/app/context/ThemeContext'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { FirstSetupFinish } from '@/app/actions'
 import { Button } from '../ui/Button'
 import { useRouter } from 'next/navigation'
@@ -17,7 +16,6 @@ type StepTwoOutOfThree = {
 export const StepTwoOutOfThree = ({setCurrentStep,exercisesToDelete,setExercisesToDelete,favouriteExercises,data}:StepTwoOutOfThree) => {
     const[error,setError] = useState('')
     const[loading,setLoading] = useState(false)
-    const theme = useContext(ThemeContext)
     const router = useRouter()
     
     const redirectToCreateTraining = async () => {
@@ -44,7 +42,7 @@ export const StepTwoOutOfThree = ({setCurrentStep,exercisesToDelete,setExercises
             <SmallLoaderDiv loading={loading}/>
             <ErrorDiv error={error}/>
             
-            <div className={`fixed bottom-0 left-0 right-0 flex gap-2 px-5 py-5 bg-${theme?.colorPallete.primary}`}>
+            <div className={`fixed bottom-0 left-0 right-0 flex gap-2 px-5 py-5 bg-dark`}>
                 <Button className='text-xl flex-1' onClick={()=>setCurrentStep(page=>page-1)} disabled={loading}>
                     Wstecz
                 </Button>

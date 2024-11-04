@@ -1,9 +1,8 @@
 'use client'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ListExercises } from './ListExercises'
 import { ExerciseTypes, UserExercise } from '@/app/types'
 import { SearchExercises } from './SearchExercises'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import Link from 'next/link'
 import { LinkToExercise } from './LinkToExercise'
 
@@ -14,7 +13,6 @@ type ExerciseListMappedTypes = {
 export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseListMappedTypes) => {
   const[searchField,setSearchField] = useState('')
   const[lastExercises,setLastExercises] = useState<string[]>([])
-  const theme = useContext(ThemeContext)
   useEffect(()=>{
     const lastExercisesA = localStorage.getItem('lastexercises')
     if(!lastExercisesA) return
@@ -28,7 +26,7 @@ export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseLi
         <h1 className='text-white text-center text-2xl'>DODAJ ĆWICZENIE</h1>
 
       <div className='flex gap-2 my-5 max-w-[100dvw] mx-5'>        
-        <input type="text" placeholder='Szukaj' value={searchField} id="Szukaj" onChange={e=>setSearchField(e.target.value)} className={`w-3/4 text-xl py-2 px-2 bg-${theme?.colorPallete.primary} border-2 rounded-md border-${theme?.colorPallete.accent} text-${theme?.colorPallete.accent}`}/>
+        <input type="text" placeholder='Szukaj' value={searchField} id="Szukaj" onChange={e=>setSearchField(e.target.value)} className={`w-3/4 text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/>
         <Link href={`/home/profile/my-exercises?showAddModal=true`} className='bg-green flex-1 text-white justify-center flex items-center px-4 rounded-lg'>
           DODAJ
         </Link>

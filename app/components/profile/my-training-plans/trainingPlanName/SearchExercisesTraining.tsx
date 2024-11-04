@@ -1,7 +1,7 @@
 import { LocalStorageTraining, TrainingExerciseType, UserExercise } from '@/app/types'
 import { AddExercise } from './AddSingleExercise'
 
-type SearchExercisesTypes = {
+type SearchExercisesTypes = { 
     allExercisesInOneArray: (string | UserExercise)[],
     searchTerm: string,
     setPlanExercises?: React.Dispatch<React.SetStateAction<TrainingExerciseType[]>>,

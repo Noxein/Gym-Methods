@@ -1,6 +1,5 @@
 'use client'
 import { changePassword } from '@/app/actions'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { useRouter } from 'next/navigation'
 import { DetailedHTMLProps, HTMLAttributes, useContext, useState } from 'react'
 import { Icon } from '../../Icon'
@@ -83,9 +82,8 @@ type InputType = {
 
 const Input = ({...rest}:InputType) => {
 
-    const theme = useContext(ThemeContext)
     return(
-        <input  className={` w-full text-${theme?.colorPallete.accent} border-white bg-${theme?.colorPallete.primary} border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} />
+        <input  className={` w-full text-marmur border-white bg-dark border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-green `} {...rest} />
     )
 }
 
@@ -94,9 +92,8 @@ type LabelType = {
 } & React.DetailedHTMLProps<React.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>
 
 const Label = ({sClass,...rest}:LabelType) => {
-    const theme = useContext(ThemeContext)
 
     return(
-        <label htmlFor=""  className={`text-${theme?.colorPallete.accent} font-light absolute -top-1/3 left-2 bg-${theme?.colorPallete.primary} px-2 ${sClass}`} {...rest}></label>
+        <label htmlFor=""  className={`text-marmur font-light absolute -top-1/3 left-2 bg-dark px-2 ${sClass}`} {...rest}></label>
     )
 }

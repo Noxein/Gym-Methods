@@ -1,9 +1,8 @@
 'use client'
-import { useState, useContext, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { DifficultyLevelType , LocalStorageTraining, Side as SideType } from '@/app/types'
 import { AddExerciseAction } from '@/app/actions'
 import { usePathname } from 'next/navigation'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { Icon } from '@/app/components/Icon'
 import { CheckIcon, PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ShowHistoryButton } from '@/app/components/add-exercise/ShowHistoryButton'
@@ -35,7 +34,6 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
     const[loading,setLoading] = useState(false)
     const[showHistory,setShowHistory] = useState(false)
     const[checked,setChecked] = useState(false)
-    const theme = useContext(ThemeContext)
 
     const pathname = usePathname()
 
@@ -76,7 +74,7 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
     }
   return (
     <div className={`px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'}`}>
-        <h1 className={`text-${theme?.colorPallete.accent} text-xl text-center font-medium`}>{name}</h1>
+        <h1 className={`text-marmur text-xl text-center font-medium`}>{name}</h1>
         <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2 z-10`}>
             <div className='flex flex-col gap-6'>
                <WeightAndRepeatInputs trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData}/>
@@ -139,9 +137,8 @@ type InputType = {
 const Input = ({...rest}:InputType) => {
     const inputRef = useRef<HTMLInputElement|null>(null)
 
-    const theme = useContext(ThemeContext)
     return(
-        <input  className={` w-full text-${theme?.colorPallete.accent} border-white bg-${theme?.colorPallete.primary} border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
+        <input  className={` w-full text-marmur border-white bg-dark border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
     )
 }
 
@@ -150,10 +147,9 @@ type LabelType = {
 } & React.DetailedHTMLProps<React.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>
 
 const Label = ({sClass,...rest}:LabelType) => {
-    const theme = useContext(ThemeContext)
 
     return(
-        <label htmlFor=""  className={`text-${theme?.colorPallete.accent} font-light absolute -top-1/3 left-2 bg-${theme?.colorPallete.primary} px-2 ${sClass}`} {...rest}></label>
+        <label htmlFor=""  className={`text-marmur font-light absolute -top-1/3 left-2 bg-dark px-2 ${sClass}`} {...rest}></label>
     )
 }
 
@@ -203,7 +199,6 @@ type DifficultyLevelTypes = {
 const DifficultyLevel = ({showTimeMesure,trainingState,setLocalStorageTrainingData}:DifficultyLevelTypes) => {
     const difficultyInput = trainingState.inputData.difficulty
     const timeInput = trainingState.inputData.time
-    const theme = useContext(ThemeContext)
 
     const handleDifficultyChgane = (payload:DifficultyLevelType) => {
         return setLocalStorageTrainingData(x=>{
@@ -224,8 +219,8 @@ const DifficultyLevel = ({showTimeMesure,trainingState,setLocalStorageTrainingDa
 
     return(<div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
-            <label htmlFor='difficulty' className={`text-${theme?.colorPallete.accent} font-light text-sm px-2 absolute -top-1/3 left-2 bg-${theme?.colorPallete.primary}`}>Ciężkość serii</label>
-            <select name="difficulty" id="difficulty" className={`bg-${theme?.colorPallete.primary} pl-3 text-${theme?.colorPallete.accent} border-white border-[1px] rounded-md h-10`} value={difficultyInput} onChange={e=>handleDifficultyChgane(e.target.value as DifficultyLevelType)}>
+            <label htmlFor='difficulty' className={`text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark`}>Ciężkość serii</label>
+            <select name="difficulty" id="difficulty" className={`bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10`} value={difficultyInput} onChange={e=>handleDifficultyChgane(e.target.value as DifficultyLevelType)}>
                 <option value="easy">Łatwa</option>
                 <option value="medium">Średnia</option>
                 <option value="hard">Trudna</option>
