@@ -212,7 +212,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
 
     exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
         if(!exercise.exerciseId) return { error: `Brak id dla ćwiczenia ${exercise.exerciseName}`}
-        
+
         const data = await AddExerciseAction(false,exercise.exerciseId,exercise.sets,true,id,exercise.handle,false)
         if(data?.errors) return { error : 'Coś poszło nie tak'}
     })
