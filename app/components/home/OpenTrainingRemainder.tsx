@@ -10,6 +10,13 @@ import { SaveTrainingToDatabase } from "@/app/actions"
 import { ErrorDiv } from "../ui/ErrorDiv"
 
 export const OpenTrainingRemainder = () => {
+    const resetStorageFunc = () => {
+        const isReset = localStorage.getItem('reset')
+        if(isReset) return
+        localStorage.clear()
+        localStorage.setItem('reset',JSON.stringify({reset:true}))
+    }
+    resetStorageFunc()
     const trainings = {...localStorage}
     const[showSelf,setShowSelf] = useState(true)
     const func = () => {
@@ -45,7 +52,7 @@ export const OpenTrainingRemainder = () => {
             <p className="text-2xl text-center">Masz niezakończone treningi z przed ponad 8 godzin</p>
             <div className="mt-5 flex flex-col gap-5">
                 {data.map(name=>(
-                    <ExerciseToClose name={name} setData={setData}/>
+                    <ExerciseToClose key={name} name={name} setData={setData}/>
                 ))}
             </div>
             <div className="w-full flex mt-5">
