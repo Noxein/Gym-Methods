@@ -164,10 +164,10 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
 
 export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:LocalStorageExercise[],trainingStartDate:Date) => {
     if(typeof trainingPlanId !== 'string'){
-        return { error: 'Coś poszło nie tak'}
+        return { error: 'Coś poszło nie tak1'}
     }
-    if(Object.prototype.toString.call(trainingStartDate) !== '[object Date]'){
-        return { error: 'Coś poszło nie tak'}
+    if(Object.prototype.toString.call(new Date(trainingStartDate)) !== '[object Date]'){
+        return { error: 'Coś poszło nie tak2'}
     }
     const userid = await userID()
     let id = ''
@@ -177,14 +177,14 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     `
     id = dataID.rows[0].id
     }catch(e){
-        return { error : 'Coś poszło nie tak'}
+        return { error : 'Coś poszło nie tak3'}
     }
 
     exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
         if(!exercise.exerciseId) return { error: `Brak id dla ćwiczenia ${exercise.exerciseName}`}
 
         const data = await AddExerciseAction(false,exercise.exerciseId,exercise.sets,true,id,exercise.handle,false)
-        if(data?.errors) return { error : 'Coś poszło nie tak'}
+        if(data?.errors) return { error : 'Coś poszło nie tak4'}
     })
 
     revalidatePath('/home')
@@ -955,7 +955,7 @@ const userID = async () => {
 
 export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:string) => {
     const userid = await userID()
-    if( (from && Object.prototype.toString.call(from) !== '[object Date]') || (to && Object.prototype.toString.call(to) !== '[object Date]')){
+    if( (from && Object.prototype.toString.call(new Date(from)) !== '[object Date]') || (to && Object.prototype.toString.call(new Date(to)) !== '[object Date]')){
         return {error: 'Zły format dat', data : '0' }
     }
     if(exerciseName && typeof exerciseName !== 'string') {
@@ -1046,7 +1046,7 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
 
     let unsortedExerciseArray:ExerciseType[] = []
 
-    if( (from && Object.prototype.toString.call(from) !== '[object Date]') || (to && Object.prototype.toString.call(to) !== '[object Date]')){
+    if( (from && Object.prototype.toString.call(new Date(from)) !== '[object Date]') || (to && Object.prototype.toString.call(new Date(to)) !== '[object Date]')){
         return { error: 'Zły format dat' , data : []}
     }
     if(exerciseName && typeof exerciseName !== 'string') {
