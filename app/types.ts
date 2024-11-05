@@ -17,7 +17,7 @@ export type AddExerciceReducerType = {
     side: Side,
     series: Series[],
     difficultyLevel: DifficultyLevelType,
-    time: string,
+    time?: string,
 }
 
 export type Side = 'Both' | 'Left' | 'Right'
@@ -165,7 +165,6 @@ export type HistoryExercise = {
 export type LocalStorageTraining = {
     exercises:LocalStorageExercise[],
     currentExerciseIndex: number,
-    inputData: Series,
     trainingStartDate: Date,
     trainingNameInLocalStrage: string,
 }
@@ -181,3 +180,25 @@ export type LocalStorageExercise = {
     },
     date?: Date,
 }
+
+export type SeriesWithExercise = Series & {
+    exerciseid: string
+    handle?: {
+        handleName: string,
+        handleId: string,
+    }
+}
+
+export type InitialReducerType = {
+    weight: number,
+    repeat: number,
+    side: Side,
+    series: Series[],
+    difficultyLevel: DifficultyLevelType
+    time?: string,
+    exerciseid: string
+    handle?: {
+        handleName: string,
+        handleId: string,
+    }
+  }

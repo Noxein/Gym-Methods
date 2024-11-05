@@ -36,13 +36,6 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
         let objectToSaveToLocalStorage:LocalStorageTraining = {
             currentExerciseIndex: 0,
             exercises:[],
-            inputData: {
-                difficulty : 'easy',
-                repeat: 0,
-                side: 'Both',
-                weight: 0,
-                time: '',
-            },
             trainingStartDate: new Date(),
             trainingNameInLocalStrage: trainingName+'training'
             }

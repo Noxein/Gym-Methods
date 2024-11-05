@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
-import { DifficultyLevelType , ExerciseType, LocalStorageTraining, Side as SideType } from '@/app/types'
+import { DifficultyLevelType , ExerciseType, LocalStorageTraining, Series, SeriesWithExercise, Side as SideType } from '@/app/types'
 import { Icon } from '@/app/components/Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ShowHistoryButton } from '@/app/components/add-exercise/ShowHistoryButton'
@@ -24,11 +24,40 @@ type AddExerciseUsingStateType = {
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
 }
 
+const initializeInputsState = (exerciseid:string,requiresHandle: boolean, requiresTimeMesure: boolean) => {
+    const data = localStorage.getItem(exerciseid)
+    if(data){
+        const parsedData = JSON.parse(data)
+        return parsedData as SeriesWithExercise
+    }
+    let dataObject: SeriesWithExercise = {
+        difficulty: 'easy',
+        repeat: 0,
+        side: 'Both',
+        weight: 0,
+        exerciseid,
+    }
+    if(requiresHandle) {
+        dataObject.handle = {
+            handleId: 'Sznur',
+            handleName: 'Sznur'
+        }
+    }
+    if(requiresTimeMesure){
+        dataObject.time = ''
+    }
+    localStorage.setItem(exerciseid,JSON.stringify(dataObject))
+    return dataObject
+}
 export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,setLocalStorageTrainingData}:AddExerciseUsingStateType) => {
     const[showHistory,setShowHistory] = useState(false)
     const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
+    const[inputs,setInputs] = useState<SeriesWithExercise>(()=>initializeInputsState(exerciseid,requiresHandle,showTimeMesure))
 
-    console.log(historyCache)
+    useEffect(()=>{
+        setInputs(initializeInputsState(exerciseid,requiresHandle,showTimeMesure))
+    },[name])
+
     const handleAddSeries = () => {
         setLocalStorageTrainingData(x=>{
             let xCopy = {...x}
@@ -36,11 +65,11 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
                 xCopy.exercises[xCopy.currentExerciseIndex].date = new Date()
             }
             xCopy.exercises[xCopy.currentExerciseIndex].sets.push({
-                difficulty: xCopy.inputData.difficulty,
-                repeat: xCopy.inputData.repeat,
-                side: xCopy.inputData.side,
-                weight: xCopy.inputData.weight,
-                time:  xCopy.inputData.time,
+                difficulty: inputs.difficulty,
+                repeat: inputs.repeat,
+                side: inputs.side,
+                weight: inputs.weight,
+                time:  inputs.time,
             })
             localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
@@ -51,10 +80,10 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
         <h1 className={`text-marmur text-xl text-center font-medium`}>{name}</h1>
         <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2 z-10`}>
             <div className='flex flex-col gap-6'>
-               <WeightAndRepeatInputs trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData}/>
-               <DifficultyLevel showTimeMesure={showTimeMesure} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData}/>
-               <Side trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData}/>
-               {requiresHandle && <Handle allHandles={allHandles} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData}/>}
+               <WeightAndRepeatInputs inputs={inputs} setInputs={setInputs}/>
+               <DifficultyLevel showTimeMesure={showTimeMesure} inputs={inputs} setInputs={setInputs}/>
+               <Side inputs={inputs} setInputs={setInputs}/>
+               {requiresHandle && <Handle allHandles={allHandles} inputs={inputs} setInputs={setInputs} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData} />}
             </div>
             
             <ButtonWithIcon onClick={()=>handleAddSeries()} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading}
@@ -110,28 +139,28 @@ const Label = ({sClass,...rest}:LabelType) => {
 }
 
 type WeightAndRepeatInputsTypes = {
-    trainingState: LocalStorageTraining,
-    setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
+    inputs: SeriesWithExercise,
+    setInputs: React.Dispatch<React.SetStateAction<SeriesWithExercise>>,
 }
-const WeightAndRepeatInputs = ({trainingState,setLocalStorageTrainingData}:WeightAndRepeatInputsTypes) => {
+const WeightAndRepeatInputs = ({inputs,setInputs}:WeightAndRepeatInputsTypes) => {
     const handleChangeWeight = (payload:number) => {
-        return setLocalStorageTrainingData(x=>{
-            const xCopy = {...x}
-            xCopy.inputData.weight = payload
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
+        return setInputs(x=>{
+            let xCopy = {...x}
+            xCopy.weight = payload
+            localStorageSetter(xCopy.exerciseid,xCopy)
             return xCopy
         })
     }
     const handleChangeRepeat = (payload:number) => {
-        return setLocalStorageTrainingData(x=>{
-            const xCopy = {...x}
-            xCopy.inputData.repeat = payload
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
+        return setInputs(x=>{
+            let xCopy = {...x}
+            xCopy.repeat = payload
+            localStorageSetter(xCopy.exerciseid,xCopy)
             return xCopy
         })
     }
-    const weightInput = trainingState.inputData.weight
-    const repeatInput = trainingState.inputData.repeat
+    const weightInput = inputs.weight
+    const repeatInput = inputs.repeat
     return (
         <div className='flex items-center gap-2'>
             <div className='flex flex-col flex-1 relative'>
@@ -149,26 +178,26 @@ const WeightAndRepeatInputs = ({trainingState,setLocalStorageTrainingData}:Weigh
 
 type DifficultyLevelTypes = {
     showTimeMesure: boolean,
-    trainingState: LocalStorageTraining,
-    setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
+    inputs: SeriesWithExercise,
+    setInputs: React.Dispatch<React.SetStateAction<SeriesWithExercise>>,
 }
-const DifficultyLevel = ({showTimeMesure,trainingState,setLocalStorageTrainingData}:DifficultyLevelTypes) => {
-    const difficultyInput = trainingState.inputData.difficulty
-    const timeInput = trainingState.inputData.time
+const DifficultyLevel = ({showTimeMesure,inputs,setInputs}:DifficultyLevelTypes) => {
+    const difficultyInput = inputs.difficulty
+    const timeInput = inputs.time
 
     const handleDifficultyChgane = (payload:DifficultyLevelType) => {
-        return setLocalStorageTrainingData(x=>{
-            const xCopy = {...x}
-            xCopy.inputData.difficulty = payload
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
+        return setInputs(x=>{
+            let xCopy = {...x}
+            xCopy.difficulty = payload
+            localStorageSetter(xCopy.exerciseid,xCopy)
             return xCopy
         })
     }
     const handleTimeChange = (payload:string) => {
-        return setLocalStorageTrainingData(x=>{
-            const xCopy = {...x}
-            xCopy.inputData.time = payload
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
+        return setInputs(x=>{
+            let xCopy = {...x}
+            xCopy.time = payload
+            localStorageSetter(xCopy.exerciseid,xCopy)
             return xCopy
         })
     }
@@ -191,19 +220,19 @@ const DifficultyLevel = ({showTimeMesure,trainingState,setLocalStorageTrainingDa
 }
 
 type SideTypes = {
-    trainingState: LocalStorageTraining,
-    setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
+    inputs: SeriesWithExercise,
+    setInputs: React.Dispatch<React.SetStateAction<SeriesWithExercise>>,
 }
-const Side = ({trainingState,setLocalStorageTrainingData}:SideTypes) => {
+const Side = ({inputs,setInputs}:SideTypes) => {
     const handleChange = (payload:SideType) => {
-        return setLocalStorageTrainingData(x=>{
-            const xCopy = {...x}
-            xCopy.inputData.side = payload
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
+        return setInputs(x=>{
+            let xCopy = {...x}
+            xCopy.side = payload
+            localStorageSetter(xCopy.exerciseid,xCopy)
             return xCopy
         })
     }
-    const sideInput = trainingState.inputData.side
+    const sideInput = inputs.side
     return(
         <div className='flex gap-2'>
             <div className='flex-1 flex flex-col text-lg relative'>
@@ -223,13 +252,22 @@ type HandleTypes = {
         id: string;
         handlename: string;
     }[],
+    inputs: SeriesWithExercise,
     trainingState: LocalStorageTraining,
+    setInputs: React.Dispatch<React.SetStateAction<SeriesWithExercise>>,
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
 }
 
-const Handle = ({allHandles,trainingState,setLocalStorageTrainingData}:HandleTypes) => {
+const Handle = ({allHandles,inputs,trainingState,setInputs,setLocalStorageTrainingData}:HandleTypes) => {
     const handleInput = trainingState.exercises[trainingState.currentExerciseIndex].handle
+    
     const handleChange = (id:string,name:string) => {
+        setInputs(x=>{
+            let xCopy = {...x}
+            xCopy.handle = { handleId: id, handleName: name}
+            localStorageSetter(xCopy.exerciseid,xCopy)
+            return xCopy
+        })
         setLocalStorageTrainingData(x=>{
             let xCopy = {...x}
             xCopy.exercises[xCopy.currentExerciseIndex].handle = {handleId: id, handleName: name}

@@ -97,10 +97,11 @@ const ComparePasswords = async (password:string,hasedPassword:string) => {
     return isCorrect
 }
 
-export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:{handleName:string,handleId:string},isLastExercise=false) => {
+export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:{handleName:string,handleId:string},isLastExercise=false,date?:Date) => {
     const userid = await userID()
     if(!userid) return
-    const stringDate = JSON.stringify(new Date())
+    let stringDate = JSON.stringify(new Date())
+    if(date) stringDate = JSON.stringify(date)
 
     let arr = [...exercisesArr]
     const userExercises = await getUserExercises()
@@ -183,7 +184,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
         if(!exercise.exerciseId) return { error: `Brak id dla ćwiczenia ${exercise.exerciseName}`}
 
-        const data = await AddExerciseAction(false,exercise.exerciseId,exercise.sets,true,id,exercise.handle,false)
+        const data = await AddExerciseAction(false,exercise.exerciseId,exercise.sets,true,id,exercise.handle,false,exercise.date)
         if(data?.errors) return { error : 'Coś poszło nie tak4'}
     })
 
