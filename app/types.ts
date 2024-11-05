@@ -165,6 +165,7 @@ export type HistoryExercise = {
 export type LocalStorageTraining = {
     exercises:LocalStorageExercise[],
     currentExerciseIndex: number,
+    trainingId: string,
     trainingStartDate: Date,
     trainingNameInLocalStrage: string,
 }

@@ -6,6 +6,7 @@ import { IncomingTrainingsSkeleton } from '../Loading/home/IncomingTrainingsSkel
 import { LatestTrainingsSkeleton } from '../Loading/home/LatestTrainingsSkeleton'
 import { WidgetDataProvider } from './WidgetDataProvider'
 import { HomeWidgetSeleton } from '../Loading/home/HomeWidgetSeleton'
+import { OpenTrainingRemainder } from './OpenTrainingRemainder'
 
 export const Home = async () => {
   return (
@@ -24,6 +25,8 @@ export const Home = async () => {
       </Suspense>
         
       <AddExerciseButton />
+
+      <OpenTrainingRemainder />
     </div>
   )
 }

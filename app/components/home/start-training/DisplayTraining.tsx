@@ -11,6 +11,7 @@ import { ConfirmEndTrainingModal } from './ConfirmEndTrainingModal'
 import { AddExerciseUsingState } from '@/app/components/home/start-training/AddExerciseUsingState'
 import { localStorageSetter } from '@/app/lib/utils'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
+import { useRouter } from 'next/navigation'
 
 type DisplayTrainingTypes = {
     trainingPlanData: UserTrainingPlan,
@@ -26,7 +27,7 @@ type DisplayTrainingTypes = {
 
 
 export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure}:DisplayTrainingTypes) => {
-    const initializeLocalStorageData = (trainingName:string,exercises:TrainingExerciseType[]) => {
+    const initializeLocalStorageData = (trainingName:string,exercises:TrainingExerciseType[],trainingid:string) => {
         const data = localStorage.getItem(trainingName+'training')
         if(data){
             const parsedData = JSON.parse(data) as LocalStorageTraining
@@ -37,7 +38,8 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
             currentExerciseIndex: 0,
             exercises:[],
             trainingStartDate: new Date(),
-            trainingNameInLocalStrage: trainingName+'training'
+            trainingNameInLocalStrage: trainingName+'training',
+            trainingId: trainingid
             }
     
             exercises.map(exercise=>{
@@ -61,8 +63,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
 
 
     const[showConfirmEndTrainingModal,setShowConfirmEndTrainingModal] = useState(false)
-    const[localStorageTrainingData,setLocalStorageTrainingData] = useState<LocalStorageTraining>(()=>initializeLocalStorageData(trainingPlanData.trainingname,trainingPlanData.exercises.exercises))
-    const saveToLocalStorage = useRef(true)
+    const[localStorageTrainingData,setLocalStorageTrainingData] = useState<LocalStorageTraining>(()=>initializeLocalStorageData(trainingPlanData.trainingname,trainingPlanData.exercises.exercises,trainingPlanData.id))
 
     const currentExerciseName = localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseName
     const currentExerciseId = localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseId
@@ -73,10 +74,12 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
     const requiresHandle = ExercisesThatRequireHandle.some(exercise=>exercise.id === currentExerciseId)
 
     const[error,setError] = useState('')
-
     const[loading,setLoading] = useState(false)
+
     const modalsContext = useContext(ModalContexts)
     
+    const router = useRouter()
+
     const nextExercise = async () => {
         const length = localStorageTrainingData.exercises.length
 
@@ -101,13 +104,14 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
 
     const handleCloseTraining = async () => {
         setLoading(true)
-        saveToLocalStorage.current = false
         const data = await SaveTrainingToDatabase(trainingPlanData.id,localStorageTrainingData.exercises,localStorageTrainingData.trainingStartDate)
         if(data && data.error){
             setLoading(false)
             return setError(data.error)
         }
+        localStorage.removeItem(trainingPlanData.trainingname+'training')
         setLoading(false)
+        router.push('/home')
     }
 
     const handleShowExerciseList = () => {
