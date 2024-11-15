@@ -63,7 +63,8 @@ export const exerciseList = {
         Biceps:[
             "Uginanie ramion ze sztangą",
             "Uginanie ramion z hantlami", 
-            "Ściąganie wyciągu dolnego", 
+            "Ściąganie wyciągu dolnego (biceps)", 
+            "Ściąganie wyciągu górnego", 
             "Uginanie ramion na modlitewniku", 
             "Maszyna na biceps", 
             "Uginanie ramion z hantlami młotkowo" 
