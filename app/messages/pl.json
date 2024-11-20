@@ -65,7 +65,7 @@
         "ClosestTrainings" : "Najbliższe treningi",
         "AddNewTraining": "Dodaj nowy trening",
         "LatestTrainings": "Ostatnie treningi",
-        "Series": "{lastNumber, plural, =0 {serii} =1 {seria} >=5 {serii} other {serie} }",
+        "Series": "{lastNumber, select, 0 {serii} 1 {seria} 2 {serie} 3 {serie} 4{serie} 5 {serii} other {serii} }",
         "AddExercise": "Dodaj ćwiczenie",
 
         "OpenTrainings": "Masz niezakończone treningi z przed ponad 8 godzin",
