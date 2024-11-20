@@ -1,6 +1,8 @@
 import { ExpandIcon, PlusIcon } from "@/app/ui/icons/ExpandIcon"
 import { useContext, useState } from "react"
 import { Icon } from "../Icon"
+import { useTranslations } from "next-intl"
+import { nameTrimmer } from "@/app/lib/utils"
 
 type StepTwoOutOfThree = {
     item:any, 
@@ -23,10 +25,13 @@ export const Mapper = ({item,objectName,currentLevel=0,stateSetter,state,filterE
         if(disableFuncitions) return
         setShowChildren(!showChildren)
     }
+
+    const d = useTranslations("DefaultExercises")
+
     if(Array.isArray(item)){
         return (<div className={`flex flex-col bg-dark ${mLeft} font-semibold`}>
             <ExpandBtn 
-                text={objectName} 
+                text={d(objectName)} 
                 isExpanded={showChildren} 
                 onClick={ExpandBtnFunc} 
                 mLeft={mLeft}
@@ -37,7 +42,7 @@ export const Mapper = ({item,objectName,currentLevel=0,stateSetter,state,filterE
             <div className='flex flex-col font-normal'>
                 {item.map((x,index)=>{
                     if(filterExercises.includes(x)) return null
-                    return <SelectExercise isFirst={index===0} text={x} mLeft={`ml-${(currentLevel+1)*2}`} key={x} isLast={index+1===item.length} setExercisesToDelete={stateSetter} selected={state.includes(x)} favourite={favourite} disableFuncitions={disableFuncitions}/>
+                    return <SelectExercise isFirst={index===0} text={d(nameTrimmer(x))} mLeft={`ml-${(currentLevel+1)*2}`} key={x} isLast={index+1===item.length} setExercisesToDelete={stateSetter} selected={state.includes(x)} favourite={favourite} disableFuncitions={disableFuncitions}/>
                 })}
             </div>}
         </div>)
@@ -48,7 +53,7 @@ export const Mapper = ({item,objectName,currentLevel=0,stateSetter,state,filterE
         return (<div className={`flex flex-col bg-dark gap-1 font-bold`}>
 
             <ExpandBtn 
-                text={objectName||''} 
+                text={objectName&&d(objectName)||''} 
                 isExpanded={showChildren} 
                 onClick={ExpandBtnFunc} 
                 mLeft={mLeft}

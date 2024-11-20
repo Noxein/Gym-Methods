@@ -4,6 +4,7 @@ import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { SmallLoader } from '../../Loading/SmallLoader'
 import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
+import { useTranslations } from 'next-intl'
 
 type PreviousExerciseTypes = {
     exerciseid: string,
@@ -42,19 +43,20 @@ export const PreviousExercise = ({exerciseid,historyCache,setHistoryCache}:Previ
         setData(result)
         
     }
-
+    const t = useTranslations("Home/Add-Exercise/[Exercise-Name]")
+    const u = useTranslations("Utils")
   return (
     <div className='text-white'>
         {loading?<SmallLoader/>:
         !data?<div className=''>
-            Nie ma historii tego ćwiczenia
+            {t("NoHistory")}
         </div>:
         <div>
             <div className='flex mb-4'>
                 <div className='flex gap-1'>
-                    <span className='ml-auto'>{WeekDayArrayPL[WeekDayArray.indexOf(format(data?.date!,'cccc'))]}</span>
+                    <span className='ml-auto'>{u("WeekFullName",{day: format(data?.date!,'i')})}</span>
                     <span>{format(data?.date!,'dd')}</span>
-                    <span>{MonthNamesArrayPL[MonthNamesArray.indexOf(format(data?.date!,'LLLL'))]}</span>
+                    <span>{u("MonthIndex",{index: format(data?.date||1,'M')})}</span>
                 </div>
             </div>
     
@@ -75,17 +77,15 @@ type SetTypes = {
 }
 
 const Set = ({set,odd}:SetTypes) => {
-    const EngArr = ['Both','Left','Right']
-    const PlArr = ['Obie','Lewa','Prawa']
 
-    const translatedText = PlArr[EngArr.indexOf(set.side)]
-    const difficulty = DifficultyArrayPL[DifficultyArray.indexOf(set.difficulty)]
+    const u = useTranslations("Utils")
+
     return(
         <div className={`grid grid-cols-4 text-right bg-dark pr-4 border-1 py-2 rounded-xl`}>
-            <span>{translatedText}</span>
+            <span>{u(set.side)}</span>
             <span><b>{set.weight}</b> kg</span>
-            <span title={` ${set.repeat} powtórzeń`}><b>{set.time?set.time:set.repeat}</b> {set.time?null:'x'}</span>
-            <span>{difficulty}</span>
+            <span><b>{set.time?set.time:set.repeat}</b> {set.time?null:'x'}</span>
+            <span>{u(set.difficulty.charAt(0).toUpperCase() + set.difficulty.slice(1))}</span>
         </div>
     )
 }

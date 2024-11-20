@@ -12,6 +12,8 @@ import { SmallLoaderDiv } from '../ui/SmallLoaderDiv'
 import { ErrorDiv } from '../ui/ErrorDiv'
 import { Button } from '../ui/Button'
 import { ButtonWithIcon } from '../ui/ButtonWithIcon'
+import { useTranslations } from 'next-intl'
+import { nameTrimmer } from '@/app/lib/utils'
 
 type AddExerciseType = {
     name:string,
@@ -66,16 +68,23 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
 
         const possibleError = await AddExerciseAction(true,name,state.series,pathname.includes('training'),'',handle)
         if(possibleError) {
-            setError(possibleError.errors)
+            setError(e(possibleError.errors))
             setLoading(false)
             return
         }
         ResetLocalStorage()
         setLoading(false)
     }
+
+    const t = useTranslations("Home/Add-Exercise/[Exercise-Name]")
+    const u = useTranslations("Utils")
+    const d = useTranslations("DefaultExercises")
+    const e = useTranslations("Errors")
+
+    const exerciseName = d(nameTrimmer(name)).includes("DefaultExercises") ? name : d(nameTrimmer(name))
   return (
     <div className={`px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'}`}>
-        <h1 className={`text-marmur text-xl text-center font-medium`}>{name}</h1>
+        <h1 className={`text-marmur text-xl text-center font-medium`}>{exerciseName}</h1>
         <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2 z-10`}>
             <div className='flex flex-col gap-6'>
                <WeightAndRepeatInputs dispach={dispatch} state={state}/>
@@ -85,7 +94,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
             </div>
             
             <ButtonWithIcon onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading || loading}
-                buttonText='Dodaj serie'
+                buttonText={t('AddSeries')}
                 childrenIcon={
                     <Icon className='bg-opacity-0 flex'>
                     <PlusIcon /> 
@@ -96,10 +105,10 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
             </ButtonWithIcon>
             <div className='grid mt-3 text-white w-full'>
                 <div className={` justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 pl-7 w-[100vw-28px] bg-dark`}>
-                <div className='font-light'>Ciężar</div>
-                <div className='font-light'>Powtórzenia</div>
-                <div className='font-light'>Ciężkość</div>
-            {showTimeMesure && <div className='font-light'>Czas</div>}
+                <div className='font-light'>{u("Weight")}</div>
+                <div className='font-light'>{u("Repeat")}</div>
+                <div className='font-light'>{u("Difficulty")}</div>
+            {showTimeMesure && <div className='font-light'>{u("Time")}</div>}
             </div>
 
         </div>
@@ -123,7 +132,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
             </button>
 
             <Button onClick={FinishTraining} disabled={loading} isPrimary className='w-full text-xl'>
-                {loading? <SmallLoaderDiv loading={loading}/> : 'Zakończ ćwiczenie'}
+                {loading? <SmallLoaderDiv loading={loading}/> : t("FinishExercise")}
             </Button>
         </div>
         
@@ -155,15 +164,16 @@ const Label = ({sClass,...rest}:LabelType) => {
 }
 
 const WeightAndRepeatInputs = ({dispach,state}:{dispach:React.Dispatch<ActionTypes>,state:AddExerciceReducerType}) => {
+    const u = useTranslations("Utils")
     return (
         <div className='flex items-center gap-2'>
             <div className='flex flex-col flex-1 relative'>
-                <Label htmlFor='weight'>Ciężar</Label>
+                <Label htmlFor='weight'>{u("Weight")}</Label>
                 <Input type="number" id='weight' onChange={e=>dispach({type:"WEIGHT",payload:Number(e.target.value)})} value={state.weight} min={1}/>
             </div>
 
             <div className='flex flex-col flex-1 relative'>
-                <Label htmlFor='repeat'>Powtórzenia</Label>
+                <Label htmlFor='repeat'>{u("Repeat")}</Label>
                 <Input type="number" id='repeat' onChange={e=>dispach({type:"REPEAT",payload:Number(e.target.value)})} value={state.repeat} min={1}/>
             </div>
         </div>
@@ -171,18 +181,19 @@ const WeightAndRepeatInputs = ({dispach,state}:{dispach:React.Dispatch<ActionTyp
 }
 
 const DifficultyLevel = ({dispach,state,showTimeMesure}:{dispach:React.Dispatch<ActionTypes>,state:AddExerciceReducerType,showTimeMesure:boolean}) => {
+    const u = useTranslations("Utils")
     return(<div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
-            <label htmlFor='difficulty' className={`text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark`}>Ciężkość serii</label>
+            <label htmlFor='difficulty' className={`text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark`} >{u("Difficulty")}</label>
             <select name="difficulty" id="difficulty" className={`bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10`} onChange={e=>{dispach({type:"DIFFICULTY",payload:e.target.value as 'easy'|'medium'|'hard'})}}>
-                <option value="easy">Łatwa</option>
-                <option value="medium">Średnia</option>
-                <option value="hard">Trudna</option>
+                <option value="easy">{u("Easy")}</option>
+                <option value="medium">{u("Medium")}</option>
+                <option value="hard">{u("Hard")}</option>
             </select>
         </div>
         {showTimeMesure &&             
             <div className='flex flex-col flex-1 relative'>
-                <Label htmlFor='time'>Czas</Label>
+                <Label htmlFor='time'>{u("Time")}</Label>
                 <Input type="text" id='time' onChange={e=>dispach({type:"TIME",payload:e.target.value})} value={state.time}/>
             </div>}
         </div>)
@@ -196,14 +207,17 @@ const Side = ({dispatch,state}:SideTypes) => {
     const handleChange = (payload:string) => {
         dispatch({type:"SIDE",payload:payload as SideType})
     }
+
+    const u = useTranslations("Utils")
+
     return(
         <div className='flex gap-2'>
             <div className='flex-1 flex flex-col text-lg relative'>
-                <label htmlFor='side' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Strona</label>
+                <label htmlFor='side' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Side")}</label>
                 <select name="side" value={state.side} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value)}>
-                    <option value="Both">Obie</option>
-                    <option value="Left">Lewa</option>
-                    <option value="Right">Prawa</option>
+                    <option value="Both">{u("Both")}</option>
+                    <option value="Left">{u("Left")}</option>
+                    <option value="Right">{u("Right")}</option>
                 </select>
             </div>
         </div>
@@ -230,14 +244,19 @@ const Handle = ({handle,setHandle,allHandles}:HandleTypes) => {
     const handleChange = (obj:{id:string,handlename:string}) => {
         setHandle({handleId: obj.id, handleName: obj.handlename})
     }
+
+    const u = useTranslations("Utils")
+    const h = useTranslations("Handles")
+
     return (
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
-            <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Uchwyt</label>
+            <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Right")}</label>
             <select name="handle" id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value) as {id:string, handlename: string})}>
-                {allHandles.map(handle=>(
-                    <option value={JSON.stringify(handle)} key={handle.id}>{handle.handlename}</option>
-                ))}
+                {allHandles.map(handle=>{
+                    const name = h(nameTrimmer(handle.handlename)).includes("Handles") ? handle.handlename : h(nameTrimmer(handle.handlename))
+                    return <option value={JSON.stringify(handle)} key={handle.id}>{name}</option>
+                })}
             </select>
         </div>
     </div>

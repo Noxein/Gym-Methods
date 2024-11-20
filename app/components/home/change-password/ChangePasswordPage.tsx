@@ -7,6 +7,7 @@ import { EyeIcon } from '@/app/ui/icons/ExpandIcon'
 import { ErrorDiv } from '../../ui/ErrorDiv'
 import { Button } from '../../ui/Button'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
+import { useTranslations } from 'next-intl'
 
 export const ChangePasswordPage = () => {
     const[password,setPassword] = useState('')
@@ -26,27 +27,31 @@ export const ChangePasswordPage = () => {
         const data = await changePassword(password,newpassword,repeatnewpassword)
         if(data){
             setLoading(false)
-            return setError(data.error)
+            return setError(e(data.error))
         } 
         setLoading(false)
         router.push('/home')
     }
     
+    const u = useTranslations("Utils")
+    const t = useTranslations("Home/Profile/Change-Password")
+    const e = useTranslations("Errors")
+
   return (
     <div className='pt-20 mx-5 flex flex-col gap-4 h-screen'>
-        <h1 className='text-white text-center text-2xl'>Zmień hasło</h1>
+        <h1 className='text-white text-center text-2xl'>{t("ChangePassword")}</h1>
         <div className='flex flex-col relative'>
-            <Label htmlFor='password'>Obecne hasło</Label>
+            <Label htmlFor='password'>{t("CurrentPassword")}</Label>
             <Input type={showPassword?'text':'password'} id='password' value={password} onChange={e=>setPassword(e.target.value)} disabled={loading}/>
             <ShowPassword isOpen={showPassword} onClick={()=>!loading && setShowPassword(!showPassword)}/>
         </div>
         <div className='flex flex-col relative'>
-            <Label htmlFor='newpassword'>Nowe hasło</Label>
+            <Label htmlFor='newpassword'>{t("NewPassword")}</Label>
             <Input type={showNewpassword?'text':'password'} id='newpassword' value={newpassword} onChange={e=>setNewpassword(e.target.value)} disabled={loading}/>
             <ShowPassword isOpen={showNewpassword} onClick={()=>!loading && setShowNewpassword(!showNewpassword)}/>
         </div>
         <div className='flex flex-col relative'>
-            <Label htmlFor='repeatnewpassword'>Powtórz nowe hasło</Label>
+            <Label htmlFor='repeatnewpassword'>{t("RepeatNewPassword")}</Label>
             <Input type={showRepeatnewpassword?'text':'password'} id='repeatnewpassword' value={repeatnewpassword} onChange={e=>setRepeatnewpassword(e.target.value)} disabled={loading}/>
             <ShowPassword isOpen={showRepeatnewpassword} onClick={()=>!loading && setShowRepeatnewpassword(!showRepeatnewpassword)}/>
         </div>
@@ -56,8 +61,8 @@ export const ChangePasswordPage = () => {
 
         <div className='mt-auto flex gap-4 mb-24'>
 
-            <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>Anuluj</Button>
-            <Button className=' flex-1' onClick={handleSave} isPrimary disabled={loading}>Zapisz</Button>
+            <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>{u("Cancel")}</Button>
+            <Button className=' flex-1' onClick={handleSave} isPrimary disabled={loading}>{u("Save")}</Button>
 
         </div>
     </div>

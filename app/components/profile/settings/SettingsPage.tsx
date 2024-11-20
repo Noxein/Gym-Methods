@@ -1,6 +1,6 @@
 'use client'
 import { UserSettings } from '@/app/types'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Icon } from '../../Icon'
 import { CheckIcon, CrossIcon } from '@/app/ui/icons/ExpandIcon'
 import { exerciseList,exercisesArr } from '@/app/lib/exercise-list'
@@ -12,6 +12,10 @@ import { Select } from '@/app/components/ui/SelectField'
 import { Button } from '../../ui/Button'
 import { ErrorDiv } from '../../ui/ErrorDiv'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
+import { useTranslations } from 'next-intl'
+import { getUserLocale, setUserLocale } from '@/app/i18n/locale'
+import { Locale } from '@/app/i18n/config'
+import { LangContext } from '@/app/context/LocaleProvider'
 
 type SettingsPageTypes = {
     settings: UserSettings
@@ -54,18 +58,19 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
     const handleFavouriteExercisesChange = (exerciseName: string) => {
         if(!exercisesArr.includes(exerciseName)) return
         let copy = {...userSettings}
-        if(copy.favouriteexercises?.includes(exerciseName)){
-            copy.favouriteexercises = copy.favouriteexercises.filter(x=>x!==exerciseName)
+        if(copy.favouriteexercises!.includes(exerciseName)){
+            copy.favouriteexercises = copy.favouriteexercises!.filter(x=>x!==exerciseName)
         }else{
             copy.favouriteexercises = [...copy.favouriteexercises!,exerciseName]
         }
         setUserSettings(copy)
     }
     const handNotleFavouriteExercisesChange = (exerciseName: string) => {
+        console.log(exercisesArr,exerciseName)
         if(!exercisesArr.includes(exerciseName)) return
         let copy = {...userSettings}
-        if(copy.notfavouriteexercises?.includes(exerciseName)){
-            copy.notfavouriteexercises = copy.notfavouriteexercises.filter(x=>x!==exerciseName)
+        if(copy.notfavouriteexercises!.includes(exerciseName)){
+            copy.notfavouriteexercises = copy.notfavouriteexercises!.filter(x=>x!==exerciseName)
         }else{
             copy.notfavouriteexercises = [...copy.notfavouriteexercises!,exerciseName]
         }
@@ -77,7 +82,7 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         const result = await saveNewUserSetting(userSettings)
         if(result?.error){
             setLoading(false)
-            return setError(result.error)
+            return setError(e(result.error))
         } 
         setLoading(false)
         return router.push('/home/profile')
@@ -91,23 +96,42 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         setShowNotFavourtieExercisesModal(true)
         HideShowHTMLScrollbar('hide')
     }
+
+    const t = useTranslations("Home/Profile/Settings")
+    const u = useTranslations("Utils")
+    const l = useTranslations("Languages")
+    const e = useTranslations("Errors")
+    
+    const userLocale = useContext(LangContext)
   return (
     <div className='mt-10 flex flex-col gap-4 mx-5 text-white'>
-        <h1 className='text-xl text-center text-white font-semibold'>USTAWIENIA</h1>
+        <h1 className='text-xl text-center text-white font-semibold'>{t("Settings")}</h1>
 
             <div className='flex flex-col gap-4 mb-20'>
 
-                <Select labelName='Treningi w tygodniu' valuesToLoop={daysexercising} onChange={e=>handleDaysExercisingChange(e.target.value as daysexercisingType)} defaultValue={userSettings.daysexercising} disabled={loading}/>
+                <Select labelName={t("TrainingWeekly")} valuesToLoop={daysexercising} onChange={e=>handleDaysExercisingChange(e.target.value as daysexercisingType)} defaultValue={userSettings.daysexercising} disabled={loading}/>
     
-                <Select labelName='Cel' valuesToLoop={goal} onChange={e=>handleGoalChange(e.target.value as goalType)} defaultValue={userSettings.goal} disabled={loading}/>
+                <Select labelName={t("Goal")} valuesToLoop={goal} onChange={e=>handleGoalChange(e.target.value as goalType)} defaultValue={userSettings.goal} disabled={loading}/>
             
-                <Select labelName='Poziom zaawansowania' valuesToLoop={advancmentlevel} onChange={e=>handleAdvancmentLevelChange(e.target.value as advancmentlevelType)} defaultValue={userSettings.advancmentlevel} disabled={loading}/>
+                <Select labelName={t("AdvamcmentLevel")} valuesToLoop={advancmentlevel} onChange={e=>handleAdvancmentLevelChange(e.target.value as advancmentlevelType)} defaultValue={userSettings.advancmentlevel} disabled={loading}/>
+
+                <div className='relative w-full text-white'>
+                    <label htmlFor='lang' className='absolute -top-1/4 text-base left-4 px-1 z-20'>
+                    <div className='z-20 relative'>{t("Language")}</div>
+                    <div className='absolute h-1 w-[105%] bg-dark bottom-[10px] -left-1 text-base text-opacity-0 z-10'></div>
+                    </label>
+                    
+                    <select id='lang' value={userLocale!}  className='bg-dark border-1 border-marmur rounded-lg pl-2 py-2 w-full outline-none z-0 relative' onChange={(e)=>setUserLocale(e.target.value as Locale)}>
+                        <option value='pl'>{l("Polish")} </option>
+                        <option value='en'>{l("English")} </option>
+                    </select>
+                </div>
             
             </div>
 
         <button className='mt-10 bg-marmur p-[1px] flex items-center rounded-lg' onClick={handleShowFavModal} disabled={loading}>
             <span className='bg-dark flex-1 rounded-lg py-3 text-white'>
-                Zmień lubiane ćwiczenia
+                {t("ChangeLikedExercise")}
             </span>
             <Icon className='flex items-center px-2 w-10'>
                 <CheckIcon height='25'/>
@@ -116,7 +140,7 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
 
         <button className='bg-marmur p-[1px] flex items-center rounded-lg mb-40' onClick={handleShowNotFavModal} disabled={loading}>
             <span className='bg-dark flex-1 rounded-lg py-3 text-white'>
-                Zmień nie lubiane ćwiczenia
+                {t("ChangeNotLikedExercise")}
             </span>
             <Icon className='flex items-center px-2 w-10'>
                 <CrossIcon width='20' />
@@ -126,8 +150,8 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         <SmallLoaderDiv loading={loading}/>
         <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
 
-            <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>Anuluj</Button>
-            <Button className='flex-1' onClick={handleSave} isPrimary disabled={loading}>Zapisz zmiany</Button>
+            <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>{u("Cancel")}</Button>
+            <Button className='flex-1' onClick={handleSave} isPrimary disabled={loading}>{u("SaveChanges")}</Button>
 
         </div>
 

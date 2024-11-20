@@ -12,6 +12,8 @@ import { Input } from '../../ui/Input'
 import { Button } from '../../ui/Button'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 import { ErrorDiv } from '../../ui/ErrorDiv'
+import { useTranslations } from 'next-intl'
+import { nameTrimmer } from '@/app/lib/utils'
 
 type SearchComponentTypes = {
     exerciseList: (string | UserExercise)[],
@@ -43,13 +45,13 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
             setLoading(true)
             const result = await fetchUserExercises(from!,to!,selectedExercise,0)
             if(result.error){
-                setError(result.error)
+                setError(e(result.error))
                 setLoading(false)
                 return 
             }
             const count = await handleSearchCount()
             if(count && count.error){
-                setError(count.error)
+                setError(e(count.error))
                 setLoading(false)
                 return
             } 
@@ -58,12 +60,12 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         }else{
             const result = await fetchUserExercises(from!,to!,selectedExercise,currentPage)
             if(result.error){
-                setError(result.error)
+                setError(e(result.error))
                 return setLoading(false)
             }
             const sortedItems = SortItems(result.data!)
             setFetchedExercises(x=>[...x,...sortedItems])
-            setCurrentPage(currentPage+1)
+            setCurrentPage(page=>page+1)
         }
 
         setLoading(false)
@@ -79,7 +81,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     useEffect(()=>{
         handleSearchCount()
         handleSearch(false)
-        setCurrentPage(currentPage+1)
+        setCurrentPage(page=>page+1)
     },[])
     const getDataLenght = () => {
         let total = 0
@@ -113,17 +115,35 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         if(value === '') return setter(undefined)
         setter(new Date(value))
     }
+    const t = useTranslations("Home/Profile/Search")
+    const u = useTranslations("Utils")
+    const d = useTranslations("DefaultExercises")
+    const e = useTranslations("Errors")
+
+    const selectedExerciseFormatted = () => {
+        if(!selectedExercise) return ''
+        const isLong = selectedExercise.length>=30
+
+        if(d(nameTrimmer(selectedExercise)).includes('DefaultExercises')){
+            if(isLong) return selectedExercise
+            return selectedExercise.slice(0,30) // in case the exercise is created by user and we dont have translation
+        }
+
+        if(isLong) return d(nameTrimmer(selectedExercise)).slice(0,30)
+
+        return d(nameTrimmer(selectedExercise))
+    }
   return (
 <>
     <div className='text-white'>
         <div className={`fixed z-20 left-0 pt-5 w-full ${showSearch?'top-0':'-top-[140px]'} transition-all bg-dark`}>
             <div className='flex flex-col gap-4'>
                 <div className='flex gap-4 mx-5 relative'>
-                    <Input labelName='Od' type='date' onChange={e=>handleDateChange(e.target.value,setFrom)} disabled={loading}/>
-                    <Input labelName='Do' type='date' onChange={e=>handleDateChange(e.target.value,setTo)} disabled={loading}/>
+                    <Input labelName={t("From")} type='date' onChange={e=>handleDateChange(e.target.value,setFrom)} disabled={loading}/>
+                    <Input labelName={t("To")} type='date' onChange={e=>handleDateChange(e.target.value,setTo)} disabled={loading}/>
                 </div>
                 <div className='mx-5'>
-                    <Button className='w-full' onClick={handleShowExerciseList} isPrimary disabled={loading}>{searchExercise?.exercise || 'Wszystkie ćwiczenia'}</Button>
+                    <Button className='w-full' onClick={handleShowExerciseList} isPrimary disabled={loading}>{searchExercise?.exercise || t("AllExercises")}</Button>
                 </div>
             </div>
             <div className={`w-full flex flex-col px-5 bg-marmur mt-2`}>
@@ -136,7 +156,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                     {
                         showSearch?
                         <button className={`text-dark font-semibold pl-10 text-right`} onClick={()=>handleSearch(true)}>
-                            Szukaj
+                            {u("Search")}
                         </button>:
                         <div className={`flex flex-col text-dark`}>
     
@@ -144,7 +164,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                                 {formattedFrom} - {formattedTo}
                             </span>
                             <span className={`text-dark text-right font-semibold text-xl`}>
-                                {selectedExercise && selectedExercise?.length > 30? selectedExercise?.slice(0,30) + '...' : selectedExercise}
+                                {selectedExerciseFormatted()}
                             </span>
     
                         </div>

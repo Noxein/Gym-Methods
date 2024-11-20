@@ -7,7 +7,8 @@ import { ShowHistoryButton } from '@/app/components/add-exercise/ShowHistoryButt
 import { PreviousExercise } from '@/app/components/home/start-training/PreviousExercise'
 import { ButtonWithIcon } from '@/app/components/ui/ButtonWithIcon'
 import { DisplayCurrentSeresUsingState } from './DisplayCurrentSeresUsingState'
-import { localStorageSetter } from '@/app/lib/utils'
+import { localStorageSetter, nameTrimmer } from '@/app/lib/utils'
+import { useTranslations } from 'next-intl'
 
 type AddExerciseUsingStateType = {
     name:string,
@@ -75,19 +76,31 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
             return xCopy
         })
     }
+
+    const d = useTranslations("DefaultExercises")
+    const t = useTranslations("Home/Start-Training/[TrainingName]")
+    const u = useTranslations("Utils")
+
+    const formattedName = d(nameTrimmer(name)).includes("DefaultExercises") ? name : d(nameTrimmer(name))
+
   return (
-    <div className={`px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'}`}>
-        <h1 className={`text-marmur text-xl text-center font-medium`}>{name}</h1>
-        <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2 z-10`}>
-            <div className='flex flex-col gap-6'>
-               <WeightAndRepeatInputs inputs={inputs} setInputs={setInputs}/>
-               <DifficultyLevel showTimeMesure={showTimeMesure} inputs={inputs} setInputs={setInputs}/>
-               <Side inputs={inputs} setInputs={setInputs}/>
+    <div className={ `px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'} ` }>
+
+        <h1 className={`text-marmur text-xl text-center font-medium`}> 
+            {formattedName} 
+        </h1>
+
+        <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2 z-10`} >
+
+            <div className='flex flex-col gap-6' >
+               <WeightAndRepeatInputs inputs={inputs} setInputs={setInputs} />
+               <DifficultyLevel showTimeMesure={showTimeMesure} inputs={inputs} setInputs={setInputs} />
+               <Side inputs={inputs} setInputs={setInputs} />
                {requiresHandle && <Handle allHandles={allHandles} inputs={inputs} setInputs={setInputs} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData} />}
             </div>
             
             <ButtonWithIcon onClick={()=>handleAddSeries()} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading}
-                buttonText='Dodaj serie'
+                buttonText={t("AddSeries")}
                 childrenIcon={
                     <Icon className='bg-opacity-0 flex'>
                     <PlusIcon /> 
@@ -97,11 +110,11 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
 
             </ButtonWithIcon>
             <div className='grid mt-3 text-white w-full'>
-                <div className={` justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 pl-7 w-[100vw-28px] bg-dark`}>
-                <div className='font-light'>Ciężar</div>
-                <div className='font-light'>Powtórzenia</div>
-                <div className='font-light'>Ciężkość</div>
-            {showTimeMesure && <div className='font-light'>Czas</div>}
+                <div className={`justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 pl-7 w-[100vw-28px] bg-dark`} >
+                <div className='font-light'>{u("Weight")} </div>
+                <div className='font-light'>{u("Repeat")} </div>
+                <div className='font-light'>{u("Difficulty")} </div>
+            {showTimeMesure && <div className='font-light'>{u("Time")} </div>}
             </div>
 
         </div>
@@ -161,15 +174,17 @@ const WeightAndRepeatInputs = ({inputs,setInputs}:WeightAndRepeatInputsTypes) =>
     }
     const weightInput = inputs.weight
     const repeatInput = inputs.repeat
+
+    const u = useTranslations("Utils")
     return (
         <div className='flex items-center gap-2'>
             <div className='flex flex-col flex-1 relative'>
-                <Label htmlFor='weight'>Ciężar</Label>
+                <Label htmlFor='weight'>{u("Weight")}</Label>
                 <Input type="number" id='weight' onChange={e=>handleChangeWeight(Number(e.target.value))} value={weightInput} min={1}/>
             </div>
 
             <div className='flex flex-col flex-1 relative'>
-                <Label htmlFor='repeat'>Powtórzenia</Label>
+                <Label htmlFor='repeat'>{u("Repeat")}</Label>
                 <Input type="number" id='repeat' onChange={e=>handleChangeRepeat(Number(e.target.value))} value={repeatInput} min={1}/>
             </div>
         </div>
@@ -202,18 +217,20 @@ const DifficultyLevel = ({showTimeMesure,inputs,setInputs}:DifficultyLevelTypes)
         })
     }
 
+    const u = useTranslations("Utils")
+
     return(<div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
-            <label htmlFor='difficulty' className={`text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark`}>Ciężkość serii</label>
+            <label htmlFor='difficulty' className={`text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark`}> {u("Difficulty")} </label>
             <select name="difficulty" id="difficulty" className={`bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10`} value={difficultyInput} onChange={e=>handleDifficultyChgane(e.target.value as DifficultyLevelType)}>
-                <option value="easy">Łatwa</option>
-                <option value="medium">Średnia</option>
-                <option value="hard">Trudna</option>
+                <option value="easy">{u("Easy")}</option>
+                <option value="medium">{u("Medium")}</option>
+                <option value="hard">{u("Hard")}</option>
             </select>
         </div>
         {showTimeMesure &&             
             <div className='flex flex-col flex-1 relative'>
-                <Label htmlFor='time'>Czas</Label>
+                <Label htmlFor='time'>{u("Time")}</Label>
                 <Input type="text" id='time' onChange={e=>handleTimeChange(e.target.value)} value={timeInput}/>
             </div>}
         </div>)
@@ -233,14 +250,17 @@ const Side = ({inputs,setInputs}:SideTypes) => {
         })
     }
     const sideInput = inputs.side
+
+    const u = useTranslations("Utils")
+    
     return(
         <div className='flex gap-2'>
             <div className='flex-1 flex flex-col text-lg relative'>
-                <label htmlFor='side' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Strona</label>
+                <label htmlFor='side' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Side")}</label>
                 <select name="side" value={sideInput} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value as SideType)}>
-                    <option value="Both">Obie</option>
-                    <option value="Left">Lewa</option>
-                    <option value="Right">Prawa</option>
+                    <option value="Both">{u("Both")}</option>
+                    <option value="Left">{u("Left")}</option>
+                    <option value="Right">{u("Right")}</option>
                 </select>
             </div>
         </div>
@@ -283,14 +303,17 @@ const Handle = ({allHandles,inputs,trainingState,setInputs,setLocalStorageTraini
             return xCopy
         })
     },[])
+
+    const h = useTranslations("Handles")
     return (
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Uchwyt</label>
             <select name="handle" value={handleInput?.handleId} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value,e.target.title)}>
-                {allHandles.map(handle=>(
-                    <option value={handle.id} title={handle.handlename} key={handle.id}>{handle.handlename}</option>
-                ))}
+                {allHandles.map(handle=>{
+                    const formattedHandleName = h(handle.handlename.replace(" ",'')).includes("Handles") ? handle.handlename : h(handle.handlename.replace(" ",''))
+                    return <option value={handle.id} title={handle.handlename} key={handle.id}>{formattedHandleName}</option>
+                })}
             </select>
         </div>
     </div>

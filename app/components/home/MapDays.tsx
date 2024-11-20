@@ -1,9 +1,10 @@
 'use client'
-import { dayArrayInitializer, WeekDayArrayPL } from '@/app/lib/utils'
+import { dayArrayInitializer, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
 import { format, getDay, isSameDay, subDays } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { SelectedDateInfo } from './SelectedDateInfo'
 import { WidgetHomeDaysSum } from '@/app/types'
+import { useTranslations } from 'use-intl'
 
 type MapDaysTypes = {
     Last30DaysExercises?: {
@@ -23,11 +24,15 @@ export const MapDays = ({Last30DaysExercises}:MapDaysTypes) => {
         KGToday: number;
         SeriesToday: number;
     }>({KGToday:0,SeriesToday:0})
+
     const[selectedDay,setSelectedDay] = useState<Date>(new Date())
     const enoughData = Object.keys(Last30DaysExercises?.groupedDays || {}).length>=2
 
+    useEffect(()=> {
+        getData(new Date())
+    },[])
+
     const getData = async (day:Date) => {
-        //const data = await SelectedDayExercisesForWidget(day?day:new Date())
         let KGSelectedDay = 0
         let SeriesSelectedDay = 0
 
@@ -40,23 +45,21 @@ export const MapDays = ({Last30DaysExercises}:MapDaysTypes) => {
         setDayData({KGToday:KGSelectedDay,SeriesToday:SeriesSelectedDay})
     }
 
-    useEffect(()=>{
-        getData(new Date())
-    },[])
+    const u = useTranslations("Utils")
 
-    const dayOfWeekIndex = -1 === getDay(new Date()) - 1 ? 6 : getDay(new Date()) - 1  // 0 = monday , 6 = sunday
     const handleChangeSelectedDay = (day:Date) => {
         if(!enoughData) return
         getData(day)
         setSelectedDay(day)
-        console.log(day)
     }
     
   return (<>
     <div className={`bg-marmur w-screen flex justify-evenly py-2 min-h-16`}>
         {days.map((day,i)=>(
             <div key={day.getDate()} className={`leading-3 w-12 h-12 pb-1 flex flex-col items-center justify-center ${isSameDay(day,selectedDay)?`bg-dark text-marmur`:null} rounded-full`} onClick={()=>handleChangeSelectedDay(day)}>
-                <span className='text-xl font-bold'>{WeekDayArrayPL[i].slice(0,1)}</span>
+
+                <span className='text-xl font-bold'>{u("WeekFirstLetter",{WeekIndex: i})}</span>
+            
                 {day.getDate()}
             </div>
         ))}

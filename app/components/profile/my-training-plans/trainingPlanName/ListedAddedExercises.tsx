@@ -1,9 +1,11 @@
 import { Icon } from '@/app/components/Icon'
+import { nameTrimmer } from '@/app/lib/utils'
 import { TrainingExerciseType } from '@/app/types'
 import { TrashIcon, VerticalDots } from '@/app/ui/icons/ExpandIcon'
 import { closestCorners, DndContext, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useTranslations } from 'next-intl'
 
 type ListedAddedExercisesTypes = {
     planExercises: TrainingExerciseType[],
@@ -58,6 +60,8 @@ const SingleExercise = ({name,exercise,setPlanExercises}:SingleExerciseTypes) =>
         transition,
         transform: CSS.Transform.toString(transform)
     }
+    const d = useTranslations("DefaultExercises")
+    const translatedName = d(nameTrimmer(name)).includes("DefaultExercises") ? name : d(nameTrimmer(name))
     return(
     <div className={`py-[1px] flex rounded-lg bg-marmur`} ref={setNodeRef}  style={style} {...attributes}>
         <div className={`text-marmur rounded-md flex justify-between items-center flex-1` } >
@@ -65,7 +69,7 @@ const SingleExercise = ({name,exercise,setPlanExercises}:SingleExerciseTypes) =>
                 <VerticalDots />
             </Icon>
 
-           <div className={`flex-1 bg-dark px-4 py-4 rounded-lg`}> {name} </div>
+           <div className={`flex-1 bg-dark px-4 py-4 rounded-lg`}> {translatedName} </div>
     
         </div>
 

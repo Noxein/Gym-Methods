@@ -16,6 +16,9 @@ import { Begginer1_3FBW_FirstVariation, Begginer1_3FBW_SecondVariation, Beginner
 import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
 
 export const LoginNoFormData = async (email:string,password:string) => {
+    if(typeof email !== 'string' || typeof password !== 'string'){
+        return { error: "Something went wrong"}
+    }
     try{
         const response = await signIn('credentials',{
             email,
@@ -28,11 +31,11 @@ export const LoginNoFormData = async (email:string,password:string) => {
         if(e instanceof AuthError){
             // @ts-ignore
            if(e.cause?.err!.code === 'credentials'){
-            return { error: 'Zły login lub hasło'}
+            return { error: 'Wrong Login Or Password'}
            }
-           return { error: 'Coś poszło nie tak'}
+           return { error: 'Something went wrong'}
         }
-        return { error: 'Coś poszło nie tak'}
+        return { error: 'Something went wrong'}
     }
     
 }
@@ -50,21 +53,26 @@ export const Register = async (email:string,password:string,confirmpassword:stri
         email: '',
         password: '',
         confirmpassword: '',
+        somethingWentWrong: '',
         isError: false
     }
 
     const validatedEmail = validateEmail(email)
 
     if(!validatedEmail){
-        error.email = 'Zły format adresu email'
+        error.email = 'Wrong email format'
+        error.isError = true
+    }
+    if(typeof email !== 'string' || typeof password !== 'string' || typeof confirmpassword !== 'string'){
+        error.somethingWentWrong = "Something went wrong"
         error.isError = true
     }
     if(password !== confirmpassword){
-        error.confirmpassword = 'Hasła różnią się'
+        error.confirmpassword = 'Password are different'
         error.isError = true
     }
     if(password.length < 8){
-        error.password = 'Hasło powinno się składać z minimum 8 znaków'
+        error.password = 'Password should be at least 8 chracters long'
         error.isError = true
     }
 
@@ -78,7 +86,7 @@ export const Register = async (email:string,password:string,confirmpassword:stri
 
     if(emailExist.rows[0]){
 
-        error.email = 'Ten adres email jest zajęty'
+        error.email = 'Email taken'
         error.isError = true
 
         return { error }
@@ -98,6 +106,16 @@ const ComparePasswords = async (password:string,hasedPassword:string) => {
 }
 
 export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:{handleName:string,handleId:string},isLastExercise=false,date?:Date) => {
+    if(typeof redirectUser !== 'boolean')                                          return { errors: "Something went wrong" }
+    if(!exerciseid || typeof exerciseid !== 'string')                              return { errors: "Something went wrong" }
+    if(!Array.isArray(sets))                                                       return { errors: "Something went wrong" }
+    if(typeof ispartoftraining !== 'boolean')                                      return { errors: "Something went wrong" }
+    if(trainingPlanId && typeof trainingPlanId !== 'string')                       return { errors: "Something went wrong" }
+    if(usesHandle && typeof usesHandle.handleId !== 'string')                      return { errors: "Something went wrong" }
+    if(usesHandle && typeof usesHandle.handleName !== 'string')                    return { errors: "Something went wrong" }
+    if(typeof isLastExercise !== 'boolean')                                        return { errors: "Something went wrong" }
+    if(date && Object.prototype.toString.call(new Date(date)) !== '[object Date]') return { errors: "Something went wrong" }
+
     const userid = await userID()
     if(!userid) return
     let stringDate = JSON.stringify(new Date())
@@ -113,9 +131,9 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     const AddExerciseZodSchema = z.object({
         exerciseid: z.enum(['Wznosy bokiem',...arr]),
         sets: z.array(z.object({
-            weight: z.number(),
-            repeat: z.number(),
-        })).nonempty('Dodaj minimum jedną serię'),
+            weight: z.number({message:"Weight has to be a number"}),
+            repeat: z.number({message:"Repeat has to be a number"}),
+        })).nonempty('Add at least one series'),
         ispartoftraining: z.boolean()
     })
     
@@ -132,7 +150,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
             }
         }
         return {
-            errors: 'Coś poszło nie tak'
+            errors: 'Something went wrong'
         }
     }
     let trainingid = null
@@ -157,7 +175,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     }catch(e){
         console.log('Error occured: AddExerciseAction func actions.ts ',e)
         return {
-            errors: 'Coś poszło nie tak'
+            errors: 'Something went wrong'
         }
     }
     if(redirectUser) redirect('/home/add-exercise')
@@ -165,10 +183,13 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
 
 export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:LocalStorageExercise[],trainingStartDate:Date) => {
     if(typeof trainingPlanId !== 'string'){
-        return { error: 'Coś poszło nie tak'}
+        return { error: 'Something went wrong'}
+    }
+    if(!Array.isArray(exercises)){
+        return { error: 'Something went wrong'}
     }
     if(Object.prototype.toString.call(new Date(trainingStartDate)) !== '[object Date]'){
-        return { error: 'Coś poszło nie tak'}
+        return { error: 'Something went wrong'}
     }
     const userid = await userID()
     let id = ''
@@ -178,14 +199,14 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     `
     id = dataID.rows[0].id
     }catch(e){
-        return { error : 'Coś poszło nie tak'}
+        return { error : 'Something went wrong'}
     }
 
     exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
-        if(!exercise.exerciseId) return { error: `Brak id dla ćwiczenia ${exercise.exerciseName}`}
+        if(!exercise.exerciseId) return { error: `Exercise dont have an id`}
 
         const data = await AddExerciseAction(false,exercise.exerciseId,exercise.sets,true,id,exercise.handle,false,exercise.date)
-        if(data?.errors) return { error : 'Coś poszło nie tak'}
+        if(data?.errors) return { error : 'Something went wrong'}
     })
 
     revalidatePath('/home')
@@ -196,18 +217,22 @@ export const FistStepDataValidation = (data:dataType) => {
         goal: '',
         advancmentlevel: '',
         daysexercising: '',
+        somethinWentWrong: '',
         isError: false
     }
+    for(const [key,value] of Object.entries(data)){
+        if(typeof value !== 'string') error.somethinWentWrong = "Something went wrong"
+    }
     if(!Goal.includes(data.goal)) {
-        error.goal = 'Został wybrany zły cel, wybierz inny'
+        error.goal = 'Wrong goal chosen'
         error.isError = true
     }
     if(!Advancmentlevel.includes(data.advancmentlevel)){
-        error.advancmentlevel = 'Został wybrany zły poziom zaawansowania, wybierz inny'
+        error.advancmentlevel = 'Wrong advancment level chosen'
         error.isError = true
     }
     if(!Daysexercising.includes(data.daysexercising)){
-        error.daysexercising = 'Zła liczba treningów w tygodniu, wybierz inną'
+        error.daysexercising = 'Wrong number of trainings per week chosen'
         error.isError = true
     }
     if(error.isError){
@@ -218,21 +243,29 @@ export const FistStepDataValidation = (data:dataType) => {
 
 export const SecondStepDataValidation = (exercises:string[]) => {
     let error = false
+    if(!Array.isArray(exercises)){
+        error = true
+    }
     exercises.map(exercise=>{
         if(!exercisesArr.includes(exercise)) error = true
     })
     if(error){
-        return { error: 'Zostały zaznaczone ćwiczenia którcyh niema w bazie, spróbuj ponownie'}
+        return { error: 'Wrong exercises chosen'}
     }
 }
 export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],favourtiteExercises:string[]) => {
     let isError = false
     const userid = await userID()
     const validateData = FistStepDataValidation(data)
+    for(const [key,value] of Object.entries(data)){
+        if(typeof value !== 'string') return { error: "Something went wrong" }
+    }
     if(validateData?.error){
-        return { error: 'Coś poszło nie tak w pierwszym kroku' }
+        return { error: 'Something went wrong in first step' }
     } 
-
+    if(!Array.isArray(deleteExercises) || !Array.isArray(favourtiteExercises)){
+        return { error: 'Something went wrong' }
+    }
     try{
         await sql`
             UPDATE gymusers
@@ -244,7 +277,7 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
     }catch(e){
         isError = true
         console.log('Error occured FirstSetupFinish func actions.ts',e)
-        return { error : 'Coś poszło nie tak'}
+        return { error : 'Something went wrong'}
     }finally{
         if(!isError) redirect('/home')
     }
@@ -273,19 +306,19 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
     const userid = await userID()
 
     if(exercisename.length>=254){
-        return {error : 'Nazwa ćwiczenia jest za długa'}
+        return {error : 'Exercise name is too long'}
     }
     if(typeof timeExercise !== 'boolean'){
-        return {error: 'Coś poszło nie tak'}
+        return {error: 'Something went wrong'}
     }
     if(typeof usesHandle !== 'boolean'){
-        return {error: 'Coś poszło nie tak'}
+        return {error: 'Something went wrong'}
     }
     if( typeof exercisename !== 'string'){
-        return {error: 'Coś poszło nie tak'}
+        return {error: 'Something went wrong'}
     }
     if(exercisesArr.toLocaleString().toLowerCase().includes(exercisename.toLowerCase())){
-        return {error: 'Takie ćwiczenie już istnieje'}
+        return {error: 'Exercise with this name already exist'}
     }
     try{
         await sql`
@@ -294,7 +327,7 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
         revalidatePath('/home/profile/my-exercises')
     }catch(e){
         return {
-            error: 'Coś poszło nie tak'
+            error: 'Something went wrong'
         }
     }
 }
@@ -303,7 +336,7 @@ export const DeleteUserExercise = async (id:string) => {
     const userid = await userID()
     if(typeof id !== 'string'){
         return {
-            error :'Coś poszło nie tak'
+            error :'Something went wrong'
         }
     }
     const checkIfIdInTraining = (trainingExercises:TrainingExerciseType[]) => {
@@ -338,6 +371,7 @@ export const DeleteUserExercise = async (id:string) => {
         `
         }catch(e){
             console.log(e)
+            return { error: "Something went wrong"}
         }
 
         await sql`
@@ -356,16 +390,16 @@ export const DeleteUserExercise = async (id:string) => {
 
 export const EditUserExercise = async (exerciseid:string,newname:string,timeExercise:boolean,usesHandle:boolean) => {
     if(newname === ''){
-        return {error :'Wpisz nową nazwę ćwiczenia'}
+        return {error :'Exercise name cant be empty'}
     }
     if(typeof exerciseid !== 'string' || typeof newname !== 'string'){
-        return {error :'Coś poszło nie tak'}
+        return {error :'Something went wrong'}
     }
     if(typeof timeExercise !== 'boolean') {
-        return {error :'Coś poszło nie tak'}
+        return {error :'Something went wrong'}
     }
     if(typeof usesHandle !== 'boolean') {
-        return {error :'Coś poszło nie tak'}
+        return {error :'Something went wrong'}
     }
 
     const userid = await userID()
@@ -385,7 +419,7 @@ export const EditUserExercise = async (exerciseid:string,newname:string,timeExer
         revalidatePath('/home/profile/my-exercises')
     }catch(e){
         return {
-            error :'Coś poszło nie tak'
+            error :'Something went wrong'
         }
     }
 }
@@ -431,9 +465,10 @@ export const getAllTempos = async () => {
 
 export const AddOrUpdateTempo = async (exerciceid:string,tempos:TempoType) => {
 
-    if(typeof exerciceid !== 'string') return { error: "Coś poszło nie tak1" }
+    if(typeof exerciceid !== 'string') return { error: "Something went wrong" }
+
     const TempoError = checkTempoErrors(tempos)
-    if(TempoError) return { error: "Coś poszło nie tak2" }
+    if(TempoError) return { error: "Something went wrong" }
 
     const userid = await userID()
 
@@ -456,13 +491,13 @@ export const AddOrUpdateTempo = async (exerciceid:string,tempos:TempoType) => {
         }
     }catch(e){
         console.log('Error occured AddOrUpdateTempo func actions.ts',e)
-        return { error: "Coś poszło nie tak3" }
+        return { error: "Coś poszło nie tak" }
     }
     revalidatePath('/home/profile/set-tempo')
 }
 
 export const DeleteTempoFromDb = async (exerciceid:string) => {
-    if(typeof exerciceid !== 'string') return { error: "Coś poszło nie tak1" }
+    if(typeof exerciceid !== 'string') return { error: "Somethind went wrong" }
 
     const userid = await userID()
     try{
@@ -470,7 +505,7 @@ export const DeleteTempoFromDb = async (exerciceid:string) => {
             DELETE FROM gymuserstempos WHERE userid = ${userid} AND exerciseid = ${exerciceid};
         `
     }catch(e){
-        return { error: 'Coś poszło nie tak' }
+        return { error: 'Somethind went wrong' }
     }
     revalidatePath('/home/profile/set-tempo')
 }
@@ -550,8 +585,8 @@ const isNotEmptyString = (...strings:string[]) => {
     let error = null
 
     strings.map(string=>{
-        if(typeof string !== 'string') error = 'Coś poszło nie tak' 
-        if(string === '') error = 'Nazwa nie może być pusta'
+        if(typeof string !== 'string') error = 'Something went wrong' 
+        if(string === '') error = 'Name cant be empty'
     })
 
     if(!error) return
@@ -571,7 +606,7 @@ export const addNewUserHandle = async (handlename:string) => {
        
         if(exitsData.rowCount && exitsData.rowCount>0){
             redirectUser = false
-            return { error: 'Taki uchwyt już istnieje' }
+            return { error: 'That handle already exists' }
         } 
         
         await sql`
@@ -580,7 +615,7 @@ export const addNewUserHandle = async (handlename:string) => {
 
     }catch(e){
         redirectUser = false
-        return {error: 'Coś poszło nie tak'}
+        return {error: 'Something went wrong'}
     }finally{
         if(redirectUser){
             revalidatePath('/home/profile/my-handles')
@@ -602,7 +637,7 @@ export const deleteUserHandle = async (handleid:string,) => {
              DELETE FROM gymusershandles WHERE id = ${handleid} AND userid = ${userid}
         `
     }catch(e){
-        return{ error: 'Coś poszło nie tak'}
+        return{ error: 'Something went wrong'}
     }finally{
         if(redirectUser){
             revalidatePath('/home/profile/my-handles')
@@ -613,10 +648,10 @@ export const deleteUserHandle = async (handleid:string,) => {
 export const editUserHandle = async (handlename:string,handleid: string) => {
     const userid = await userID()
     let redirectUser = true
-    let notEmptyString = isNotEmptyString(handlename)
+    let notEmptyString = isNotEmptyString(handlename, handleid)
     if(notEmptyString) return notEmptyString
 
-    if(!handleid) return {error: 'Potrzebne jest id uchwytu'}
+    if(!handleid) return {error: 'Handle id is needed'}
 
     try{
         await sql`
@@ -626,7 +661,7 @@ export const editUserHandle = async (handlename:string,handleid: string) => {
         `
     }catch(e){
         redirectUser = false
-        return{ error: 'Coś poszło nie tak'}
+        return{ error: 'Something went wrong'}
     }finally{
         if(redirectUser){
             revalidatePath('/home/profile/my-handles')
@@ -636,13 +671,13 @@ export const editUserHandle = async (handlename:string,handleid: string) => {
 
 const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay,userID:string) => {
     if(typeof trainingplanname !== 'string'){
-        return {error:'Coś poszło nie tak'}
+        return {error:'Something went wrong'}
     }
     if (trainingplanname.length > 255){
-        return {error:'Nazwa treningu jest za długa'}
+        return {error:'Training name is too long'}
     }
     if(exercises.length <2){
-        return {error:'Trening musi miec conajmniej dwa ćwiczenia'}
+        return {error:'Training has to have at least 2 exercises'}
     }
     let NotStringError = false
     let UnknownExerciseError = false
@@ -657,9 +692,9 @@ const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExe
             unknownExercice = exercises[x].exerciseid
         }
     }
-    if(NotStringError) return { error: 'Coś poszło nie tak'}
-    if(UnknownExerciseError) return { error: `Nieznane ćwiczenie w liście: "${unknownExercice}"`}
-    if(!WeekDayArray.includes(weekday)) return { error: 'Zły dzień tygodnia'}
+    if(NotStringError) return { error: 'Something went wrong'}
+    if(UnknownExerciseError) return { error: `Unknown exercise in training plan`}
+    if(!WeekDayArray.includes(weekday)) return { error: 'Wrong week day'}
 }
 
 export const GetUserTrainings = async () => {
@@ -675,7 +710,7 @@ export const GetUserTrainings = async () => {
 }
 
 export const GetUserTrainingByName = async (trainingname:string) => {
-    if(typeof trainingname !== 'string') return { error: "Coś poszło nie tak"}
+    if(typeof trainingname !== 'string') return { error: "Something went wrong"}
     const userid = await userID()
 
     try{
@@ -684,7 +719,7 @@ export const GetUserTrainingByName = async (trainingname:string) => {
         `
         if(Training.rows.length===0){
             return {
-                error: 'Trening o tej nazwie nie istnieje'
+                error: 'Training with this name dont exist'
             }
         } 
         return {
@@ -692,30 +727,30 @@ export const GetUserTrainingByName = async (trainingname:string) => {
             error: ''
         }
     }catch(e){
-        return { error: 'Coś poszło nie tak'}
+        return { error: 'Something went wrong'}
     }
 }
 
 export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDayPL,exercisesuwu?:TrainingExerciseType[]) => {
     const userid = await userID()
 
-    if(typeof trainingplanname !== 'string'){
-        return {error:'Coś poszło nie tak1'}
+    if(typeof trainingplanname !== 'string' || typeof weekday !== 'string' || !Array.isArray(exercisesuwu)){
+        return {error:'Something went wrong'}
     }
     if (trainingplanname.length > 255){
-        return {error:'Nazwa treningu jest za długa'}
+        return {error:'Training name is too long'}
     }
-    if(!WeekDayArrayPL.includes(weekday)) return { error: 'Zły dzień tygodnia'}
+    if(!WeekDayArrayPL.includes(weekday)) return { error: 'Wrong week day'}
 
     try{
         const userExercice = await sql`
         SELECT 1 FROM gymuserstrainingplans WHERE userid = ${userid} AND trainingname = ${trainingplanname}
         `
         if(userExercice.rows.length>0){
-            return { error: 'Trening o tej nazwie już istnieje, wybierz inną'}
+            return { error: 'Training with this name already exists'}
         }
     }catch(e){
-        return {error:'Coś poszło nie tak'}
+        return {error:'Something went wrong'}
     }
 
     const date = new Date()
@@ -728,7 +763,7 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
         `
     }catch(e){
         console.log('Error occured CreateUserTraining func actions.ts',e)
-        return { error: 'Coś poszło nie tak'}
+        return { error: 'Something went wrong'}
     }
     revalidatePath('/home/profile/my-training-plans')
 }
@@ -736,6 +771,9 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
 export const EditUserTraining = async (trainingid:string,trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay) => {
     const userid = await userID()
 
+    if(typeof trainingid !== 'string' || typeof trainingplanname !== 'string' || !Array.isArray(exercises) || typeof weekday !== 'string'){
+        return { error: "Something went wrong" }
+    }
     const checkvalue = await checkTrainingFields(trainingplanname,exercises,weekday,userid as string)
     if(checkvalue?.error) return  checkvalue
     const date = new Date()
@@ -748,14 +786,14 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
             `
     }catch(e){
         console.log('Error occured EditUserTraining func actions.ts',e)
-        return { error: 'Coś poszło nie tak'}
+        return { error: 'Something went wrong'}
     }
     revalidatePath('/home/profile/my-training-plans')
     redirect('/home/profile/my-training-plans')
 }
 
 export const DeleteUserTraining = async (trainingid:string) => {
-    if(typeof trainingid !== 'string') return { error: "Coś poszło nie tak"}
+    if(typeof trainingid !== 'string') return { error: "Something went wrong"}
 
     try{
 
@@ -778,23 +816,24 @@ export const DeleteUserTraining = async (trainingid:string) => {
             `
     }catch(e){
         console.log('Error occured DeleteUserTraining func actions.ts',e)
-        return { error: 'Coś poszło nie tak'}
+        return { error: 'Something went wrong'}
     }
     revalidatePath('/home/profile/my-training-plans')
     redirect('/home/profile/my-training-plans')
 }
 
 export const getTrainingDataByName = async (name:string) => {
+    if(typeof name !== 'string') return { error: "Something went wrong" }
     const userid = await userID()
 
     try{
         const list = await sql`
             SELECT * FROM gymuserstrainingplans WHERE userid = ${userid} AND trainingname = ${name}
         `
-        if(list.rowCount === 0) return { error: 'Nie znaleziono treningu' }
+        if(list.rowCount === 0) return { error: 'Training not found' }
         return {data: list.rows[0] as UserTrainingPlan, error: ''} 
     }catch{
-        return { error: 'Coś poszło nie tak' }
+        return { error: 'Something went wrong' }
     }
 }
 
@@ -842,6 +881,7 @@ export const getExistingTraining = async () => {
 }
 
 export const getLastTrainigs = async (limit:number) => {
+    if(typeof limit !== 'number') return []
     const userid = await userID()
 
     try{
@@ -956,10 +996,10 @@ const userID = async () => {
 export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:string) => {
     const userid = await userID()
     if( (from && Object.prototype.toString.call(new Date(from)) !== '[object Date]') || (to && Object.prototype.toString.call(new Date(to)) !== '[object Date]')){
-        return {error: 'Zły format dat', data : '0' }
+        return {error: 'Wrong date format', data : '0' }
     }
     if(exerciseName && typeof exerciseName !== 'string') {
-        return {error: 'Zły format dat', data : '0' }
+        return {error: 'Wrong date format', data : '0' }
     }
 
     let toFormatted = ''
@@ -1026,7 +1066,7 @@ export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:
         `
         return { error: '', data: count.rows[0].count as string }
     }catch{
-        return { error: 'Coś poszło nie tak', data: '0' }
+        return { error: 'Something went wrong', data: '0' }
     }
 }
 export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
@@ -1044,13 +1084,11 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
         fromFormatted = format(from,'yyyy-MM-dd kk:mm:ss')
     }
 
-    let unsortedExerciseArray:ExerciseType[] = []
-
     if( (from && Object.prototype.toString.call(new Date(from)) !== '[object Date]') || (to && Object.prototype.toString.call(new Date(to)) !== '[object Date]')){
-        return { error: 'Zły format dat' , data : []}
+        return { error: 'Wrong date format' , data : []}
     }
     if(exerciseName && typeof exerciseName !== 'string') {
-        return { error: 'Nazwa ćwiczenia musi być textem', data : []}
+        return { error: 'Exercise name has to be text', data : []}
     }
     try{
         //TODO MAKE SEPARATE FUNCTION FOR FETCHING COUNT
@@ -1106,7 +1144,7 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
         return { error: '', data: exercises.rows as ExerciseType[] }
     }catch(e){
         console.log('Error occured fetchUserExercises func actions.ts',e)
-        return { error: 'Coś poszło nie tak' }
+        return { error: 'Something went wrong' }
     }
 }
 
@@ -1133,18 +1171,29 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
 
     const { advancmentlevel, daysexercising, favouriteexercises, goal, notfavouriteexercises } = newSettings
 
-    if(typeof goal !== 'string' || !goalArr.includes(goal)) return { error: 'Zły cel, poprawne cele to jedno z "Siła","Hipertrofia","Oba" ' }
-    if(typeof advancmentlevel !== 'string' || !advancmentlevelArr.includes(advancmentlevel)) return { error: 'Zły poziom zaawansowania, poprawne poziomy to jedno z "Początkujący","Średniozaawansowany","Zaawansowany" ' }
-    if(typeof daysexercising !== 'string' || !daysexercisingArr.includes(daysexercising)) return { error: 'Dni ćwiczeń w tygodniu musi być pomiędzy 1 a 7' }
+    if(!Array.isArray(favouriteexercises) || !Array.isArray(notfavouriteexercises)){
+        return { error: 'Something went wrong' }
+    }
+    if(typeof goal !== 'string' || !goalArr.includes(goal)){
+        return { error: 'Wrong goal, correct goals are one of' }
+    } 
+
+    if(typeof advancmentlevel !== 'string' || !advancmentlevelArr.includes(advancmentlevel)){
+        return { error: 'Wrong advancment level, correct level is one of' }
+    } 
+
+    if(typeof daysexercising !== 'string' || !daysexercisingArr.includes(daysexercising)){
+        return { error: 'Training days a week should be between 1 and 7' }
+    } 
 
     if(favouriteexercises){
         for(let i = 0 ; i< favouriteexercises.length ; i++ ){
-            if(!exercisesArr.includes(favouriteexercises[i])) return { error: 'Nieznane ćwiczenie w lubionych ćwiczeniach, nazwa to: ' + favouriteexercises[i] }
+            if(!exercisesArr.includes(favouriteexercises[i])) return { error: 'Unknown exercise in favourtie exercises'}
         }
     }
     if(notfavouriteexercises){
         for(let i = 0 ; i< notfavouriteexercises.length ; i++ ){
-            if(!exercisesArr.includes(notfavouriteexercises[i])) return { error: 'Nieznane ćwiczenie w nie lubianych ćwiczeniach, nazwa to: ' + notfavouriteexercises[i] }
+            if(!exercisesArr.includes(notfavouriteexercises[i])) return { error: 'Nieznane ćwiczenie w nie lubianych ćwiczeniach' }
         }
     }
     
@@ -1155,8 +1204,10 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
     }catch(e){
         console.log('Error occured saveNewUserSetting func actions.ts',e)
         return {
-            error: 'Coś poszło nie tak'
+            error: 'Something went wrong'
         }
+    }finally{
+        revalidatePath('/home/profile/settings')
     }
 }
 
@@ -1179,9 +1230,9 @@ export const fetchPreviousExercise = async (exercisename:string) => {
 export const changePassword = async (password:string,newpassword:string,repeatnewpassword:string) => {
     const userid = await userID()
 
-    if(typeof password!== 'string' || typeof newpassword!== 'string' || typeof repeatnewpassword!== 'string') return {error: 'Hasło musi być ciągiem znaków'}
-    if(newpassword!==repeatnewpassword) return {error: 'Hasła różnią się'}
-    if(newpassword.length<8) return {error: 'Hasło powinno mieć conajmniej 8 znaków'}
+    if(typeof password!== 'string' || typeof newpassword!== 'string' || typeof repeatnewpassword!== 'string') return {error: 'Password has to be string of characters'}
+    if(newpassword!==repeatnewpassword) return {error: 'Password are different'}
+    if(newpassword.length<8) return {error: 'Password should be at least 8 chracters long'}
     let userEncryptedPassword
     try{
         const userData = await sql`
@@ -1189,12 +1240,12 @@ export const changePassword = async (password:string,newpassword:string,repeatne
         `
     userEncryptedPassword = userData.rowCount && userData.rowCount > 0 ? userData.rows[0].password : null
     }catch(e){
-        return {error: 'Coś poszło nie tak'}
+        return {error: 'Something went wrong'}
     }
 
-    if(!userEncryptedPassword) return {error: 'Coś poszło nie tak'}
+    if(!userEncryptedPassword) return {error: 'Something went wrong'}
     const isPasswordCorrect = await ComparePasswords(password,userEncryptedPassword)
-    if(!isPasswordCorrect) return {error: 'Złe hasło'}
+    if(!isPasswordCorrect) return {error: 'Wrong password'}
 
     const hasedPassword = await hash(newpassword,10)
     try{
@@ -1202,7 +1253,7 @@ export const changePassword = async (password:string,newpassword:string,repeatne
             UPDATE gymusers SET password = ${hasedPassword} WHERE id = ${userid}
         `
     }catch{
-        return {error: 'Coś poszło nie tak'}
+        return {error: 'Something went wrong'}
     }
 
 }

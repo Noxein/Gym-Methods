@@ -3,6 +3,8 @@ import { ExpandIcon } from "@/app/ui/icons/ExpandIcon"
 import { useState } from "react"
 import { LinkToExercise } from "./LinkToExercise"
 import { Icon } from "../Icon" 
+import { useTranslations } from "next-intl"
+import { nameTrimmer } from "@/app/lib/utils"
 
 type ListExercisesTypes = {
     item:any,
@@ -13,25 +15,27 @@ type ListExercisesTypes = {
 export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListExercisesTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `${currentLevel*3}`
+
+    const d = useTranslations("DefaultExercises")
     
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`relative flex flex-col gap-1 font-bold`}>
-            <ExpandBtn text={'Twoje ćwiczenia'} isExpanded={showChildren} 
+            <ExpandBtn text={d('TwojeCwiczenia')} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}
                 />
             {showChildren && item.map((x:{exercisename:string,id:string},index:number)=>(
-            <LinkToExercise isFirst={index===0} mLeft={'6'} key={x.id} text={x.exercisename}/>
+            <LinkToExercise isFirst={index===0} mLeft={'6'} key={x.id} text={x.exercisename} leadTo={x.exercisename}/>
         ))}
     </div>)
     }
     if(Array.isArray(item)){
         return (<div className={`relative flex flex-col font-semibold`}>
-            <ExpandBtn text={objectName} isExpanded={showChildren} 
+            <ExpandBtn text={d(objectName)} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}/>
 
         {showChildren && <div className='flex flex-col gap-2 font-normal'>
                 {item.map((x,index)=>(       
-                        <LinkToExercise isFirst={index===0} mLeft='12' key={x} text={x}/>
+                        <LinkToExercise isFirst={index===0} mLeft='12' key={x} text={d(nameTrimmer(x))} leadTo={x}/>
                     ))}
             </div>}
 
@@ -42,7 +46,7 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListE
     if(typeof item === 'object'){
         return (<div className={`relative flex flex-col gap-3 font-bold`}>
 
-            <ExpandBtn text={objectName||''} isExpanded={showChildren} 
+            <ExpandBtn text={objectName&&d(objectName)||''} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}/>
 
 

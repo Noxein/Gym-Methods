@@ -5,8 +5,9 @@ import { PlusIcon, TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import { ModalContexts } from './ModalContexts'
 import { Button } from '../../ui/Button'
 import { ButtonWithIcon } from '../../ui/ButtonWithIcon'
-import { localStorageSetter } from '@/app/lib/utils'
+import { localStorageSetter, nameTrimmer } from '@/app/lib/utils'
 import { ErrorDiv } from '../../ui/ErrorDiv'
+import { useTranslations } from 'next-intl'
 
 type ChangeExerciseListTypes = {
     list2?: LocalStorageExercise[],
@@ -52,10 +53,14 @@ export const ChangeExerciseList = ({list2,setLocalStorageTrainingData}:ChangeExe
             return xCopy
         })
     }
+
+    const t = useTranslations("Home/Start-Training/[TrainingName]")
+    const u = useTranslations("Utils")
+
   return (
     <div className='fixed left-0 top-0 right-0 w-screen z-20 backdrop-blur-sm flex justify-center overflow-auto bottom-20'>
     <div className='bg-dark z-10 w-full pt-10 px-5 flex flex-col gap-2 overflow-y-auto'>
-        <h1 className='text-center text-xl text-white font-semibold mb-5'>Wybierz ćwiczenie</h1>
+        <h1 className='text-center text-xl text-white font-semibold mb-5'>{t("SelectExercise")}</h1>
 
             {list2?.map((exercise,index)=>(
                 <SingleExercise key={exercise.id} exerciseName={exercise.exerciseName} handleChangeExercisesOrder={handleChangeExercisesOrder} handleDeleteExercise={handleDeleteExercise} index={index}/>
@@ -67,14 +72,14 @@ export const ChangeExerciseList = ({list2,setLocalStorageTrainingData}:ChangeExe
             <ButtonWithIcon 
                 className='flex-1'
                 onClick={handleShowModal}
-                buttonText='Inne ćwiczenie'
+                buttonText={t("DiffrentExercise")}
                 isPrimary
                 childrenIcon= {
                     <PlusIcon fill='#fff'/>
                 }
             />
 
-            <Button className='flex-1' onClick={handleCloseList}>Anuluj</Button>
+            <Button className='flex-1' onClick={handleCloseList}>{u("Cancel")}</Button>
 
         </div>
     </div>
@@ -89,10 +94,14 @@ type SingleExerciseTypes = {
 }
 
 const SingleExercise = ({exerciseName,handleChangeExercisesOrder,index,handleDeleteExercise}:SingleExerciseTypes) => {
+
+    const d = useTranslations("DefaultExercises")
+
+    const formattedExerciseName = d(nameTrimmer(exerciseName)).includes("DefaultExercises") ? exerciseName : d(nameTrimmer(exerciseName))
     return(
         <div className='bg-marmur p-[1px] rounded-lg flex items-center cursor-pointer' onClick={()=>handleChangeExercisesOrder(index)}>
             <div className='bg-dark text-white py-2 px-4 rounded-lg flex-1'>
-                {exerciseName}
+                {formattedExerciseName}
             </div>
             <Icon onClick={(e)=>{e.stopPropagation();handleDeleteExercise(index)}}>
                 <TrashIcon width='25' height='25'/>

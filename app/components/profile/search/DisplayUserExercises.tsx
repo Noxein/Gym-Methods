@@ -1,8 +1,9 @@
-import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
+import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, nameTrimmer, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
 import { ExerciseType, HistoryExercise, Series } from '@/app/types'
 import { format } from 'date-fns'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { SmallLoader } from '../../Loading/SmallLoader'
+import { useTranslations } from 'next-intl'
 
 type DisplayUserExercisesTypes = {
     fetchedExercises: HistoryExercise[],
@@ -12,8 +13,10 @@ type DisplayUserExercisesTypes = {
     totalItems: number,
 }
 export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
+
+    const t = useTranslations("Home/Profile/Search")
+    
   return (
-   
     <div className='mt-16 mx-5 mb-20'>
          <InfiniteScroll
          dataLength={dataLength}
@@ -22,7 +25,7 @@ export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearc
          next={()=>handleSearch()}
          endMessage={
             <p style={{ textAlign: 'center' }}>
-              <b>To już wszystkie ćwiczenia</b>
+              <b>{t("ThatsAllExercises")}</b>
             </p>
           }
           style={{overflow:''}}
@@ -39,12 +42,15 @@ type SingleExerciseTypes = {
     exercise: HistoryExercise,
 }
 const SingleExercise = ({exercise}:SingleExerciseTypes) => {
+    const u = useTranslations("Utils")
+    const weeIndex = format(exercise.exercises[0].date!,'i') 
+    const monthIndex = format(exercise.exercises[0].date!,'L')
     return(
         <div className='flex flex-col h-fit'>
             <div className='sticky flex gap-1 top-8 h-fit bg-marmur text-black px-2'>
-                <span>{WeekDayArrayPL[WeekDayArray.indexOf(format(exercise.exercises[0].date!,'cccc'))]}</span>
+                <span>{u("WeekFullName",{day: weeIndex})}</span>
                 <span>{format(exercise.exercises[0].date!,'dd')}</span>
-                <span>{MonthNamesArrayPL[MonthNamesArray.indexOf(format(exercise.exercises[0].date!,'LLLL'))]}</span>
+                <span>{u("MonthIndex",{index: monthIndex})}</span>
             </div>
             <div className='flex flex-col'>
                 {exercise.exercises.map(exercise=>(
@@ -60,11 +66,15 @@ type ExercisesMapType = {
 }
 
 const ExercisesMap = ({exercise}:ExercisesMapType) => {
+
+    const d = useTranslations("DefaultExercises")
+    const formattedName = d(nameTrimmer(exercise.exercisename)).includes("DefaultExercises") ? exercise.exercisename : d(nameTrimmer(exercise.exercisename))
+
     return (
         <div>
             <div className={`bg-green text-marmur flex justify-between px-2 font-bold`}> 
             <span>
-                {exercise.exercisename}
+                {formattedName}
             </span>
         </div>
 
@@ -80,15 +90,18 @@ type SingleSetType = {
     set: Series
 }
 const SingleSet = ({set}:SingleSetType) => {
+
+    const u = useTranslations("Utils")
+
     return(
         <div className='flex pr-2'>
-            <TranslateSide text={set.side}/>
+            <SpanElement text={u(set.side)}/>
             <SpanElement text={set.weight} additionalText='kg'/>
             {
-            set.time?<SpanElement text={set.time} additionalText='czas'/>:
+            set.time?<SpanElement text={set.time} additionalText={u("Time")}/>:
             <SpanElement text={set.repeat} additionalText={'x'}/>
             }
-            <SpanElement additionalText={DifficultyArrayPL[DifficultyArray.indexOf(set.difficulty)]}/>
+            <SpanElement additionalText={u(set.difficulty.charAt(0).toUpperCase() + set.difficulty.slice(1))}/>
         </div>
     )
 }
@@ -100,13 +113,3 @@ const SpanElement = ({text,additionalText}:{text?:string|number,additionalText?:
         </span>
     )
 } 
-
-const TranslateSide = ({text}:{text:string}) => {
-    const EngArr = ['Both','Left','Right']
-    const PlArr = ['Obie','Lewa','Prawa']
-
-    const translatedText = PlArr[EngArr.indexOf(text)]
-    return (
-        <SpanElement text={translatedText}/>
-    )
-}

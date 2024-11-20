@@ -1,6 +1,8 @@
 'use client'
+import { nameTrimmer } from '@/app/lib/utils'
 import { GymExercisesDbResult } from '@/app/types'
 import { format, subHours } from 'date-fns'
+import { useTranslations } from 'next-intl'
 
 type CompletedTrainingTypes = {
     training: GymExercisesDbResult[],
@@ -12,6 +14,9 @@ export const CompletedTraining = ({training,trainingName,trainingDate}:Completed
 
     const offset = new Date(trainingDate).getTimezoneOffset()/60
     const finishHour = subHours(new Date(trainingDate),offset)
+
+    const t = useTranslations("Home")
+    const d = useTranslations("DefaultExercises")
   return (
     <div className={`text-marmur border-marmur border-[1px] flex-1 py-2 px-2 rounded-lg min-h-36 min-w-80`}>
         <div className='flex justify-between'>
@@ -22,12 +27,12 @@ export const CompletedTraining = ({training,trainingName,trainingDate}:Completed
                 {training.map((exercise,index)=>(
                     <div className={`border-t-[1px] border-b-[1px] text-gray-400 border-gray-500 flex justify-between mx-4 px-2 py-[2px]`} key={index}>
                         {exercise.exerciseid.length>=30?(
-                        <span title={exercise.exerciseid}>{exercise.exerciseid.slice(0,30)}...</span>
+                        <span title={exercise.exerciseid}>{d(nameTrimmer(exercise.exerciseid)).slice(0,30)}...</span>
                         ):(
-                        <span>{exercise.exerciseid}</span>
+                        <span>{d(nameTrimmer(exercise.exerciseid))}</span>
                         )}
                         
-                        <span>{exercise.sets.length} serie</span>
+                        <span>{exercise.sets.length} {t("Series",{lastNumber: (exercise.sets.length.toLocaleString())[exercise.sets.length-1]})}</span>
                     </div>
                 ))}
             </div>

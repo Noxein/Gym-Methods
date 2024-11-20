@@ -7,6 +7,7 @@ import { exerciseList } from '@/app/lib/exercise-list'
 import { FirstSetupFinish, SecondStepDataValidation } from '@/app/actions'
 import { useRouter } from 'next/navigation'
 import { ErrorDiv } from '../ui/ErrorDiv'
+import { useTranslations } from 'next-intl'
 
 interface FinalStep {
     setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
@@ -29,30 +30,32 @@ export const FinalStep = ({data,exercisesToDelete,favouriteExercises,notfavourit
         const validData = SecondStepDataValidation(favouriteExercises)
         if(validData && validData.error){
             setLoading(false)
-            return setError(validData.error)
+            return setError(e(validData.error))
         } 
         
         const sendData = await FirstSetupFinish(data,exercisesToDelete,favouriteExercises)
         if(sendData && sendData.error){
             setLoading(false)
-            return setError(sendData.error)
+            return setError(e(sendData.error))
         }
        
-        // it wasnt workking befor
-        
-        //setLoading(false)
+        setLoading(false)
     }
+
+    const t = useTranslations("FirstSetup")
+    const e = useTranslations("Errors")
+
   return (
     <div className='mb-24 mx-5 '>
-        <h1 className='text-white font-bold text-xl text-center mt-20 mb-10'>Zaznacz jakie ćwiczenia <br/> muszą być w Twoim planie:</h1>
+        <h1 className='text-white font-bold text-xl text-center mt-20 mb-10'>{t("ExercisesYouWantToDo1/2")} <br/> {t("ExercisesYouWantToDo2/2")}</h1>
 
         <Mapper item={exerciseList} currentLevel={0} stateSetter={setFavouriteExercises} state={favouriteExercises} filterExercises={exercisesToDelete} favourite={true} disableFuncitions={loading}/>
 
         <ErrorDiv error={error}/>
 
         <div className={`fixed bottom-0 left-0 right-0 gap-2 flex mx-5 pb-5 bg-dark`}>
-            <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)} disabled={loading}>Wstecz</Button>
-            <Button className='flex-1 text-2xl' onClick={async()=>{ValidateData()}} isPrimary disabled={loading}>Zakończ</Button>
+            <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)} disabled={loading}>{t("Back")}</Button>
+            <Button className='flex-1 text-2xl' onClick={async()=>{ValidateData()}} isPrimary disabled={loading}>{t("Finish")}</Button>
         </div>
     </div>
   )

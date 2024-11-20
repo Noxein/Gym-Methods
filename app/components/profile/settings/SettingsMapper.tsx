@@ -1,6 +1,9 @@
 import { ExpandIcon, PlusIcon } from "@/app/ui/icons/ExpandIcon"
 import { useState } from "react"
 import { Icon } from "../../Icon"
+import { useTranslations } from "next-intl"
+import { nameTrimmer } from "@/app/lib/utils"
+import { cn } from "@/app/lib/cn"
 
 type StepTwoOutOfThree = {
     item:any, 
@@ -17,11 +20,13 @@ export const SettingsMapper = ({item,objectName,currentLevel=0,stateSetter,state
     
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `${currentLevel*3}`
+
+    const d = useTranslations("DefaultExercises")
     
     if(Array.isArray(item)){
         return (<div className={`flex flex-col ${mLeft} font-semibold`}>
             <ExpandBtn 
-                text={objectName} 
+                text={d(objectName)} 
                 isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} 
                 mLeft={mLeft}/>
@@ -41,7 +46,7 @@ export const SettingsMapper = ({item,objectName,currentLevel=0,stateSetter,state
         return (<div className={`flex flex-col gap-1 font-bold`}>
 
             <ExpandBtn 
-                text={objectName||''} 
+                text={objectName&&d(objectName)||''} 
                 isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} 
                 mLeft={mLeft}/>
@@ -102,20 +107,23 @@ const SelectExercise = ({text,mLeft,isFirst,setExercisesToDelete,selected,favour
     }
     const getFillColor = () => {
         if(selected){
+            console.log('something is selected')
             if(favourite) return `bg-green border-green`
             return `bg-red border-red`
         }
         return `bg-marmur border-marmur`
     }
 
+    const d = useTranslations("DefaultExercises")
+
     const addOnClass = getFillColor()
     const fill = selected?`#fff`:`#0D1317`
 
 
     return(
-        <button className={`relative text-left ml-12 mt-1 ${addOnClass} text-marmur border-marmur border-[1px] rounded flex justify-between items-center ${isFirst?'mt-2':null}`} onClick={Toggle}>
+        <button className={cn(`relative text-left ml-12 mt-1 text-marmur border-[1px] rounded flex justify-between items-center ${isFirst?'mt-2':null}`,addOnClass)} onClick={Toggle}>
             <span className={`flex-1 bg-dark rounded-md pl-4 py-2 flex flex-col`}>
-                {text}
+                {d(nameTrimmer(text))}
             </span>
             <Icon className="flex items-center px-1">
                 <PlusIcon fill={fill}/>

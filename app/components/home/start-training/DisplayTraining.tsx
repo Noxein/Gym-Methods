@@ -12,6 +12,7 @@ import { AddExerciseUsingState } from '@/app/components/home/start-training/AddE
 import { localStorageSetter } from '@/app/lib/utils'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 type DisplayTrainingTypes = {
     trainingPlanData: UserTrainingPlan,
@@ -117,7 +118,8 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
     const handleShowExerciseList = () => {
         modalsContext?.setShowExerciseList(true)
     }
-
+    const u = useTranslations("Utils")
+    const t = useTranslations("Home/Start-Training/[TrainingName]")
 
   return (
     <div className='flex flex-col min-h-[calc(100dvh-100px)] mb-24'>
@@ -126,8 +128,8 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 <h1 className='text-2xl'>{trainingPlanData.trainingname}</h1>
             </div>
             <div className='text-gray-400 flex gap-2 items-center'>
-                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList} disabled={loading}>Zmień</Button>
-                <span className='text-nowrap'>{localStorageTrainingData.currentExerciseIndex + 1} z {totalExercises}</span>
+                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList} disabled={loading}>{u("Change")}</Button>
+                <span className='text-nowrap'>{localStorageTrainingData.currentExerciseIndex + 1} {u("Of")} {totalExercises}</span>
             </div>
         </div>
         {
@@ -140,7 +142,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 <Button className={`px-3 ${localStorageTrainingData.currentExerciseIndex===0 ? 'border-gray-700':null}`} onClick={previousExercise}>
                     <LeftAngle fill={localStorageTrainingData.currentExerciseIndex===0 ? '#777':'#fff'} height='40' width='40'/>
                 </Button>
-                <Button className='flex-1' onClick={()=>setShowConfirmEndTrainingModal(true)} isPrimary>ZAKOŃCZ TRENING</Button>
+                <Button className='flex-1' onClick={()=>setShowConfirmEndTrainingModal(true)} isPrimary> {t("CloseTraining")} </Button>
                 <Button className={`px-3 ${localStorageTrainingData.currentExerciseIndex===totalExercises - 1 ? 'border-gray-700':null}`} onClick={nextExercise}>
                     <LeftAngle className='rotate-180' fill={localStorageTrainingData.currentExerciseIndex===totalExercises - 1 ? '#777':'#fff'} height='40' width='40'/>
                 </Button>
@@ -163,7 +165,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
             />}
         {showConfirmEndTrainingModal && 
         <ConfirmEndTrainingModal 
-            text='Czy napewno chcesz zakończyć trening?'
+            text={t("AreYouSure")}
             showModal={setShowConfirmEndTrainingModal}
             handleEnd={handleCloseTraining}
             />}

@@ -2,6 +2,7 @@
 import { ConvertEnglishWeekDayToPolish } from '@/app/lib/utils'
 import { LastExerciseType } from '@/app/types'
 import { format, subHours } from 'date-fns'
+import { useTranslations } from 'next-intl'
 
 type LastTrainingItemTypes = {
     lastExercise: LastExerciseType
@@ -9,7 +10,9 @@ type LastTrainingItemTypes = {
 export const LastTrainingItem = ({lastExercise}:LastTrainingItemTypes) => {
     const offset = new Date(lastExercise.datetime).getTimezoneOffset()/60
     const finishHour = subHours(new Date(lastExercise.datetime),offset)
-    const weekday = ConvertEnglishWeekDayToPolish(lastExercise.weekday)
+
+    const u = useTranslations("Utils")
+    const weekday = u("WeekDayEnglish",{day: lastExercise.weekday})
     
   return (
     <div className={`bg-marmur py-[1px] px-[1px] rounded-md flex`}>

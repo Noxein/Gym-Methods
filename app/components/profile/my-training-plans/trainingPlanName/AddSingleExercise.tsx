@@ -1,7 +1,8 @@
 import { Icon } from '@/app/components/Icon';
-import { localStorageSetter } from '@/app/lib/utils';
+import { localStorageSetter, nameTrimmer } from '@/app/lib/utils';
 import { LocalStorageTraining, TrainingExerciseType } from '@/app/types'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon';
+import { useTranslations } from 'next-intl';
 import { v4 as uuidv4 } from 'uuid';
 
 type AddExerciseType = {
@@ -50,12 +51,15 @@ export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingIn
             return [{exerciseid:id,exercisename:text,id:uuidv4()}]
         })
     }
+
+    const d = useTranslations("DefaultExercises")
+    const newName = d(nameTrimmer(text)).includes("DefaultExercises") ? text : d(nameTrimmer(text))
     return(
         <button className={`text-left ${mLeft} bg-marmur text-marmur py-[1px] pl-[1px] rounded flex items-center justify-between ${isFirst?'mt-2':null}`} 
         onClick={addExercise}
         >
             <span className={`flex-1 bg-dark rounded-md pl-4 py-3 flex flex-col`}>
-                {text}
+                {newName}
             </span>
             <Icon className='px-[3px]'>
                 <PlusIcon width='20px' fill='#0D1317'/>

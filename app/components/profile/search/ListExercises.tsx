@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Icon } from '../../Icon'
 import { ExpandIcon } from '@/app/ui/icons/ExpandIcon'
 import { SelectExercise } from './SelectExercise'
+import { useTranslations } from 'next-intl'
+import { nameTrimmer } from '@/app/lib/utils'
 
 type ListExercisesTypes = {
     item:any,
@@ -13,9 +15,12 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListE
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `${currentLevel*3}`
     
+    const t = useTranslations("Home/Profile/Search")
+    const d = useTranslations("DefaultExercises")
+
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`flex flex-col gap-1 font-bold`}>
-            <ExpandBtn text={'Twoje ćwiczenia'} isExpanded={showChildren} 
+            <ExpandBtn text={t("YourExercises")} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}
                 />
             {showChildren && item.map((x:{exercisename:string,id:string},index:number)=>(
@@ -25,12 +30,12 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListE
     }
     if(Array.isArray(item)){
         return (<div className={`flex flex-col font-semibold`}>
-            <ExpandBtn text={objectName} isExpanded={showChildren} 
+            <ExpandBtn text={d(objectName)} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}/>
 
         {showChildren && <div className='flex flex-col gap-2 font-normal'>
                 {item.map((x,index)=>(       
-                        <SelectExercise isFirst={index===0} mLeft='12' key={x} text={x}/>
+                        <SelectExercise isFirst={index===0} mLeft='12' key={x} text={d(nameTrimmer(x))}/>
                     ))}
             </div>}
 
@@ -41,7 +46,7 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListE
     if(typeof item === 'object'){
         return (<div className={`flex flex-col gap-3 font-bold`}>
 
-            <ExpandBtn text={objectName||''} isExpanded={showChildren} 
+            <ExpandBtn text={objectName&&d(objectName)||''} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}/>
 
 

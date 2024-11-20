@@ -1,5 +1,7 @@
 import { SelectedExerciseWithTempo, TempoType, UserExercise, UserExerciseTempoReturnType } from '@/app/types'
 import { SingleExercise } from './SingleExercise'
+import { useTranslations } from 'next-intl'
+import { nameTrimmer } from '@/app/lib/utils'
 
 const defaultTempo = {
     up:0,
@@ -16,17 +18,18 @@ type filteredTemposType = {
     setShowDeleteTempoModal:React.Dispatch<React.SetStateAction<boolean>>,
 }
 export const FilteredTempos = ({filteredExercises,tempos,setSelectedExercise,setShowEditTempoModal,setShowDeleteTempoModal}:filteredTemposType) => {
+    const d = useTranslations("DefaultExercises")
   return (
     <div className='flex flex-col gap-2'>
         {filteredExercises.map((x,i)=>{
             if(typeof x === 'object'){
                 return (
-                    <SingleExercise key={x.id} exerciceid={x.id} mLeft='' isFirst={i===0} text={x.exercisename} tempo={tempos[x.id]?tempos[x.id].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
+                    <SingleExercise key={x.id} exerciceid={x.id} mLeft='' isFirst={i===0} text={x.exercisename} translatedText={x.exercisename} tempo={tempos[x.id]?tempos[x.id].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
                 )
             }
             if(typeof x === 'string'){
                 return (
-                    <SingleExercise key={x} exerciceid={x} mLeft='' isFirst={i===0} text={x} tempo={tempos[x]?tempos[x].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
+                    <SingleExercise key={x} exerciceid={x} mLeft='' isFirst={i===0} translatedText={d(nameTrimmer(x))} text={x} tempo={tempos[x]?tempos[x].tempo:defaultTempo} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
                 )
             }
         })}
