@@ -361,13 +361,13 @@ export const DeleteUserExercise = async (id:string) => {
                 await sql`
                     UPDATE gymuserstrainingplans
                     SET exercises = ${JSON.stringify({exercises})}
-                    WHERE id = ${training.id};
+                    WHERE id = ${training.id} AND userid = ${userid};
                 `
             }
         })
         try{
             await sql`
-            UPDATE gymexercises SET exerciseid = null WHERE exerciseid = ${id}
+            UPDATE gymexercises SET exerciseid = null WHERE exerciseid = ${id} AND userid = ${userid}
         `
         }catch(e){
             console.log(e)
@@ -375,7 +375,7 @@ export const DeleteUserExercise = async (id:string) => {
         }
 
         await sql`
-            DELETE FROM gymusersexercises WHERE id = ${id};
+            DELETE FROM gymusersexercises WHERE id = ${id} AND userid = ${userid};
         `
        
     }catch(e){
@@ -631,7 +631,7 @@ export const deleteUserHandle = async (handleid:string,) => {
 
     try{
         await sql`
-            UPDATE gymexercises SET handleid = null WHERE handleid = ${handleid}
+            UPDATE gymexercises SET handleid = null WHERE handleid = ${handleid} AND userid = ${userid}
         `
         await sql`
              DELETE FROM gymusershandles WHERE id = ${handleid} AND userid = ${userid}
@@ -781,7 +781,7 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
         await sql`
             UPDATE gymuserstrainingplans
             SET trainingname = ${trainingplanname}, date = ${JSON.stringify(date)}, exercises = ${JSON.stringify({exercises})}, weekday = ${weekday}
-            WHERE id = ${trainingid};
+            WHERE id = ${trainingid} AND userid = ${userid};
         
             `
     }catch(e){
@@ -794,6 +794,7 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
 
 export const DeleteUserTraining = async (trainingid:string) => {
     if(typeof trainingid !== 'string') return { error: "Something went wrong"}
+    const userid = await userID()
 
     try{
 
@@ -804,15 +805,15 @@ export const DeleteUserTraining = async (trainingid:string) => {
 
         await Promise.all(idsArray.map(async item=>{
             await sql`
-                UPDATE gymexercises SET trainingid = null WHERE trainingid = ${item.id}
+                UPDATE gymexercises SET trainingid = null WHERE trainingid = ${item.id} AND userid = ${userid}
             `
         }))
 
         await sql`
-            DELETE FROM gymuserstrainings WHERE trainingid = ${trainingid};
+            DELETE FROM gymuserstrainings WHERE trainingid = ${trainingid} AND userid = ${userid};
         `
         await sql`
-            DELETE FROM gymuserstrainingplans WHERE id = ${trainingid};
+            DELETE FROM gymuserstrainingplans WHERE id = ${trainingid} AND userid = ${userid};
             `
     }catch(e){
         console.log('Error occured DeleteUserTraining func actions.ts',e)
