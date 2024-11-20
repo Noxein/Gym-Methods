@@ -1,5 +1,9 @@
 import { LocalStorageTraining, TrainingExerciseType, UserExercise } from '@/app/types'
 import { AddExercise } from './AddSingleExercise'
+import { LangContext } from '@/app/context/LocaleProvider'
+import { useContext } from 'react'
+import { useTranslations } from 'next-intl'
+import { nameTrimmer } from '@/app/lib/utils'
 
 type SearchExercisesTypes = { 
     allExercisesInOneArray: (string | UserExercise)[],
@@ -11,14 +15,31 @@ type SearchExercisesTypes = {
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
 export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:SearchExercisesTypes) => {
-    const filtered = allExercisesInOneArray.filter(x=>{
-        if(typeof x === 'object'){
-          return x.exercisename.toLowerCase().includes(searchTerm.toLowerCase())
-        }
-        if(typeof x === 'string'){
-          return x.toLowerCase().includes(searchTerm.toLowerCase())
-        }
-      })
+    let filtered:(string | UserExercise)[] = []
+
+      const context = useContext(LangContext)
+    
+      const d = useTranslations('DefaultExercises')
+    
+      if(context === 'en'){
+        filtered = allExercisesInOneArray.filter(x=>{
+          if(typeof x === 'object'){
+            return x.exercisename.toLowerCase().includes(searchTerm.toLowerCase())
+          }
+          if(typeof x === 'string'){
+            return d(nameTrimmer(x)).toLowerCase().includes(searchTerm.toLowerCase())
+          }
+        })
+      }else{
+        filtered = allExercisesInOneArray.filter(x=>{
+          if(typeof x === 'object'){
+            return x.exercisename.toLowerCase().includes(searchTerm.toLowerCase())
+          }
+          if(typeof x === 'string'){
+            return x.toLowerCase().includes(searchTerm.toLowerCase())
+          }
+        })
+      }
   return (
     <FilteredExercises 
         allExercisesInOneArray={filtered} 
@@ -40,6 +61,7 @@ type FilteredExercisesTypes = {
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
 export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:FilteredExercisesTypes) => {
+    const d = useTranslations("DefaultExercises")
     return (
         <div className='flex flex-col gap-2 mx-3'>
             {allExercisesInOneArray.map((x,i)=>{

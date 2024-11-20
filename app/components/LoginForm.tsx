@@ -8,6 +8,7 @@ import { ErrorDiv } from './ui/ErrorDiv'
 import { SmallLoaderDiv } from './ui/SmallLoaderDiv'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
+import { useTranslations } from 'next-intl'
 
 export const LoginForm = () => {
   const[showPassword,setShowPassword] = useState(false)
@@ -25,29 +26,32 @@ export const LoginForm = () => {
     const data = await LoginNoFormData(email,password)
     if(data.error){ 
       console.log(data,data.error)
-      setError(data.error)
+      setError(e(data.error))
       return setLoading(false)
     } 
     setLoading(false)
     router.push('/home')
   }
 
+  const t = useTranslations("Login")
+  const e = useTranslations("Errors")
+
   return (<>
-      <h2 className={`self-center text-3xl pb-6 text-white`}>Login</h2>
+      <h2 className={`self-center text-3xl pb-6 text-white`}> {t("Login")} </h2>
       <FormWrapper 
-      submitBtnText='Zaloguj'
+      submitBtnText={t("Login")}
       hasAccount={false}
       >
 
         <Input labelName='Email' onChange={e=>setEmail(e.target.value)} value={email} disabled={loading}/>
         
-        <InputGroup id='password' text='Hasło' type={showPassword?'text':'password'} showPassword={showPassword} onChange={e=>setPassword(e.target.value)} setShowPassword={setShowPassword} disabled={loading}/>
+        <InputGroup id='password' text={t("Password")} type={showPassword?'text':'password'} showPassword={showPassword} onChange={e=>setPassword(e.target.value)} setShowPassword={setShowPassword} disabled={loading}/>
 
         <SmallLoaderDiv loading={loading}/>
         <ErrorDiv error={error}/>
 
         <Button className='mt-4' isPrimary onClick={handleLogin} disabled={loading}>
-          Zaloguj
+          {t("Login")}
         </Button>
       </FormWrapper>
       

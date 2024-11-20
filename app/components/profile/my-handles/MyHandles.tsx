@@ -8,6 +8,7 @@ import { BlurBackgroundModal } from '../../BlurBackgroundModal';
 import { DeleteHandleModal } from './DeleteHandleModal';
 import { AddHanleModal } from './AddHandleModal';
 import { EditHanleModal } from './EditHandleModal';
+import { useTranslations } from 'next-intl';
 
 type MyHandlesTypes = {
     handles: {
@@ -37,14 +38,16 @@ export const MyHandles = ({handles}:MyHandlesTypes) => {
         setSelectedHandle(handle)
         setShowEditModal(true)
     }
+    const t = useTranslations("Home/Profile/My-Handles")
+    const h = useTranslations("Handles")
   return (
     <div className="mx-5 mt-20 text-white">
     <h1 className='text-2xl text-center pb-10'>
-        Moje uchwyty
+        {t("MyHandles")}
     </h1>
 
     <div className='flex flex-col gap-2'>
-        <ButtonWithIcon className='bg-green' isPrimary buttonText='Dodaj nowy uchwyt' childrenIcon={
+        <ButtonWithIcon className='bg-green' isPrimary buttonText={t("AddNewHandle")} childrenIcon={
             <Icon className='flex justify-center items-center px-1'>
                 <PlusIcon />
             </Icon>
@@ -52,10 +55,11 @@ export const MyHandles = ({handles}:MyHandlesTypes) => {
         onClick={()=>setShowAddModal(true)}
         />
 
-        {handles.map(handle=>(
-            <ListElement 
+        {handles.map(handle=>{
+            const handleName = h(handle.handlename).includes("Handle") ? handle.handlename : h(handle.handlename)
+            return <ListElement 
                 key={handle.id}
-                elementName={handle.handlename} 
+                elementName={handleName} 
                 onClick={()=>handleClickListElement(handle)}
                 childrenIcon={
                     <button onClick={(e)=>{e.stopPropagation();setSelectedHandle(handle);handleDeleteItem(handle.id)}}>
@@ -65,7 +69,7 @@ export const MyHandles = ({handles}:MyHandlesTypes) => {
                     </button>
                 }
                 /> 
-        ))}
+})}
     </div>
 
     {showDeleteModal && <BlurBackgroundModal>

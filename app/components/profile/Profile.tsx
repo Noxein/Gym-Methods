@@ -1,40 +1,47 @@
-import { auth } from '@/auth'
+'use client'
+import { useTranslations } from 'next-intl'
 import { LinkBtn, UserEmail } from './LinkBtn'
 import { SignOutBtn } from './SignOutBtn'
 import { BookIcon, CalendarIcon, ExerciseIcon, HandleIcon, LockIcon, LogoutIcon, SettingsIcon, SummaryIcon, TimerIcon } from '@/app/ui/icons/ExpandIcon'
 
-export const Profile = async () => {
-  const session = await auth()
+type ProfileTypes = {
+  email: string
+}
+
+export const Profile = ({email}:ProfileTypes) => { 
   const width = '30px'
   const height = '30px'
+
+  const t = useTranslations("Home/Profile")
+
   return (
     <div className='flex flex-col gap-2'>
-      <UserEmail email={session?.user?.email!}/>
+      <UserEmail email={email}/>
       <div className='mx-5 flex flex-col gap-4 min-h-[calc(100dvh-100px)]'>
-          <LinkBtn href='/home/profile/set-tempo' text='Ustaw tempo'>
+          <LinkBtn href='/home/profile/set-tempo' text={t("SetTempo")}>
             <TimerIcon width={width} height={height}/>
           </LinkBtn>
-          <LinkBtn href='/home/profile/search' text='Historia ćwiczeń'>
+          <LinkBtn href='/home/profile/search' text={t("ExerciseHistory")}>
             <CalendarIcon width={width} height={height}/>
           </LinkBtn>
-          <LinkBtn href='/home/profile/my-exercises' text='Moje ćwiczenia'>
+          <LinkBtn href='/home/profile/my-exercises' text={t("MyExercises")}>
             <ExerciseIcon width={width} height={height}/>
           </LinkBtn>
-          <LinkBtn href='/home/profile/my-training-plans' text='Moje treningi'>
+          <LinkBtn href='/home/profile/my-training-plans' text={t("MyTrainings")}>
             <BookIcon width={width} height={height} />
           </LinkBtn>
-          <LinkBtn href='/home/profile/my-handles' text='Moje uchwyty'>
+          <LinkBtn href='/home/profile/my-handles' text={t("MyHandles")}>
             <HandleIcon width={width} height={height} />
           </LinkBtn>
-          <LinkBtn href='/home/profile' text='Podsumowanie'>
+          <LinkBtn href='/home/profile' text={t("Summary")}>
             <SummaryIcon width={width} height={height}/>
           </LinkBtn>
-          <LinkBtn href='/home/profile/settings' text='Ustawienia konta'>
+          <LinkBtn href='/home/profile/settings' text={t("AccountSettings")}>
             <SettingsIcon width={width} height={height}/>
           </LinkBtn>
 
 
-          <LinkBtn href='/home/profile/change-password' text='Zmień hasło' sClass='mt-auto'>
+          <LinkBtn href='/home/profile/change-password' text={t("ChangePassword")} sClass='mt-auto'>
             <LockIcon width={width} height={height}/>
           </LinkBtn>
           <SignOutBtn>

@@ -8,10 +8,9 @@ import { WidgetDataProvider } from './WidgetDataProvider'
 import { HomeWidgetSeleton } from '../Loading/home/HomeWidgetSeleton'
 import { OpenTrainingRemainder } from './OpenTrainingRemainder'
 
-export const Home = async () => {
+export const Home = () => {
   return (
     <div className='mb-20'>
-
       <Suspense fallback={<HomeWidgetSeleton />}>
         <WidgetDataProvider />
       </Suspense>

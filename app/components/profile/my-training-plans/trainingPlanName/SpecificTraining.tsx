@@ -13,6 +13,7 @@ import { Button } from '@/app/components/ui/Button'
 import { Input } from '@/app/components/ui/Input'
 import { Select } from '@/app/components/ui/SelectField'
 import { ErrorDiv } from '@/app/components/ui/ErrorDiv'
+import { useTranslations } from 'next-intl'
 
 type SpecificTrainingType = {
     training: UserTrainingPlan,
@@ -39,15 +40,20 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
     const isError = await EditUserTraining(training.id,planName,planExercises,planWeekDay)
     if(isError && isError.error){
       setLoading(false)
-      return setError(isError.error)
+      return setError(e(isError.error))
     } 
   }
+
+  const t = useTranslations("Home/Profile/My-Training-Plans/[TrainingPlanName]")
+  const u = useTranslations("Utils")
+  const e = useTranslations("Errors")
+  
   if(loading) return <LoaderFullScreen />
   return (
     <div className='flex flex-col mx-5 min-h-[calc(100dvh-40px)]'>
       <div className='flex flex-col gap-4 mt-5 text-marmur text-xl'>
-        <Input labelName='Nazwa treningu' type="text" value={planName} onChange={e=>setPlanName(e.target.value)} />
-        <Select labelName='Dzień tygodnia' valuesToLoop={WeekDayArrayPL} value={WeekDayArrayPL[WeekDayArray.indexOf(planWeekDay)]} onChange={e=>setPlanWeekDay(WeekDayArray[WeekDayArrayPL.indexOf(e.target.value)] as WeekDay)} />
+        <Input labelName={u("TrainingName")} type="text" value={planName} onChange={e=>setPlanName(e.target.value)} />
+        <Select labelName={u("DayOfWeek")} valuesToLoop={WeekDayArray} value={WeekDayArray.indexOf(planWeekDay)} onChange={e=>setPlanWeekDay(WeekDayArray[WeekDayArrayPL.indexOf(e.target.value)] as WeekDay)} />
 
       </div>
 
@@ -56,7 +62,7 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
       <div className='mt-10 min-h-[calc(100dvh-180px)]'>
         <ButtonWithIcon
         onClick={addExercise}
-        buttonText='Dodaj nowe ćwiczenie'
+        buttonText={t("AddNewExercise")}
         childrenIcon={
           <PlusIcon width='20' fill='#D9D9D9'/>
         }
@@ -69,8 +75,8 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
 
         <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
 
-          <Button className='flex-1' onClick={()=>router.push('/home/profile/my-training-plans')} disabled={loading}>Anuluj</Button>
-          <Button className='flex-1' isPrimary onClick={handleSave} disabled={loading}>Zapisz zmiany</Button>
+          <Button className='flex-1' onClick={()=>router.push('/home/profile/my-training-plans')} disabled={loading}>{u("Cancel")}</Button>
+          <Button className='flex-1' isPrimary onClick={handleSave} disabled={loading}>{u("SaveChanges")}</Button>
           
         </div>
 

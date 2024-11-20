@@ -11,8 +11,9 @@ type SingleExerciseType = {
     setSelectedExercise: React.Dispatch<React.SetStateAction<SelectedExerciseWithTempo>>,
     setShowEditTempoModal: React.Dispatch<React.SetStateAction<boolean>>,
     setShowDeleteTempoModal: React.Dispatch<React.SetStateAction<boolean>>,
+    translatedText: string,
 }
-export const SingleExercise = ({text,mLeft,isFirst,tempo,exerciceid,setSelectedExercise,setShowEditTempoModal,setShowDeleteTempoModal}:SingleExerciseType) => {
+export const SingleExercise = ({text,mLeft,isFirst,tempo,exerciceid,translatedText,setSelectedExercise,setShowEditTempoModal,setShowDeleteTempoModal}:SingleExerciseType) => {
 
     const setExercice = (show:'edit'|'delete') => {
         const exercise = {
@@ -27,11 +28,10 @@ export const SingleExercise = ({text,mLeft,isFirst,tempo,exerciceid,setSelectedE
         } 
         setShowDeleteTempoModal(true)
     }
-        
     return(
         <div className={`flex-1 text-left ${mLeft} bg-marmur text-marmur border-[1px] rounded-lg flex justify-between ${isFirst?'mt-2':null}`}>
             <span className={`flex-1 bg-dark rounded-lg pl-4 py-2 flex flex-col`}>
-                <span>{text}</span>
+                <span>{translatedText}</span>
                 <span className="text-sm -mt-1">
                     {tempo.up} - {tempo.uphold} - {tempo.down} - {tempo.downhold}
                 </span>

@@ -3,6 +3,7 @@ import { ActionTypesEnum, DifficultyLevelType, LocalStorageTraining, Side } from
 import { Icon } from '@/app/components/Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import { localStorageSetter } from '@/app/lib/utils'
+import { useTranslations } from 'next-intl'
 
 type DisplayCurrentSeresUsingStateTypes = {
     exercisename:string,
@@ -73,13 +74,16 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
             return xCopy
         })
     }
+
+    const u = useTranslations("Utils")
+
   return (
     <div className='flex flex-col gap-2 mt-3 text-white mb-2'>
 
         {trainingState.exercises[trainingState.currentExerciseIndex].sets.map((series,index)=>(
             <div className={`flex bg-marmur rounded-md ${index===0?'mt-2':null}`} key={index}>
                 <div className='text-dark text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
-                    {series.side === 'Left'? 'L' : series.side === 'Right'? 'P' : 'O'}
+                    {u(series.side)[0]}
                 </div>
                 <div className={`flex-1 bg-dark px-2 py-3 grid ml-[1px] my-[1px] rounded-md ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'}`}>
                     <div className='flex'>
@@ -92,9 +96,9 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
 
                     <div>
                         <select name="" id="" value={series.difficulty} className={`bg-dark w-full border-b-2 border-black pb-1`} onChange={(e)=>{editInput(e,index,'EDITSERIESDIFFICULTY')}}>
-                            <option value="easy">Łatwa</option>
-                            <option value="medium">Średnia</option>
-                            <option value="hard">Trudna</option>
+                            <option value="easy">{u("Easy")}</option>
+                            <option value="medium">{u("Medium")}</option>
+                            <option value="hard">{u("Hard")}</option>
                         </select>
                     </div>
 

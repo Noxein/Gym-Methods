@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { ActionTypes, ActionTypesEnum, DifficultyLevelType, Series, Side } from '../../types'
 import { Icon } from '../Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
+import { useTranslations } from 'next-intl'
 
 type DisplayCurrentSeriesTypes = {
     exercisename:string,
@@ -50,10 +51,11 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
         dispatchSeries({type:'EDITSERIESSIDE',index,payload:newSide})
         localStorage.setItem(exercisename,JSON.stringify(arrayCopy))
     }
+    const u = useTranslations("Utils")
   return (
     <div className='flex flex-col gap-2 mt-3 text-white mb-2'>
 
-        {currentSeries.map((series,index)=>(
+        {currentSeries && currentSeries.map((series,index)=>(
             <div className={`flex bg-marmur rounded-md ${index===0?'mt-2':null}`} key={index}>
                 <div className='text-dark text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
                     {series.side === 'Left'? 'L' : series.side === 'Right'? 'P' : 'O'}
@@ -69,9 +71,9 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
 
                     <div>
                         <select name="" id="" value={series.difficulty} className={`bg-dark w-full border-b-2 border-black pb-1`} onChange={(e)=>{editInput(e,index,'EDITSERIESDIFFICULTY')}}>
-                            <option value="easy">Łatwa</option>
-                            <option value="medium">Średnia</option>
-                            <option value="hard">Trudna</option>
+                            <option value="easy">{u("Easy")}</option>
+                            <option value="medium">{u("Medium")}</option>
+                            <option value="hard">{u("Hard")}</option>
                         </select>
                     </div>
 

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { CenterComponent } from '@/app/components/CenterComponent'
 import { Button } from '../ui/Button'
 import { ErrorDiv } from '../ui/ErrorDiv'
+import { useTranslations } from 'next-intl'
 
 export type dataType = {
     goal:string,
@@ -21,11 +22,13 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
         goal: string;
         advancmentlevel: string;
         daysexercising: string;
+        somethinWentWrong: string;
         isError: boolean;
     }>({
         goal: '',
         advancmentlevel: '',
         daysexercising: '',
+        somethinWentWrong: '',
         isError: false
     })
     const goal = ['Siła','Hipertrofia','Oba']
@@ -34,32 +37,46 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
 
     const ValidateData = async () => {
         const validatedData = FistStepDataValidation(data)
-        if(validatedData?.error && validatedData?.error.isError) return setError(validatedData.error)
+
+        if(validatedData?.error && validatedData?.error.isError){
+            const dataCopy = {...validatedData?.error}
+            
+            for(let [key,value] of Object.entries(dataCopy)){
+                if(typeof value === 'string' && value !== '') (dataCopy as any)[key] = e(value)
+            }
+            return setError(dataCopy)
+        } 
         setCurrentStep(x=>x+1)
     }
+
+    const t = useTranslations("FirstSetup")
+    const e = useTranslations("Errors")
+
   return (
     <CenterComponent>
         <form className='flex flex-col gap-4 mb-20 mx-5'>
             <Select 
-                labelText='Jaki cel treningu Cię interesuje?'
+                labelText={t("GoalQuestion")}
                 options={goal}
                 name='goal'
                 error={error.goal}
                 setData={setData}/>
             <Select 
-                labelText='Jaki jest Twój poziom zaawansowania?' 
+                labelText={t("AdvamcmentLevelQuestion")}
                 options={advancmentlevel}
                 name='advancmentlevel'
                 error={error.advancmentlevel}
                 setData={setData}/>
             <Select 
-                labelText='Ile dni w tygodniu chcesz ćwiczyć?'
+                labelText={t("DaysTrainingQuestion")}
                 options={daysexercising}
                 name='daysexercising'
                 error={error.daysexercising}
                 setData={setData}/>
-            <div className={`fixed bottom-0 left-0 right-0 flex mx-5 mb-5`}>
-                <Button className='flex-1 text-2xl' isPrimary onClick={e=>{e.preventDefault();ValidateData()}}>Dalej</Button>
+            <ErrorDiv error={error.somethinWentWrong}/>
+            <div className={`fixed bottom-0 left-0 right-0 flex mx-5 mb-5 gap-4`}>
+                <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)}>{t("Back")}</Button>
+                <Button className='flex-1 text-2xl' isPrimary onClick={e=>{e.preventDefault();ValidateData()}}>{t("Next")}</Button>
             </div>
         </form>
     </CenterComponent>
@@ -74,6 +91,9 @@ type SelectTypes = {
     setData: React.Dispatch<React.SetStateAction<dataType>>
 }
 const Select = ({labelText, options, name, error, setData}:SelectTypes) => {
+
+    const SL = useTranslations("SelectLoop")
+
     const setDataFunc = (value:string) => {
         setData(callbackData=>{
             let callbackDataCopy = {...callbackData}
@@ -89,7 +109,7 @@ const Select = ({labelText, options, name, error, setData}:SelectTypes) => {
                 >
                 {options.map((option,index)=>(
                     <option value={option} key={option}>
-                        {option}
+                        {SL(option)}
                     </option>
                 ))}
             </select>

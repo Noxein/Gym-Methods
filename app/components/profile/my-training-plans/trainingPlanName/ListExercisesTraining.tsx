@@ -3,6 +3,7 @@ import { AddExercise } from './AddSingleExercise'
 import { LocalStorageTraining, TrainingExerciseType } from '@/app/types'
 import { ExpandIcon } from '@/app/ui/icons/ExpandIcon'
 import { Icon } from '@/app/components/Icon'
+import { useTranslations } from 'next-intl'
 
 type ListExercisesTrainingTypes = {
     item:any,
@@ -19,10 +20,13 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `ml-${currentLevel*2}`
     
+    const t = useTranslations("Home/Profile/My-Training-Plans/[TrainingPlanName]")
+    const d = useTranslations("DefaultExercises")
+
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`flex flex-col gap-1 font-bold`}>
             <ExpandBtn 
-                text={'Twoje ćwiczenia'} 
+                text={t("YourExercises")} 
                 isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} 
                 mLeft={mLeft}
@@ -47,7 +51,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
     if(Array.isArray(item)){
         return (
             <div className={`flex flex-col ${mLeft} font-semibold`}>
-                <ExpandBtn text={objectName} isExpanded={showChildren} onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft}/>
+                <ExpandBtn text={objectName ? d(objectName) : ''} isExpanded={showChildren} onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft}/>
 
                 {showChildren && 
                 <div className='flex flex-col gap-1 font-normal'>
@@ -76,8 +80,8 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
             <div className={`flex flex-col gap-2 font-bold ${currentLevel===0?'mx-5':null}`}>
 
                 <ExpandBtn 
-                    text={objectName||''} 
-                    isExpanded={showChildren} 
+                    text={objectName ? d(objectName) : ''} 
+                    isExpanded={showChildren}
                     onClick={()=>setShowChildren(!showChildren)} 
                     mLeft={mLeft}
                 />

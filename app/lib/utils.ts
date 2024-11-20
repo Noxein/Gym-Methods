@@ -63,3 +63,7 @@ export const dayArrayInitializer = () => {
 export const localStorageSetter = (name:string,objectToSet:any) => {
   localStorage.setItem(name,JSON.stringify(objectToSet))
 }
+
+export const nameTrimmer = (string:string) => {
+  return string.replace(/ /g,'').replace(/'/g,'')
+}

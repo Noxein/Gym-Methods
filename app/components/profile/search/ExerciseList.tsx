@@ -6,6 +6,9 @@ import { Icon } from '../../Icon'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { SelectedExerciseContext } from './SelectedExerciseContext'
 import { Button } from '../../ui/Button'
+import { useTranslations } from 'next-intl'
+import { nameTrimmer } from '@/app/lib/utils'
+import { LangContext } from '@/app/context/LocaleProvider'
 
 type ExerciseListTypes = {
     exerciseList: (string | UserExercise)[],
@@ -27,6 +30,10 @@ export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
         setExercise && setExercise('')
         hideList()
     }
+
+    const t = useTranslations("Home/Profile/Search")
+    const u = useTranslations("Utils")
+
   return (
         <div className='fixed min-h-screen left-0 top-0 w-screen z-20 backdrop-blur-sm flex flex-col overflow-auto bottom-20 px-5'>
                 <div className='flex items-center my-5'>
@@ -35,11 +42,11 @@ export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
                             <LeftAngle height='30' width='30' fill='#D9D9D9'/>
                         </Icon>
                     </button>
-                    <input type="text" placeholder='Szukaj' value={searchField} id="Szukaj" onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/>
+                    <input type="text" placeholder={u("Search")} value={searchField} id={u("Search")} onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/>
                 </div>
 
                 <Button className='mb-4 text-white bg-dark border-white' onClick={slectAllExercises}>
-                    Wszystkie ćwiczenia
+                    {t("AllExercises")}
                 </Button>
                
                 {
@@ -61,7 +68,23 @@ type SearchExercisesTypes = {
 }
 
 export const SearchExercises = ({allExercisesInOneArray,searchTerm}:SearchExercisesTypes) => {
-    const filtered = allExercisesInOneArray.filter(x=>{
+
+    const context = useContext(LangContext)
+    let filtered:(string | UserExercise)[] = []
+  
+    const d = useTranslations('DefaultExercises')
+  
+    if(context === 'en'){
+      filtered = allExercisesInOneArray.filter(x=>{
+        if(typeof x === 'object'){
+          return x.exercisename.toLowerCase().includes(searchTerm.toLowerCase())
+        }
+        if(typeof x === 'string'){
+          return d(nameTrimmer(x)).toLowerCase().includes(searchTerm.toLowerCase())
+        }
+      })
+    }else{
+      filtered = allExercisesInOneArray.filter(x=>{
         if(typeof x === 'object'){
           return x.exercisename.toLowerCase().includes(searchTerm.toLowerCase())
         }
@@ -69,6 +92,7 @@ export const SearchExercises = ({allExercisesInOneArray,searchTerm}:SearchExerci
           return x.toLowerCase().includes(searchTerm.toLowerCase())
         }
       })
+    }
   return (
     <FilteredExercises allExercisesInOneArray={filtered} />
   )
@@ -79,6 +103,9 @@ type FilteredExercisesTypes = {
 }
 
 export const FilteredExercises = ({allExercisesInOneArray}:FilteredExercisesTypes) => {
+
+    const d = useTranslations('DefaultExercises')
+
     return (
         <div className='flex flex-col gap-2 w-full'>
             {allExercisesInOneArray.map((x,i)=>{
@@ -89,7 +116,7 @@ export const FilteredExercises = ({allExercisesInOneArray}:FilteredExercisesType
                 }
                 if(typeof x === 'string'){
                     return (
-                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x} key={i}/>
+                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={d(x)} key={i}/>
                     )
                 }
             })}

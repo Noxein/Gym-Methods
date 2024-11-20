@@ -4,6 +4,8 @@ import { ExpandIcon } from "@/app/ui/icons/ExpandIcon"
 import { useState } from "react"
 import { SingleExercise } from "./SingleExercise"
 import { Icon } from "../../Icon"
+import { useTranslations } from "next-intl"
+import { nameTrimmer } from "@/app/lib/utils"
 
 const defaultTempo = {
     up:0,
@@ -26,23 +28,26 @@ export const MappedTempoExercises = ({item,objectName,currentLevel=0,isLast=true
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `ml-${currentLevel*2}`
     
+    const t = useTranslations("Home/Profile/Set-Tempo")
+    const d = useTranslations("DefaultExercises")
+
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`flex flex-col gap-1 font-bold`}>
-            <ExpandBtn text={'Twoje ćwiczenia'} isExpanded={showChildren} 
+            <ExpandBtn text={t("YourExercises")} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}/>
             {showChildren && item.map((x:{exercisename:string,id:string},index:number)=>(    
-            <SingleExercise text={x.exercisename} mLeft={`ml-10`} key={x.id} isFirst={index===0} tempo={tempos[x.id]?.tempo?tempos[x.id]?.tempo:defaultTempo} exerciceid={x.id} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
+            <SingleExercise text={x.exercisename} mLeft={`ml-10`} key={x.id} isFirst={index===0} translatedText={x.exercisename} tempo={tempos[x.id]?.tempo?tempos[x.id]?.tempo:defaultTempo} exerciceid={x.id} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
         ))}
     </div>)
     }
     if(Array.isArray(item)){
         return (<div className={`flex flex-col ${mLeft} font-semibold`}>
-            <ExpandBtn text={objectName} isExpanded={showChildren} 
+            <ExpandBtn text={d(objectName)} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}/>
 
         {showChildren && <div className='flex flex-col gap-2 font-normal'>
                 {item.map((x,index)=>(       
-                        <SingleExercise text={x} mLeft={`ml-10`} key={x} isFirst={index===0} tempo={tempos[x]?.tempo?tempos[x]?.tempo:defaultTempo} exerciceid={x} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
+                        <SingleExercise translatedText={d(nameTrimmer(x))} text={x} mLeft={`ml-10`} key={x} isFirst={index===0} tempo={tempos[x]?.tempo?tempos[x]?.tempo:defaultTempo} exerciceid={x} setSelectedExercise={setSelectedExercise} setShowEditTempoModal={setShowEditTempoModal} setShowDeleteTempoModal={setShowDeleteTempoModal}/>
                     ))}
             </div>}
         </div>)
@@ -52,7 +57,7 @@ export const MappedTempoExercises = ({item,objectName,currentLevel=0,isLast=true
     if(typeof item === 'object'){
         return (<div className={`flex flex-col gap-3 font-bold`}>
 
-            <ExpandBtn text={objectName||''} isExpanded={showChildren} 
+            <ExpandBtn text={objectName && d(objectName) || ''} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}/>
 
 

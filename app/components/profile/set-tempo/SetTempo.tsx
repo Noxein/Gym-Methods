@@ -5,6 +5,7 @@ import { SearchList } from './SearchList'
 import { EditTempo } from './EditTempo'
 import { ExerciseTypes, SelectedExerciseWithTempo, UserExercise, UserExerciseTempoReturnType } from '@/app/types'
 import { DeleteTempo } from './DeleteTempo'
+import { useTranslations } from 'next-intl'
 
 type SetTempoType = {
   exercises:ExerciseTypes,
@@ -17,9 +18,11 @@ export const SetTempo = ({exercises,tempos,allExercisesInOneArray}:SetTempoType)
   const[showDeleteTempoModal,setShowDeleteTempoModal] = useState(false)
   const[selectedExercise,setSelectedExercise] = useState<SelectedExerciseWithTempo>({id:'',name:'',tempo:{up:0,uphold:0,down:0,downhold:0}}) //id name 4 x tempos
 
+  const u = useTranslations("Utils")
+
   return (<div className='mx-5 mt-10'>
       <input type="text"
-      placeholder='Szukaj'
+      placeholder={u("Search")}
       onChange={e=>setSearchField(e.target.value)}
       className={`pl-2 w-full text-xl bg-dark border-marmur border-2 rounded-md py-2 text-marmur`}
       />

@@ -1,4 +1,5 @@
 import { getTrainingDataByName } from '@/app/actions'
+import { BackLink } from '@/app/components/home/start-training/BackLink'
 import { Training } from '@/app/components/home/start-training/Training'
 import { TrainingError } from '@/app/components/home/start-training/TrainingError'
 import { Button } from '@/app/components/ui/Button'
@@ -17,7 +18,7 @@ export default async function page({params,searchParams}:Pagetypes){
       return (
       <TrainingError message={trainingData.error}>
         <Button className='px-4 flex-1'>
-          <Link href={'/home/start-training'}>Powrót</Link>
+          <BackLink />
         </Button>
       </TrainingError>
       )

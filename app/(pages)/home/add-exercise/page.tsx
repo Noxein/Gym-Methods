@@ -3,7 +3,7 @@ import { ExerciseListMapped } from "@/app/components/add-exercise/ExerciseListMa
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Dodaj ćwiczenie",
+    title: "Dodaj ćwiczenie", 
 };
 
 export default async function AddExercisePage(){

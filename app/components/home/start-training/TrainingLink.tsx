@@ -3,12 +3,14 @@ import { UserTrainingPlan } from '@/app/types'
 import { RightTriangle } from '@/app/ui/icons/ExpandIcon'
 import { Icon } from '../../Icon'
 import { ConvertEnglishWeekDayToPolish } from '@/app/lib/utils'
+import { useTranslations } from 'next-intl'
 
 type TrainingLinkTypes = {
     plan: UserTrainingPlan
 }
 export const TrainingLink = ({plan}:TrainingLinkTypes) => {
-    const weekday = ConvertEnglishWeekDayToPolish(plan.weekday)
+    const u = useTranslations("Utils")
+    const weekday = u("WeekDayEnglish",{day: plan.weekday})
   return (
     <div className={`bg-marmur py-[1px] pl-[1px] rounded-md flex`}>
         <div className={`bg-dark flex flex-col rounded-md flex-1 px-4 pb-5 pt-3 relative`}>

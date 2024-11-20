@@ -8,6 +8,7 @@ import { DeleteTrainingModal } from './DeleteTrainingModal'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { ButtonWithIcon } from '../../ui/ButtonWithIcon'
 import { Icon } from '../../Icon'
+import { useTranslations } from 'next-intl'
 
 type MyTrainingPlansTypes = {
     UserTrainings: UserTrainingPlan[],
@@ -22,11 +23,12 @@ export const MyTrainingPlans = ({UserTrainings,showAddModalUrl}:MyTrainingPlansT
     setShowAddModal(true)
     HideShowHTMLScrollbar('hide')
   }
+  const t = useTranslations("Home/Profile/My-Training-Plans")
   return (
     <div className={`mx-5 text-marmur mt-10`}>
-        <h1 className='text-center text-2xl text-white'>Moje Plany Treningowe</h1>
+        <h1 className='text-center text-2xl text-white'>{t("MyTrainingPlans")}</h1>
         <ButtonWithIcon 
-        buttonText='Dodaj nowy trening'
+        buttonText={t("AddNewTraining")}
         childrenIcon={
           <Icon>
             <PlusIcon />

@@ -2,10 +2,11 @@ import { SelectedExerciseWithTempo } from '@/app/types'
 import { useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
 import { DeleteTempoFromDb } from '@/app/actions'
-import { HideShowHTMLScrollbar } from '@/app/lib/utils'
+import { HideShowHTMLScrollbar, nameTrimmer } from '@/app/lib/utils'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 import { Button } from '../../ui/Button'
 import { ErrorDiv } from '../../ui/ErrorDiv'
+import { useTranslations } from 'next-intl'
 
 type DeleteTempoType = {
     selectedExercise: SelectedExerciseWithTempo,
@@ -21,7 +22,7 @@ export const DeleteTempo = ({selectedExercise,setShowDeleteTempoModal}:DeleteTem
         const isError = await DeleteTempoFromDb(selectedExercise.id)
         if(isError && isError.error){
             setLoading(false)
-            return setError(isError.error)
+            return setError(e(isError.error))
         } 
         setLoading(false)
         HandleCloseModal()
@@ -31,11 +32,19 @@ export const DeleteTempo = ({selectedExercise,setShowDeleteTempoModal}:DeleteTem
         HideShowHTMLScrollbar('show')
         setShowDeleteTempoModal(false)
     }
+
+    const t = useTranslations("Home/Profile/Set-Tempo")
+    const d = useTranslations("DefaultExercises")
+    const u = useTranslations("Utils")
+    const e = useTranslations("Errors")
+
+    const formattedExerciseName = selectedExercise.name === selectedExercise.id ? d(nameTrimmer(selectedExercise.name)) : selectedExercise.name 
+
   return (
     <BlurBackgroundModal>
         <div className={`flex flex-col gap-2 mx-5 mb-20 rounded-md text-xl text-white w-full`}>
             
-            <div className='text-center'>Czy napewno chcesz usunąć tempo do ćwiczenia <br/> <b>{selectedExercise.name}</b>?</div>
+            <div className='text-center'>{t("AreYouSure")} <br/> <b>{formattedExerciseName}</b>?</div>
 
             <SmallLoaderDiv loading={loading}/>
 
@@ -43,8 +52,8 @@ export const DeleteTempo = ({selectedExercise,setShowDeleteTempoModal}:DeleteTem
 
             <div className='flex gap-2 mt-4'>
                 
-                <Button className='flex-1' onClick={HandleCloseModal} disabled={loading}>Anuluj</Button>
-                <Button className='flex-1' onClick={HandleDeleteTempo} isPrimary disabled={loading}>Usuń</Button>
+                <Button className='flex-1' onClick={HandleCloseModal} disabled={loading}>{u("Cancel")}</Button>
+                <Button className='flex-1' onClick={HandleDeleteTempo} isPrimary disabled={loading}>{u("Delete")}</Button>
                 
             </div>
             
