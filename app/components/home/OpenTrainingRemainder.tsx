@@ -10,27 +10,47 @@ import { SaveTrainingToDatabase } from "@/app/actions"
 import { ErrorDiv } from "../ui/ErrorDiv"
 import { useTranslations } from "next-intl"
 
-export const OpenTrainingRemainder = () => {
+type OpenTrainingRemainderTypes = {
+    useremail?: string | null
+}
+export const OpenTrainingRemainder = ({useremail}:OpenTrainingRemainderTypes) => {
+
     const resetStorageFunc = () => {
         const isReset = localStorage.getItem('reset')
         if(isReset) return
         localStorage.clear()
         localStorage.setItem('reset',JSON.stringify({reset:true}))
     }
+
     resetStorageFunc()
     const trainings = {...localStorage}
     const[showSelf,setShowSelf] = useState(true)
+
     const func = () => {
+        const userCloseDelay = localStorage.getItem('TrainingReminderDelay')
+
+        if(userCloseDelay){
+            const parsedDelay = JSON.parse(userCloseDelay)
+            const now = new Date()
+            console.log(now.getTime()<new Date(addHours(parsedDelay,8)).getTime())
+            if(!(now.getTime() > addHours(new Date(parsedDelay),8).getTime())) return [] // if it has been more than 8 hours since last reminder, remind again else return []
+        }
+
         let array = []
         for(const [key,value] of Object.entries(trainings)){
-            if(!key.includes('training')) continue
+            if(!key.includes('training') || !key.includes(useremail!)){
+                continue
+            }else{
+                console.log(value)
+            }
 
             const parsedOjbect = JSON.parse(value) as LocalStorageTraining
             
             if(addHours(new Date(parsedOjbect.trainingStartDate),8) <= new Date()){
-                array.push(key.slice(0,key.length-8))
+                array.push(key.slice(0,key.length-(8 + useremail?.length!)))
             }
         }
+        console.log(array)
         if(array.length>0){
             setShowSelf(true)
             HideShowHTMLScrollbar('hide')
@@ -43,6 +63,7 @@ export const OpenTrainingRemainder = () => {
     const [data,setData] = useState(()=>func())
     
     const handleClose = () => {
+        localStorage.setItem('TrainingReminderDelay',JSON.stringify(new Date()))
         setShowSelf(false) 
         HideShowHTMLScrollbar('show')
     }
@@ -59,7 +80,7 @@ export const OpenTrainingRemainder = () => {
                 ))}
             </div>
             <div className="w-full flex mt-5">
-                <Button className="flex-1" onClick={handleClose}>{t("Close")}</Button>
+                <Button className="flex-1" onClick={handleClose}>{t("RemindLater")}</Button>
             </div>
         </div>
     </BlurBackgroundModal>

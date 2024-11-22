@@ -24,7 +24,7 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListE
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}
                 />
             {showChildren && item.map((x:{exercisename:string,id:string},index:number)=>(
-            <SelectExercise isFirst={index===0} mLeft={'6'} key={x.id} text={x.exercisename}/>
+            <SelectExercise isFirst={index===0} mLeft={'6'} key={x.id} text={x.exercisename} translatedText={x.exercisename}/>
         ))}
     </div>)
     }
@@ -35,7 +35,7 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListE
 
         {showChildren && <div className='flex flex-col gap-2 font-normal'>
                 {item.map((x,index)=>(       
-                        <SelectExercise isFirst={index===0} mLeft='12' key={x} text={d(nameTrimmer(x))}/>
+                        <SelectExercise isFirst={index===0} mLeft='12' key={x} text={x} translatedText={d(nameTrimmer(x))}/>
                     ))}
             </div>}
 

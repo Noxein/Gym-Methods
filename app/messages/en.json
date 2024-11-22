@@ -70,7 +70,8 @@
 
         "OpenTrainings": "Yout have opened trainings in progress",
         "CloseTraining": "Close training",
-        "Close": "Close"
+        "Close": "Close",
+        "RemindLater": "Remind me later"
 
     },
     "Home/Add-Exercise": {

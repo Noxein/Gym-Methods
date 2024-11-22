@@ -1,5 +1,5 @@
 import { DisplayTraining } from './DisplayTraining'
-import { AllExercisesInOneArray, getAllExercises, getAllHandleTypes, userExercisesThatRequireHandlesOrTimeMesure } from '@/app/actions'
+import { AllExercisesInOneArray, getAllExercises, getAllHandleTypes, userEmail, userExercisesThatRequireHandlesOrTimeMesure, userID } from '@/app/actions'
 import { UserTrainingPlan } from '@/app/types'
 import { ModalContextsProvider } from './ModalContexts'
 
@@ -11,6 +11,7 @@ export const Training = async ({trainingPlanData}:TrainingTypes) => {
     const exercisesObject = await getAllExercises()
     const allExercisesInOneArray = await AllExercisesInOneArray()
     const allHandles = await getAllHandleTypes()
+    const useremail = await userEmail()
     return(
         <main>
             <ModalContextsProvider>
@@ -21,6 +22,7 @@ export const Training = async ({trainingPlanData}:TrainingTypes) => {
                     allHandles={allHandles}
                     ExercisesThatRequireHandle={ExercisesThatRequireHandle}
                     ExercisesThatRequireTimeMesure={ExercisesThatRequireTimeMesure}
+                    useremail={useremail}
                     />
             </ModalContextsProvider>
         </main>

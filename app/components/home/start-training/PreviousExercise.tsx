@@ -45,6 +45,7 @@ export const PreviousExercise = ({exerciseid,historyCache,setHistoryCache}:Previ
     }
     const t = useTranslations("Home/Add-Exercise/[Exercise-Name]")
     const u = useTranslations("Utils")
+    console.log(data)
   return (
     <div className='text-white'>
         {loading?<SmallLoader/>:
@@ -79,13 +80,12 @@ type SetTypes = {
 const Set = ({set,odd}:SetTypes) => {
 
     const u = useTranslations("Utils")
-
     return(
         <div className={`grid grid-cols-4 text-right bg-dark pr-4 border-1 py-2 rounded-xl`}>
-            <span>{u(set.side)}</span>
-            <span><b>{set.weight}</b> kg</span>
-            <span><b>{set.time?set.time:set.repeat}</b> {set.time?null:'x'}</span>
-            <span>{u(set.difficulty.charAt(0).toUpperCase() + set.difficulty.slice(1))}</span>
+            <span>{set.side && u(set.side)}</span>
+            <span><b>{(set.weight && set.weight !== 0) && set.weight}</b> kg</span>
+            <span><b>{(set.time || set.repeat) &&  set.time?set.time:set.repeat}</b> {set.time && set.time?null:'x'}</span>
+            <span>{set.difficulty && u(set.difficulty.charAt(0).toUpperCase() + set.difficulty.slice(1))}</span>
         </div>
     )
 }

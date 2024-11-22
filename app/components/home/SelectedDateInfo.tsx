@@ -35,33 +35,32 @@ export const SelectedDateInfo = ({dayData,selectedDay,Last30DaysExercises}:Selec
 
   return (
     <div>
-        <div className='text-marmur py-1 px-5 text-sm'>
+        <div className='text-marmur py-1 px-2 text-sm'>
             {u('WeekFullName',{day: format(selectedDay,'i')})} <b>{dayOfMonth}</b> {u('MonthIndex',{index: month})} - {t('ThatDay')}
         </div>
-        <div className='bg-marmur flex gap-4 px-5 py-2 text-sm'>
-            <div className='flex-1'>
-                <p>{t('Lifted',{number: dayData.KGToday})}</p>
-                <div className='bg-[#8A8A8A] rounded-lg h-7 me-shadow border-1 border-dark relative'>
+        <div className='bg-marmur grid grid-cols-2 grid-rows-[auto_auto_1fr] gap-x-4 gap-y-2 px-2 py-2 text-sm'>
+
+                <p className=''>{t('Lifted',{number: dayData.KGToday})}</p>
+                <div className='bg-[#8A8A8A] rounded-lg h-7 me-shadow border-1 border-dark relative row-start-2 col-start-1'>
                     <div style={{width:`${DayToWeekKGProcentage}%`}} className={`bg-dark text-white flex items-center  relative justify-center font-light rounded-lg h-full`}>
                         {/* <div className={`${DayToWeekKGProcentage === 0 ? 'ml-8' : DayToWeekKGProcentage <= 15? 'absolute -right-[120%]':null}`}>{DayToWeekKGProcentage}%</div> */}
                     </div>
                 </div>
-                <p className='mt-2'>
+                <p className='mt-2 row-start-3 col-start-1'>
                     {t('averageKG',{weight: averageWeight, isMore: averageWeightWord })}
                 </p>
-            </div>
 
-            <div className='flex-1'>
-                <p>{t('Repeated',{number: dayData.SeriesToday})}</p>
-                <div className='bg-[#8A8A8A] rounded-lg h-7 me-shadow border-1 border-dark'>
+
+                <p className='col-start-2 row-start-1'>{t('Repeated',{number: dayData.SeriesToday})}</p>
+                <div className='bg-[#8A8A8A] rounded-lg h-7 me-shadow border-1 border-dark col-start-2 row-start-2'>
                     <div style={{width:`${DayToWeekSeriesProcentage}%`}} className={`bg-dark text-white w-[21%] flex items-center justify-center font-light rounded-lg h-full ${DayToWeekKGProcentage === 0? 'ml-4':null} `}>
                         {/* {DayToWeekSeriesProcentage}% */}
                     </div>
                 </div>
-                <p className='mt-2'>
+                <p className='mt-2 row-start-3 col-start-2'>
                     {t('averageRepeat',{repetition: averageSeries, isMore: averageSeriesWord })}
                 </p>
-            </div>
+
         </div>
     </div>
   )

@@ -8,7 +8,11 @@ import { WidgetDataProvider } from './WidgetDataProvider'
 import { HomeWidgetSeleton } from '../Loading/home/HomeWidgetSeleton'
 import { OpenTrainingRemainder } from './OpenTrainingRemainder'
 
-export const Home = () => {
+type HomeTypes = {
+  useremail?: string | null
+}
+
+export const Home = ({useremail}:HomeTypes) => {
   return (
     <div className='mb-20'>
       <Suspense fallback={<HomeWidgetSeleton />}>
@@ -25,7 +29,7 @@ export const Home = () => {
         
       <AddExerciseButton />
 
-      <OpenTrainingRemainder />
+      <OpenTrainingRemainder useremail={useremail}/>
     </div>
   )
 }

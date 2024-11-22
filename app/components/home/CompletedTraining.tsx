@@ -26,8 +26,8 @@ export const CompletedTraining = ({training,trainingName,trainingDate}:Completed
         <div className='pt-2'>
                 {training.map((exercise,index)=>(
                     <div className={`border-t-[1px] border-b-[1px] text-gray-400 border-gray-500 flex justify-between mx-4 px-2 py-[2px]`} key={index}>
-                        {exercise.exerciseid.length>=30?(
-                        <span title={exercise.exerciseid}>{d(nameTrimmer(exercise.exerciseid)).slice(0,30)}...</span>
+                        {exercise.exerciseid.length>=20?(
+                        <span title={exercise.exerciseid}>{d(nameTrimmer(exercise.exerciseid)).slice(0,20)}...</span>
                         ):(
                         <span>{d(nameTrimmer(exercise.exerciseid))}</span>
                         )}

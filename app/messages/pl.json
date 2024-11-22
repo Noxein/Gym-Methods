@@ -60,7 +60,7 @@
         "Lifted" : "Przerzuciłeś {number} KG",
         "Repeated" : "Wykonałeś {number} powtórzeń",
         "averageKG": "To jest {weight} KG { isMore, select, true {więcej} other {mniej} } niż typowy dzień z przed 30 dni",
-        "averageRepeat": "To jest {repetition} powtórzeń { isMore, select, true {more} other {less} } niż typowy dzień z przed 30 dni",
+        "averageRepeat": "To jest {repetition} powtórzeń { isMore, select, true {więcej} other {mniej} } niż typowy dzień z przed 30 dni",
 
         "ClosestTrainings" : "Najbliższe treningi",
         "AddNewTraining": "Dodaj nowy trening",
@@ -70,8 +70,8 @@
 
         "OpenTrainings": "Masz niezakończone treningi z przed ponad 8 godzin",
         "CloseTraining": "Zakończ trening",
-        "Close": "Zamknij"
-
+        "Close": "Zamknij",
+        "RemindLater": "Przypomnij później"
     },
     "Home/Add-Exercise": {
         "AddExercise": "Dodaj ćwiczenie",

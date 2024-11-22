@@ -24,12 +24,13 @@ type DisplayTrainingTypes = {
     }[],
     ExercisesThatRequireHandle: ExercisesThatRequireTimeMesureOrHandle[],
     ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[],
+    useremail?: string | null
 }
 
 
-export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure}:DisplayTrainingTypes) => {
+export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,useremail}:DisplayTrainingTypes) => {
     const initializeLocalStorageData = (trainingName:string,exercises:TrainingExerciseType[],trainingid:string) => {
-        const data = localStorage.getItem(trainingName+'training')
+        const data = localStorage.getItem(trainingName+'training'+useremail)
         if(data){
             const parsedData = JSON.parse(data) as LocalStorageTraining
             return parsedData
@@ -39,7 +40,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
             currentExerciseIndex: 0,
             exercises:[],
             trainingStartDate: new Date(),
-            trainingNameInLocalStrage: trainingName+'training',
+            trainingNameInLocalStrage: trainingName+'training'+useremail,
             trainingId: trainingid
             }
     
@@ -57,7 +58,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
 
                 objectToSaveToLocalStorage.exercises.push(exerciseObj)
             })
-            localStorage.setItem(trainingName+'training',JSON.stringify(objectToSaveToLocalStorage))
+            localStorage.setItem(trainingName+'training'+useremail,JSON.stringify(objectToSaveToLocalStorage))
         return objectToSaveToLocalStorage
     }
     
@@ -69,7 +70,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
     const currentExerciseName = localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseName
     const currentExerciseId = localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseId
     const totalExercises = localStorageTrainingData.exercises.length
-    const localstorageTrainingName = trainingPlanData.trainingname+'training'
+    const localstorageTrainingName = trainingPlanData.trainingname+'training'+useremail
 
     const showTimeMesure = ExercisesThatRequireTimeMesure.some(exercise=>exercise.id === currentExerciseId)
     const requiresHandle = ExercisesThatRequireHandle.some(exercise=>exercise.id === currentExerciseId)

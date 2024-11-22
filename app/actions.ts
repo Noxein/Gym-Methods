@@ -989,8 +989,15 @@ const timeout = async () => {
     return a
 }
 
-const userID = async () => {
+export const userEmail = async () => {
     const user = await auth()
+    if(!user) return redirect('/login')
+    return user?.user?.email
+}
+
+export const userID = async () => {
+    const user = await auth()
+    if(!user) return redirect('/login')
     return user?.user?.id
 }
 

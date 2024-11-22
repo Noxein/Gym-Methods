@@ -43,6 +43,9 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     const handleSearch = async (reset:boolean) => {
         if(reset){
             setLoading(true)
+            setCurrentPage(1)
+            setFetchedExercises([])
+            setTotalItems(0)
             const result = await fetchUserExercises(from!,to!,selectedExercise,0)
             if(result.error){
                 setError(e(result.error))
@@ -73,7 +76,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     const handleSearchCount = async () => {
         const count = await fetchUserExercisesCount(from!,to!,selectedExercise)
         if(count.error) return { error : count.error }
-        setTotalItems(Number(count))
+        setTotalItems(Number(count.data))
     }
     const toggleSearchBar = () => {
         setShowSearch(!showSearch)
@@ -120,16 +123,16 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     const d = useTranslations("DefaultExercises")
     const e = useTranslations("Errors")
 
-    const selectedExerciseFormatted = () => {
-        if(!selectedExercise) return ''
-        const isLong = selectedExercise.length>=30
+    const selectedExerciseFormatted = (longVersion:boolean) => {
+        if(!selectedExercise) return t("AllExercises")
+        const isLong = longVersion ? false : selectedExercise.length>=20
 
         if(d(nameTrimmer(selectedExercise)).includes('DefaultExercises')){
-            if(isLong) return selectedExercise
-            return selectedExercise.slice(0,30) // in case the exercise is created by user and we dont have translation
+            if(isLong) return selectedExercise.slice(0,20) + '...'
+            return selectedExercise // in case the exercise is created by user and we dont have translation
         }
 
-        if(isLong) return d(nameTrimmer(selectedExercise)).slice(0,30)
+        if(isLong) return d(nameTrimmer(selectedExercise)).slice(0,20) + '...'
 
         return d(nameTrimmer(selectedExercise))
     }
@@ -143,7 +146,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                     <Input labelName={t("To")} type='date' onChange={e=>handleDateChange(e.target.value,setTo)} disabled={loading}/>
                 </div>
                 <div className='mx-5'>
-                    <Button className='w-full' onClick={handleShowExerciseList} isPrimary disabled={loading}>{searchExercise?.exercise || t("AllExercises")}</Button>
+                    <Button className='w-full' onClick={handleShowExerciseList} isPrimary disabled={loading}>{selectedExerciseFormatted(true)}</Button>
                 </div>
             </div>
             <div className={`w-full flex flex-col px-5 bg-marmur mt-2`}>
@@ -164,7 +167,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                                 {formattedFrom} - {formattedTo}
                             </span>
                             <span className={`text-dark text-right font-semibold text-xl`}>
-                                {selectedExerciseFormatted()}
+                                {selectedExerciseFormatted(false)}
                             </span>
     
                         </div>
