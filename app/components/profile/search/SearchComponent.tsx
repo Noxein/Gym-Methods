@@ -1,10 +1,10 @@
 'use client'
 import { useContext, useEffect, useState } from 'react'
 import { ExerciseList } from './ExerciseList'
-import { ExerciseType, ExerciseTypes, HistoryExercise, UserExercise } from '@/app/types'
+import { ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, HistoryExercise, UserExercise } from '@/app/types'
 import { SelectedExerciseContext } from './SelectedExerciseContext'
 import { Icon } from '../../Icon'
-import { ExpandIcon2 } from '@/app/ui/icons/ExpandIcon'
+import { ExpandIcon2, MagnyfingGlass } from '@/app/ui/icons/ExpandIcon'
 import { DisplayUserExercises } from './DisplayUserExercises'
 import { fetchUserExercises, fetchUserExercisesCount } from '@/app/actions'
 import { format } from 'date-fns'
@@ -41,6 +41,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         setShowExerciseList && setShowExerciseList(true)
     }
     const handleSearch = async (reset:boolean) => {
+        setShowSearch(false)
         if(reset){
             setLoading(true)
             setCurrentPage(1)
@@ -93,7 +94,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         })
         return total
     }
-    const SortItems = (unsortedExerciseArray:ExerciseType[]) => {
+    const SortItems = (unsortedExerciseArray:ExerciseTypeWithHandle[]) => {
         let obj: HistoryExercise[] = []
 
         unsortedExerciseArray.forEach((item,index)=>{
@@ -139,18 +140,23 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
   return (
 <>
     <div className='text-white'>
-        <div className={`fixed z-20 left-0 pt-5 w-full ${showSearch?'top-0':'-top-[140px]'} transition-all bg-dark`}>
+        <div className={`fixed z-20 left-0 pt-5 w-full ${showSearch?'top-0':'-top-[200px]'} transition-all bg-dark`}>
             <div className='flex flex-col gap-4'>
                 <div className='flex gap-4 mx-5 relative'>
                     <Input labelName={t("From")} type='date' onChange={e=>handleDateChange(e.target.value,setFrom)} disabled={loading}/>
                     <Input labelName={t("To")} type='date' onChange={e=>handleDateChange(e.target.value,setTo)} disabled={loading}/>
                 </div>
-                <div className='mx-5'>
-                    <Button className='w-full' onClick={handleShowExerciseList} isPrimary disabled={loading}>{selectedExerciseFormatted(true)}</Button>
+                <div className='mx-5 flex gap-2 flex-col'>
+                    <Button className='w-full bg-dark  flex justify-between px-5 items-center py-2' onClick={handleShowExerciseList} isPrimary disabled={loading}>{selectedExerciseFormatted(true)} 
+                        <Icon>
+                            <MagnyfingGlass fill='#fff' width='20'/>
+                        </Icon>
+                    </Button>
+                    <Button onClick={()=>handleSearch(true)}>{u("Search")}</Button>
                 </div>
             </div>
-            <div className={`w-full flex flex-col px-5 bg-marmur mt-2`}>
-                <div className='w-full flex justify-between gap-10'>
+            <div className={`w-full flex flex-col px-5 bg-darkLight mt-2 text-white border-green border-b-2 pt-2` }>
+                <div className='w-full flex justify-between gap-10  '>
                     <button onClick={toggleSearchBar} className='flex-1'>
                         <Icon className='flex items-center'>
                             <ExpandIcon2 expanded={showSearch}/>
@@ -158,15 +164,13 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                     </button>
                     {
                         showSearch?
-                        <button className={`text-dark font-semibold pl-10 text-right`} onClick={()=>handleSearch(true)}>
-                            {u("Search")}
-                        </button>:
-                        <div className={`flex flex-col text-dark`}>
+                        null:
+                        <div className={`flex flex-col`}>
     
-                            <span className={`text-dark`}>
+                            <span className={``}>
                                 {formattedFrom} - {formattedTo}
                             </span>
-                            <span className={`text-dark text-right font-semibold text-xl`}>
+                            <span className={`text-right font-semibold text-xl`}>
                                 {selectedExerciseFormatted(false)}
                             </span>
     

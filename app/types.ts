@@ -149,6 +149,8 @@ export type ExerciseType = {
     sets: Series[],
 }
 
+export type ExerciseTypeWithHandle = ExerciseType & { handlename?: string }
+
 export type UserSettings = {
     goal:  'Siła' | 'Hipertrofia' | 'Oba',
     advancmentlevel: 'Początkujący' | 'Średniozaawansowany' | 'Zaawansowany',
@@ -159,7 +161,7 @@ export type UserSettings = {
 
 export type HistoryExercise = {
     day: Date,
-    exercises:ExerciseType[]
+    exercises:ExerciseTypeWithHandle[]
 }
 
 export type LocalStorageTraining = {

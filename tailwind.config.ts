@@ -9,10 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors:{
-        green: '#2b804e', //3C9F65
+        green: '#3C9F65', //3C9F65 
         red: '#9F443C',
         marmur: '#D9D9D9',
         dark: '#0D1317',
+        darkLight: '#121B21'
       },
       borderWidth:{
         1: '1px'

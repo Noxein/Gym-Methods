@@ -40,8 +40,6 @@ export const OpenTrainingRemainder = ({useremail}:OpenTrainingRemainderTypes) =>
         for(const [key,value] of Object.entries(trainings)){
             if(!key.includes('training') || !key.includes(useremail!)){
                 continue
-            }else{
-                console.log(value)
             }
 
             const parsedOjbect = JSON.parse(value) as LocalStorageTraining
@@ -50,7 +48,6 @@ export const OpenTrainingRemainder = ({useremail}:OpenTrainingRemainderTypes) =>
                 array.push(key.slice(0,key.length-(8 + useremail?.length!)))
             }
         }
-        console.log(array)
         if(array.length>0){
             setShowSelf(true)
             HideShowHTMLScrollbar('hide')

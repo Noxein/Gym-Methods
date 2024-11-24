@@ -9,6 +9,7 @@ import { ButtonWithIcon } from '@/app/components/ui/ButtonWithIcon'
 import { DisplayCurrentSeresUsingState } from './DisplayCurrentSeresUsingState'
 import { localStorageSetter, nameTrimmer } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
+import { handleTypes } from '@/app/lib/exercise-list'
 
 type AddExerciseUsingStateType = {
     name:string,
@@ -280,17 +281,18 @@ type HandleTypes = {
 
 const Handle = ({allHandles,inputs,trainingState,setInputs,setLocalStorageTrainingData}:HandleTypes) => {
     const handleInput = trainingState.exercises[trainingState.currentExerciseIndex].handle
+    const jsomHandleValue = JSON.stringify({id: handleInput?.handleId, handlename: handleInput?.handleName})
     
-    const handleChange = (id:string,name:string) => {
+    const handleChange = (handle:{id:string,handlename:string}) => {
         setInputs(x=>{
             let xCopy = {...x}
-            xCopy.handle = { handleId: id, handleName: name}
+            xCopy.handle = { handleId: handle.id, handleName: handle.handlename}
             localStorageSetter(xCopy.exerciseid,xCopy)
             return xCopy
         })
         setLocalStorageTrainingData(x=>{
             let xCopy = {...x}
-            xCopy.exercises[xCopy.currentExerciseIndex].handle = {handleId: id, handleName: name}
+            xCopy.exercises[xCopy.currentExerciseIndex].handle = {handleId: handle.id, handleName: handle.handlename}
             localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
         })
@@ -298,6 +300,7 @@ const Handle = ({allHandles,inputs,trainingState,setInputs,setLocalStorageTraini
     useEffect(()=>{
         setLocalStorageTrainingData(x=>{
             let xCopy = {...x}
+            if(xCopy.exercises[xCopy.currentExerciseIndex].handle) return xCopy
             xCopy.exercises[xCopy.currentExerciseIndex].handle = {handleId: allHandles[0].id, handleName: allHandles[0].handlename}
             localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
             return xCopy
@@ -309,10 +312,10 @@ const Handle = ({allHandles,inputs,trainingState,setInputs,setLocalStorageTraini
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Uchwyt</label>
-            <select name="handle" value={handleInput?.handleId} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value,e.target.title)}>
+            <select name="handle" value={jsomHandleValue} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value))}>
                 {allHandles.map(handle=>{
-                    const formattedHandleName = h(handle.handlename.replace(" ",'')).includes("Handles") ? handle.handlename : h(handle.handlename.replace(" ",''))
-                    return <option value={handle.id} title={handle.handlename} key={handle.id}>{formattedHandleName}</option>
+                    const formattedHandleName = handleTypes.some(pre=> pre === handle.handlename) ? h(handle.handlename.replaceAll(" ",'')) : handle.handlename
+                    return <option value={JSON.stringify(handle)} key={handle.id}>{formattedHandleName}</option>
                 })}
             </select>
         </div>

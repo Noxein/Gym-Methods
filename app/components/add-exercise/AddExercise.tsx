@@ -41,7 +41,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
     const pathname = usePathname()
 
     useEffect(()=>{
-        const data = localStorage.getItem(name)
+        const data = localStorage.getItem(name+'singleExercise')
         if(data){
             const parsedData = JSON.parse(data)
             dispatch({type:"SETSERIESFROMMEMORY",payload:parsedData})
@@ -49,7 +49,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
     },[name])
     const AddSeries = () => {
         dispatch({type:'ADDSERIES'})
-        localStorage.setItem(name,JSON.stringify([...state.series,{
+        localStorage.setItem(name+'singleExercise',JSON.stringify([...state.series,{
             weight: state.weight,
             repeat: state.repeat,
             time: state.time,

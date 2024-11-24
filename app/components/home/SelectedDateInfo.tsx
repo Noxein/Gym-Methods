@@ -53,7 +53,7 @@ export const SelectedDateInfo = ({dayData,selectedDay,Last30DaysExercises}:Selec
 
                 <p className='col-start-2 row-start-1'>{t('Repeated',{number: dayData.SeriesToday})}</p>
                 <div className='bg-[#8A8A8A] rounded-lg h-7 me-shadow border-1 border-dark col-start-2 row-start-2'>
-                    <div style={{width:`${DayToWeekSeriesProcentage}%`}} className={`bg-dark text-white w-[21%] flex items-center justify-center font-light rounded-lg h-full ${DayToWeekKGProcentage === 0? 'ml-4':null} `}>
+                    <div style={{width:`${DayToWeekSeriesProcentage}%`}} className={`bg-dark text-white w-[21%] flex items-center justify-center font-light rounded-lg h-full`}>
                         {/* {DayToWeekSeriesProcentage}% */}
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, nameTrimmer, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
-import { ExerciseType, HistoryExercise, Series } from '@/app/types'
+import { ExerciseType, ExerciseTypeWithHandle, HistoryExercise, Series } from '@/app/types'
 import { format } from 'date-fns'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { SmallLoader } from '../../Loading/SmallLoader'
@@ -47,12 +47,13 @@ const SingleExercise = ({exercise}:SingleExerciseTypes) => {
     const monthIndex = format(exercise.exercises[0].date!,'L')
     return(
         <div className='flex flex-col h-fit'>
-            <div className='sticky flex gap-1 top-8 h-fit bg-marmur text-black px-2'>
+            <div className='sticky flex gap-1 top-[56px] h-fit bg-green font-bold text-black px-2'>
                 <span>{u("WeekFullName",{day: weeIndex})}</span>
                 <span>{format(exercise.exercises[0].date!,'dd')}</span>
                 <span>{u("MonthIndex",{index: monthIndex})}</span>
+                <span className='ml-auto'>{format(exercise.exercises[0].date!,'yyyy')}</span>
             </div>
-            <div className='flex flex-col'>
+            <div className='flex flex-col my-1'>
                 {exercise.exercises.map(exercise=>(
                     <ExercisesMap exercise={exercise} key={exercise.id}/>
                 ))}
@@ -62,7 +63,7 @@ const SingleExercise = ({exercise}:SingleExerciseTypes) => {
 }
 
 type ExercisesMapType = {
-    exercise: ExerciseType,
+    exercise: ExerciseTypeWithHandle,
 }
 
 const ExercisesMap = ({exercise}:ExercisesMapType) => {
@@ -71,19 +72,19 @@ const ExercisesMap = ({exercise}:ExercisesMapType) => {
     const formattedName = d(nameTrimmer(exercise.exercisename)).includes("DefaultExercises") ? exercise.exercisename : d(nameTrimmer(exercise.exercisename))
 
     return (
-        <div>
-            <div className={`bg-green text-marmur flex justify-between px-2 font-bold`}> 
-            <span>
-                {formattedName}
-            </span>
-        </div>
+        <div className='bg-darkLight my-1 rounded-lg'>
+            <div className={`text-marmur flex justify-between px-2 font-bold`}> 
+                <span className='mt-2 ml-2 text-l pb-2'>
+                    {formattedName} {exercise.handlename && "- " + exercise.handlename + " handle"}
+                </span>
+            </div>
 
-        <div className='py-4 px-2 flex flex-col gap-1'>
-            {exercise.sets.map((set,index)=>(
-                <SingleSet set={set} key={index}/>
-            ))}
+            <div className='pb-2 pt-1 px-2 flex flex-col gap-1'>
+                {exercise.sets.map((set,index)=>(
+                    <SingleSet set={set} key={index}/>
+                ))}
+            </div>
         </div>
-    </div>
     )
 }
 type SingleSetType = {
@@ -95,7 +96,7 @@ const SingleSet = ({set}:SingleSetType) => {
 
     return(
         <div className='flex pr-2'>
-            <SpanElement text={u(set.side)}/>
+            <SpanElement additionalText={u(set.side)}/>
             <SpanElement text={set.weight} additionalText='kg'/>
             {
             set.time?<SpanElement text={set.time} additionalText={u("Time")}/>:
@@ -109,7 +110,7 @@ const SingleSet = ({set}:SingleSetType) => {
 const SpanElement = ({text,additionalText}:{text?:string|number,additionalText?:string}) => {
     return(
         <span className='flex-1 text-right pr-2'>
-            <b>{text}</b> {additionalText}
+            <span className='font-semibold'>{text}</span> <span className='font-normal'>{additionalText}</span>
         </span>
     )
 } 
