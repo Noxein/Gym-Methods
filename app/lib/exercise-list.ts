@@ -51,7 +51,7 @@ export const exerciseList = {
             "Wznosy bokiem",
             "Wyciskanie nad głowę na maszynie",
             "Wznosy bokiem w opadzie",
-            "Maszyna wycisanie nad głowę(OHP)"
+            "Maszyna wyciskanie nad głowę(OHP)"
         ],
 
         Przedramiona:[
@@ -126,7 +126,7 @@ export const exercisesArr:string[] =
     "Wznosy bokiem",
     "Wyciskanie nad głowę na maszynie",
     "Wznosy bokiem w opadzie",
-    "Maszyna wycisanie nad głowę(OHP)",
+    "Maszyna wyciskanie nad głowę(OHP)",
     "Skręcanie' ciężaru na lince",
     "Zginanie nadgarstków z obciążeniem",
     "Zginanie nadgarstków z obciążeniem tyłem",

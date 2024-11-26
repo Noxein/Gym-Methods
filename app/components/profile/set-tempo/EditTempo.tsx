@@ -41,7 +41,7 @@ export const EditTempo = ({selectedExercise,setShowEditTempoModal}:EditTempoType
     const d = useTranslations("DefaultExercises")
     const u = useTranslations("Utils")
     const e = useTranslations("Errors")
-    console.log(selectedExercise)
+    
     const formattedExerciseName = selectedExercise.name === selectedExercise.id ? d(nameTrimmer(selectedExercise.name)) : selectedExercise.name 
   return (
     <BlurBackgroundModal>

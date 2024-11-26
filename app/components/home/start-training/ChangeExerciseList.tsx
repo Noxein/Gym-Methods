@@ -8,6 +8,7 @@ import { ButtonWithIcon } from '../../ui/ButtonWithIcon'
 import { localStorageSetter, nameTrimmer } from '@/app/lib/utils'
 import { ErrorDiv } from '../../ui/ErrorDiv'
 import { useTranslations } from 'next-intl'
+import { exercisesArr } from '@/app/lib/exercise-list'
 
 type ChangeExerciseListTypes = {
     list2?: LocalStorageExercise[],
@@ -97,7 +98,7 @@ const SingleExercise = ({exerciseName,handleChangeExercisesOrder,index,handleDel
 
     const d = useTranslations("DefaultExercises")
 
-    const formattedExerciseName = d(nameTrimmer(exerciseName)).includes("DefaultExercises") ? exerciseName : d(nameTrimmer(exerciseName))
+    const formattedExerciseName = exercisesArr.includes(exerciseName) ? d(nameTrimmer(exerciseName)) : exerciseName
     return(
         <div className='bg-marmur p-[1px] rounded-lg flex items-center cursor-pointer' onClick={()=>handleChangeExercisesOrder(index)}>
             <div className='bg-dark text-white py-2 px-4 rounded-lg flex-1'>

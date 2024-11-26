@@ -9,7 +9,7 @@ import { ButtonWithIcon } from '@/app/components/ui/ButtonWithIcon'
 import { DisplayCurrentSeresUsingState } from './DisplayCurrentSeresUsingState'
 import { localStorageSetter, nameTrimmer } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
-import { handleTypes } from '@/app/lib/exercise-list'
+import { exercisesArr, handleTypes } from '@/app/lib/exercise-list'
 
 type AddExerciseUsingStateType = {
     name:string,
@@ -82,7 +82,7 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
     const t = useTranslations("Home/Start-Training/[TrainingName]")
     const u = useTranslations("Utils")
 
-    const formattedName = d(nameTrimmer(name)).includes("DefaultExercises") ? name : d(nameTrimmer(name))
+    const formattedName = exercisesArr.includes(name) ? d(nameTrimmer(name)) : name
 
   return (
     <div className={ `px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'} ` }>

@@ -53,7 +53,7 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
     <div className='flex flex-col mx-5 min-h-[calc(100dvh-40px)]'>
       <div className='flex flex-col gap-4 mt-5 text-marmur text-xl'>
         <Input labelName={u("TrainingName")} type="text" value={planName} onChange={e=>setPlanName(e.target.value)} />
-        <Select labelName={u("DayOfWeek")} valuesToLoop={WeekDayArray} value={WeekDayArray.indexOf(planWeekDay)} onChange={e=>setPlanWeekDay(WeekDayArray[WeekDayArrayPL.indexOf(e.target.value)] as WeekDay)} />
+        <Select labelName={u("DayOfWeek")} valuesToLoop={WeekDayArray} value={planWeekDay} onChange={e=>setPlanWeekDay(e.target.value as WeekDay)} />
 
       </div>
 

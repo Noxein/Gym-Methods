@@ -9,6 +9,7 @@ import { DeleteHandleModal } from './DeleteHandleModal';
 import { AddHanleModal } from './AddHandleModal';
 import { EditHanleModal } from './EditHandleModal';
 import { useTranslations } from 'next-intl';
+import { handleTypes } from '@/app/lib/exercise-list';
 
 type MyHandlesTypes = {
     handles: {
@@ -30,9 +31,6 @@ export const MyHandles = ({handles}:MyHandlesTypes) => {
     const setSelectedHandle = (handle:{id:string,handlename:string}) => {
         currentSelectedHanle.current =  handle
     }
-    useEffect(()=>{
-        console.log(currentSelectedHanle.current)
-    },[currentSelectedHanle.current])
 
     const handleClickListElement = (handle: {id:string,handlename:string}) => {
         setSelectedHandle(handle)
@@ -56,7 +54,7 @@ export const MyHandles = ({handles}:MyHandlesTypes) => {
         />
 
         {handles.map(handle=>{
-            const handleName = h(handle.handlename).includes("Handle") ? handle.handlename : h(handle.handlename)
+            const handleName = handleTypes.includes(handle.handlename) ? h(handle.handlename) : handle.handlename
             return <ListElement 
                 key={handle.id}
                 elementName={handleName} 

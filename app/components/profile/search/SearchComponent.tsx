@@ -14,6 +14,7 @@ import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 import { ErrorDiv } from '../../ui/ErrorDiv'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
+import { exercisesArr } from '@/app/lib/exercise-list'
 
 type SearchComponentTypes = {
     exerciseList: (string | UserExercise)[],
@@ -109,6 +110,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                 })
             }
         })
+        console.log(obj)
         return obj
     }
 
@@ -128,7 +130,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         if(!selectedExercise) return t("AllExercises")
         const isLong = longVersion ? false : selectedExercise.length>=20
 
-        if(d(nameTrimmer(selectedExercise)).includes('DefaultExercises')){
+        if(exercisesArr.includes(selectedExercise)){
             if(isLong) return selectedExercise.slice(0,20) + '...'
             return selectedExercise // in case the exercise is created by user and we dont have translation
         }

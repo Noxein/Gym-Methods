@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { LinkToExercise } from './LinkToExercise'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
+import { exercisesArr } from '@/app/lib/exercise-list'
 
 type ExerciseListMappedTypes = {
   exercises:ExerciseTypes,
@@ -49,7 +50,7 @@ export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseLi
           <div className='mt-20 flex flex-col gap-3 text-white text-center text-xl'>
             {t('LatestExercises')}
             {lastExercises.map((exercise,index)=>{
-              const text = d(nameTrimmer(exercise)).includes('DefaultExercises') ? exercise : d(nameTrimmer(exercise)) // if key does not exist in lang.json then next-intl returns ObjectName.property, in this case DefaultExercises[exerciseName]
+              const text = exercisesArr.includes(exercise) ? d(nameTrimmer(exercise)) : exercise
               return <LinkToExercise isFirst={index===0} mLeft={'0'} key={index} text={text} leadTo={exercise}/>
             })}
           </div>

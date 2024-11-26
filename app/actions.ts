@@ -117,7 +117,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     if(date && Object.prototype.toString.call(new Date(date)) !== '[object Date]') return { errors: "Something went wrong" }
 
     const userid = await userID()
-    if(!userid) return
+
     let stringDate = JSON.stringify(new Date())
     if(date) stringDate = JSON.stringify(date)
 
@@ -125,6 +125,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     const userExercises = await getUserExercises()
 
     userExercises.forEach(item=>{
+        arr.push(item.id)
         arr.push(item.exercisename)
     })
 
@@ -144,6 +145,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     })
 
     if(!validData.success && !isLastExercise) {
+        console.log('error')
         if(validData.error.flatten().fieldErrors.sets){
             return {
                 errors: validData.error.flatten().fieldErrors.sets![0]
@@ -169,7 +171,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     } 
 
     try{
-        await sql`
+        const returning = await sql`
         INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid,handlename) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid},${HandleId},${HandleName})
         `
     }catch(e){
@@ -205,7 +207,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
         if(!exercise.exerciseId) return { error: `Exercise dont have an id`}
 
-        const data = await AddExerciseAction(false,exercise.exerciseId,exercise.sets,true,id,exercise.handle,false,exercise.date)
+        const data = await AddExerciseAction(false,exercise.exerciseName,exercise.sets,true,id,exercise.handle,false,exercise.date)
         if(data?.errors) return { error : 'Something went wrong'}
     })
 
@@ -934,7 +936,7 @@ export const getTwoLatestTrainings = async () => {
         const lastTrainings = await sql`    
             SELECT gymuserstrainings.id, gymuserstrainings.datetime, gymuserstrainingplans.trainingname FROM gymuserstrainings
             INNER JOIN gymuserstrainingplans ON gymuserstrainings.trainingid = gymuserstrainingplans.id
-            WHERE gymuserstrainings.userid = ${userid} AND gymuserstrainings.iscompleted = true ORDER BY datetime DESC LIMIT 2
+            WHERE gymuserstrainings.userid = ${userid} ORDER BY datetime DESC LIMIT 2
             ` 
         const x = lastTrainings.rows as {id: string, datetime:Date,trainingname:string}[]
 
@@ -958,7 +960,8 @@ export const getTwoLatestTrainings = async () => {
         
         const userExercises = await getUserExercises()
         let newArr:GymExercisesDbResult[][] = [[]]
-        
+    
+
         let IdA = result[0].trainingid
         result.forEach(item=>{
             if(!exercisesArr.includes(item.exerciseid)){
@@ -975,6 +978,7 @@ export const getTwoLatestTrainings = async () => {
             }
             
         })
+        console.log('newArr',newArr)
         return {newArr, trainingNames:lastTrainings.rows as {id: string, datetime:Date,trainingname:string}[]}
     }catch(e){
         console.log('Error occured getTwoLatestTrainings func actions.ts',e)

@@ -14,6 +14,7 @@ import { Button } from '../ui/Button'
 import { ButtonWithIcon } from '../ui/ButtonWithIcon'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
+import { exercisesArr, handleTypes } from '@/app/lib/exercise-list'
 
 type AddExerciseType = {
     name:string,
@@ -81,7 +82,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
     const d = useTranslations("DefaultExercises")
     const e = useTranslations("Errors")
 
-    const exerciseName = d(nameTrimmer(name)).includes("DefaultExercises") ? name : d(nameTrimmer(name))
+    const exerciseName = exercisesArr.includes(name) ? d(nameTrimmer(name)) : name
   return (
     <div className={`px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'}`}>
         <h1 className={`text-marmur text-xl text-center font-medium`}>{exerciseName}</h1>
@@ -254,7 +255,7 @@ const Handle = ({handle,setHandle,allHandles}:HandleTypes) => {
             <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Right")}</label>
             <select name="handle" id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value) as {id:string, handlename: string})}>
                 {allHandles.map(handle=>{
-                    const name = h(nameTrimmer(handle.handlename)).includes("Handles") ? handle.handlename : h(nameTrimmer(handle.handlename))
+                    const name = handleTypes.includes(handle.handlename) ? h(nameTrimmer(handle.handlename)) : handle.handlename 
                     return <option value={JSON.stringify(handle)} key={handle.id}>{name}</option>
                 })}
             </select>

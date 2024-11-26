@@ -1,4 +1,5 @@
 import { Icon } from '@/app/components/Icon';
+import { exercisesArr } from '@/app/lib/exercise-list';
 import { localStorageSetter, nameTrimmer } from '@/app/lib/utils';
 import { LocalStorageTraining, TrainingExerciseType } from '@/app/types'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon';
@@ -53,7 +54,7 @@ export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingIn
     }
 
     const d = useTranslations("DefaultExercises")
-    const newName = d(nameTrimmer(text)).includes("DefaultExercises") ? text : d(nameTrimmer(text))
+    const newName = exercisesArr.includes(text) ? d(nameTrimmer(text)) : text
     return(
         <button className={`text-left ${mLeft} bg-marmur text-marmur py-[1px] pl-[1px] rounded flex items-center justify-between ${isFirst?'mt-2':null}`} 
         onClick={addExercise}

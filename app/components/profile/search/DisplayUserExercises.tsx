@@ -4,6 +4,7 @@ import { format } from 'date-fns'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { SmallLoader } from '../../Loading/SmallLoader'
 import { useTranslations } from 'next-intl'
+import { exercisesArr } from '@/app/lib/exercise-list'
 
 type DisplayUserExercisesTypes = {
     fetchedExercises: HistoryExercise[],
@@ -69,7 +70,7 @@ type ExercisesMapType = {
 const ExercisesMap = ({exercise}:ExercisesMapType) => {
 
     const d = useTranslations("DefaultExercises")
-    const formattedName = d(nameTrimmer(exercise.exercisename)).includes("DefaultExercises") ? exercise.exercisename : d(nameTrimmer(exercise.exercisename))
+    const formattedName = exercisesArr.includes(exercise.exercisename) ? d(nameTrimmer(exercise.exercisename)) : exercise.exercisename
 
     return (
         <div className='bg-darkLight my-1 rounded-lg'>
@@ -102,7 +103,7 @@ const SingleSet = ({set}:SingleSetType) => {
             set.time?<SpanElement text={set.time} additionalText={u("Time")}/>:
             <SpanElement text={set.repeat} additionalText={'x'}/>
             }
-            <SpanElement additionalText={u(set.difficulty.charAt(0).toUpperCase() + set.difficulty.slice(1))}/>
+            <SpanElement additionalText={set.difficulty && u(set.difficulty.charAt(0).toUpperCase() + set.difficulty.slice(1))}/>
         </div>
     )
 }
