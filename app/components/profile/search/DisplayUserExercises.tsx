@@ -16,7 +16,7 @@ type DisplayUserExercisesTypes = {
 export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
 
     const t = useTranslations("Home/Profile/Search")
-    
+    console.log(dataLength,totalItems)
   return (
     <div className='mt-16 mx-5 mb-20'>
          <InfiniteScroll

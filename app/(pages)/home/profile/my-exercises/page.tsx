@@ -1,10 +1,15 @@
 import { getUserExercises } from "@/app/actions";
 import { MyExercises } from "@/app/components/profile/my-exercises/MyExercises";
-import { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-    title: "Moje ćwiczenia",
-};
+export async function generateMetadata() {
+    const locale = getLocale()
+    const t = await getTranslations({locale, namespace: 'Metadata'});
+   
+    return {
+      title: t('My exercises')
+    };
+  }
 
 export default async function page({searchParams}:{searchParams:{showAddModal: string}}){
     const exercises = await getUserExercises()

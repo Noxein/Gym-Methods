@@ -3,7 +3,6 @@ import { BackLink } from '@/app/components/home/start-training/BackLink'
 import { Training } from '@/app/components/home/start-training/Training'
 import { TrainingError } from '@/app/components/home/start-training/TrainingError'
 import { Button } from '@/app/components/ui/Button'
-import Link from 'next/link'
 
 type Pagetypes = {
     params:{trainingName:string}

@@ -1,10 +1,16 @@
 import { AllExercisesInOneArray, getAllExercises, getAllTempos } from "@/app/actions";
 import { SetTempo } from "@/app/components/profile/set-tempo/SetTempo";
 import { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-    title: "Tempo",
-};
+export async function generateMetadata() {
+    const locale = getLocale()
+    const t = await getTranslations({locale, namespace: 'Metadata'});
+   
+    return {
+      title: t('Tempo')
+    };
+  }
 
 export default async function page(){
     const exercises = await getAllExercises()

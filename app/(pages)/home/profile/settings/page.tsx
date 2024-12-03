@@ -1,10 +1,16 @@
 import { getAccountSettings } from "@/app/actions";
 import { SettingsPage } from "@/app/components/profile/settings/SettingsPage";
-import { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-    title: "Ustawienia",
-};
+
+export async function generateMetadata() {
+    const locale = getLocale()
+    const t = await getTranslations({locale, namespace: 'Metadata'});
+   
+    return {
+      title: t('Settings')
+    };
+  }
 
 export default async function page(){
     const settings = await getAccountSettings()

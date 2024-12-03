@@ -1,9 +1,14 @@
 import { SelectTraining } from "@/app/components/home/start-training/SelectTraining"
-import { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-    title: "Rozpocznij trening",
-};
+export async function generateMetadata() {
+    const locale = getLocale()
+    const t = await getTranslations({locale, namespace: 'Metadata'});
+   
+    return {
+      title: t('Start training')
+    };
+  }
 
 export default async function page(){
     

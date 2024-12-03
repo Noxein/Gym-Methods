@@ -1,10 +1,14 @@
 import { MyTraingPlansPage } from '@/app/components/profile/my-training-plans/trainingPlanName/MyTraingPlansPage'
-import { Metadata } from 'next';
-import React from 'react'
+import { getLocale, getTranslations } from 'next-intl/server';
 
-export const metadata: Metadata = {
-  title: "Edytuj trening",
-};
+export async function generateMetadata() {
+  const locale = getLocale()
+  const t = await getTranslations({locale, namespace: 'Metadata'});
+ 
+  return {
+    title: t('Edit training')
+  };
+}
 
 export default async function page({params}:{params:{trainingPlanName:string}}){
   const trainingName = decodeURI(params.trainingPlanName)

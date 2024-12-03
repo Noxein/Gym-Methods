@@ -1,10 +1,15 @@
 import { GetUserTrainings } from "@/app/actions"
 import { MyTrainingPlans } from "@/app/components/profile/my-training-plans/MyTrainingPlans"
-import { Metadata } from "next"; 
+import { getLocale, getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-    title: "Moje treningi",
-};
+export async function generateMetadata() {
+    const locale = getLocale()
+    const t = await getTranslations({locale, namespace: 'Metadata'});
+   
+    return {
+      title: t('My training')
+    };
+  }
 
 export default async function page({searchParams}:{searchParams:{showAddModal:string}}){
         const UserTrainings = await GetUserTrainings()

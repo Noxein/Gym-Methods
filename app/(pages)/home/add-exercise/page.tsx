@@ -1,10 +1,15 @@
 import { AllExercisesInOneArray, getAllExercises } from "@/app/actions";
 import { ExerciseListMapped } from "@/app/components/add-exercise/ExerciseListMapped";
-import { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-    title: "Dodaj ćwiczenie", 
-};
+export async function generateMetadata() {
+    const locale = getLocale()
+    const t = await getTranslations({locale, namespace: 'Metadata'});
+   
+    return {
+      title: t('Add exercise')
+    };
+  }
 
 export default async function AddExercisePage(){
 
