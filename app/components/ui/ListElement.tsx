@@ -5,7 +5,7 @@ interface ListElement extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLD
 
 export const ListElement = ({elementName,childrenIcon,...rest}:ListElement) => {
   return (
-    <div {...rest} className='flex bg-marmur p-[1px] rounded-lg text-white'>
+    <div {...rest} className='flex bg-borderInteractive p-[2px] rounded-lg text-white'>
         <button className='bg-dark flex-1 py-4 px-5 rounded-lg text-left'>
             {elementName}
         </button>

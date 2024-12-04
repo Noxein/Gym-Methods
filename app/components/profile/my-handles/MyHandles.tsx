@@ -62,7 +62,7 @@ export const MyHandles = ({handles}:MyHandlesTypes) => {
                 childrenIcon={
                     <button onClick={(e)=>{e.stopPropagation();setSelectedHandle(handle);handleDeleteItem(handle.id)}}>
                         <Icon className='flex justify-center items-center px-1'>
-                            <TrashIcon />
+                            <TrashIcon fill='#fff'/>
                         </Icon>
                     </button>
                 }

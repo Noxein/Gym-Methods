@@ -137,7 +137,7 @@ const Input = ({...rest}:InputType) => {
     const inputRef = useRef<HTMLInputElement|null>(null)
 
     return(
-        <input  className={` w-full text-marmur border-white bg-dark border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
+        <input  className={` w-full text-marmur border-borderInteractive bg-dark border-[2px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
     )
 }
 
@@ -223,7 +223,7 @@ const DifficultyLevel = ({showTimeMesure,inputs,setInputs}:DifficultyLevelTypes)
     return(<div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='difficulty' className={`text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark`}> {u("Difficulty")} </label>
-            <select name="difficulty" id="difficulty" className={`bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10`} value={difficultyInput} onChange={e=>handleDifficultyChgane(e.target.value as DifficultyLevelType)}>
+            <select name="difficulty" id="difficulty" className={`bg-dark pl-3 text-marmur border-borderInteractive border-[2px] rounded-md h-10`} value={difficultyInput} onChange={e=>handleDifficultyChgane(e.target.value as DifficultyLevelType)}>
                 <option value="easy">{u("Easy")}</option>
                 <option value="medium">{u("Medium")}</option>
                 <option value="hard">{u("Hard")}</option>
@@ -258,7 +258,7 @@ const Side = ({inputs,setInputs}:SideTypes) => {
         <div className='flex gap-2'>
             <div className='flex-1 flex flex-col text-lg relative'>
                 <label htmlFor='side' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Side")}</label>
-                <select name="side" value={sideInput} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value as SideType)}>
+                <select name="side" value={sideInput} id="side" className='bg-dark pl-3 text-marmur border-borderInteractive border-[2px] rounded-md h-10' onChange={e=>handleChange(e.target.value as SideType)}>
                     <option value="Both">{u("Both")}</option>
                     <option value="Left">{u("Left")}</option>
                     <option value="Right">{u("Right")}</option>
@@ -312,7 +312,7 @@ const Handle = ({allHandles,inputs,trainingState,setInputs,setLocalStorageTraini
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Uchwyt</label>
-            <select name="handle" value={jsomHandleValue} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value))}>
+            <select name="handle" value={jsomHandleValue} id="side" className='bg-dark pl-3 text-marmur border-borderInteractive border-[2px] rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value))}>
                 {allHandles.map(handle=>{
                     const formattedHandleName = handleTypes.some(pre=> pre === handle.handlename) ? h(handle.handlename.replaceAll(" ",'')) : handle.handlename
                     return <option value={JSON.stringify(handle)} key={handle.id}>{formattedHandleName}</option>

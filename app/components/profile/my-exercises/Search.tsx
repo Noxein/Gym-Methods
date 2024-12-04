@@ -21,7 +21,7 @@ export const Search = ({setSearchValue,showAddModal}:SearchTypes) => {
     <div className='flex gap-4'>
         <input type="text" onChange={e=>setSearchValue(e.target.value)}
             placeholder={u("Search")}
-            className={`px-2 py-2 bg-dark border-1 border-white rounded-md w-3/4 text-white placeholder:text-gray-100`}
+            className={`px-2 py-2 bg-dark border-2 border-borderInteractive rounded-md w-3/4 text-white placeholder:text-gray-300`}
         />
         <Button isPrimary onClick={HandleShowModal} className='flex-1'>
             {u("Add")}

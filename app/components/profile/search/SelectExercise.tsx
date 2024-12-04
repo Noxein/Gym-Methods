@@ -18,7 +18,7 @@ export const SelectExercise = ({text,translatedText,mLeft,isFirst}:SelectExercis
         setShowExerciseList && setShowExerciseList(false)
     }
     return(
-    <button onClick={handleClick} className={`relative text-left ml-${mLeft} bg-marmur text-marmur border-marmur border-[1px] rounded flex justify-between ${isFirst?'mt-2':null}`}>
+    <button onClick={handleClick} className={`relative text-left ml-${mLeft} bg-dark text-marmur border-borderInteractive border-2 py-1 rounded flex justify-between ${isFirst?'mt-2':null}`}>
         <span className={`flex-1 bg-dark rounded-md pl-4 py-2 flex flex-col`}>
             {translatedText}
         </span>

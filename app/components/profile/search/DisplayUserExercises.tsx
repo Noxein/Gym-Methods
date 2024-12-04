@@ -25,6 +25,11 @@ export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearc
          loader={<SmallLoader />} 
          next={()=>handleSearch()}
          endMessage={
+            fetchedExercises.length === 0 ? <div className='w-screen h-screen fixed top-0 left-0 flex items-center justify-center'>
+            <p style={{ textAlign: 'center' }}>
+              <b>{t("ThatsAllExercises")}</b>
+            </p>
+            </div> : 
             <p style={{ textAlign: 'center' }}>
               <b>{t("ThatsAllExercises")}</b>
             </p>
@@ -48,7 +53,7 @@ const SingleExercise = ({exercise}:SingleExerciseTypes) => {
     const monthIndex = format(exercise.exercises[0].date!,'L')
     return(
         <div className='flex flex-col h-fit'>
-            <div className='sticky flex gap-1 top-[56px] h-fit bg-green font-bold text-black px-2'>
+            <div className='sticky flex gap-1 top-[60px] h-fit bg-green font-bold text-black px-2'>
                 <span>{u("WeekFullName",{day: weeIndex})}</span>
                 <span>{format(exercise.exercises[0].date!,'dd')}</span>
                 <span>{u("MonthIndex",{index: monthIndex})}</span>

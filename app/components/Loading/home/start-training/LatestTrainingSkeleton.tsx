@@ -10,7 +10,7 @@ export const LatestTrainingSkeleton = () => {
 
 export const LastTrainingItem = () => {
   return (
-    <div className={`gradient-background py-[1px] px-[1px] rounded-md flex border-1`}>
+    <div className={`gradient-background py-[1px] px-[1px] rounded-md flex`}>
         <div className={` flex rounded-md flex-1 px-4 pb-4 pt-2 justify-between items-center`}>
             <div className='flex flex-col relative opacity-0'>
                 <span>o</span>

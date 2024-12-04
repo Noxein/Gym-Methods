@@ -14,7 +14,7 @@ export const IncomingTrainingsSkeleton = () => {
 export const Training = () => {
 
     return (
-      <div  className={`flex justify-between items-center pt-3 border-[1px] rounded-lg py-2 px-4 min-h-[55px] gradient-background`}>
+      <div  className={`flex justify-between items-center pt-3 rounded-lg py-2 px-4 min-h-[55px] gradient-background`}>
         <div className="flex flex-col leading-3 text-opacity-0">
             <span className='text-opacity-0 invisible'>o</span>
             <span className="text-gray-400 text-sm text-opacity-0 invisible">o</span>

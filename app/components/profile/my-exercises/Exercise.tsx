@@ -17,15 +17,15 @@ export const Exercise = ({exercise,setSelectedExercise,setShowEditModal,setShowD
   }
   
   return (
-    <div className={`w-full bg-marmur p-[1px] rounded-lg flex`}>
-          <div className={`bg-dark text-marmur rounded-lg flex-1 text-wrap py-2 pl-2`}>
+    <div className={`w-full bg-borderInteractive p-[2px] rounded-lg flex`}>
+          <div className={`bg-dark text-marmur rounded-lg flex-1 text-wrap py-3 pl-2 font-semibold`}>
               {exercise.exercisename}
           </div>
           <Icon onClick={()=>handleTouch('edit')}>
-            <PencilIcon />
+            <PencilIcon fill='#fff'/>
           </Icon>
           <Icon onClick={()=>handleTouch('delete')}>
-            <TrashIcon />
+            <TrashIcon fill='#fff'/>
           </Icon>
     </div>
   )

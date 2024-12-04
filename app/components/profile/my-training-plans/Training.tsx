@@ -16,15 +16,15 @@ export const Training = ({UserTraining,setShowDeleteModal,setCurrentSelectedTrai
       setShowDeleteModal(true)
     }
   return (
-    <div className={`text-xl rounded-lg flex items-center bg-marmur`}>
-      <Link href={`/home/profile/my-training-plans/${UserTraining.trainingname}`} className='flex flex-1 items-center rounded-lg p-[1px]'>
+    <div className={`text-xl rounded-lg flex items-center bg-borderInteractive`}>
+      <Link href={`/home/profile/my-training-plans/${UserTraining.trainingname}`} className='flex flex-1 items-center rounded-lg p-[2px]'>
         <div className={`bg-dark py-3 rounded-lg flex-1 px-4`}>
           {UserTraining.trainingname}
         </div>
       </Link>
       
       <Icon onClick={DeleteTraining}>
-        <TrashIcon fill='#0D1317'/>
+        <TrashIcon fill='#fff'/>
       </Icon>
     </div>
   )

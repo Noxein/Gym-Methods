@@ -11,7 +11,7 @@ type LinkBtnTypes = {
 export const LinkBtn = ({href,text,sClass,children}:LinkBtnTypes) => {
 
     return(
-      <Link href={href} className={`w-full ${sClass} bg-marmur text-marmur border-marmur p-[1px] text-center rounded-lg text-xl flex`}>
+      <Link href={href} className={`w-full ${sClass} bg-borderInteractive text-marmur border-borderInteractive border-2 text-center rounded-lg text-xl flex`}>
         <span className={`bg-dark flex-1 py-3 rounded-lg`}>
           {text}
         </span>

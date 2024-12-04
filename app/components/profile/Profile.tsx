@@ -19,33 +19,33 @@ export const Profile = ({email}:ProfileTypes) => {
       <UserEmail email={email}/>
       <div className='mx-5 flex flex-col gap-4 min-h-[calc(100dvh-100px)]'>
           <LinkBtn href='/home/profile/set-tempo' text={t("SetTempo")}>
-            <TimerIcon width={width} height={height}/>
+            <TimerIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/search' text={t("ExerciseHistory")}>
-            <CalendarIcon width={width} height={height}/>
+            <CalendarIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/my-exercises' text={t("MyExercises")}>
-            <ExerciseIcon width={width} height={height}/>
+            <ExerciseIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/my-training-plans' text={t("MyTrainings")}>
-            <BookIcon width={width} height={height} />
+            <BookIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/my-handles' text={t("MyHandles")}>
-            <HandleIcon width={width} height={height} />
+            <HandleIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile' text={t("Summary")}>
-            <SummaryIcon width={width} height={height}/>
+            <SummaryIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/settings' text={t("AccountSettings")}>
-            <SettingsIcon width={width} height={height}/>
+            <SettingsIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
 
 
           <LinkBtn href='/home/profile/change-password' text={t("ChangePassword")} sClass='mt-auto'>
-            <LockIcon width={width} height={height}/>
+            <LockIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <SignOutBtn>
-            <LogoutIcon width={width} height={height}/>
+            <LogoutIcon width={width} height={height} fill='#fff'/>
           </SignOutBtn>
       </div>
         

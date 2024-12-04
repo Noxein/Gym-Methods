@@ -69,8 +69,8 @@ const ExpandBtn = ({text,isExpanded,mLeft,currentLevel,...rest}:ExpandBtn) => {
 
     if(isExpanded) return (
         text && 
-        <button {...rest} className={`relative text-left ml-${mLeft} text-marmur bg-marmur rounded-lg flex justify-between p-[1px] items-center `}>
-            <span className={`flex-1 bg-dark pl-4 py-[10px] rounded-lg`}>{text}</span>
+        <button {...rest} className={`relative text-left ml-${mLeft} text-marmur bg-borderInteractive rounded-lg flex justify-between p-[2px] items-center `}>
+            <span className={`flex-1 bg-dark pl-4 py-2 rounded-lg`}>{text}</span>
 
             <Icon className={`flex items-center is`}>
                 <ExpandIcon expanded={isExpanded} fill={'#d9d9d9'}/>
@@ -79,7 +79,7 @@ const ExpandBtn = ({text,isExpanded,mLeft,currentLevel,...rest}:ExpandBtn) => {
     )
     return (
         text && 
-        <button {...rest} className={`relative text-left ml-${mLeft} text-marmur bg-marmur rounded-lg flex justify-between p-[1px] items-center`}>
+        <button {...rest} className={`relative text-left ml-${mLeft} text-marmur bg-borderInteractive rounded-lg flex justify-between p-[2px] items-center`}>
             <span className={`flex-1 bg-dark pl-4 py-2 rounded-lg`}>{text}</span>
 
             <Icon className={`flex items-center is`}>

@@ -42,7 +42,7 @@ const WeightAndRepeatInputs = () => {
 
 const Input = () => {
     return(
-        <div  className={`w-full gradient-background border-white  border-[1px] min-h-10 text-lg rounded-lg pl-4`}> </div>
+        <div  className={`w-full gradient-background min-h-10 text-lg rounded-lg pl-4`}> </div>
     )
 }
 
@@ -76,7 +76,7 @@ const DifficultyLevel = () => {
 
     return(<div className='flex gap-2 gradient-background'>
         <div className='flex-1 flex flex-col text-lg relative'>
-            <div  className={`border-white border-[1px] rounded-md h-10`}>
+            <div  className={` rounded-md h-10`}>
             </div>
         </div>
         </div>)
