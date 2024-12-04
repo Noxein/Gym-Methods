@@ -1,12 +1,16 @@
 import { CenterComponent } from "@/app/components/CenterComponent";
 import { LoginForm } from "@/app/components/LoginForm";
-import { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-    title: "Zaloguj / Mordor",
-    description: "Aplikacja na siłownie",
-  };
-  
+  export async function generateMetadata() {
+    const locale = getLocale()
+    const t = await getTranslations({locale, namespace: 'Metadata'});
+   
+    return {
+      title: t('Login'),
+      description: t('Login description')
+    };
+  }
 export default function Login(){
     return(
         <CenterComponent>

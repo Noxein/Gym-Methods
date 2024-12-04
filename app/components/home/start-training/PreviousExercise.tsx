@@ -54,7 +54,7 @@ export const PreviousExercise = ({exerciseid,historyCache,setHistoryCache}:Previ
         </div>:
         <div>
             <div className='flex mb-4'>
-                <div className='flex gap-1'>
+                <div className='flex gap-1 text-gray-400'>
                     <span className='ml-auto'>{u("WeekFullName",{day: format(data?.date!,'i')})}</span>
                     <span>{format(data?.date!,'dd')}</span>
                     <span>{u("MonthIndex",{index: format(data?.date||1,'M')})}</span>
@@ -81,7 +81,7 @@ const Set = ({set,odd}:SetTypes) => {
 
     const u = useTranslations("Utils")
     return(
-        <div className={`grid grid-cols-4 text-right bg-dark pr-4 border-1 py-2 rounded-xl`}>
+        <div className={`border-steel grid grid-cols-4 text-right bg-steel pr-4 border-2 py-2 rounded-xl`}>
             <span>{set.side && u(set.side)}</span>
             <span><b>{(set.weight && set.weight !== 0) && set.weight}</b> kg</span>
             <span><b>{(set.time || set.repeat) &&  set.time?set.time:set.repeat}</b> {set.time && set.time?null:'x'}</span>

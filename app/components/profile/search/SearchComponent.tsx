@@ -25,7 +25,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     const [showSearch,setShowSearch] = useState(false)
     const [from,setFrom] = useState<Date>()
     const [to,setTo] = useState<Date>()
-    const [currentPage,setCurrentPage] = useState(0)
+    const [currentPage,setCurrentPage] = useState(1)
 
     const searchExercise = useContext(SelectedExerciseContext)
     const showExerciseList = searchExercise?.showExerciseList
@@ -55,15 +55,16 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                 return 
             }
             const count = await handleSearchCount()
-            if(count && count.error){
+            if(typeof count !== 'string' && count.error){
                 setError(e(count.error))
                 setLoading(false)
                 return
             } 
+            count && setTotalItems(Number(count))
             setFetchedExercises(SortItems(result.data!))
             setCurrentPage(1)
         }else{
-            const result = await fetchUserExercises(from!,to!,selectedExercise,currentPage)
+            const result = await fetchUserExercises(from!,to!,selectedExercise,currentPage-1)
             if(result.error){
                 setError(e(result.error))
                 return setLoading(false)
@@ -78,15 +79,25 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     const handleSearchCount = async () => {
         const count = await fetchUserExercisesCount(from!,to!,selectedExercise)
         if(count.error) return { error : count.error }
-        setTotalItems(Number(count.data))
+        return count.data
+        //setTotalItems(Number(count.data))
     }
     const toggleSearchBar = () => {
         setShowSearch(!showSearch)
     }
     useEffect(()=>{
-        handleSearchCount()
-        handleSearch(false)
-        setCurrentPage(page=>page+1)
+        const func = async () => {
+            const count = await handleSearchCount()
+            if(typeof count !== 'string' && count.error){
+                setError(e(count.error))
+                setLoading(false)
+                return
+            } 
+            console.log('INITAL COUNT',count)
+            count && setTotalItems(Number(count))
+            handleSearch(false)
+        }
+        func()
     },[])
     const getDataLenght = () => {
         let total = 0
@@ -130,7 +141,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         if(!selectedExercise) return t("AllExercises")
         const isLong = longVersion ? false : selectedExercise.length>=20
 
-        if(exercisesArr.includes(selectedExercise)){
+        if(!exercisesArr.includes(selectedExercise)){
             if(isLong) return selectedExercise.slice(0,20) + '...'
             return selectedExercise // in case the exercise is created by user and we dont have translation
         }
@@ -149,7 +160,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                     <Input labelName={t("To")} type='date' onChange={e=>handleDateChange(e.target.value,setTo)} disabled={loading}/>
                 </div>
                 <div className='mx-5 flex gap-2 flex-col'>
-                    <Button className='w-full bg-dark  flex justify-between px-5 items-center py-2' onClick={handleShowExerciseList} isPrimary disabled={loading}>{selectedExerciseFormatted(true)} 
+                    <Button className='w-full bg-dark border-borderInteractive border-2 flex justify-between px-5 items-center py-2' onClick={handleShowExerciseList} isPrimary disabled={loading}>{selectedExerciseFormatted(true)} 
                         <Icon>
                             <MagnyfingGlass fill='#fff' width='20'/>
                         </Icon>

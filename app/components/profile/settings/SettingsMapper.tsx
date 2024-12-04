@@ -71,22 +71,22 @@ const ExpandBtn = ({text,isExpanded,mLeft,...rest}:ExpandBtn) => {
 
     if(isExpanded) return (
         text && 
-        <button {...rest} className={`relative text-left ml-${mLeft} bg-marmur text-marmur border-marmur  rounded-lg flex justify-between p-[1px] items-center `}>
+        <button {...rest} className={`relative text-left ml-${mLeft} bg-borderInteractive text-marmur border-borderInteractive  rounded-lg flex justify-between p-[2px] items-center `}>
             <span className={`flex-1 bg-dark pl-4 py-2 rounded-lg`}>{text}</span>
 
             <Icon className={`flex items-center is`}>
-                <ExpandIcon expanded={isExpanded} fill={'#d9d9d9'}/>
+                <ExpandIcon expanded={isExpanded} fill={'#fff'}/>
             </Icon>
         </button>
     )
     
     return (
         text && 
-        <button {...rest} className={`text-left ml-${mLeft} text-marmur bg-dark border-marmur border-1 rounded-lg flex justify-between p-[1px] items-center`}>
+        <button {...rest} className={`text-left ml-${mLeft} text-marmur bg-borderInteractive border-borderInteractive border-2 rounded-lg flex justify-between p-[1px] items-center`}>
             <span className={`flex-1 bg-dark pl-4 py-2 rounded-lg`}>{text}</span>
 
             <Icon className={`flex items-center`}>
-                <ExpandIcon  expanded={isExpanded} fill={'#D9D9D9'}/>
+                <ExpandIcon  expanded={isExpanded} fill={'#fff'}/>
             </Icon>
         </button>
     )
@@ -111,7 +111,7 @@ const SelectExercise = ({text,mLeft,isFirst,setExercisesToDelete,selected,favour
             if(favourite) return `bg-green border-green`
             return `bg-red border-red`
         }
-        return `bg-marmur border-marmur`
+        return `bg-borderInteractive border-borderInteractive`
     }
 
     const d = useTranslations("DefaultExercises")
@@ -121,7 +121,7 @@ const SelectExercise = ({text,mLeft,isFirst,setExercisesToDelete,selected,favour
 
 
     return(
-        <button className={cn(`relative text-left ml-12 mt-1 text-marmur border-[1px] rounded flex justify-between items-center ${isFirst?'mt-2':null}`,addOnClass)} onClick={Toggle}>
+        <button className={cn(`relative text-left ml-12 mt-1 text-marmur border-2 rounded flex justify-between items-center ${isFirst?'mt-2':null}`,addOnClass)} onClick={Toggle}>
             <span className={`flex-1 bg-dark rounded-md pl-4 py-2 flex flex-col`}>
                 {d(nameTrimmer(text))}
             </span>

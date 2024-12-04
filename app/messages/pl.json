@@ -291,7 +291,9 @@
         "4": "4",
         "5": "5",
         "6": "6",
-        "7": "7"
+        "7": "7",
+        "en": "Angielski",
+        "pl": "Poliski"
     },
     "Languages": {
         "Polish": "Polski",
@@ -336,5 +338,23 @@
         "Exercise dont have an id": "Ćwiczenie nie ma id",
         "Name cant be empty": "Nazwa nie może być pusta"
 
+    },
+    "Metadata": {
+        "Profile": "Profil",
+        "Settings": "Ustawienia",
+        "Tempo": "Tempo",
+        "History": "Historia",
+        "My training": "Moje treningi",
+        "Edit training": "Edytuj trening",
+        "Handles": "Uchwyty",
+        "My exercises": "Moje ćwiczenia",
+        "Change password": "Zmień hasło",
+        "Add exercise": "Dodaj ćwiczenie",
+        "Homepage": "Strona główna",
+        "Start training": "Rozpocznij trening",
+        "First setup": "Pierwsze logowanie",
+        "Login": "Zaloguj",
+        "Login description": "Aplikacja na siłownię",
+        "Register": "Zarejestruj"
     }
 }

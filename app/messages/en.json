@@ -291,7 +291,9 @@
         "4": "4",
         "5": "5",
         "6": "6",
-        "7": "7"
+        "7": "7",
+        "en": "English",
+        "pl": "Polish"
     },
     "Languages": {
         "Polish": "Polish",
@@ -335,5 +337,23 @@
         "Training not found": "Training not found",
         "Exercise dont have an id": "Exercise dont have an id",
         "Name cant be empty": "Name cant be empty"
+    },
+    "Metadata": {
+        "Profile": "Profile",
+        "Settings": "Settings",
+        "Tempo": "Tempo",
+        "History": "History",
+        "My training": "My trainings",
+        "Edit training": "Edit training",
+        "Handles": "Handles",
+        "My exercises": "My exercises",
+        "Change password": "Change password",
+        "Add exercise": "Add exercise",
+        "Homepage": "Homepage",
+        "Start training": "Start training",
+        "First setup": "First login",
+        "Login": "Login",
+        "Login description": "App for gym",
+        "Register": "Register"
     }
 }

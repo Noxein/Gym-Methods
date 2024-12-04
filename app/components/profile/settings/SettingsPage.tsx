@@ -103,6 +103,11 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
     const e = useTranslations("Errors")
     
     const userLocale = useContext(LangContext)
+
+    const handleChangeLocale = (locale: Locale) => {
+        localStorage.setItem('lang',locale)
+        setUserLocale(locale as Locale)
+    }
   return (
     <div className='mt-10 flex flex-col gap-4 mx-5 text-white'>
         <h1 className='text-xl text-center text-white font-semibold'>{t("Settings")}</h1>
@@ -121,7 +126,7 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
                     <div className='absolute h-1 w-[105%] bg-dark bottom-[10px] -left-1 text-base text-opacity-0 z-10'></div>
                     </label>
                     
-                    <select id='lang' value={userLocale!}  className='bg-dark border-1 border-marmur rounded-lg pl-2 py-2 w-full outline-none z-0 relative' onChange={(e)=>setUserLocale(e.target.value as Locale)}>
+                    <select id='lang' value={userLocale!}  className='bg-dark border-1 border-borderInteractive rounded-lg pl-2 py-2 w-full outline-none z-0 relative' onChange={(e)=>handleChangeLocale(e.target.value as Locale)}>
                         <option value='pl'>{l("Polish")} </option>
                         <option value='en'>{l("English")} </option>
                     </select>
@@ -129,21 +134,21 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
             
             </div>
 
-        <button className='mt-10 bg-marmur p-[1px] flex items-center rounded-lg' onClick={handleShowFavModal} disabled={loading}>
+        <button className='mt-10 bg-borderInteractive p-[2px] flex items-center rounded-lg' onClick={handleShowFavModal} disabled={loading}>
             <span className='bg-dark flex-1 rounded-lg py-3 text-white'>
                 {t("ChangeLikedExercise")}
             </span>
             <Icon className='flex items-center px-2 w-10'>
-                <CheckIcon height='25'/>
+                <CheckIcon height='25' fill='#fff'/>
             </Icon>
         </button>
 
-        <button className='bg-marmur p-[1px] flex items-center rounded-lg mb-40' onClick={handleShowNotFavModal} disabled={loading}>
+        <button className='bg-borderInteractive p-[2px] flex items-center rounded-lg mb-40' onClick={handleShowNotFavModal} disabled={loading}>
             <span className='bg-dark flex-1 rounded-lg py-3 text-white'>
                 {t("ChangeNotLikedExercise")}
             </span>
             <Icon className='flex items-center px-2 w-10'>
-                <CrossIcon width='20' />
+                <CrossIcon width='20' fill='#fff'/>
             </Icon>
         </button>
 

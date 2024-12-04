@@ -7,13 +7,13 @@ const iconFill = '#0D1317'
 
 export const ExpandIcon = ({expanded,fill = '#E7E7E7'}:{expanded: boolean,fill?:string}) => {
     return(
-        <svg viewBox="0 0 24 24" fill={fill}  width={iconWidth+10} height={iconHeight+10} transform={expanded?'rotate(90)':''}><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+        <svg viewBox="0 0 24 24" fill={fill}  width={iconWidth+10} height={iconHeight+10} transform={expanded?'rotate(90)':''}><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
     )
 }
 
 export const ExpandIcon2 = ({expanded,fill = '#E7E7E7'}:{expanded: boolean,fill?:string}) => {
     return(
-        <svg className="transition-all duration-200" viewBox="0 0 24 24" fill={fill}  width={iconWidth+10} height={iconHeight+10} transform={expanded?'rotate(90)':'rotate(270)'}><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+        <svg className="transition-all duration-200" viewBox="0 0 24 24" fill={fill}  width={iconWidth+10} height={iconHeight+10} transform={expanded?'rotate(90)':'rotate(270)'}><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 7L15 12L10 17" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
     )
 }
 
@@ -105,7 +105,7 @@ export const RightTriangle = ({width,height,fill}:{width?:string,height?:string,
 
 export const VerticalDots = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
     return(
-        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill={fill?fill:"#0D1317"} stroke="#0D1317">
+        <svg width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill={fill?fill:"#0D1317"} stroke={"#0D131700"}>
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
             <g id="SVGRepo_iconCarrier"> 

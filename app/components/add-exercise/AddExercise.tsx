@@ -123,7 +123,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
         
    
         <div className='flex w-full gap-2 mt-auto pt-4'>
-            <button  className='w-16 h-16 rounded accent-dark border-marmur border-2' onClick={()=>setChecked(x=>!x)}> 
+            <button  className='w-16 h-16 rounded accent-dark border-borderInteractive border-2' onClick={()=>setChecked(x=>!x)}> 
             {checked?
                 <Icon className='flex justify-center'>
                     <CheckIcon fill='#fff' height='40' width='40'/>
@@ -149,7 +149,7 @@ const Input = ({...rest}:InputType) => {
     const inputRef = useRef<HTMLInputElement|null>(null)
 
     return(
-        <input  className={` w-full text-marmur border-white bg-dark border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
+        <input  className={` w-full text-marmur border-borderInteractive bg-dark border-2 min-h-10 text-lg rounded-lg pl-4`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
     )
 }
 
@@ -186,7 +186,7 @@ const DifficultyLevel = ({dispach,state,showTimeMesure}:{dispach:React.Dispatch<
     return(<div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='difficulty' className={`text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark`} >{u("Difficulty")}</label>
-            <select name="difficulty" id="difficulty" className={`bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10`} onChange={e=>{dispach({type:"DIFFICULTY",payload:e.target.value as 'easy'|'medium'|'hard'})}}>
+            <select name="difficulty" id="difficulty" className={`bg-dark pl-3 text-marmur border-borderInteractive border-2 rounded-md h-10`} onChange={e=>{dispach({type:"DIFFICULTY",payload:e.target.value as 'easy'|'medium'|'hard'})}}>
                 <option value="easy">{u("Easy")}</option>
                 <option value="medium">{u("Medium")}</option>
                 <option value="hard">{u("Hard")}</option>
@@ -215,7 +215,7 @@ const Side = ({dispatch,state}:SideTypes) => {
         <div className='flex gap-2'>
             <div className='flex-1 flex flex-col text-lg relative'>
                 <label htmlFor='side' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Side")}</label>
-                <select name="side" value={state.side} id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(e.target.value)}>
+                <select name="side" value={state.side} id="side" className='bg-dark pl-3 text-marmur border-borderInteractive border-2 rounded-md h-10' onChange={e=>handleChange(e.target.value)}>
                     <option value="Both">{u("Both")}</option>
                     <option value="Left">{u("Left")}</option>
                     <option value="Right">{u("Right")}</option>

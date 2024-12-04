@@ -12,7 +12,7 @@ export const SignOutBtn = ({children}:SignOutBtnTypes) => {
   const t = useTranslations("Home/Profile")
   
   return (
-    <button onClick={async(e)=>{ await logout()}} className={`w-full mb-24 bg-marmur text-marmur border-marmury} p-[1px] text-center rounded-lg text-xl flex items-center`}>
+    <button onClick={async(e)=>{ await logout()}} className={`w-full mb-24 bg-borderInteractive text-marmur border-marmury} p-[2px] text-center rounded-lg text-xl flex items-center`}>
             <span className={`bg-dark flex-1 py-3 rounded-lg`}>
               {t("Logout")}
             </span>

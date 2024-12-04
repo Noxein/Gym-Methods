@@ -1,5 +1,7 @@
 import { addDays, getDay, subDays } from "date-fns"
 import { WeekDay, WeekDayPL } from "../types"
+import { setUserLocale } from "../i18n/locale"
+import { Locale, locales } from "../i18n/config"
 
 export const WeekDayArray = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
 export const WeekDayArrayPL = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela']
@@ -66,4 +68,20 @@ export const localStorageSetter = (name:string,objectToSet:any) => {
 
 export const nameTrimmer = (string:string) => {
   return string.replace(/ /g,'').replace(/'/g,'')
+}
+
+export const getLang = async () => {
+  const lang = localStorage.getItem('lang')
+  if(!lang){
+    localStorage.setItem('lang','en')
+    return setUserLocale('en')
+  }
+
+  if(!locales.includes(lang as Locale)){
+    localStorage.setItem('lang','en')
+    return setUserLocale('en')
+  }else{
+    setUserLocale(lang as Locale)
+  }
+  
 }

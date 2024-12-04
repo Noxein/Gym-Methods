@@ -29,7 +29,7 @@ export const SingleExercise = ({text,mLeft,isFirst,tempo,exerciceid,translatedTe
         setShowDeleteTempoModal(true)
     }
     return(
-        <div className={`flex-1 text-left ${mLeft} bg-marmur text-marmur border-[1px] rounded-lg flex justify-between ${isFirst?'mt-2':null}`}>
+        <div className={`flex-1 text-left ${mLeft} bg-borderInteractive text-marmur border-borderInteractive border-2 rounded-lg flex justify-between ${isFirst?'mt-2':null}`}>
             <span className={`flex-1 bg-dark rounded-lg pl-4 py-2 flex flex-col`}>
                 <span>{translatedText}</span>
                 <span className="text-sm -mt-1">
@@ -38,10 +38,10 @@ export const SingleExercise = ({text,mLeft,isFirst,tempo,exerciceid,translatedTe
             </span>
             <div className="flex justify-center items-center">
                 <Icon onClick={()=>setExercice('edit')}>
-                    <PencilIcon fill="#0D1317" />
+                    <PencilIcon fill="#fff" />
                 </Icon>
                 <Icon onClick={()=>setExercice('delete')}>
-                    <TrashIcon fill="#0D1317"/>
+                    <TrashIcon fill="#fff"/>
                 </Icon>
                 
             </div>

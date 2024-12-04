@@ -88,7 +88,7 @@ type InputType = {
 const Input = ({...rest}:InputType) => {
 
     return(
-        <input  className={` w-full text-marmur border-white bg-dark border-[1px] min-h-10 text-lg rounded-lg pl-4 focus:outline-green `} {...rest} />
+        <input  className={` w-full text-marmur border-borderInteractive bg-dark border-2 min-h-10 text-lg rounded-lg pl-4 py-2 focus:outline-green `} {...rest} />
     )
 }
 

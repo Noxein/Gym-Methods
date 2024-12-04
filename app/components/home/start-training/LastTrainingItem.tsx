@@ -15,8 +15,8 @@ export const LastTrainingItem = ({lastExercise}:LastTrainingItemTypes) => {
     const weekday = u("WeekDayEnglish",{day: lastExercise.weekday})
     
   return (
-    <div className={`bg-marmur py-[1px] px-[1px] rounded-md flex`}>
-        <div className={`bg-dark flex rounded-md flex-1 px-4 pb-4 pt-2 justify-between items-center`}>
+    <div className={`rounded-md flex`}>
+        <div className={`bg-darkLight flex rounded-md flex-1 px-4 pb-4 pt-2 justify-between items-center`}>
             <div className='flex flex-col relative'>
                 <span>{lastExercise.trainingname}</span>
                 <span className='text-gray-400 text-sm relative'>

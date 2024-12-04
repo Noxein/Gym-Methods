@@ -63,10 +63,10 @@ const SingleExercise = ({name,exercise,setPlanExercises}:SingleExerciseTypes) =>
     const d = useTranslations("DefaultExercises")
     const translatedName = d(nameTrimmer(name)).includes("DefaultExercises") ? name : d(nameTrimmer(name))
     return(
-    <div className={`py-[1px] flex rounded-lg bg-marmur`} ref={setNodeRef}  style={style} {...attributes}>
+    <div className={`py-[2px] flex rounded-lg bg-borderInteractive`} ref={setNodeRef}  style={style} {...attributes}>
         <div className={`text-marmur rounded-md flex justify-between items-center flex-1` } >
-            <Icon className='px-0 touch-none' {...listeners} >
-                <VerticalDots />
+            <Icon className='touch-none' {...listeners} >
+                <VerticalDots fill='#fff' width='20' height='30'/>
             </Icon>
 
            <div className={`flex-1 bg-dark px-4 py-4 rounded-lg`}> {translatedName} </div>
@@ -74,7 +74,7 @@ const SingleExercise = ({name,exercise,setPlanExercises}:SingleExerciseTypes) =>
         </div>
 
         <Icon onClick={removeIndex} className='self-center pr-1'>
-                <TrashIcon width='30' fill='#0D1317'/>
+                <TrashIcon width='30' fill='#fff'/>
         </Icon>
     </div>
 )

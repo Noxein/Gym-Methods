@@ -35,7 +35,7 @@ export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
     const u = useTranslations("Utils")
 
   return (
-        <div className='fixed min-h-screen left-0 top-0 w-screen z-20 backdrop-blur-sm flex flex-col overflow-auto bottom-20 px-5'>
+        <div className='fixed min-h-screen left-0 top-0 w-screen z-20 backdrop-blur-sm flex flex-col overflow-auto bottom-20 px-5 bg-dark bg-opacity-50'>
                 <div className='flex items-center my-5'>
                     <button className='flex justify-center px-2' onClick={hideList}>
                         <Icon className='flex justify-center items-center'>
@@ -45,7 +45,7 @@ export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
                     <input type="text" placeholder={u("Search")} value={searchField} id={u("Search")} onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/>
                 </div>
 
-                <Button className='mb-4 text-white bg-dark border-white' onClick={slectAllExercises}>
+                <Button className='mb-4 text-white bg-dark border-2 border-borderInteractive' onClick={slectAllExercises}>
                     {t("AllExercises")}
                 </Button>
                

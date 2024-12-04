@@ -1,12 +1,17 @@
 import { ExerciseNotFound } from '@/app/components/add-exercise/ExerciseNotFound'
 import { ArrayOfAllExercises, getAllHandleTypes, getUserExerciseIdUsingName, userExercisesThatRequireHandlesOrTimeMesure } from '@/app/actions'
 import { AddExerciseStateProvider } from '@/app/components/add-exercise/AddExerciseStateProvider'
-import { Metadata } from 'next'
 import { exercisesArr } from '@/app/lib/exercise-list'
+import { getLocale, getTranslations } from 'next-intl/server'
 
-export const metadata: Metadata = {
-  title: "Dodaj ćwiczenie",
-};
+export async function generateMetadata() {
+  const locale = getLocale()
+  const t = await getTranslations({locale, namespace: 'Metadata'});
+ 
+  return {
+    title: t('Add exercise')
+  };
+}
 
 export default async function page({params}:{params:{exercisename:string}}){
   const exerciseName = decodeURI(params.exercisename)

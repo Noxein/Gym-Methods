@@ -27,7 +27,7 @@ export const CompletedTraining = ({training,trainingName,trainingDate}:Completed
         return newName
     } 
   return (
-    <div className={`text-marmur border-marmur border-[1px] flex-1 py-2 px-2 rounded-lg min-h-36 min-w-80`}>
+    <div className={`text-marmur bg-darkLight flex-1 py-2 px-2 rounded-lg min-h-36 min-w-80`}>
         <div className='flex justify-between'>
             <span className='text-xl'>{trainingName}</span>
             <span className='text-gray-500 text-xs'>{format(finishHour,'dd-MM-yyyy')}</span>
@@ -35,7 +35,7 @@ export const CompletedTraining = ({training,trainingName,trainingDate}:Completed
         <div className='pt-2'>
                 {training.map((exercise,index)=>{
                 return (
-                    <div className={`border-t-[1px] border-b-[1px] text-gray-400 border-gray-500 flex justify-between mx-4 px-2 py-[2px]`} key={index}>
+                    <div className={`${index === 0 ? 'border-t-[1px]': null} border-b-[1px] text-gray-400 border-black flex justify-between mx-4 px-2 py-[2px]`} key={index}>
                         {exerciseName(exercise.exerciseid)}
                         
                         <span>{exercise.sets.length} {t("Series",{lastNumber: (exercise.sets.length.toLocaleString())[exercise.sets.length-1]})}</span>

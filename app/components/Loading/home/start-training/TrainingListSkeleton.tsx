@@ -11,7 +11,7 @@ export const TrainingListSkeleton = () => {
 export const TrainingLink = () => {
 
   return (
-    <div className={` py-[1px] pl-[1px] rounded-md flex gradient-background border-1`}>
+    <div className={` py-[1px] pl-[1px] rounded-md flex gradient-background`}>
         <div className={`flex flex-col rounded-md flex-1 px-4 pb-5 pt-3 relative opacity-0 `}>
             <span>o</span>
             <span className='text-gray-400 text-sm relative'>

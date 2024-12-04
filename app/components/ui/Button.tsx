@@ -7,7 +7,7 @@ interface Button extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTML
 export const Button = ({isPrimary = false,children,className,...rest}:Button) => {
 
   if(isPrimary) return (
-    <button {...rest} className={cn(`py-3 bg-green gradient-background-green-animation-on-disabled text-white text-center border-1 rounded-lg`,className)}>
+    <button {...rest} className={cn(`py-3 bg-green gradient-background-green-animation-on-disabled text-white text-center rounded-lg`,className)}>
       {children}
     </button>
   )

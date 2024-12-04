@@ -13,7 +13,9 @@ const config: Config = {
         red: '#9F443C',
         marmur: '#D9D9D9',
         dark: '#0D1317',
-        darkLight: '#121B21'
+        darkLight: '#10191E',
+        steel: "#121C21",
+        borderInteractive: "#19272E"
       },
       borderWidth:{
         1: '1px'

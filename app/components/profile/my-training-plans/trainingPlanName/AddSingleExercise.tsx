@@ -56,14 +56,14 @@ export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingIn
     const d = useTranslations("DefaultExercises")
     const newName = exercisesArr.includes(text) ? d(nameTrimmer(text)) : text
     return(
-        <button className={`text-left ${mLeft} bg-marmur text-marmur py-[1px] pl-[1px] rounded flex items-center justify-between ${isFirst?'mt-2':null}`} 
+        <button className={`text-left ${mLeft} bg-borderInteractive text-marmur py-[2px] pl-[2px] rounded flex items-center justify-between ${isFirst?'mt-2':null}`} 
         onClick={addExercise}
         >
             <span className={`flex-1 bg-dark rounded-md pl-4 py-3 flex flex-col`}>
                 {newName}
             </span>
-            <Icon className='px-[3px]'>
-                <PlusIcon width='20px' fill='#0D1317'/>
+            <Icon className='px-2'>
+                <PlusIcon width='20px' fill='#fff'/>
             </Icon>
         </button>
     )

@@ -100,12 +100,12 @@ const SingleExercise = ({exerciseName,handleChangeExercisesOrder,index,handleDel
 
     const formattedExerciseName = exercisesArr.includes(exerciseName) ? d(nameTrimmer(exerciseName)) : exerciseName
     return(
-        <div className='bg-marmur p-[1px] rounded-lg flex items-center cursor-pointer' onClick={()=>handleChangeExercisesOrder(index)}>
-            <div className='bg-dark text-white py-2 px-4 rounded-lg flex-1'>
+        <div className='bg-borderInteractive p-[2px] rounded-lg flex items-center cursor-pointer' onClick={()=>handleChangeExercisesOrder(index)}>
+            <div className='bg-dark text-white py-3 px-4 rounded-lg flex-1'>
                 {formattedExerciseName}
             </div>
             <Icon onClick={(e)=>{e.stopPropagation();handleDeleteExercise(index)}}>
-                <TrashIcon width='25' height='25'/>
+                <TrashIcon width='25' height='25' fill='#fff'/>
             </Icon>
         </div>
     )

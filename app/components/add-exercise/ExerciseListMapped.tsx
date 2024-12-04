@@ -33,7 +33,7 @@ export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseLi
         <h1 className='text-white text-center text-2xl'>{t('AddExercise')}</h1>
 
       <div className='flex gap-2 my-5 max-w-[100dvw] mx-5'>        
-        <input type="text" placeholder={u('Search')} value={searchField} id={u('Search')} onChange={e=>setSearchField(e.target.value)} className={`w-3/4 text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/>
+        <input type="text" placeholder={u('Search')} value={searchField} id={u('Search')} onChange={e=>setSearchField(e.target.value)} className={`w-3/4 text-xl py-2 px-2 bg-dark border-2 rounded-md border-borderInteractive text-white placeholder:text-gray-300`}/>
         <Link href={`/home/profile/my-exercises?showAddModal=true`} className='bg-green flex-1 text-white justify-center flex items-center px-4 rounded-lg'>
           {u('Add')}
         </Link>

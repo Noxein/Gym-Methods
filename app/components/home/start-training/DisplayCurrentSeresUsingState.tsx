@@ -81,11 +81,11 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
     <div className='flex flex-col gap-2 mt-3 text-white mb-2'>
 
         {trainingState.exercises[trainingState.currentExerciseIndex].sets.map((series,index)=>(
-            <div className={`flex bg-marmur rounded-md ${index===0?'mt-2':null}`} key={index}>
-                <div className='text-dark text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
+            <div className={`flex bg-steel py-[2px] rounded-md ${index===0?'mt-2':null}`} key={index}>
+                <div className='text-white text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
                     {u(series.side)[0]}
                 </div>
-                <div className={`flex-1 bg-dark px-2 py-3 grid ml-[1px] my-[1px] rounded-md ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'}`}>
+                <div className={`flex-1 bg-dark px-2 py-2 grid ml-[1px] rounded-md ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'}`}>
                     <div className='flex'>
                         <Input type="number" maxLength={3} max={3} value={series.weight} className={`w-full mr-1 bg-dark`} onChange={(e)=>{editInput(e,index,'EDITSERIESKG')}}/> 
                     </div>
@@ -110,7 +110,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
                 <div className='w-10 flex justify-center items-center'>
                     <button onClick={()=>deleteSet(index)}>
                         <Icon className='bg-opacity-0'>
-                            <TrashIcon fill={'#0D1317'}/>
+                            <TrashIcon fill={'#fff'}/>
                         </Icon>
                     </button>
                 </div>

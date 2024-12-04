@@ -116,11 +116,11 @@ const ExpandBtn = ({text,isExpanded,mLeft,...rest}:ExpandBtn) => {
 
     return (
         text && 
-        <button {...rest} className={`text-left ${mLeft} bg-marmur  text-marmur rounded-lg flex pl-[1px] py-[1px] items-center`}>
+        <button {...rest} className={`text-left ${mLeft} bg-borderInteractive text-marmur rounded-lg flex pl-[2px] py-[2px] items-center`}>
             <span className={`flex-1 rounded-lg bg-dark py-3 pl-4`}>{text}</span>
 
             <Icon className='p-0 -ml-1'>
-                <ExpandIcon expanded={isExpanded} fill={'#d9d9d9'}/>
+                <ExpandIcon expanded={isExpanded} fill={'#fff'}/>
             </Icon>
             
         </button>
