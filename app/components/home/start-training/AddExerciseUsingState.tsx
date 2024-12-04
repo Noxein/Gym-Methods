@@ -137,7 +137,7 @@ const Input = ({...rest}:InputType) => {
     const inputRef = useRef<HTMLInputElement|null>(null)
 
     return(
-        <input  className={` w-full text-marmur border-borderInteractive bg-dark border-[2px] min-h-10 text-lg rounded-lg pl-4 focus:outline-blue-500`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
+        <input  className={` w-full text-marmur border-borderInteractive bg-dark border-[2px] min-h-10 text-lg rounded-lg pl-4`} {...rest} ref={inputRef} onFocus={()=>{inputRef.current?.select()}}/>
     )
 }
 
