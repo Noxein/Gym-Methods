@@ -33,7 +33,7 @@ export const Profile = ({email}:ProfileTypes) => {
           <LinkBtn href='/home/profile/my-handles' text={t("MyHandles")}>
             <HandleIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
-          <LinkBtn href='/home/profile' text={t("Summary")}>
+          <LinkBtn href='/home/profile/summary' text={t("Summary")}>
             <SummaryIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/settings' text={t("AccountSettings")}>

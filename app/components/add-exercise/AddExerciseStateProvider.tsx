@@ -10,7 +10,7 @@ const init = {
     side: 'Both' as const,
     series:[],
     difficultyLevel: "easy" as const,
-    time: ''
+    time: 0
 }
 
 type AddExerciseStateProviderTypes = {

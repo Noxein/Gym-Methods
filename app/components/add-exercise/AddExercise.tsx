@@ -194,8 +194,8 @@ const DifficultyLevel = ({dispach,state,showTimeMesure}:{dispach:React.Dispatch<
         </div>
         {showTimeMesure &&             
             <div className='flex flex-col flex-1 relative'>
-                <Label htmlFor='time'>{u("Time")}</Label>
-                <Input type="text" id='time' onChange={e=>dispach({type:"TIME",payload:e.target.value})} value={state.time}/>
+                <Label htmlFor='time'>{u("TimeInSeconds")}</Label>
+                <Input type="number" id='time' onChange={e=>dispach({type:"TIME",payload:e.target.value})} value={state.time}/>
             </div>}
         </div>)
 }

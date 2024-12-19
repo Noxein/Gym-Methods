@@ -2,7 +2,7 @@ export type Series = {
     weight:number,
     repeat:number,
     difficulty: DifficultyLevelType,
-    time?:string,
+    time?: number,
     side: Side
 }
 
@@ -17,7 +17,7 @@ export type AddExerciceReducerType = {
     side: Side,
     series: Series[],
     difficultyLevel: DifficultyLevelType,
-    time?: string,
+    time?: number,
 }
 
 export type Side = 'Both' | 'Left' | 'Right'
@@ -198,10 +198,58 @@ export type InitialReducerType = {
     side: Side,
     series: Series[],
     difficultyLevel: DifficultyLevelType
-    time?: string,
+    time?: number,
     exerciseid: string
     handle?: {
         handleName: string,
         handleId: string,
     }
   }
+
+export type GymExercise = {
+    id: string,
+    userid: string,
+    exerciseid: string,
+    date: Date,
+    sets: Series[],
+    ispartoftraining: boolean,
+    trainingid? :string,
+    exercisename: string,
+    handleid?: string,
+    handlename?: string
+}
+
+export type Span = 'month'|'quarter'|'year'|'beggining'
+
+export type Status = 'error' | 'loading' | 'idle'
+
+export type SummaryDataFetched = {
+    sets: Series[], 
+    exercisename: string, 
+    date: Date
+}
+
+export type BasicSummaryDataType = {
+    weight:{date:Date,value:number}[],
+    repeats:{date:Date,value:number}[],
+}
+
+type cachedType = {
+    weight:{date:Date,value:number}[],
+    repeats:{date:Date,value:number}[],
+    exercises:  {
+        name: string,
+        data: {date:Date,value:number}[],
+    }[]
+}
+
+export type CachedSummaryDataType = {
+    month?: cachedType
+    quarter?: cachedType,
+    year?: cachedType,
+    beggining?: cachedType,
+}
+
+export type ExerciseSummaryType = {
+    data: {date:Date,value:number}[],
+}

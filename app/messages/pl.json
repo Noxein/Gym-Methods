@@ -27,7 +27,8 @@
         "Back": "Powrót",
         "Change": "Zmień",
         "Of": "z",
-        "Close": "Zakończ"
+        "Close": "Zakończ",
+        "TimeInSeconds": "Czas (sekundy)"
     },
     "Login": {
         "Login": "Zaloguj",
@@ -356,5 +357,16 @@
         "Login": "Zaloguj",
         "Login description": "Aplikacja na siłownię",
         "Register": "Zarejestruj"
+    },
+    "Summary": {
+        "Month": "Miesiąc",
+        "Quarter": "Kwartał",
+        "Year": "Rok",
+        "Beginning": "Początek",
+        "SelectExercise": "Wybierz ćwiczenie",
+        "Repeats": "Powtórzenia",
+        "Weight": "Ciężar",
+        "FavouriteExercies": "Ulubione ćwiczenia",
+        "NotEnoughtData": "Za mało danych"
     }
 }

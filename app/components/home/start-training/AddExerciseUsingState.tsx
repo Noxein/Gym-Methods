@@ -46,7 +46,7 @@ const initializeInputsState = (exerciseid:string,requiresHandle: boolean, requir
         }
     }
     if(requiresTimeMesure){
-        dataObject.time = ''
+        dataObject.time = 0
     }
     localStorage.setItem(exerciseid,JSON.stringify(dataObject))
     return dataObject
@@ -212,7 +212,7 @@ const DifficultyLevel = ({showTimeMesure,inputs,setInputs}:DifficultyLevelTypes)
     const handleTimeChange = (payload:string) => {
         return setInputs(x=>{
             let xCopy = {...x}
-            xCopy.time = payload
+            xCopy.time = Number(payload)
             localStorageSetter(xCopy.exerciseid,xCopy)
             return xCopy
         })
@@ -232,7 +232,7 @@ const DifficultyLevel = ({showTimeMesure,inputs,setInputs}:DifficultyLevelTypes)
         {showTimeMesure &&             
             <div className='flex flex-col flex-1 relative'>
                 <Label htmlFor='time'>{u("Time")}</Label>
-                <Input type="text" id='time' onChange={e=>handleTimeChange(e.target.value)} value={timeInput}/>
+                <Input type="number" id='time' onChange={e=>handleTimeChange(e.target.value)} value={timeInput}/>
             </div>}
         </div>)
 }

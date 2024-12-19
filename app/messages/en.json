@@ -27,7 +27,8 @@
         "Back": "Back",
         "Change": "Change",
         "Of": "of",
-        "Close": "Close"
+        "Close": "Close",
+        "TimeInSeconds": "Time (seconds)"
     },
     "Login": {
         "Login": "Login",
@@ -355,5 +356,16 @@
         "Login": "Login",
         "Login description": "App for gym",
         "Register": "Register"
+    },
+    "Summary": {
+        "Month": "Month",
+        "Quarter": "Quarter",
+        "Year": "Year",
+        "Beginning": "Beginning",
+        "SelectExercise": "Select exercise",
+        "Repeats": "Repeats",
+        "Weight": "Weight",
+        "FavouriteExercies": "Favourtie exercises",
+        "NotEnoughtData": "Not enought data"
     }
 }

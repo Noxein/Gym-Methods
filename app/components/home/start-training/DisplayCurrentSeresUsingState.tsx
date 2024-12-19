@@ -54,7 +54,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
         if(field === 'EDITSERIESTIME'){
             setLocalStorageTrainingData(x=>{
                 let xCopy = {...x}
-                xCopy.exercises[xCopy.currentExerciseIndex].sets[index].time = e.target.value
+                xCopy.exercises[xCopy.currentExerciseIndex].sets[index].time = Number(e.target.value)
                 localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
                 return xCopy
             })
@@ -91,7 +91,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
                     </div>
 
                     <div className='flex'>
-                        <Input type="text" value={series.repeat} className={`w-full mr-1 bg-dark min-w-10`} onChange={(e)=>{editInput(e,index,'EDITSERIESREPEAT')}}/>
+                        <Input type="number" value={series.repeat} className={`w-full mr-1 bg-dark min-w-10`} onChange={(e)=>{editInput(e,index,'EDITSERIESREPEAT')}}/>
                     </div>
 
                     <div>
@@ -104,7 +104,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
 
                     {showTimeMesure && 
                     <div>
-                        <Input type="text" value={series.time} className={`w-[calc(100%-10px)] mr-1 bg-dark ml-4`} onChange={(e)=>{editInput(e,index,'EDITSERIESTIME')}}/> 
+                        <Input type="number" value={series.time} className={`w-[calc(100%-10px)] mr-1 bg-dark ml-4`} onChange={(e)=>{editInput(e,index,'EDITSERIESTIME')}}/> 
                     </div>}
                 </div>
                 <div className='w-10 flex justify-center items-center'>

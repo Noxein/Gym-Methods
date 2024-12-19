@@ -3,7 +3,7 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Series, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Series, Span, SummaryDataFetched, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -1409,5 +1409,47 @@ export const Last30DaysExercises = async () => {
         return returnObj
     }catch(e){
         console.log('Error occured actions.ts file Last30DaysExercises function',e)
+    }
+}
+
+export const getSummaryData = async () => {
+    const userid = await userID()
+
+    try{
+        const query = await sql`
+            SELECT * FROM gymexercises WHERE userid = ${userid}
+        `
+        const data = query.rows as GymExercise[]
+        const favourtieExercises = [] as { exercisename: string, number: number}[]
+
+        for(let i = 0; i < data.length; i++){
+            const index = favourtieExercises.findIndex(val=>val.exercisename === data[i].exercisename)
+            if( index >= 0){
+                favourtieExercises[index].number = favourtieExercises[index].number + 1
+            }else{
+                favourtieExercises.push({exercisename: data[i].exercisename,number: 1})
+            }
+        }
+
+        return {piechart: favourtieExercises.sort((a,b)=>{
+            if(a.number < b.number) return 1
+            return -1
+        }).slice(0,5)}
+    }catch{
+
+    }
+}
+
+export const getBasicSummaryData = async () => {
+    const userid = await userID()
+
+    try{
+        const data = await sql`
+            SELECT sets, exercisename, date FROM gymexercises WHERE userid = ${userid}
+        `
+        const parsedData = data.rows as SummaryDataFetched[]
+        return {data: parsedData, error: ''}
+    }catch{
+        return {data: [], error: 'Something went wrong'}
     }
 }

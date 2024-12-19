@@ -15,7 +15,8 @@ const config: Config = {
         dark: '#0D1317',
         darkLight: '#10191E',
         steel: "#121C21",
-        borderInteractive: "#19272E"
+        borderInteractive: "#19272E",
+        notSelected: '#33424C'
       },
       borderWidth:{
         1: '1px'

@@ -9,7 +9,9 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
             case "REPEAT":
                 return { ...state, repeat: action.payload };
     
-    
+            case 'TIME':{
+                return { ...state, time: action.payload };
+            }
             case 'EDITSERIESKG':{
                 let index = action.index!
                 let changeValue = action.payload
@@ -18,7 +20,14 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
                 arr[index].weight = changeValue
                 return {...state, series: arr}
             }
- 
+            case 'EDITSERIESTIME':{
+                let index = action.index!
+                let changeValue = action.payload
+
+                const arr = [...state.series]
+                arr[index].time = changeValue
+                return {...state, series: arr}
+            };
             case 'EDITSERIESREPEAT':{
                 let index = action.index!
                 let changeValue = action.payload
@@ -49,19 +58,8 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
                 arr[index].side = changeValue as Side
                 return {...state, series: arr}
             }
-            case 'EDITSERIESTIME':{
-                let index = action.index!
-                let changeValue = action.payload
-
-                const arr = [...state.series]
-                arr[index].time = changeValue
-                return {...state, series: arr}
-            };
             case 'SIDE' :{
                 return { ...state, side: action.payload as Side };
-            }
-            case 'TIME':{
-                return { ...state, time: action.payload };
             }
         }
     }
@@ -85,7 +83,7 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
             return {...state, series: state.series.filter((set,i)=>i!==action.payload)};
         case 'RESETSTATE' :{
             return {
-                ...state, series : [], repeat: 0, difficultyLevel: 'easy', time: '', weight: 0, side: 'Both'
+                ...state, series : [], repeat: 0, difficultyLevel: 'easy', time: 0, weight: 0, side: 'Both'
             }
         }
         default:
