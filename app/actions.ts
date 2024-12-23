@@ -762,11 +762,9 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
         return {error:'Something went wrong'}
     }
     if (trainingplanname.length > 255){
-        console.log(2)
         return {error:'Training name is too long'}
     }
-    if(!WeekDayArrayPL.includes(weekday)){
-        console.log(3)
+    if(!WeekDayArray.includes(weekday)){
         return { error: 'Wrong week day'}
     } 
 
