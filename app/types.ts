@@ -99,10 +99,17 @@ export type UserTrainingPlan = {
     userid: string,
     trainingname: string,
     date: Date,
-    exercises:{
-        exercises: TrainingExerciseType[],
-    },
+    exercises: TrainingProgression[],
     weekday: WeekDay
+}
+
+export type TrainingProgression = {
+    exercisename: string,
+    exerciseid: string;
+    id: string,
+    series?: number,
+    repetitions?: number,
+    increase?: number,
 }
 
 export type ExercisesThatRequireTimeMesureOrHandle = {

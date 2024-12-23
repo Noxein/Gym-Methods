@@ -1,9 +1,9 @@
 'use client'
 import { HideShowHTMLScrollbar, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
-import { ExerciseTypes, TrainingExerciseType, UserExercise, UserTrainingPlan, WeekDay } from '@/app/types'
+import { ExerciseTypes, TrainingExerciseType, TrainingProgression, UserExercise, UserTrainingPlan, WeekDay } from '@/app/types'
 import { useState } from 'react'
 import { MapExercises } from './MapExercises'
-import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
+import { PencilIcon, PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ListedAddedExercises } from './ListedAddedExercises'
 import { EditUserTraining } from '@/app/actions'
 import { useRouter } from 'next/navigation'
@@ -24,12 +24,12 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
   const router = useRouter()
   const[planName,setPlanName] = useState(training.trainingname)
   const[planWeekDay,setPlanWeekDay] = useState<WeekDay>(training.weekday)
-  const[planExercises,setPlanExercises] = useState<TrainingExerciseType[]>(training.exercises.exercises)
+  const[planExercises,setPlanExercises] = useState<TrainingProgression[]>(training.exercises)
   const[showAddExercise,setShowAddExercise] = useState(false)
-
+  const[showEditProgression,setShowEditProgression] = useState(false)
   const[error,setError] = useState('')
   const[loading,setLoading] = useState(false)
-
+  console.log(training)
   const addExercise = () => {
     setShowAddExercise(true)
     HideShowHTMLScrollbar('hide')
@@ -70,8 +70,16 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
         className='bg-green w-full'
         disabled={loading}
         />
-
-        {planExercises && <ListedAddedExercises planExercises={planExercises} setPlanExercises={setPlanExercises}/>}
+        <ButtonWithIcon 
+        isPrimary={!showEditProgression} 
+        buttonText='Edytuj cel'
+        onClick={()=>setShowEditProgression(cb=>!cb)}
+        childrenIcon={
+          <PencilIcon width='20' fill='#D9D9D9'/>
+        }
+        className='w-full mt-2'
+        />
+        {planExercises && <ListedAddedExercises planExercises={planExercises} setPlanExercises={setPlanExercises} showEdit={showEditProgression}/>}
 
         <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
 

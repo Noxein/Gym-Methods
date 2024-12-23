@@ -1,5 +1,5 @@
 import { addDays, getDay, subDays } from "date-fns"
-import { WeekDay, WeekDayPL } from "../types"
+import { Series, TrainingProgression, WeekDay, WeekDayPL } from "../types"
 import { setUserLocale } from "../i18n/locale"
 import { Locale, locales } from "../i18n/config"
 
@@ -84,4 +84,9 @@ export const getLang = async () => {
     setUserLocale(lang as Locale)
   }
   
+}
+
+export const checkIfShouldIncreaseDifficulty = (data:{exercises: Series[][], exerciseid: string}[],goal:TrainingProgression) => {
+    //DATA ARRAY ALWAYS HAS 2 ELEMENTS 
+     
 }

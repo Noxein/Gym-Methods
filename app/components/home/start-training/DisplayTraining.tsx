@@ -65,7 +65,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
 
 
     const[showConfirmEndTrainingModal,setShowConfirmEndTrainingModal] = useState(false)
-    const[localStorageTrainingData,setLocalStorageTrainingData] = useState<LocalStorageTraining>(()=>initializeLocalStorageData(trainingPlanData.trainingname,trainingPlanData.exercises.exercises,trainingPlanData.id))
+    const[localStorageTrainingData,setLocalStorageTrainingData] = useState<LocalStorageTraining>(()=>initializeLocalStorageData(trainingPlanData.trainingname,trainingPlanData.exercises,trainingPlanData.id))
 
     const currentExerciseName = localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseName
     const currentExerciseId = localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseId

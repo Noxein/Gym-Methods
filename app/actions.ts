@@ -3,7 +3,7 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Series, Span, SummaryDataFetched, TempoType, TrainingExerciseType, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Series, Span, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -105,7 +105,7 @@ const ComparePasswords = async (password:string,hasedPassword:string) => {
     return isCorrect
 }
 
-export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:{handleName:string,handleId:string},isLastExercise=false,date?:Date) => {
+export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:{handleName:string,handleId:string},isLastExercise=false,date?:Date,originalTrainingId?: string) => {
     if(typeof redirectUser !== 'boolean')                                          return { errors: "Something went wrong" }
     if(!exerciseid || typeof exerciseid !== 'string')                              return { errors: "Something went wrong" }
     if(!Array.isArray(sets))                                                       return { errors: "Something went wrong" }
@@ -163,16 +163,19 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
         id = userExercises[userExercises.findIndex(x=>x.exercisename===exerciseid)].id
     }
 
+    let parentTrainingPlanId = null
+    if(originalTrainingId) parentTrainingPlanId = originalTrainingId
+
     let HandleName = null
     let HandleId = null
     if(usesHandle){
         HandleName = usesHandle.handleName
         HandleId = usesHandle.handleId
-    } 
+    }
 
     try{
         const returning = await sql`
-        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid,handlename) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid},${HandleId},${HandleName})
+        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid,handlename,parenttrainingplan) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid},${HandleId},${HandleName},${parentTrainingPlanId})
         `
     }catch(e){
         console.log('Error occured: AddExerciseAction func actions.ts ',e)
@@ -207,7 +210,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
         if(!exercise.exerciseId) return { error: `Exercise dont have an id`}
 
-        const data = await AddExerciseAction(false,exercise.exerciseName,exercise.sets,true,id,exercise.handle,false,exercise.date)
+        const data = await AddExerciseAction(false,exercise.exerciseName,exercise.sets,true,id,exercise.handle,false,exercise.date,trainingPlanId)
         if(data?.errors) return { error : 'Something went wrong'}
     })
 
@@ -356,13 +359,13 @@ export const DeleteUserExercise = async (id:string) => {
         ` 
         const trainings = trainingsQuery.rows as UserTrainingPlan[]
         trainings.forEach(async training=>{
-            if(checkIfIdInTraining(training.exercises.exercises)){
+            if(checkIfIdInTraining(training.exercises)){
                 //IT SEEMS THAT IN THIS TRAINING IS THE ID OF SOON TO DELETE ITEM
-                const exercises1 = [...training.exercises.exercises]
+                const exercises1 = [...training.exercises]
                 const exercises = exercises1.filter(x=>x.exerciseid!==id)
                 await sql`
                     UPDATE gymuserstrainingplans
-                    SET exercises = ${JSON.stringify({exercises})}
+                    SET exercises = ${JSON.stringify(exercises)}
                     WHERE id = ${training.id} AND userid = ${userid};
                 `
             }
@@ -723,7 +726,25 @@ export const GetUserTrainingByName = async (trainingname:string) => {
             return {
                 error: 'Training with this name dont exist'
             }
-        } 
+        }
+        const trainingData = Training.rows[0] as UserTrainingPlan
+        
+        let fetchedData: {[key:string]:{ exercises: Series[][], exerciseid: string}} = {}
+        try{
+            for(let i = 0 ; i < trainingData.exercises.length; i++){
+                const data = await sql`
+                    SELECT sets, exerciseid FROM gymexercises WHERE parenttrainingplan = ${trainingData.id} AND userid = ${userid} AND exerciseid = ${trainingData.exercises[i].exerciseid} ORDER BY date DESC LIMIT 2
+                `
+                const parsedData = data.rows as {sets: Series[], exerciseid: string}[]
+                if(parsedData.length <= 1) continue
+                fetchedData[parsedData[0].exerciseid] = {exercises: [parsedData[0].sets,parsedData[1].sets], exerciseid: parsedData[0].exerciseid}
+            }
+            console.log('IM FETCHED DATA',fetchedData)
+        }catch(e){
+            console.log(e)
+        }
+        
+
         return {
             training: Training.rows[0] as UserTrainingPlan,
             error: ''
@@ -733,16 +754,21 @@ export const GetUserTrainingByName = async (trainingname:string) => {
     }
 }
 
-export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDayPL,exercisesuwu?:TrainingExerciseType[]) => {
+export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDayPL,exercisesuwu?:TrainingProgression[]) => {
     const userid = await userID()
 
-    if(typeof trainingplanname !== 'string' || typeof weekday !== 'string' || !Array.isArray(exercisesuwu)){
+    if(typeof trainingplanname !== 'string' || typeof weekday !== 'string' || (exercisesuwu && !Array.isArray(exercisesuwu))){
+        console.log(!Array.isArray(exercisesuwu))
         return {error:'Something went wrong'}
     }
     if (trainingplanname.length > 255){
+        console.log(2)
         return {error:'Training name is too long'}
     }
-    if(!WeekDayArrayPL.includes(weekday)) return { error: 'Wrong week day'}
+    if(!WeekDayArrayPL.includes(weekday)){
+        console.log(3)
+        return { error: 'Wrong week day'}
+    } 
 
     try{
         const userExercice = await sql`
@@ -761,7 +787,7 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
     if(!exercisesuwu) exercises = []
     try{
         await sql`
-            INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userid},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify({exercises})})
+            INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userid},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify(exercises)})
         `
     }catch(e){
         console.log('Error occured CreateUserTraining func actions.ts',e)
@@ -782,7 +808,7 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
     try{
         await sql`
             UPDATE gymuserstrainingplans
-            SET trainingname = ${trainingplanname}, date = ${JSON.stringify(date)}, exercises = ${JSON.stringify({exercises})}, weekday = ${weekday}
+            SET trainingname = ${trainingplanname}, date = ${JSON.stringify(date)}, exercises = ${JSON.stringify(exercises)}, weekday = ${weekday}
             WHERE id = ${trainingid} AND userid = ${userid};
         
             `

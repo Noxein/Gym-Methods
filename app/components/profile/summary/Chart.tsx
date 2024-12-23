@@ -1,6 +1,6 @@
 'use client'
 import { differenceInCalendarDays, format } from 'date-fns'
-import React, { LegacyRef, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { MinMaxChart } from './MinMaxChart'
 import { ArcherContainer, ArcherContainerRef, ArcherElement } from 'react-archer'
 import { useTranslations } from 'next-intl'
@@ -61,8 +61,6 @@ export const Chart = ({name,data,archRef}:ChartProps) => {
                             <div style={{left:left + '%',bottom:bottom + '%'}} className={`absolute w-2 h-2 rounded-full z-30 border-white border-1 ${index === selectedId ? 'bg-green' : 'bg-darkLight'}`} onClick={()=>setSlectedId(index)}>
                             </div>
                         </ArcherElement>
-
-                    
                 )})}
 
             </ArcherContainer>

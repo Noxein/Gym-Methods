@@ -9,8 +9,8 @@ type ContinueTrainingTypes = {
 
 export const ContinueTraining = async ({name,training}:ContinueTrainingTypes) => {
     const loadPlan = await getExistingTraining()
-    const trainingLeft = training?.exercises.exercises.filter(x=>loadPlan?.exercisesleft[0].includes(x.id))
-    console.log(training?.exercises.exercises,loadPlan?.exercisesleft,trainingLeft)
+    const trainingLeft = training?.exercises.filter(x=>loadPlan?.exercisesleft[0].includes(x.id))
+    console.log(training?.exercises,loadPlan?.exercisesleft,trainingLeft)
 
   return (
     <Training />
