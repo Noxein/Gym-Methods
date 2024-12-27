@@ -73,7 +73,7 @@ export const OpenTrainingRemainder = ({useremail}:OpenTrainingRemainderTypes) =>
             <p className="text-2xl text-center">{t('OpenTrainings')}</p>
             <div className="mt-5 flex flex-col gap-5">
                 {data.map(name=>(
-                    <ExerciseToClose key={name} name={name} setData={setData}/>
+                    <ExerciseToClose key={name} name={name} setData={setData} email={useremail}/>
                 ))}
             </div>
             <div className="w-full flex mt-5">
@@ -86,10 +86,11 @@ export const OpenTrainingRemainder = ({useremail}:OpenTrainingRemainderTypes) =>
 
 type ExerciseToCloseTypes = {
     name: string,
-    setData: React.Dispatch<React.SetStateAction<string[]>>
+    setData: React.Dispatch<React.SetStateAction<string[]>>,
+    email?: string | null,
 }
 
-const ExerciseToClose = ({name,setData}:ExerciseToCloseTypes) => {
+const ExerciseToClose = ({name,setData,email}:ExerciseToCloseTypes) => {
     const[loading,setLoading] = useState(false)
     const[error,setError] = useState('')
 
@@ -97,9 +98,9 @@ const ExerciseToClose = ({name,setData}:ExerciseToCloseTypes) => {
 
     const handleCloseTraining = async () => {
         setLoading(true)
-        const storagedata = localStorage.getItem(name+'training')
+        const storagedata = localStorage.getItem(name+'training'+email)
         const localStorageTrainingData = JSON.parse(storagedata!)
-
+        console.log(name)
         const data = await SaveTrainingToDatabase(localStorageTrainingData.trainingId,localStorageTrainingData.exercises,localStorageTrainingData.trainingStartDate)
         if(data && data.error){
             setLoading(false)
