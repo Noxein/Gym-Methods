@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { BlurBackgroundModal } from '../../BlurBackgroundModal'
-import { WeekDayPL } from '@/app/types'
+import { WeekDay, WeekDayPL } from '@/app/types'
 import { HideShowHTMLScrollbar, WeekDayArray } from '@/app/lib/utils'
 import { CreateUserTraining } from '@/app/actions'
 import { Input } from '../../ui/Input'
@@ -17,7 +17,7 @@ type AddTrainingModalTypes = {
 }
 export const AddTrainingModal = ({setShowAddModal,trainingCount}:AddTrainingModalTypes) => {
     const[trainingName,setTrainingName] = useState(`Mój Trening ${trainingCount+1}`)
-    const[weekday,setWeekDay] = useState<WeekDayPL>('Poniedziałek')
+    const[weekday,setWeekDay] = useState<WeekDay>('Monday')
     const[error,setError] = useState('')
     const[loading,setLoading] = useState(false)
 
@@ -46,7 +46,7 @@ export const AddTrainingModal = ({setShowAddModal,trainingCount}:AddTrainingModa
         <div className={`text-xl rounded-md px-5 py-5 mb-20 w-full`}>
             <div className='flex flex-col gap-4'>
                 <Input labelName={t("TrainingName")} onChange={e=>setTrainingName(e.target.value)} value={trainingName} disabled={loading}/>
-                <Select onChange={e=>setWeekDay(e.target.value as WeekDayPL)} labelName={t("DayOfWeek")} value={weekday} valuesToLoop={WeekDayArray} disabled={loading}/>
+                <Select onChange={e=>setWeekDay(e.target.value as WeekDay)} labelName={t("DayOfWeek")} value={weekday} valuesToLoop={WeekDayArray} disabled={loading}/>
             </div>
 
             <SmallLoaderDiv loading={loading}/>
