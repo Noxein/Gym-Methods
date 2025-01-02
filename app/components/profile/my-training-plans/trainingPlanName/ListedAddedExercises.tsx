@@ -36,9 +36,11 @@ export const ListedAddedExercises = ({planExercises,setPlanExercises,showEdit}:L
     if(showEdit) return (
         <div className='flex flex-col gap-2 mb-40 mt-2'>
             <div className='flex gap-2 mx-5 text-white text-sm'>
+                <span className='flex-1'>Cel (KG)</span>
                 <span className='flex-1'>Serie</span>
                 <span className='flex-1'>Powtórzenia</span>
-                <span className='flex-1'>PRzyrost</span>
+                <span className='flex-1'>Przyrost</span>
+                
             </div>
             {planExercises.map((exercise,index)=>{
                 return (
@@ -89,9 +91,11 @@ const SingleExercise = ({name,exercise,setPlanExercises}:SingleExerciseTypes) =>
             <div className={`flex-1 flex flex-col bg-dark px-4 pt-4 rounded-lg`}> 
                 <span>{translatedName}</span>
                 <span className='text-gray-400 py-0 my-0'>
+                    {exercise.weightGoal ? exercise.weightGoal : 0}/
                     {exercise.series ? exercise.series : 0}/ 
                     {exercise.repetitions ? exercise.repetitions : 0}/ 
                     {exercise.increase ? exercise.increase : 0}
+                    
                 </span>
             </div>
     
@@ -114,13 +118,14 @@ const SingleExerciseEditable = ({name,exercise,setPlanExercises,index}:SingleExe
     const d = useTranslations("DefaultExercises")
     const translatedName = d(nameTrimmer(name)).includes("DefaultExercises") ? name : d(nameTrimmer(name))
 
-    const handleChange = (value:string,key:'series'|'repetitions'|'increase') => {
+    const handleChange = (value:string,key:'series'|'repetitions'|'increase'|'weightGoal') => {
         setPlanExercises(callback=>{
             let copy = [...callback]
 
             if(key === 'increase')    callback[index].increase    = Number(value)
             if(key === 'repetitions') callback[index].repetitions = Number(value)
             if(key === 'series')      callback[index].series      = Number(value)
+            if(key === 'weightGoal')  callback[index].weightGoal  = Number(value)
 
             return copy
         })
@@ -130,16 +135,20 @@ const SingleExerciseEditable = ({name,exercise,setPlanExercises,index}:SingleExe
                <div className={`flex-1 bg-dark px-4 py-4 rounded-lg flex justify-between`}>
                     <span>{translatedName} </span>
                     <span className='text-gray-400'>
+                        {exercise.weightGoal ? exercise.weightGoal : 0}/
                         {exercise.series ? exercise.series : 0}/ 
                         {exercise.repetitions ? exercise.repetitions : 0}/ 
-                        {exercise.increase ? exercise.increase : 0}
+                        {exercise.increase ? exercise.increase : 0}/
+                        
                     </span>
                </div>
 
                <div className='flex gap-2 px-2 pb-2 rounded'>
+                    <Input type="number" value={exercise.weightGoal ? exercise.weightGoal : 0} onChange={e=>handleChange(e.target.value,'weightGoal')}/>
                     <Input type="number" value={exercise.series ? exercise.series : 0} onChange={e=>handleChange(e.target.value,'series')}/>
                     <Input type="number" value={exercise.repetitions ? exercise.repetitions : 0} onChange={e=>handleChange(e.target.value,'repetitions')}/>
                     <Input type="number" value={exercise.increase ? exercise.increase : 0} onChange={e=>handleChange(e.target.value,'increase')}/>
+                    
                </div>
         </div>
     )

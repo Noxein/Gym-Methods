@@ -1,12 +1,13 @@
 import { DisplayTraining } from './DisplayTraining'
 import { AllExercisesInOneArray, getAllExercises, getAllHandleTypes, userEmail, userExercisesThatRequireHandlesOrTimeMesure, userID } from '@/app/actions'
-import { UserTrainingPlan } from '@/app/types'
+import { SholudAddWeightType, UserTrainingPlan } from '@/app/types'
 import { ModalContextsProvider } from './ModalContexts'
 
 type TrainingTypes = {
     trainingPlanData?: UserTrainingPlan,
+    exercisesThatProgressed: {[key:string]:SholudAddWeightType}
 }
-export const Training = async ({trainingPlanData}:TrainingTypes) => {
+export const Training = async ({trainingPlanData,exercisesThatProgressed}:TrainingTypes) => {
     const {ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure} = await userExercisesThatRequireHandlesOrTimeMesure()
     const exercisesObject = await getAllExercises()
     const allExercisesInOneArray = await AllExercisesInOneArray()
@@ -23,6 +24,7 @@ export const Training = async ({trainingPlanData}:TrainingTypes) => {
                     ExercisesThatRequireHandle={ExercisesThatRequireHandle}
                     ExercisesThatRequireTimeMesure={ExercisesThatRequireTimeMesure}
                     useremail={useremail}
+                    exercisesThatProgressed={exercisesThatProgressed}
                     />
             </ModalContextsProvider>
         </main>

@@ -10,6 +10,7 @@ import { ErrorDiv } from '../../ui/ErrorDiv'
 import { Select } from '../../ui/SelectField'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 import { useTranslations } from 'next-intl'
+import { SmallLoader } from '../../Loading/SmallLoader'
 
 type AddTrainingModalTypes = {
     setShowAddModal :  React.Dispatch<React.SetStateAction<boolean>>,
@@ -49,7 +50,7 @@ export const AddTrainingModal = ({setShowAddModal,trainingCount}:AddTrainingModa
                 <Select onChange={e=>setWeekDay(e.target.value as WeekDay)} labelName={t("DayOfWeek")} value={weekday} valuesToLoop={WeekDayArray} disabled={loading}/>
             </div>
 
-            <SmallLoaderDiv loading={loading}/>
+            <SmallLoader loading={loading}/>
 
             <div className='mt-5 flex gap-4'>
 

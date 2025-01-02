@@ -110,6 +110,7 @@ export type TrainingProgression = {
     series?: number,
     repetitions?: number,
     increase?: number,
+    weightGoal?: number,
 }
 
 export type ExercisesThatRequireTimeMesureOrHandle = {
@@ -259,4 +260,10 @@ export type CachedSummaryDataType = {
 
 export type ExerciseSummaryType = {
     data: {date:Date,value:number}[],
+}
+
+export type SholudAddWeightType = {
+    weight: number, 
+    series: number, 
+    repetitions: number
 }

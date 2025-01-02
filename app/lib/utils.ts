@@ -8,7 +8,7 @@ export const WeekDayArrayPL = ['Poniedziałek','Wtorek','Środa','Czwartek','Pi�
 
 export const MonthNamesArray = ['January','February','March','April','May',"June","July","August",'September','October','November','December']
 export const MonthNamesArrayPL = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień']
-export const MonthNamesArrayVariantPL = ['Stycznia','Lutego','Marca','Kwietnia','Maja','Czerwica','Lipica','Sierpinia','Wrzesienia','Października','Listopada','Grudzieńa']
+export const MonthNamesArrayVariantPL = ['Stycznia','Lutego','Marca','Kwietnia','Maja','Czerwica','Lipica','Sierpinia','Wrzesienia','Października','Listopada','Grudnia']
 
 export const DifficultyArray = ['easy','medium','hard']
 export const DifficultyArrayPL = ['Łatwa','Średnia','Trudna']
@@ -46,7 +46,7 @@ export const ConvertPolishWeekDayToEnglish = (weekday:WeekDayPL) => {
 }
 
 export const dayArrayInitializer = () => {
-  const dayOfWeekIndex = -1 === getDay(new Date()) - 1 ? 6 : getDay(new Date()) - 1
+  const dayOfWeekIndex = -1 === getDay(new Date()) - 1 ? 6 : getDay(new Date()) - 1 // What?
   let newArr:Date[] = []
   const today = new Date()
   for(let i = 0; i <= 6 ; i++){
@@ -86,7 +86,35 @@ export const getLang = async () => {
   
 }
 
-export const checkIfShouldIncreaseDifficulty = (data:{exercises: Series[][], exerciseid: string}[],goal:TrainingProgression) => {
+export const checkIfShouldIncreaseDifficulty = (exerciseHistory: Series[],goal?:TrainingProgression) => {
     //DATA ARRAY ALWAYS HAS 2 ELEMENTS 
-     
+    if(!goal || !goal.series || !goal.increase || !goal.repetitions || !goal.weightGoal) return false
+    if(exerciseHistory.length < goal.series) return false
+
+    let OlderSetsCopy = [...exerciseHistory]
+
+    let totalSeriresGoal = 0
+    let totalWeightGoal = 0
+
+    for(let i = 0 ; i < exerciseHistory.length ; i ++){
+      const index = OlderSetsCopy.findIndex(x=>{
+        return x.weight >= goal.weightGoal! && x.repeat >= goal.repetitions!
+      })
+      
+      if(index < 0) break
+      
+      OlderSetsCopy = [...OlderSetsCopy.slice(0,index),...OlderSetsCopy.slice(index+1,OlderSetsCopy.length)]
+
+      totalSeriresGoal = totalSeriresGoal + 1
+      totalWeightGoal = totalWeightGoal + 1
+    }
+
+    if(!(totalSeriresGoal >= goal.series)) return false
+    if(!(totalWeightGoal >= goal.series)) return false
+    
+    return {
+      weight: goal.weightGoal + goal.increase,
+      repetitions: goal.repetitions,
+      series: goal.series
+    }
 }

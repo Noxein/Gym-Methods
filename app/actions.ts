@@ -3,12 +3,12 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Series, Span, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Series, SholudAddWeightType, Span, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
-import { Advancmentlevel, Daysexercising, Goal, WeekDayArray, WeekDayArrayPL } from "./lib/utils";
+import { Advancmentlevel, checkIfShouldIncreaseDifficulty, Daysexercising, Goal, WeekDayArray, WeekDayArrayPL } from "./lib/utils";
 import { z } from "zod";
 import { addDays, format, isSameDay, isSameWeek, subDays } from "date-fns";
 import { AuthError } from "next-auth"; 
@@ -310,6 +310,11 @@ export const getUserExercises = async () => {
 export const AddNewUserExercise = async (exercisename:string,timeExercise:boolean,usesHandle:boolean) => {
     const userid = await userID()
 
+    if(!exercisename){
+        return { 
+            error: 'Name cant be empty'
+        }
+    }
     if(exercisename.length>=254){
         return {error : 'Exercise name is too long'}
     }
@@ -322,7 +327,7 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
     if( typeof exercisename !== 'string'){
         return {error: 'Something went wrong'}
     }
-    if(exercisesArr.toLocaleString().toLowerCase().includes(exercisename.toLowerCase())){
+    if(exercisesArr.map(x=>x.toLowerCase()).includes(exercisename.toLowerCase())){
         return {error: 'Exercise with this name already exist'}
     }
     try{
@@ -587,14 +592,14 @@ const getAllIdsExercisesInArray = async () => {
 }
 
 const isNotEmptyString = (...strings:string[]) => {
-    let error = null
+    let error = ''
 
     strings.map(string=>{
         if(typeof string !== 'string') error = 'Something went wrong' 
         if(string === '') error = 'Name cant be empty'
     })
 
-    if(!error) return
+    if(!error) return false
 
     return { error: error }
 }
@@ -676,7 +681,7 @@ export const editUserHandle = async (handlename:string,handleid: string) => {
 
 const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay,userID:string) => {
     if(typeof trainingplanname !== 'string'){
-        return {error:'Something went wrong'}
+        return {error:'Something went wrong3'}
     }
     if (trainingplanname.length > 255){
         return {error:'Training name is too long'}
@@ -697,7 +702,7 @@ const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExe
             unknownExercice = exercises[x].exerciseid
         }
     }
-    if(NotStringError) return { error: 'Something went wrong'}
+    if(NotStringError) return { error: 'Something went wrong4'}
     if(UnknownExerciseError) return { error: `Unknown exercise in training plan`}
     if(!WeekDayArray.includes(weekday)) return { error: 'Wrong week day'}
 }
@@ -727,23 +732,7 @@ export const GetUserTrainingByName = async (trainingname:string) => {
                 error: 'Training with this name dont exist'
             }
         }
-        const trainingData = Training.rows[0] as UserTrainingPlan
-        
-        let fetchedData: {[key:string]:{ exercises: Series[][], exerciseid: string}} = {}
-        try{
-            for(let i = 0 ; i < trainingData.exercises.length; i++){
-                const data = await sql`
-                    SELECT sets, exerciseid FROM gymexercises WHERE parenttrainingplan = ${trainingData.id} AND userid = ${userid} AND exerciseid = ${trainingData.exercises[i].exerciseid} ORDER BY date DESC LIMIT 2
-                `
-                const parsedData = data.rows as {sets: Series[], exerciseid: string}[]
-                if(parsedData.length <= 1) continue
-                fetchedData[parsedData[0].exerciseid] = {exercises: [parsedData[0].sets,parsedData[1].sets], exerciseid: parsedData[0].exerciseid}
-            }
-            console.log('IM FETCHED DATA',fetchedData)
-        }catch(e){
-            console.log(e)
-        }
-        
+        const trainingData = Training.rows[0] as UserTrainingPlan        
 
         return {
             training: Training.rows[0] as UserTrainingPlan,
@@ -754,9 +743,9 @@ export const GetUserTrainingByName = async (trainingname:string) => {
     }
 }
 
-export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDayPL,exercisesuwu?:TrainingProgression[]) => {
+export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay,exercisesuwu?:TrainingProgression[]) => {
     const userid = await userID()
-
+    console.log(weekday)
     if(typeof trainingplanname !== 'string' || typeof weekday !== 'string' || (exercisesuwu && !Array.isArray(exercisesuwu))){
         console.log(!Array.isArray(exercisesuwu))
         return {error:'Something went wrong'}
@@ -780,25 +769,26 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
     }
 
     const date = new Date()
-    const endlishWeekDay = WeekDayArray[WeekDayArrayPL.indexOf(weekday)]
     let exercises = exercisesuwu
     if(!exercisesuwu) exercises = []
     try{
         await sql`
-            INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userid},${trainingplanname},${JSON.stringify(date)},${endlishWeekDay},${JSON.stringify(exercises)})
+            INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userid},${trainingplanname},${JSON.stringify(date)},${weekday},${JSON.stringify(exercises)})
         `
     }catch(e){
         console.log('Error occured CreateUserTraining func actions.ts',e)
         return { error: 'Something went wrong'}
     }
     revalidatePath('/home/profile/my-training-plans')
+    redirect(`/home/profile/my-training-plans/${trainingplanname}`)
 }
 
 export const EditUserTraining = async (trainingid:string,trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay) => {
     const userid = await userID()
 
     if(typeof trainingid !== 'string' || typeof trainingplanname !== 'string' || !Array.isArray(exercises) || typeof weekday !== 'string'){
-        return { error: "Something went wrong" }
+        console.log(typeof trainingid !== 'string' , typeof trainingplanname !== 'string' , !Array.isArray(exercises) , typeof weekday !== 'string')
+        return { error: "Something went wrong1" }
     }
     const checkvalue = await checkTrainingFields(trainingplanname,exercises,weekday,userid as string)
     if(checkvalue?.error) return  checkvalue
@@ -812,7 +802,7 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
             `
     }catch(e){
         console.log('Error occured EditUserTraining func actions.ts',e)
-        return { error: 'Something went wrong'}
+        return { error: 'Something went wrong1'}
     }
     revalidatePath('/home/profile/my-training-plans')
     redirect('/home/profile/my-training-plans')
@@ -858,8 +848,34 @@ export const getTrainingDataByName = async (name:string) => {
             SELECT * FROM gymuserstrainingplans WHERE userid = ${userid} AND trainingname = ${name}
         `
         if(list.rowCount === 0) return { error: 'Training not found' }
-        return {data: list.rows[0] as UserTrainingPlan, error: ''} 
-    }catch{
+
+        const trainingData = list.rows[0] as UserTrainingPlan
+
+        let shouldIncrease:{[key:string]:SholudAddWeightType} = {}
+
+        let fetchedData: {[key:string]:{ exercise: Series[], exerciseid: string}} = {}
+        for(let i = 0 ; i < trainingData.exercises.length; i++){
+            const data = await sql`
+                SELECT sets, exerciseid FROM gymexercises WHERE parenttrainingplan = ${trainingData.id} AND userid = ${userid} AND exerciseid = ${trainingData.exercises[i].exerciseid} ORDER BY date DESC LIMIT 1
+            `
+            if(data.rowCount && data.rowCount < 1) continue
+            const parsedData = data.rows[0] as {sets: Series[], exerciseid: string}
+            
+            fetchedData[parsedData.exerciseid] = {exercise: parsedData.sets, exerciseid: parsedData.exerciseid}
+        }
+
+        for(let i = 0 ; i < Object.keys(fetchedData).length ; i++){
+
+            const goals = trainingData.exercises.find(x=>x.exerciseid === Object.values(fetchedData)[i].exerciseid)
+
+            const result = checkIfShouldIncreaseDifficulty(Object.values(fetchedData)[i].exercise,goals)
+
+            if(result) shouldIncrease[Object.values(fetchedData)[i].exerciseid] = result
+        }
+        console.log(shouldIncrease,fetchedData)
+        return {data: list.rows[0] as UserTrainingPlan,exercisesThatProgressed:shouldIncrease, error: ''} 
+    }catch(e){
+        console.log(e)
         return { error: 'Something went wrong' }
     }
 }
@@ -1365,7 +1381,7 @@ const createTrainingPlans = async (fav:string[],notfav:string[],days:number) => 
             name = index<=1?`Trening góry ${index+1}`:`Trening dołu ${index+1}`
         }
 
-        await CreateUserTraining(name,'Poniedziałek',plan)
+        await CreateUserTraining(name,'Monday',plan)
     })
 
 }

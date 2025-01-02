@@ -23,6 +23,6 @@ export default async function page({params,searchParams}:Pagetypes){
       )
     }
   return (
-        trainingData.data && <Training trainingPlanData={trainingData.data}/>
+        trainingData.data && <Training trainingPlanData={trainingData.data} exercisesThatProgressed={trainingData.exercisesThatProgressed}/>
   )
 }

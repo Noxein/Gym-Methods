@@ -24,8 +24,8 @@ export const EditHanleModal = ({handle,hideModal}:EditHandleModal) => {
         console.log(data)
         if(data && data.error){
             setError(e(data.error))
+            return setIsLoading(false)
         }
-        setIsLoading(false)
         handleHideModal()
     }
     const handleHideModal = () => {

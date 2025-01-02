@@ -22,8 +22,8 @@ export const DeleteHandleModal = ({handle,hideModal}:DeleteHandleModal) => {
         const data = await deleteUserHandle(handle?.id!)
         if(data && data.error){
             setError(e(data.error))
+            return setIsLoading(false)
         }
-        setIsLoading(false)
         handleHideModal()
     }
     const handleHideModal = () => {

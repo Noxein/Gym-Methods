@@ -1,5 +1,5 @@
 'use client'
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, TrainingExerciseType, UserExercise, LocalStorageTraining, UserTrainingPlan, LocalStorageExercise } from '@/app/types'
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, TrainingExerciseType, UserExercise, LocalStorageTraining, UserTrainingPlan, LocalStorageExercise, TrainingProgression, SholudAddWeightType } from '@/app/types'
 import { useContext, useRef, useState } from 'react'
 import { SaveTrainingToDatabase } from '@/app/actions'
 import { DisplayTrainingSkeleton } from '../../Loading/home/start-training/trainingName/DisplayTrainingSkeleton'
@@ -24,12 +24,13 @@ type DisplayTrainingTypes = {
     }[],
     ExercisesThatRequireHandle: ExercisesThatRequireTimeMesureOrHandle[],
     ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[],
-    useremail?: string | null
+    useremail?: string | null,
+    exercisesThatProgressed: {[key:string]:SholudAddWeightType}
 }
 
 
-export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,useremail}:DisplayTrainingTypes) => {
-    const initializeLocalStorageData = (trainingName:string,exercises:TrainingExerciseType[],trainingid:string) => {
+export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,useremail,exercisesThatProgressed}:DisplayTrainingTypes) => {
+    const initializeLocalStorageData = (trainingName:string,exercises:TrainingProgression[],trainingid:string) => {
         const data = localStorage.getItem(trainingName+'training'+useremail)
         if(data){
             const parsedData = JSON.parse(data) as LocalStorageTraining
@@ -61,8 +62,6 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
             localStorage.setItem(trainingName+'training'+useremail,JSON.stringify(objectToSaveToLocalStorage))
         return objectToSaveToLocalStorage
     }
-    
-
 
     const[showConfirmEndTrainingModal,setShowConfirmEndTrainingModal] = useState(false)
     const[localStorageTrainingData,setLocalStorageTrainingData] = useState<LocalStorageTraining>(()=>initializeLocalStorageData(trainingPlanData.trainingname,trainingPlanData.exercises,trainingPlanData.id))
@@ -136,7 +135,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
         </div>
         {
             loading ? <DisplayTrainingSkeleton isTraining={true}/> :
-            <AddExerciseUsingState name={currentExerciseName} exerciseid={currentExerciseId} trainingState={localStorageTrainingData} isLoading={loading} showTimeMesure={showTimeMesure} isTraining={true} requiresHandle={requiresHandle} allHandles={allHandles} setLocalStorageTrainingData={setLocalStorageTrainingData}/>
+            <AddExerciseUsingState name={currentExerciseName} exerciseid={currentExerciseId} trainingState={localStorageTrainingData} isLoading={loading} showTimeMesure={showTimeMesure} isTraining={true} requiresHandle={requiresHandle} allHandles={allHandles} setLocalStorageTrainingData={setLocalStorageTrainingData} exercisesThatProgressed={exercisesThatProgressed} useremail={useremail!}/>
         }
         {error && <div className='text-red'>{error}</div>}
 

@@ -106,7 +106,7 @@ const ExerciseToClose = ({name,setData,email}:ExerciseToCloseTypes) => {
             setLoading(false)
             return setError(data.error)
         }
-        localStorage.removeItem(name+'training')
+        localStorage.removeItem(name+'training'+email)
         setData(x=>x.filter(y=>y!==name))
         setLoading(false)
     }

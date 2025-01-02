@@ -13,7 +13,7 @@ export const Button = ({isPrimary = false,children,className,...rest}:Button) =>
   )
 
   return (
-    <button {...rest} className={cn(`py-3 border-green gradient-background-green-animation-on-disabled text-green text-center border-1 rounded-lg font-semibold`,className)}>
+    <button {...rest} className={cn(`py-3 border-green gradient-background-green-animation-on-disabled text-green text-center bg-dark border-1 rounded-lg font-semibold`,className)}>
       {children}
     </button>
   )

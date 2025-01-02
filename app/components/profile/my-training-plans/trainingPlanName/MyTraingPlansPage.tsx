@@ -11,7 +11,7 @@ export const MyTraingPlansPage = async ({trainingName}:MyTraingPlansPageTypes) =
     const isError = training?.error
     const exercises = await getAllExercises()
     const allExercisesInOneArray = await AllExercisesInOneArray()
-    
+    console.log(training)
   return (
     <div>
         {!training?<SpecificTrainingDontExist trainingName={trainingName}/>

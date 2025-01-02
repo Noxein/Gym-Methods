@@ -18,11 +18,10 @@ export const AddHanleModal = ({hideModal}:DeleteHandleModal) => {
         setError('')
         setIsLoading(true)
         const data = await addNewUserHandle(name)
-        console.log(data)
         if(data && data.error){
             setError(e(data.error))
+            return setIsLoading(false)
         } 
-        setIsLoading(false)
         handleHideModal()
     }
     const handleHideModal = () => {
