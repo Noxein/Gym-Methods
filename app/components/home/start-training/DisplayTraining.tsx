@@ -25,7 +25,7 @@ type DisplayTrainingTypes = {
     ExercisesThatRequireHandle: ExercisesThatRequireTimeMesureOrHandle[],
     ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[],
     useremail?: string | null,
-    exercisesThatProgressed: {[key:string]:SholudAddWeightType}
+    exercisesThatProgressed: {[key:string]:SholudAddWeightType[]}
 }
 
 

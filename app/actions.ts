@@ -851,18 +851,24 @@ export const getTrainingDataByName = async (name:string) => {
 
         const trainingData = list.rows[0] as UserTrainingPlan
 
-        let shouldIncrease:{[key:string]:SholudAddWeightType} = {}
+        let shouldIncrease:{[key:string]:SholudAddWeightType[]} = {}
 
         let fetchedData: {[key:string]:{ exercise: Series[], exerciseid: string}} = {}
+
+
         for(let i = 0 ; i < trainingData.exercises.length; i++){
+            
             const data = await sql`
                 SELECT sets, exerciseid FROM gymexercises WHERE parenttrainingplan = ${trainingData.id} AND userid = ${userid} AND exerciseid = ${trainingData.exercises[i].exerciseid} ORDER BY date DESC LIMIT 1
             `
-            if(data.rowCount && data.rowCount < 1) continue
+
+            if(data.rowCount === 0) continue
+
             const parsedData = data.rows[0] as {sets: Series[], exerciseid: string}
-            
+
             fetchedData[parsedData.exerciseid] = {exercise: parsedData.sets, exerciseid: parsedData.exerciseid}
         }
+        
 
         for(let i = 0 ; i < Object.keys(fetchedData).length ; i++){
 
@@ -872,7 +878,7 @@ export const getTrainingDataByName = async (name:string) => {
 
             if(result) shouldIncrease[Object.values(fetchedData)[i].exerciseid] = result
         }
-        console.log(shouldIncrease,fetchedData)
+        console.log('2')
         return {data: list.rows[0] as UserTrainingPlan,exercisesThatProgressed:shouldIncrease, error: ''} 
     }catch(e){
         console.log(e)
@@ -1493,3 +1499,40 @@ export const getBasicSummaryData = async () => {
         return {data: [], error: 'Something went wrong'}
     }
 }
+
+// export const selector = async () => {
+//     const data = await sql`
+//         SELECT id, exercises FROM gymuserstrainingplans 
+//     `
+//     const parsedData = data.rows as {id: string, exercises: {id: string, series: number, increase: number, exerciseid: string,weightGoal: number, repetitions: number,exercisename: string}[]}[]
+
+//     // try{
+//     //     for(let i = 0; i<parsedData.length; i++){
+//     //         //training here
+//     //         let newTrainig:{id: string, exercises: TrainingProgression[]} = {
+//     //             id: parsedData[i].id,
+//     //             exercises: []
+//     //         }
+//     //         console.log(Array.isArray(parsedData[i].exercises))
+//     //         if(!Array.isArray(parsedData[i].exercises)) continue
+
+//     //         parsedData[i].exercises.map(exercise=>{
+//     //             let newExerciseObj:TrainingProgression = {
+//     //                 exerciseid: exercise.exerciseid,
+//     //                 exercisename: exercise.exercisename,
+//     //                 id: exercise.id,
+//     //                 series: []
+//     //             }
+//     //             newTrainig.exercises.push(newExerciseObj)
+//     //         })
+    
+//     //         await sql`
+//     //             UPDATE gymuserstrainingplans SET exercises = ${JSON.stringify(newTrainig.exercises)} WHERE id = ${newTrainig.id}
+//     //         `
+//     //     }
+//     //     console.log('all good')
+//     // }catch(e){
+//     //     console.log(e)
+//     // }
+    
+// }

@@ -107,10 +107,11 @@ export type TrainingProgression = {
     exercisename: string,
     exerciseid: string;
     id: string,
-    series?: number,
-    repetitions?: number,
-    increase?: number,
-    weightGoal?: number,
+    series?:{
+        repetitions: number,
+        increase: number,
+        weightGoal: number,
+    }[]
 }
 
 export type ExercisesThatRequireTimeMesureOrHandle = {
@@ -263,7 +264,7 @@ export type ExerciseSummaryType = {
 }
 
 export type SholudAddWeightType = {
-    weight: number, 
-    series: number, 
-    repetitions: number
+    repetitions: number;
+    increase: number;
+    weightGoal: number;
 }

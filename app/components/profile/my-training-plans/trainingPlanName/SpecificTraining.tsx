@@ -29,7 +29,7 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
   const[showEditProgression,setShowEditProgression] = useState(false)
   const[error,setError] = useState('')
   const[loading,setLoading] = useState(false)
-  console.log(training)
+  
   const addExercise = () => {
     setShowAddExercise(true)
     HideShowHTMLScrollbar('hide')

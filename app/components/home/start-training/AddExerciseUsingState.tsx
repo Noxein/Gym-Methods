@@ -24,14 +24,13 @@ type AddExerciseUsingStateType = {
         handlename: string;
     }[],
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
-    exercisesThatProgressed: {[key:string]:SholudAddWeightType},
+    exercisesThatProgressed: {[key:string]:SholudAddWeightType[]},
     useremail:string,
 }
 
-const initializeInputsState = (exerciseid:string,requiresHandle: boolean, requiresTimeMesure: boolean,exercisesThatProgressed: {[key:string]:SholudAddWeightType},useremail:string) => {
+const initializeInputsState = (exerciseid:string,requiresHandle: boolean, requiresTimeMesure: boolean,useremail:string) => {
     
     const data = localStorage.getItem(exerciseid+'training'+useremail)
-    console.log(exerciseid,data)
     if(data){
         const parsedData = JSON.parse(data)
         return parsedData as SeriesWithExercise
@@ -49,10 +48,6 @@ const initializeInputsState = (exerciseid:string,requiresHandle: boolean, requir
             handleName: 'Sznur'
         }
     }
-    console.log(exercisesThatProgressed,exerciseid)
-    if(exercisesThatProgressed && exercisesThatProgressed[exerciseid]){
-        dataObject.weight = exercisesThatProgressed[exerciseid].weight
-    }
     if(requiresTimeMesure){
         dataObject.time = 0
     }
@@ -62,10 +57,10 @@ const initializeInputsState = (exerciseid:string,requiresHandle: boolean, requir
 export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,setLocalStorageTrainingData,exercisesThatProgressed,useremail}:AddExerciseUsingStateType) => {
     const[showHistory,setShowHistory] = useState(false)
     const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
-    const[inputs,setInputs] = useState<SeriesWithExercise>(()=>initializeInputsState(exerciseid,requiresHandle,showTimeMesure,exercisesThatProgressed,useremail))
+    const[inputs,setInputs] = useState<SeriesWithExercise>(()=>initializeInputsState(exerciseid,requiresHandle,showTimeMesure,useremail))
 
     useEffect(()=>{
-        setInputs(initializeInputsState(exerciseid,requiresHandle,showTimeMesure,exercisesThatProgressed,useremail))
+        setInputs(initializeInputsState(exerciseid,requiresHandle,showTimeMesure,useremail))
     },[name])
 
     const handleAddSeries = () => {
@@ -102,7 +97,7 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
         <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2 z-10`} >
 
             <div className='flex flex-col gap-6' >
-               <WeightAndRepeatInputs inputs={inputs} setInputs={setInputs} didExerciseProgressed={exercisesThatProgressed[name]}/>
+               <WeightAndRepeatInputs inputs={inputs} setInputs={setInputs}/>
                <DifficultyLevel showTimeMesure={showTimeMesure} inputs={inputs} setInputs={setInputs} />
                <Side inputs={inputs} setInputs={setInputs} />
                {requiresHandle && <Handle allHandles={allHandles} inputs={inputs} setInputs={setInputs} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData} />}
@@ -118,8 +113,6 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
                 >
 
             </ButtonWithIcon>
-
-            {exercisesThatProgressed[name] && exercisesThatProgressed[name].series !== 0 && <span className='text-gray-600 text-sm ml-1'>Cel - {exercisesThatProgressed[name].series}</span>}
 
             <div className='grid mt-3 text-white w-full'>
                 <div className={`justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 pl-7 w-[100vw-28px] bg-dark`} >
@@ -166,9 +159,8 @@ const Label = ({sClass,...rest}:LabelType) => {
 type WeightAndRepeatInputsTypes = {
     inputs: SeriesWithExercise,
     setInputs: React.Dispatch<React.SetStateAction<SeriesWithExercise>>,
-    didExerciseProgressed?: SholudAddWeightType,
 }
-const WeightAndRepeatInputs = ({inputs,setInputs,didExerciseProgressed}:WeightAndRepeatInputsTypes) => {
+const WeightAndRepeatInputs = ({inputs,setInputs}:WeightAndRepeatInputsTypes) => {
     const handleChangeWeight = (payload:number) => {
         return setInputs(x=>{
             let xCopy = {...x}
@@ -194,13 +186,11 @@ const WeightAndRepeatInputs = ({inputs,setInputs,didExerciseProgressed}:WeightAn
             <div className='flex flex-col flex-1 relative'>
                 <Label htmlFor='weight'>{u("Weight")}</Label>
                 <Input type="number" id='weight' onChange={e=>handleChangeWeight(Number(e.target.value))} value={weightInput} min={1}/>
-                {didExerciseProgressed && didExerciseProgressed.weight !== 0 && <span className='text-gray-600 text-sm ml-1'>Cel - {didExerciseProgressed.weight} KG</span>}
             </div>
 
             <div className='flex flex-col flex-1 relative'>
                 <Label htmlFor='repeat'>{u("Repeat")}</Label>
                 <Input type="number" id='repeat' onChange={e=>handleChangeRepeat(Number(e.target.value))} value={repeatInput} min={1}/>
-                {didExerciseProgressed && didExerciseProgressed.repetitions !== 0 && <span className='text-gray-600 text-sm ml-1'>Cel - 5</span>}
             </div>
         </div>
     )

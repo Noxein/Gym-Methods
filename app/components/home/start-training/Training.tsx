@@ -5,7 +5,7 @@ import { ModalContextsProvider } from './ModalContexts'
 
 type TrainingTypes = {
     trainingPlanData?: UserTrainingPlan,
-    exercisesThatProgressed: {[key:string]:SholudAddWeightType}
+    exercisesThatProgressed: {[key:string]:SholudAddWeightType[]}
 }
 export const Training = async ({trainingPlanData,exercisesThatProgressed}:TrainingTypes) => {
     const {ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure} = await userExercisesThatRequireHandlesOrTimeMesure()

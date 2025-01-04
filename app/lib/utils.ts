@@ -71,14 +71,14 @@ export const nameTrimmer = (string:string) => {
 }
 
 export const getLang = async () => {
-  const lang = localStorage.getItem('lang')
+  const lang = typeof window !== 'undefined' && localStorage.getItem('lang')
   if(!lang){
-    localStorage.setItem('lang','en')
+    typeof window !== 'undefined' && localStorage.setItem('lang','en')
     return setUserLocale('en')
   }
 
   if(!locales.includes(lang as Locale)){
-    localStorage.setItem('lang','en')
+    typeof window !== 'undefined' && localStorage.setItem('lang','en')
     return setUserLocale('en')
   }else{
     setUserLocale(lang as Locale)
@@ -88,33 +88,31 @@ export const getLang = async () => {
 
 export const checkIfShouldIncreaseDifficulty = (exerciseHistory: Series[],goal?:TrainingProgression) => {
     //DATA ARRAY ALWAYS HAS 2 ELEMENTS 
-    if(!goal || !goal.series || !goal.increase || !goal.repetitions || !goal.weightGoal) return false
-    if(exerciseHistory.length < goal.series) return false
+    if(!goal || !goal.series) return false
+    if(exerciseHistory.length < goal.series.length) return false
 
     let OlderSetsCopy = [...exerciseHistory]
+    let shouldIncrease = true
 
-    let totalSeriresGoal = 0
-    let totalWeightGoal = 0
 
-    for(let i = 0 ; i < exerciseHistory.length ; i ++){
-      const index = OlderSetsCopy.findIndex(x=>{
-        return x.weight >= goal.weightGoal! && x.repeat >= goal.repetitions!
+    for(let i = 0 ; i< exerciseHistory.length; i ++){
+      let index = goal.series.findIndex((exercisegoal)=>{
+        exercisegoal.repetitions! >= exerciseHistory[i].repeat && exercisegoal.weightGoal >= exerciseHistory[i].weight
       })
-      
-      if(index < 0) break
-      
+
+      if(index<0){
+        shouldIncrease = false
+        break
+      }
+
       OlderSetsCopy = [...OlderSetsCopy.slice(0,index),...OlderSetsCopy.slice(index+1,OlderSetsCopy.length)]
 
-      totalSeriresGoal = totalSeriresGoal + 1
-      totalWeightGoal = totalWeightGoal + 1
     }
-
-    if(!(totalSeriresGoal >= goal.series)) return false
-    if(!(totalWeightGoal >= goal.series)) return false
     
-    return {
-      weight: goal.weightGoal + goal.increase,
-      repetitions: goal.repetitions,
-      series: goal.series
-    }
+    if(!shouldIncrease) return false
+
+    return goal.series.map(exerciseGoal=>{
+      exerciseGoal.weightGoal = exerciseGoal.weightGoal + exerciseGoal.increase
+      return exerciseGoal
+    })
 }

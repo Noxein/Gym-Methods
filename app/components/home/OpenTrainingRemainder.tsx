@@ -32,7 +32,6 @@ export const OpenTrainingRemainder = ({useremail}:OpenTrainingRemainderTypes) =>
         if(userCloseDelay){
             const parsedDelay = JSON.parse(userCloseDelay)
             const now = new Date()
-            console.log(now.getTime()<new Date(addHours(parsedDelay,8)).getTime())
             if(!(now.getTime() > addHours(new Date(parsedDelay),8).getTime())) return [] // if it has been more than 8 hours since last reminder, remind again else return []
         }
 
@@ -100,7 +99,7 @@ const ExerciseToClose = ({name,setData,email}:ExerciseToCloseTypes) => {
         setLoading(true)
         const storagedata = localStorage.getItem(name+'training'+email)
         const localStorageTrainingData = JSON.parse(storagedata!)
-        console.log(name)
+
         const data = await SaveTrainingToDatabase(localStorageTrainingData.trainingId,localStorageTrainingData.exercises,localStorageTrainingData.trainingStartDate)
         if(data && data.error){
             setLoading(false)

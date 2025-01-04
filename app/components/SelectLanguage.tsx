@@ -6,11 +6,12 @@ import { setUserLocale } from '../i18n/locale'
 import { Button } from './ui/Button'
 import { useTranslations } from 'next-intl'
 
-export const SelectLanguage = () => {
+export const SelectLanguage = ({setShowSelectLang}:{setShowSelectLang:React.Dispatch<React.SetStateAction<boolean>>}) => {
     const locale = useRef<Locale>('en')
     const handleSave = () => {
-        localStorage.setItem('lang',locale.current)
+      typeof window !== 'undefined' && localStorage.setItem('lang',locale.current)
         setUserLocale(locale.current)
+        setShowSelectLang(false)
     }
     const t = useTranslations("Utils")
   return (
