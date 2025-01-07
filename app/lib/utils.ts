@@ -116,3 +116,19 @@ export const checkIfShouldIncreaseDifficulty = (exerciseHistory: Series[],goal?:
       return exerciseGoal
     })
 }
+
+export const getProgressedSeriesIndexes = (series: Series[],goal?:TrainingProgression) => {
+  const progressedSeriesIndexes:number[] = []
+  console.log(goal)
+  if(!goal || !goal.series) return progressedSeriesIndexes
+
+  let goalSeriesCopy = [...goal.series]
+
+  for(let i =0 ; i<series.length; i++){
+    if(i>goal.series.length-1) break
+    if(series[i].weight < goalSeriesCopy[i].weightGoal) continue
+    if(series[i].repeat < goalSeriesCopy[i].repetitions) continue
+    progressedSeriesIndexes.push(i)
+  }
+  return progressedSeriesIndexes
+}

@@ -23,9 +23,11 @@ type AddExerciseUsingStateType = {
         id: string;
         handlename: string;
     }[],
+    localStorageTrainingData: LocalStorageTraining,
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
     exercisesThatProgressed: {[key:string]:SholudAddWeightType[]},
     useremail:string,
+    setProgressedIndexes: (index:number) => void
 }
 
 const initializeInputsState = (exerciseid:string,requiresHandle: boolean, requiresTimeMesure: boolean,useremail:string) => {
@@ -54,7 +56,7 @@ const initializeInputsState = (exerciseid:string,requiresHandle: boolean, requir
     localStorage.setItem(exerciseid,JSON.stringify(dataObject))
     return dataObject
 }
-export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,setLocalStorageTrainingData,exercisesThatProgressed,useremail}:AddExerciseUsingStateType) => {
+export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,localStorageTrainingData,setLocalStorageTrainingData,exercisesThatProgressed,useremail,setProgressedIndexes}:AddExerciseUsingStateType) => {
     const[showHistory,setShowHistory] = useState(false)
     const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
     const[inputs,setInputs] = useState<SeriesWithExercise>(()=>initializeInputsState(exerciseid,requiresHandle,showTimeMesure,useremail))
@@ -64,21 +66,25 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
     },[name])
 
     const handleAddSeries = () => {
-        setLocalStorageTrainingData(x=>{
-            let xCopy = {...x}
-            if(!xCopy.exercises[xCopy.currentExerciseIndex].date){
-                xCopy.exercises[xCopy.currentExerciseIndex].date = new Date()
-            }
-            xCopy.exercises[xCopy.currentExerciseIndex].sets.push({
-                difficulty: inputs.difficulty,
-                repeat: inputs.repeat,
-                side: inputs.side,
-                weight: inputs.weight,
-                time:  inputs.time,
-            })
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-            return xCopy
+
+        let localStorageTrainingDataCopy = {...localStorageTrainingData}
+
+        if(!localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].date){
+            localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].date = new Date()
+        }
+
+        localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets.push({
+            difficulty: inputs.difficulty,
+            repeat: inputs.repeat,
+            side: inputs.side,
+            weight: inputs.weight,
+            time:  inputs.time,
         })
+
+        localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
+
+        setLocalStorageTrainingData(localStorageTrainingDataCopy)
+        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex)
     }
 
     const d = useTranslations("DefaultExercises")
@@ -100,7 +106,7 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
                <WeightAndRepeatInputs inputs={inputs} setInputs={setInputs}/>
                <DifficultyLevel showTimeMesure={showTimeMesure} inputs={inputs} setInputs={setInputs} />
                <Side inputs={inputs} setInputs={setInputs} />
-               {requiresHandle && <Handle allHandles={allHandles} inputs={inputs} setInputs={setInputs} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData} />}
+               {requiresHandle && <Handle allHandles={allHandles} inputs={inputs} setInputs={setInputs} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData} localStorageTrainingData={localStorageTrainingData}/>}
             </div>
             
             <ButtonWithIcon onClick={()=>handleAddSeries()} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading}
@@ -125,7 +131,7 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
         </div>
         </div>
 
-        <DisplayCurrentSeresUsingState exercisename={name} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData} isTraining={isTraining} showTimeMesure={showTimeMesure}/>
+        <DisplayCurrentSeresUsingState trainingState={trainingState} localStorageTrainingData={localStorageTrainingData} setLocalStorageTrainingData={setLocalStorageTrainingData} showTimeMesure={showTimeMesure} setProgressedIndexes={setProgressedIndexes}/>
         <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory}/>
         {showHistory && <PreviousExercise exerciseid={exerciseid} historyCache={historyCache} setHistoryCache={setHistoryCache}/>}
 
@@ -280,10 +286,11 @@ type HandleTypes = {
     inputs: SeriesWithExercise,
     trainingState: LocalStorageTraining,
     setInputs: React.Dispatch<React.SetStateAction<SeriesWithExercise>>,
+    localStorageTrainingData: LocalStorageTraining,
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
 }
 
-const Handle = ({allHandles,inputs,trainingState,setInputs,setLocalStorageTrainingData}:HandleTypes) => {
+const Handle = ({allHandles,inputs,trainingState,setInputs,localStorageTrainingData,setLocalStorageTrainingData}:HandleTypes) => {
     const handleInput = trainingState.exercises[trainingState.currentExerciseIndex].handle
     const jsomHandleValue = JSON.stringify({id: handleInput?.handleId, handlename: handleInput?.handleName})
     
@@ -294,21 +301,22 @@ const Handle = ({allHandles,inputs,trainingState,setInputs,setLocalStorageTraini
             localStorageSetter(xCopy.exerciseid,xCopy)
             return xCopy
         })
-        setLocalStorageTrainingData(x=>{
-            let xCopy = {...x}
-            xCopy.exercises[xCopy.currentExerciseIndex].handle = {handleId: handle.id, handleName: handle.handlename}
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-            return xCopy
-        })
+
+        let localStorageTrainingDataCopy = {...localStorageTrainingData}
+
+        localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].handle = {handleId: handle.id, handleName: handle.handlename}
+        localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
+
+        setLocalStorageTrainingData(localStorageTrainingDataCopy)
     }
     useEffect(()=>{
-        setLocalStorageTrainingData(x=>{
-            let xCopy = {...x}
-            if(xCopy.exercises[xCopy.currentExerciseIndex].handle) return xCopy
-            xCopy.exercises[xCopy.currentExerciseIndex].handle = {handleId: allHandles[0].id, handleName: allHandles[0].handlename}
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-            return xCopy
-        })
+        let localStorageTrainingDataCopy = {...localStorageTrainingData}
+
+        if(localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].handle) return setLocalStorageTrainingData(localStorageTrainingDataCopy)
+        localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].handle = {handleId: allHandles[0].id, handleName: allHandles[0].handlename}
+        localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
+
+        setLocalStorageTrainingData(localStorageTrainingDataCopy)
     },[])
 
     const h = useTranslations("Handles")

@@ -878,7 +878,6 @@ export const getTrainingDataByName = async (name:string) => {
 
             if(result) shouldIncrease[Object.values(fetchedData)[i].exerciseid] = result
         }
-        console.log('2')
         return {data: list.rows[0] as UserTrainingPlan,exercisesThatProgressed:shouldIncrease, error: ''} 
     }catch(e){
         console.log(e)

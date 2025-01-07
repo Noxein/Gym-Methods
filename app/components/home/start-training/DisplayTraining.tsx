@@ -9,10 +9,11 @@ import { ModalContexts } from './ModalContexts'
 import { Button } from '../../ui/Button'
 import { ConfirmEndTrainingModal } from './ConfirmEndTrainingModal'
 import { AddExerciseUsingState } from '@/app/components/home/start-training/AddExerciseUsingState'
-import { localStorageSetter } from '@/app/lib/utils'
+import { getProgressedSeriesIndexes, localStorageSetter } from '@/app/lib/utils'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { PlanProgressModal } from './PlanProgressModal'
 
 type DisplayTrainingTypes = {
     trainingPlanData: UserTrainingPlan,
@@ -81,26 +82,38 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
     
     const router = useRouter()
 
+    const setProgressedIndexes = (index:number) => {
+        const goal = trainingPlanData.exercises.find(x=>x.exercisename === localStorageTrainingData.exercises[index].exerciseName)
+        console.log(index,localStorageTrainingData.exercises)
+        let indexes:number[] = getProgressedSeriesIndexes(localStorageTrainingData.exercises[index].sets,goal)
+        
+
+        modalsContext?.setSeriesIndexesThatMetGoal(indexes)
+    }
     const nextExercise = async () => {
         const length = localStorageTrainingData.exercises.length
 
         if(localStorageTrainingData.currentExerciseIndex === length - 1) return
-        setLocalStorageTrainingData(x=>{
-            let xCopy = {...x}
-            xCopy.currentExerciseIndex = xCopy.currentExerciseIndex + 1
-            localStorageSetter(localstorageTrainingName,xCopy)
-            return xCopy
-        })
+
+        let localStorageTrainingDataCopy = {...localStorageTrainingData}
+
+        localStorageTrainingDataCopy.currentExerciseIndex = localStorageTrainingDataCopy.currentExerciseIndex + 1
+        localStorageSetter(localstorageTrainingName,localStorageTrainingDataCopy)
+        setLocalStorageTrainingData(localStorageTrainingDataCopy)
+
+        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex)
     }
 
     const previousExercise = async () => {
         if(localStorageTrainingData.currentExerciseIndex === 0) return
-        setLocalStorageTrainingData(x=>{
-            let xCopy = {...x}
-            xCopy.currentExerciseIndex = xCopy.currentExerciseIndex - 1
-            localStorageSetter(localstorageTrainingName,xCopy)
-            return xCopy
-        })
+
+        let localStorageTrainingDataCopy = {...localStorageTrainingData}
+
+        localStorageTrainingDataCopy.currentExerciseIndex = localStorageTrainingDataCopy.currentExerciseIndex - 1
+        localStorageSetter(localstorageTrainingName,localStorageTrainingDataCopy)
+        setLocalStorageTrainingData(localStorageTrainingDataCopy)
+        console.log(localStorageTrainingDataCopy.currentExerciseIndex)
+        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex)
     }
 
     const handleCloseTraining = async () => {
@@ -119,6 +132,9 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
     const handleShowExerciseList = () => {
         modalsContext?.setShowExerciseList(true)
     }
+    const handleShowProgressionList = () => {
+        modalsContext?.setShowPlanProgressionModal(true)
+    }
     const u = useTranslations("Utils")
     const t = useTranslations("Home/Start-Training/[TrainingName]")
 
@@ -129,13 +145,28 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 <h1 className='text-2xl'>{trainingPlanData.trainingname}</h1>
             </div>
             <div className='text-gray-400 flex gap-2 items-center'>
+                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowProgressionList} disabled={loading}>Progresja</Button>
                 <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList} disabled={loading}>{u("Change")}</Button>
                 <span className='text-nowrap'>{localStorageTrainingData.currentExerciseIndex + 1} {u("Of")} {totalExercises}</span>
             </div>
         </div>
         {
             loading ? <DisplayTrainingSkeleton isTraining={true}/> :
-            <AddExerciseUsingState name={currentExerciseName} exerciseid={currentExerciseId} trainingState={localStorageTrainingData} isLoading={loading} showTimeMesure={showTimeMesure} isTraining={true} requiresHandle={requiresHandle} allHandles={allHandles} setLocalStorageTrainingData={setLocalStorageTrainingData} exercisesThatProgressed={exercisesThatProgressed} useremail={useremail!}/>
+            <AddExerciseUsingState 
+                name={currentExerciseName} 
+                exerciseid={currentExerciseId} 
+                trainingState={localStorageTrainingData} 
+                isLoading={loading} 
+                showTimeMesure={showTimeMesure} 
+                isTraining={true} 
+                requiresHandle={requiresHandle} 
+                allHandles={allHandles} 
+                setLocalStorageTrainingData={setLocalStorageTrainingData} 
+                exercisesThatProgressed={exercisesThatProgressed} 
+                useremail={useremail!}
+                localStorageTrainingData={localStorageTrainingData}
+                setProgressedIndexes={setProgressedIndexes}
+            />
         }
         {error && <div className='text-red'>{error}</div>}
 
@@ -153,6 +184,8 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
         <ChangeExerciseList 
             list2={localStorageTrainingData.exercises} 
             setLocalStorageTrainingData={setLocalStorageTrainingData}
+            setProgressedIndexes={setProgressedIndexes}
+            localStorageTrainingData={localStorageTrainingData}
             />}
         
         {modalsContext?.showAddExerciseModal && 
@@ -170,5 +203,10 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
             showModal={setShowConfirmEndTrainingModal}
             handleEnd={handleCloseTraining}
             />}
+        {modalsContext?.showPlanProgressionModal &&
+        <PlanProgressModal 
+            currentExercise={currentExerciseName}
+            trainingPlan={trainingPlanData}
+        /> }
     </div>)
 }

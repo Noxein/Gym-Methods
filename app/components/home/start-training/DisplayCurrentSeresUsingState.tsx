@@ -1,78 +1,74 @@
-import { useRef } from 'react'
+import { useContext, useRef } from 'react'
 import { ActionTypesEnum, DifficultyLevelType, LocalStorageTraining, Side } from '@/app/types'
 import { Icon } from '@/app/components/Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import { localStorageSetter } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
+import { ModalContexts } from './ModalContexts'
 
 type DisplayCurrentSeresUsingStateTypes = {
-    exercisename:string,
     trainingState: LocalStorageTraining,
     showTimeMesure:boolean,
-    isTraining: boolean,
+    localStorageTrainingData: LocalStorageTraining,
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
+    setProgressedIndexes: (index:number) => void
 }
-export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTimeMesure,isTraining,setLocalStorageTrainingData}:DisplayCurrentSeresUsingStateTypes) => {
+export const DisplayCurrentSeresUsingState = ({trainingState,showTimeMesure,localStorageTrainingData,setLocalStorageTrainingData,setProgressedIndexes}:DisplayCurrentSeresUsingStateTypes) => {
+    const modalsContext = useContext(ModalContexts)
 
+    const progressedIndexes = modalsContext?.seriesIndexesThatMetGoal
+    console.log(progressedIndexes)
     const deleteSet = (index:number) => {
-        setLocalStorageTrainingData(x=>{
-            let xCopy = {...x}
-            xCopy.exercises[xCopy.currentExerciseIndex].sets = xCopy.exercises[xCopy.currentExerciseIndex].sets.filter((exercise,exerciseIndex)=>{ return index !== exerciseIndex})
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-            return xCopy
-        })
+        let localStorageTrainingDataCopy = {...localStorageTrainingData}
+
+        localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets = localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets.filter((exercise,exerciseIndex)=>{ return index !== exerciseIndex})
+        localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
+
+        setLocalStorageTrainingData(localStorageTrainingDataCopy)
+        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex)
     }
     
     const editInput = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,index:number,field:ActionTypesEnum) => {
+        let localStorageTrainingDataCopy = {...localStorageTrainingData}
+
         if(field === 'EDITSERIESKG'){
             if(e.target.value.length > 3) return
-            setLocalStorageTrainingData(x=>{
-                let xCopy = {...x}
-                xCopy.exercises[xCopy.currentExerciseIndex].sets[index].weight = Number(e.target.value)
-                localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-                return xCopy
-            })
+
+            localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets[index].weight = Number(e.target.value)
+
+            setLocalStorageTrainingData(localStorageTrainingDataCopy)
         }
         if(field === 'EDITSERIESREPEAT'){
             if(e.target.value.length > 3) return
 
-            setLocalStorageTrainingData(x=>{
-                let xCopy = {...x}
-                xCopy.exercises[xCopy.currentExerciseIndex].sets[index].repeat = Number(e.target.value)
-                localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-                return xCopy
-            })
+            localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets[index].repeat = Number(e.target.value)
+
+            setLocalStorageTrainingData(localStorageTrainingDataCopy)
         }
         if(field === "EDITSERIESDIFFICULTY"){
-            setLocalStorageTrainingData(x=>{
-                let xCopy = {...x}
-                xCopy.exercises[xCopy.currentExerciseIndex].sets[index].difficulty = e.target.value as DifficultyLevelType
-                localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-                return xCopy
-            })
+            localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets[index].difficulty = e.target.value as DifficultyLevelType
+
+            setLocalStorageTrainingData(localStorageTrainingDataCopy)
         }
         if(field === 'EDITSERIESTIME'){
-            setLocalStorageTrainingData(x=>{
-                let xCopy = {...x}
-                xCopy.exercises[xCopy.currentExerciseIndex].sets[index].time = Number(e.target.value)
-                localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-                return xCopy
-            })
+            localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets[index].time = Number(e.target.value)
+
+            setLocalStorageTrainingData(localStorageTrainingDataCopy)
         }
+        localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
     }
     const handleChangeSide = (index:number,side:Side) => {
+        let localStorageTrainingDataCopy = {...localStorageTrainingData}
         let newSide:Side = side
         
         if(side === 'Both') newSide = 'Left'
         if(side === 'Left') newSide = 'Right'
         if(side === 'Right') newSide = 'Both'
 
-        setLocalStorageTrainingData(x=>{
-            let xCopy = {...x}
-            xCopy.exercises[xCopy.currentExerciseIndex].sets[index].side = newSide
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-            return xCopy
-        })
+        localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets[index].side = newSide
+        localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
+
+        setLocalStorageTrainingData(localStorageTrainingDataCopy)
     }
 
     const u = useTranslations("Utils")
@@ -81,7 +77,7 @@ export const DisplayCurrentSeresUsingState = ({exercisename,trainingState,showTi
     <div className='flex flex-col gap-2 mt-3 text-white mb-2'>
 
         {trainingState.exercises[trainingState.currentExerciseIndex].sets.map((series,index)=>(
-            <div className={`flex bg-steel py-[2px] rounded-md ${index===0?'mt-2':null}`} key={index}>
+            <div className={`flex py-[2px] rounded-md ${index===0?'mt-2':null} ${progressedIndexes?.includes(index)?'bg-green':'bg-steel'}`} key={index}>
                 <div className='text-white text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
                     {u(series.side)[0]}
                 </div>
