@@ -1,4 +1,5 @@
 'use client'
+import { ProgressedIndexesType } from "@/app/types";
 import { createContext, useState } from "react";
 
 export const ModalContexts = createContext<ModalContextsTypes|null>(null)
@@ -12,8 +13,8 @@ type ModalContextsTypes = {
     setShowPreviousExercise: StateDispacherType,
     showPlanProgressionModal: boolean,
     setShowPlanProgressionModal: StateDispacherType,
-    seriesIndexesThatMetGoal: number[],
-    setSeriesIndexesThatMetGoal: React.Dispatch<React.SetStateAction<number[]>>
+    seriesIndexesThatMetGoal: ProgressedIndexesType,
+    setSeriesIndexesThatMetGoal: React.Dispatch<React.SetStateAction<ProgressedIndexesType>>
 
 }
 
@@ -28,7 +29,7 @@ export const ModalContextsProvider = ({children}:ModalContextsProviderTypes) => 
     const[showAddExerciseModal,setShowAddExerciseModal] = useState(false)
     const[showPreviousExercise,setShowPreviousExercise] = useState(false)
     const[showPlanProgressionModal,setShowPlanProgressionModal] = useState(false)
-    const[seriesIndexesThatMetGoal,setSeriesIndexesThatMetGoal] = useState<number[]>([])
+    const[seriesIndexesThatMetGoal,setSeriesIndexesThatMetGoal] = useState<ProgressedIndexesType>({goals:[],series:[]})
 
     return(
         <ModalContexts.Provider value={{

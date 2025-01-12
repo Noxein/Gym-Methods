@@ -13,7 +13,7 @@ import { exercisesArr } from '@/app/lib/exercise-list'
 type ChangeExerciseListTypes = {
     list2?: LocalStorageExercise[],
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
-    setProgressedIndexes: (number:number) => void,
+    setProgressedIndexes: (number:number,localStorageTrainingData:LocalStorageTraining) => void,
     localStorageTrainingData: LocalStorageTraining,
 }
 export const ChangeExerciseList = ({list2,setLocalStorageTrainingData,localStorageTrainingData,setProgressedIndexes}:ChangeExerciseListTypes) => {
@@ -22,7 +22,7 @@ export const ChangeExerciseList = ({list2,setLocalStorageTrainingData,localStora
 
     const handleChangeExercisesOrder = (exerciseIndexNumber:number) => {
 
-        setProgressedIndexes(exerciseIndexNumber)
+        setProgressedIndexes(exerciseIndexNumber,localStorageTrainingData)
 
         let localStorageTrainingDataCopy = {...localStorageTrainingData}
 

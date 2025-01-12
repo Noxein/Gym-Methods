@@ -1,6 +1,6 @@
 'use client'
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, TrainingExerciseType, UserExercise, LocalStorageTraining, UserTrainingPlan, LocalStorageExercise, TrainingProgression, SholudAddWeightType } from '@/app/types'
-import { useContext, useRef, useState } from 'react'
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, TrainingExerciseType, UserExercise, LocalStorageTraining, UserTrainingPlan, LocalStorageExercise, TrainingProgression, SholudAddWeightType, SeriesWithExercise, ProgressedIndexesType } from '@/app/types'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { SaveTrainingToDatabase } from '@/app/actions'
 import { DisplayTrainingSkeleton } from '../../Loading/home/start-training/trainingName/DisplayTrainingSkeleton'
 import { ChangeExerciseList } from './ChangeExerciseList'
@@ -9,7 +9,7 @@ import { ModalContexts } from './ModalContexts'
 import { Button } from '../../ui/Button'
 import { ConfirmEndTrainingModal } from './ConfirmEndTrainingModal'
 import { AddExerciseUsingState } from '@/app/components/home/start-training/AddExerciseUsingState'
-import { getProgressedSeriesIndexes, localStorageSetter } from '@/app/lib/utils'
+import { getProgressedSeriesIndexes, HideShowHTMLScrollbar, initializeInputsState, localStorageSetter } from '@/app/lib/utils'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
@@ -26,15 +26,24 @@ type DisplayTrainingTypes = {
     ExercisesThatRequireHandle: ExercisesThatRequireTimeMesureOrHandle[],
     ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[],
     useremail?: string | null,
-    exercisesThatProgressed: {[key:string]:SholudAddWeightType[]}
 }
 
 
-export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,useremail,exercisesThatProgressed}:DisplayTrainingTypes) => {
+export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,useremail}:DisplayTrainingTypes) => {
+    const modalsContext = useContext(ModalContexts)
+
+    const setProgressedIndexes = (index:number,localStorageTrainingDataArg:LocalStorageTraining) => {
+        const goal = trainingPlanData.exercises.find(x=>x.exercisename === localStorageTrainingDataArg.exercises[index].exerciseName)
+        let indexes:ProgressedIndexesType = getProgressedSeriesIndexes(localStorageTrainingDataArg.exercises[index].sets,goal)
+        
+        modalsContext?.setSeriesIndexesThatMetGoal(indexes)
+    }
+    
     const initializeLocalStorageData = (trainingName:string,exercises:TrainingProgression[],trainingid:string) => {
         const data = localStorage.getItem(trainingName+'training'+useremail)
         if(data){
             const parsedData = JSON.parse(data) as LocalStorageTraining
+            setProgressedIndexes(parsedData.currentExerciseIndex,parsedData)
             return parsedData
         }
     
@@ -61,6 +70,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 objectToSaveToLocalStorage.exercises.push(exerciseObj)
             })
             localStorage.setItem(trainingName+'training'+useremail,JSON.stringify(objectToSaveToLocalStorage))
+            setProgressedIndexes(0,objectToSaveToLocalStorage)
         return objectToSaveToLocalStorage
     }
 
@@ -77,19 +87,11 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
 
     const[error,setError] = useState('')
     const[loading,setLoading] = useState(false)
-
-    const modalsContext = useContext(ModalContexts)
+    const[inputs,setInputs] = useState<SeriesWithExercise>(()=>initializeInputsState(currentExerciseId,requiresHandle,showTimeMesure,useremail!))
     
     const router = useRouter()
 
-    const setProgressedIndexes = (index:number) => {
-        const goal = trainingPlanData.exercises.find(x=>x.exercisename === localStorageTrainingData.exercises[index].exerciseName)
-        console.log(index,localStorageTrainingData.exercises)
-        let indexes:number[] = getProgressedSeriesIndexes(localStorageTrainingData.exercises[index].sets,goal)
-        
 
-        modalsContext?.setSeriesIndexesThatMetGoal(indexes)
-    }
     const nextExercise = async () => {
         const length = localStorageTrainingData.exercises.length
 
@@ -99,9 +101,12 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
 
         localStorageTrainingDataCopy.currentExerciseIndex = localStorageTrainingDataCopy.currentExerciseIndex + 1
         localStorageSetter(localstorageTrainingName,localStorageTrainingDataCopy)
-        setLocalStorageTrainingData(localStorageTrainingDataCopy)
+        
+        
 
-        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex)
+        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex,localStorageTrainingData)
+
+        setLocalStorageTrainingData(localStorageTrainingDataCopy)
     }
 
     const previousExercise = async () => {
@@ -111,14 +116,15 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
 
         localStorageTrainingDataCopy.currentExerciseIndex = localStorageTrainingDataCopy.currentExerciseIndex - 1
         localStorageSetter(localstorageTrainingName,localStorageTrainingDataCopy)
+
+        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex,localStorageTrainingData)
+
         setLocalStorageTrainingData(localStorageTrainingDataCopy)
-        console.log(localStorageTrainingDataCopy.currentExerciseIndex)
-        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex)
     }
 
     const handleCloseTraining = async () => {
         setLoading(true)
-        const data = await SaveTrainingToDatabase(trainingPlanData.id,localStorageTrainingData.exercises,localStorageTrainingData.trainingStartDate)
+        const data = await SaveTrainingToDatabase(trainingPlanData.id,localStorageTrainingData.exercises,localStorageTrainingData.trainingStartDate,trainingPlanData.exercises)
         if(data && data.error){
             setLoading(false)
             console.log(data.error)
@@ -133,6 +139,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
         modalsContext?.setShowExerciseList(true)
     }
     const handleShowProgressionList = () => {
+        HideShowHTMLScrollbar('hide')
         modalsContext?.setShowPlanProgressionModal(true)
     }
     const u = useTranslations("Utils")
@@ -162,10 +169,11 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 requiresHandle={requiresHandle} 
                 allHandles={allHandles} 
                 setLocalStorageTrainingData={setLocalStorageTrainingData} 
-                exercisesThatProgressed={exercisesThatProgressed} 
                 useremail={useremail!}
                 localStorageTrainingData={localStorageTrainingData}
                 setProgressedIndexes={setProgressedIndexes}
+                inputs={inputs}
+                setInputs={setInputs}
             />
         }
         {error && <div className='text-red'>{error}</div>}
@@ -181,32 +189,39 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
             </div>
         
         {modalsContext?.showExerciseList && 
-        <ChangeExerciseList 
-            list2={localStorageTrainingData.exercises} 
-            setLocalStorageTrainingData={setLocalStorageTrainingData}
-            setProgressedIndexes={setProgressedIndexes}
-            localStorageTrainingData={localStorageTrainingData}
+            <ChangeExerciseList 
+                list2={localStorageTrainingData.exercises} 
+                setLocalStorageTrainingData={setLocalStorageTrainingData}
+                setProgressedIndexes={setProgressedIndexes}
+                localStorageTrainingData={localStorageTrainingData}
             />}
         
         {modalsContext?.showAddExerciseModal && 
-        <MapExercises 
-            setShowAddExercise={modalsContext?.setShowAddExerciseModal} 
-            allExercisesInOneArray={allExercisesInOneArray} 
-            exercisesObject={exercisesObject} 
-            isTrainingInProgressPage={true}
-            setShowExerciseList={modalsContext?.setShowExerciseList}
-            setLocalStorageTrainingData={setLocalStorageTrainingData}
+            <MapExercises 
+                setShowAddExercise={modalsContext?.setShowAddExerciseModal} 
+                allExercisesInOneArray={allExercisesInOneArray} 
+                exercisesObject={exercisesObject} 
+                isTrainingInProgressPage={true}
+                setShowExerciseList={modalsContext?.setShowExerciseList}
+                setLocalStorageTrainingData={setLocalStorageTrainingData}
             />}
+
         {showConfirmEndTrainingModal && 
-        <ConfirmEndTrainingModal 
-            text={t("AreYouSure")}
-            showModal={setShowConfirmEndTrainingModal}
-            handleEnd={handleCloseTraining}
+            <ConfirmEndTrainingModal 
+                text={t("AreYouSure")}
+                showModal={setShowConfirmEndTrainingModal}
+                handleEnd={handleCloseTraining}
             />}
+
         {modalsContext?.showPlanProgressionModal &&
-        <PlanProgressModal 
-            currentExercise={currentExerciseName}
-            trainingPlan={trainingPlanData}
-        /> }
+            <PlanProgressModal 
+                currentExercise={currentExerciseName}
+                trainingPlan={trainingPlanData}
+                localStorageTrainingData={localStorageTrainingData}
+                setLocalStorageTrainingData={setLocalStorageTrainingData}
+                inputs={inputs}
+                setInputs={setInputs}
+            />}
+
     </div>)
 }

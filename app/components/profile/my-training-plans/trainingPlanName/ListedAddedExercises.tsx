@@ -127,7 +127,11 @@ const SingleExerciseEditable = ({name,exercise,setPlanExercises,index,planExerci
     const handleAddSeries = () => {
         arr.push(arr[arr.length-1] + 1)
         let copy = [...planExercises]
-        copy[index].series = [...copy[index].series!,{increase:0,repetitions:0,weightGoal:0}]
+        if(!copy[index].series){
+            copy[index].series = [{increase:0,repetitions:0,weightGoal:0}]
+        }else{
+            copy[index].series = [...copy[index].series!,{increase:0,repetitions:0,weightGoal:0}]
+        }
         setPlanExercises(copy)
     }
 

@@ -3,7 +3,8 @@ export type Series = {
     repeat:number,
     difficulty: DifficultyLevelType,
     time?: number,
-    side: Side
+    side: Side,
+    id?: string,
 }
 
 export type WidgetHomeTypes = {
@@ -111,7 +112,13 @@ export type TrainingProgression = {
         repetitions: number,
         increase: number,
         weightGoal: number,
+        id?: string,
     }[]
+}
+
+export type ProgressedIndexesType = {
+    series:string[],
+    goals:string[],
 }
 
 export type ExercisesThatRequireTimeMesureOrHandle = {

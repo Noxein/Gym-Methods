@@ -1,15 +1,17 @@
 'use client'
-import { useState, useRef, useEffect } from 'react'
-import { DifficultyLevelType , ExerciseType, LocalStorageTraining, Series, SeriesWithExercise, SholudAddWeightType, Side as SideType } from '@/app/types'
+import { useState, useRef, useEffect, useContext } from 'react'
+import { DifficultyLevelType , ExerciseType, LocalStorageTraining, ProgressedIndexesType, Series, SeriesWithExercise, SholudAddWeightType, Side as SideType, UserTrainingPlan } from '@/app/types'
 import { Icon } from '@/app/components/Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ShowHistoryButton } from '@/app/components/add-exercise/ShowHistoryButton'
 import { PreviousExercise } from '@/app/components/home/start-training/PreviousExercise'
 import { ButtonWithIcon } from '@/app/components/ui/ButtonWithIcon'
 import { DisplayCurrentSeresUsingState } from './DisplayCurrentSeresUsingState'
-import { localStorageSetter, nameTrimmer } from '@/app/lib/utils'
+import { getProgressedSeriesIndexes, initializeInputsState, localStorageSetter, nameTrimmer } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
 import { exercisesArr, handleTypes } from '@/app/lib/exercise-list'
+import { v4 } from 'uuid'
+import { ModalContexts } from './ModalContexts'
 
 type AddExerciseUsingStateType = {
     name:string,
@@ -25,42 +27,18 @@ type AddExerciseUsingStateType = {
     }[],
     localStorageTrainingData: LocalStorageTraining,
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
-    exercisesThatProgressed: {[key:string]:SholudAddWeightType[]},
     useremail:string,
-    setProgressedIndexes: (index:number) => void
+    setProgressedIndexes: (index:number,localStorageTrainingData:LocalStorageTraining) => void,
+    inputs: SeriesWithExercise,
+    setInputs: React.Dispatch<React.SetStateAction<SeriesWithExercise>>,
 }
 
-const initializeInputsState = (exerciseid:string,requiresHandle: boolean, requiresTimeMesure: boolean,useremail:string) => {
-    
-    const data = localStorage.getItem(exerciseid+'training'+useremail)
-    if(data){
-        const parsedData = JSON.parse(data)
-        return parsedData as SeriesWithExercise
-    }
-    let dataObject: SeriesWithExercise = {
-        difficulty: 'easy',
-        repeat: 0,
-        side: 'Both',
-        weight: 0,
-        exerciseid,
-    }
-    if(requiresHandle) {
-        dataObject.handle = {
-            handleId: 'Sznur',
-            handleName: 'Sznur'
-        }
-    }
-    if(requiresTimeMesure){
-        dataObject.time = 0
-    }
-    localStorage.setItem(exerciseid,JSON.stringify(dataObject))
-    return dataObject
-}
-export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,localStorageTrainingData,setLocalStorageTrainingData,exercisesThatProgressed,useremail,setProgressedIndexes}:AddExerciseUsingStateType) => {
+export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,localStorageTrainingData,setLocalStorageTrainingData,useremail,setProgressedIndexes,inputs,setInputs}:AddExerciseUsingStateType) => {
     const[showHistory,setShowHistory] = useState(false)
     const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
-    const[inputs,setInputs] = useState<SeriesWithExercise>(()=>initializeInputsState(exerciseid,requiresHandle,showTimeMesure,useremail))
 
+    const modalsContext = useContext(ModalContexts)
+    
     useEffect(()=>{
         setInputs(initializeInputsState(exerciseid,requiresHandle,showTimeMesure,useremail))
     },[name])
@@ -73,18 +51,23 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
             localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].date = new Date()
         }
 
-        localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets.push({
-            difficulty: inputs.difficulty,
-            repeat: inputs.repeat,
-            side: inputs.side,
-            weight: inputs.weight,
-            time:  inputs.time,
-        })
+        localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets = [
+            ...localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets,
+            {
+                difficulty: inputs.difficulty,
+                repeat: inputs.repeat,
+                side: inputs.side,
+                weight: inputs.weight,
+                time:  inputs.time,
+                id: v4()
+            }
+        ]
 
         localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
 
+        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex,localStorageTrainingDataCopy)
         setLocalStorageTrainingData(localStorageTrainingDataCopy)
-        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex)
+        
     }
 
     const d = useTranslations("DefaultExercises")

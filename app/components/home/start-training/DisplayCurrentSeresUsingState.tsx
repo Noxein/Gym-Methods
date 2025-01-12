@@ -1,8 +1,8 @@
 import { useContext, useRef } from 'react'
-import { ActionTypesEnum, DifficultyLevelType, LocalStorageTraining, Side } from '@/app/types'
+import { ActionTypesEnum, DifficultyLevelType, LocalStorageTraining, ProgressedIndexesType, Side, UserTrainingPlan } from '@/app/types'
 import { Icon } from '@/app/components/Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
-import { localStorageSetter } from '@/app/lib/utils'
+import { getProgressedSeriesIndexes, localStorageSetter } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
 import { ModalContexts } from './ModalContexts'
 
@@ -11,13 +11,13 @@ type DisplayCurrentSeresUsingStateTypes = {
     showTimeMesure:boolean,
     localStorageTrainingData: LocalStorageTraining,
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
-    setProgressedIndexes: (index:number) => void
+    setProgressedIndexes: (index:number,localStorageTrainingData:LocalStorageTraining) => void,
 }
 export const DisplayCurrentSeresUsingState = ({trainingState,showTimeMesure,localStorageTrainingData,setLocalStorageTrainingData,setProgressedIndexes}:DisplayCurrentSeresUsingStateTypes) => {
     const modalsContext = useContext(ModalContexts)
 
     const progressedIndexes = modalsContext?.seriesIndexesThatMetGoal
-    console.log(progressedIndexes)
+
     const deleteSet = (index:number) => {
         let localStorageTrainingDataCopy = {...localStorageTrainingData}
 
@@ -25,7 +25,7 @@ export const DisplayCurrentSeresUsingState = ({trainingState,showTimeMesure,loca
         localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
 
         setLocalStorageTrainingData(localStorageTrainingDataCopy)
-        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex)
+        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex,localStorageTrainingDataCopy)
     }
     
     const editInput = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,index:number,field:ActionTypesEnum) => {
@@ -56,6 +56,7 @@ export const DisplayCurrentSeresUsingState = ({trainingState,showTimeMesure,loca
             setLocalStorageTrainingData(localStorageTrainingDataCopy)
         }
         localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
+        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex,localStorageTrainingDataCopy)
     }
     const handleChangeSide = (index:number,side:Side) => {
         let localStorageTrainingDataCopy = {...localStorageTrainingData}
@@ -69,6 +70,7 @@ export const DisplayCurrentSeresUsingState = ({trainingState,showTimeMesure,loca
         localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
 
         setLocalStorageTrainingData(localStorageTrainingDataCopy)
+        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex,localStorageTrainingDataCopy)
     }
 
     const u = useTranslations("Utils")
@@ -77,7 +79,7 @@ export const DisplayCurrentSeresUsingState = ({trainingState,showTimeMesure,loca
     <div className='flex flex-col gap-2 mt-3 text-white mb-2'>
 
         {trainingState.exercises[trainingState.currentExerciseIndex].sets.map((series,index)=>(
-            <div className={`flex py-[2px] rounded-md ${index===0?'mt-2':null} ${progressedIndexes?.includes(index)?'bg-green':'bg-steel'}`} key={index}>
+            <div className={`flex py-[2px] rounded-md ${index===0?'mt-2':null} ${progressedIndexes?.series.includes(series.id!)?'bg-green':'bg-steel'}`} key={index}>
                 <div className='text-white text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
                     {u(series.side)[0]}
                 </div>
