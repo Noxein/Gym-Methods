@@ -127,7 +127,6 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
         const data = await SaveTrainingToDatabase(trainingPlanData.id,localStorageTrainingData.exercises,localStorageTrainingData.trainingStartDate,trainingPlanData.exercises)
         if(data && data.error){
             setLoading(false)
-            console.log(data.error)
             return setError(data.error)
         }
         localStorage.removeItem(trainingPlanData.trainingname+'training'+useremail)

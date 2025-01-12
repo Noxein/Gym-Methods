@@ -21,7 +21,6 @@ export const EditHanleModal = ({handle,hideModal}:EditHandleModal) => {
         setError('')
         setLoading(true)
         const data = await editUserHandle(value!,handle?.id!)
-        console.log(data)
         if(data && data.error){
             setError(e(data.error))
             return setLoading(false)

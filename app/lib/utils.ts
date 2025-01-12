@@ -142,7 +142,6 @@ export const getProgressedSeriesIndexes = (series: Series[],goal?:TrainingProgre
     goalSeriesCopy = [...goalSeriesCopy.slice(0,index),...goalSeriesCopy.slice(index+1,goalSeriesCopy.length)]
 
   }
-  console.log(progressedSeriesIndexes)
   return progressedSeriesIndexes
 }
 
@@ -194,7 +193,6 @@ export const CheckIfTrainingExerciseGoalIsMet = (series:Series[],goal:TrainingPr
     const index = goalCopyForSlicing.findIndex(goal=>{
       return goal.weightGoal <= series[i].weight && goal.repetitions <= series[i].repeat
     })
-    console.log(index)
     if(index>=0){
       goalCopyForSlicing = [...goalCopyForSlicing.slice(0,index),...goalCopyForSlicing.slice(index+1,goalCopyForSlicing.length)]
     }else{
@@ -203,8 +201,6 @@ export const CheckIfTrainingExerciseGoalIsMet = (series:Series[],goal:TrainingPr
     }
 
   }
-
-  console.log('Should increase goal :',shouldIncreaseGoal,'goalCopyForSlicing length is 0? :',goalCopyForSlicing.length === 0,goalCopyForSlicing,series)
 
   if(shouldIncreaseGoal && goalCopyForSlicing.length === 0){
     //THAT MEANS WE UPDATE THE GOAL

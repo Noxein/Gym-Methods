@@ -406,27 +406,3 @@ export const exercisesUsingHandlesEN: string[] = [
     'Low Pulley Row', 
     'Face Pulls'
 ]
-
-// function FillArray(){
-//     exercisesArr = []
-//     for (const [key, value] of Object.entries(exerciseList.Izolacyjne)) {
-//         exercisesArr = [...exercisesArr, ...value]
-//       }
-//     for (const [key, value] of Object.entries(exerciseList.Wielostawowe)) {
-//         exercisesArr = [...exercisesArr, ...value]
-//       }
-// }
-
-function EngArr(PLArr: string[],ENArr: string[], smallPLArr: string[]){
-    let smallEnArr: string[] = []
-
-    for(let i = 0 ; i < smallPLArr.length ; i++ ){
-        let index = PLArr.indexOf(smallPLArr[i])
-        if(index < 0){
-            console.log(smallPLArr[i])
-            continue 
-        } 
-        smallEnArr.push(ENArr[index])
-    }
-
-}

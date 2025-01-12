@@ -44,7 +44,6 @@ export const PreviousExercise = ({exerciseid,historyCache,setHistoryCache}:Previ
     }
     const t = useTranslations("Home/Add-Exercise/[Exercise-Name]")
     const u = useTranslations("Utils")
-    console.log(data)
   return (
     <div className='text-white'>
         {loading?<SmallLoaderDiv loading={loading}/>:

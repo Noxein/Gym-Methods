@@ -146,7 +146,6 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     })
 
     if(!validData.success && !isLastExercise) {
-        console.log('error')
         if(validData.error.flatten().fieldErrors.sets){
             return {
                 errors: validData.error.flatten().fieldErrors.sets![0]
@@ -759,9 +758,7 @@ export const GetUserTrainingByName = async (trainingname:string) => {
 
 export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay,exercisesuwu?:TrainingProgression[]) => {
     const userid = await userID()
-    console.log(weekday)
     if(typeof trainingplanname !== 'string' || typeof weekday !== 'string' || (exercisesuwu && !Array.isArray(exercisesuwu))){
-        console.log(!Array.isArray(exercisesuwu))
         return {error:'Something went wrong'}
     }
     if (trainingplanname.length > 255){
@@ -801,7 +798,6 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
     const userid = await userID()
 
     if(typeof trainingid !== 'string' || typeof trainingplanname !== 'string' || !Array.isArray(exercises) || typeof weekday !== 'string'){
-        console.log(typeof trainingid !== 'string' , typeof trainingplanname !== 'string' , !Array.isArray(exercises) , typeof weekday !== 'string')
         return { error: "Something went wrong1" }
     }
     const checkvalue = await checkTrainingFields(trainingplanname,exercises,weekday,userid as string)
@@ -1018,7 +1014,6 @@ export const getTwoLatestTrainings = async () => {
             }
             
         })
-        console.log('newArr',newArr)
         return {newArr, trainingNames:lastTrainings.rows as {id: string, datetime:Date,trainingname:string}[]}
     }catch(e){
         console.log('Error occured getTwoLatestTrainings func actions.ts',e)
@@ -1493,40 +1488,3 @@ export const getBasicSummaryData = async () => {
         return {data: [], error: 'Something went wrong'}
     }
 }
-
-// export const selector = async () => {
-//     const data = await sql`
-//         SELECT id, exercises FROM gymuserstrainingplans 
-//     `
-//     const parsedData = data.rows as {id: string, exercises: {id: string, series: number, increase: number, exerciseid: string,weightGoal: number, repetitions: number,exercisename: string}[]}[]
-
-//     // try{
-//     //     for(let i = 0; i<parsedData.length; i++){
-//     //         //training here
-//     //         let newTrainig:{id: string, exercises: TrainingProgression[]} = {
-//     //             id: parsedData[i].id,
-//     //             exercises: []
-//     //         }
-//     //         console.log(Array.isArray(parsedData[i].exercises))
-//     //         if(!Array.isArray(parsedData[i].exercises)) continue
-
-//     //         parsedData[i].exercises.map(exercise=>{
-//     //             let newExerciseObj:TrainingProgression = {
-//     //                 exerciseid: exercise.exerciseid,
-//     //                 exercisename: exercise.exercisename,
-//     //                 id: exercise.id,
-//     //                 series: []
-//     //             }
-//     //             newTrainig.exercises.push(newExerciseObj)
-//     //         })
-    
-//     //         await sql`
-//     //             UPDATE gymuserstrainingplans SET exercises = ${JSON.stringify(newTrainig.exercises)} WHERE id = ${newTrainig.id}
-//     //         `
-//     //     }
-//     //     console.log('all good')
-//     // }catch(e){
-//     //     console.log(e)
-//     // }
-    
-// }

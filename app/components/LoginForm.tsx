@@ -25,7 +25,6 @@ export const LoginForm = () => {
     setLoading(true)
     const data = await LoginNoFormData(email,password)
     if(data.error){ 
-      console.log(data,data.error)
       setError(e(data.error))
       return setLoading(false)
     } 

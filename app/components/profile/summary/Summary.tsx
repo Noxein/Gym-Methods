@@ -11,7 +11,6 @@ export const Summary = async () => {
     const timeOrHandleExercises = await userExercisesThatRequireHandlesOrTimeMesure()
     const allExercisesInOneArray = await AllExercisesInOneArray()
     const allExercisesObject = await getAllExercises()
-    console.log(data)
     if(!data){
         return (
             <ErrorDiv error='Coś poszło nie tak'/>
