@@ -862,24 +862,6 @@ export const getTrainingDataByName = async (name:string) => {
             SELECT * FROM gymuserstrainingplans WHERE userid = ${userid} AND trainingname = ${name}
         `
         if(list.rowCount === 0) return { error: 'Training not found' }
-
-        const trainingData = list.rows[0] as UserTrainingPlan
-
-        let fetchedData: {[key:string]:{ exercise: Series[], exerciseid: string}} = {}
-
-
-        for(let i = 0 ; i < trainingData.exercises.length; i++){
-            
-            const data = await sql`
-                SELECT sets, exerciseid FROM gymexercises WHERE parenttrainingplan = ${trainingData.id} AND userid = ${userid} AND exerciseid = ${trainingData.exercises[i].exerciseid} ORDER BY date DESC LIMIT 1
-            `
-
-            if(data.rowCount === 0) continue
-
-            const parsedData = data.rows[0] as {sets: Series[], exerciseid: string}
-
-            fetchedData[parsedData.exerciseid] = {exercise: parsedData.sets, exerciseid: parsedData.exerciseid}
-        }
         
         const dataWithIds = list.rows[0] as UserTrainingPlan
 
