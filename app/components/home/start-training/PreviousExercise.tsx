@@ -2,9 +2,8 @@ import { fetchPreviousExercise } from '@/app/actions'
 import { ExerciseType, Series } from '@/app/types'
 import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { SmallLoader } from '../../Loading/SmallLoader'
-import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
+import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 
 type PreviousExerciseTypes = {
     exerciseid: string,
@@ -16,7 +15,7 @@ type PreviousExerciseTypes = {
 
 export const PreviousExercise = ({exerciseid,historyCache,setHistoryCache}:PreviousExerciseTypes) => {
     const[data,setData] = useState<ExerciseType|null>()
-    const[loading,setLoading] = useState(false)
+    const[loading,setLoading] = useState(true)
 
     useEffect(()=>{
         const func = async () => {
@@ -48,7 +47,7 @@ export const PreviousExercise = ({exerciseid,historyCache,setHistoryCache}:Previ
     console.log(data)
   return (
     <div className='text-white'>
-        {loading?<SmallLoader/>:
+        {loading?<SmallLoaderDiv loading={loading}/>:
         !data?<div className=''>
             {t("NoHistory")}
         </div>:
