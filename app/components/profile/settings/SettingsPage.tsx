@@ -66,7 +66,6 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         setUserSettings(copy)
     }
     const handNotleFavouriteExercisesChange = (exerciseName: string) => {
-        console.log(exercisesArr,exerciseName)
         if(!exercisesArr.includes(exerciseName)) return
         let copy = {...userSettings}
         if(copy.notfavouriteexercises!.includes(exerciseName)){

@@ -1,21 +1,26 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SelectLanguage } from './components/SelectLanguage'
 import { getLang } from './lib/utils'
 
 export const Main = ({children}:{children:React.ReactNode}) => {
-    const lang = localStorage.getItem('lang')
-    const showSelectLang = lang
-
+    const[showSelectLang,setShowSelectLang] = useState(false)
+    
     useEffect(()=>{
-      if(showSelectLang){
+      const lang = typeof window !== 'undefined' && window.localStorage.getItem('lang')
+      const showSelectLang = lang
+
+      if(!showSelectLang){     
+        setShowSelectLang(true)
+        return
+      }else{
         getLang()
       }
+      
     },[])
   return (
     <div>
-        {showSelectLang ? children : <SelectLanguage /> }
-        {/* {children} */}
+        {showSelectLang ? <SelectLanguage setShowSelectLang={setShowSelectLang}/> : children }
     </div>
   )
 }

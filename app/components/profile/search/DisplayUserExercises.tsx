@@ -2,9 +2,9 @@ import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL,
 import { ExerciseType, ExerciseTypeWithHandle, HistoryExercise, Series } from '@/app/types'
 import { format } from 'date-fns'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { SmallLoader } from '../../Loading/SmallLoader'
 import { useTranslations } from 'next-intl'
 import { exercisesArr } from '@/app/lib/exercise-list'
+import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 
 type DisplayUserExercisesTypes = {
     fetchedExercises: HistoryExercise[],
@@ -16,13 +16,13 @@ type DisplayUserExercisesTypes = {
 export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
 
     const t = useTranslations("Home/Profile/Search")
-    console.log(dataLength,totalItems)
+    
   return (
     <div className='mt-16 mx-5 mb-20'>
          <InfiniteScroll
          dataLength={dataLength}
          hasMore={!(totalItems===dataLength)}
-         loader={<SmallLoader />} 
+         loader={<SmallLoaderDiv loading />} 
          next={()=>handleSearch()}
          endMessage={
             fetchedExercises.length === 0 ? <div className='w-screen h-screen fixed top-0 left-0 flex items-center justify-center'>

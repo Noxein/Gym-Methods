@@ -1,18 +1,15 @@
 'use client'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext } from 'react'
 import { Chart } from './Chart'
 import { Button } from '../../ui/Button'
-import { BasicSummaryDataType, ExercisesThatRequireTimeMesureOrHandle, ExerciseSummaryType, ExerciseTypes, Span, Status, SummaryDataFetched, UserExercise } from '@/app/types'
-import { getBasicSummaryData, userExercisesThatRequireHandlesOrTimeMesure } from '@/app/actions'
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, UserExercise } from '@/app/types'
 import { ErrorDiv } from '../../ui/ErrorDiv'
-import { format, isSameDay, subDays } from 'date-fns'
 import { MapExercises } from '@/app/components/ui/MapExercises'
-import { SmallLoader } from '../../Loading/SmallLoader'
-import { ArcherContainerRef } from 'react-archer'
 import { SummaryContext } from '@/app/context/SummaryContext'
 import { HideShowHTMLScrollbar, nameTrimmer } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
 import { exercisesArr } from '@/app/lib/exercise-list'
+import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 
 type ChartsTypes = {
     allExercisesInOneArray: (UserExercise | string)[],
@@ -34,7 +31,7 @@ export const Charts = ({allExercisesInOneArray,timeOrHandleExercises,allExercise
 
     if(error) return <ErrorDiv error={error}/>
 
-    if(status === 'loading') return <SmallLoader />
+    if(status === 'loading') return <SmallLoaderDiv loading={status==='loading'} />
   return (
     <div className='relative'>
         <div className='flex gap-2 overflow-hidden overflow-x-scroll py-2 sticky top-0 z-50 bg-dark'>

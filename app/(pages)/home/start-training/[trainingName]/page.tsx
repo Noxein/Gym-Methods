@@ -7,7 +7,7 @@ import { Button } from '@/app/components/ui/Button'
 type Pagetypes = {
     params:{trainingName:string}
     searchParams: { inProgress: string }
-}
+} 
 
 export default async function page({params,searchParams}:Pagetypes){
     const decodedTrainingName = decodeURI(params.trainingName)
@@ -23,6 +23,6 @@ export default async function page({params,searchParams}:Pagetypes){
       )
     }
   return (
-        trainingData.data && <Training trainingPlanData={trainingData.data} exercisesThatProgressed={trainingData.exercisesThatProgressed}/>
+        trainingData.data && <Training trainingPlanData={trainingData.data}/>
   )
 }

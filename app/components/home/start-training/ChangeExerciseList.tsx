@@ -13,19 +13,23 @@ import { exercisesArr } from '@/app/lib/exercise-list'
 type ChangeExerciseListTypes = {
     list2?: LocalStorageExercise[],
     setLocalStorageTrainingData: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
+    setProgressedIndexes: (number:number,localStorageTrainingData:LocalStorageTraining) => void,
+    localStorageTrainingData: LocalStorageTraining,
 }
-export const ChangeExerciseList = ({list2,setLocalStorageTrainingData}:ChangeExerciseListTypes) => {
+export const ChangeExerciseList = ({list2,setLocalStorageTrainingData,localStorageTrainingData,setProgressedIndexes}:ChangeExerciseListTypes) => {
     const modalsContext = useContext(ModalContexts)
     const[error,setError] = useState('')
 
     const handleChangeExercisesOrder = (exerciseIndexNumber:number) => {
 
-        setLocalStorageTrainingData(x=>{
-            let xCopy = {...x}
-            xCopy.currentExerciseIndex = exerciseIndexNumber
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-            return xCopy
-        })
+        setProgressedIndexes(exerciseIndexNumber,localStorageTrainingData)
+
+        let localStorageTrainingDataCopy = {...localStorageTrainingData}
+
+        localStorageTrainingDataCopy.currentExerciseIndex = exerciseIndexNumber
+        localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
+
+        setLocalStorageTrainingData(localStorageTrainingDataCopy)
         
         handleCloseList()
     }
@@ -39,20 +43,20 @@ export const ChangeExerciseList = ({list2,setLocalStorageTrainingData}:ChangeExe
     }
 
     const handleDeleteExercise = (index: number) => {
-        setLocalStorageTrainingData(x=>{
-            let xCopy = {...x}
-            if(xCopy.exercises.length === 1){
-                setError('Trening musi mieć conajmniej jendo ćwiczenie')
-                return xCopy
-            } 
 
-            if(xCopy.exercises.length - 1 === xCopy.currentExerciseIndex){
-                xCopy.currentExerciseIndex = xCopy.exercises.length - 2
-            }
-            xCopy.exercises = xCopy.exercises.filter((x,i)=>i!==index)
-            localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-            return xCopy
-        })
+        let localStorageTrainingDataCopy = {...localStorageTrainingData}
+
+        if(localStorageTrainingDataCopy.exercises.length === 1){
+            return setError('Trening musi mieć conajmniej jendo ćwiczenie')
+        } 
+
+        if(localStorageTrainingDataCopy.exercises.length - 1 === localStorageTrainingDataCopy.currentExerciseIndex){
+            localStorageTrainingDataCopy.currentExerciseIndex = localStorageTrainingDataCopy.exercises.length - 2
+        }
+        localStorageTrainingDataCopy.exercises = localStorageTrainingDataCopy.exercises.filter((x,i)=>i!==index)
+        localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
+
+        setLocalStorageTrainingData(localStorageTrainingDataCopy)
     }
 
     const t = useTranslations("Home/Start-Training/[TrainingName]")

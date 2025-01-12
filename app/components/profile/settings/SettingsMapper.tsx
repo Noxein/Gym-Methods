@@ -107,7 +107,6 @@ const SelectExercise = ({text,mLeft,isFirst,setExercisesToDelete,selected,favour
     }
     const getFillColor = () => {
         if(selected){
-            console.log('something is selected')
             if(favourite) return `bg-green border-green`
             return `bg-red border-red`
         }

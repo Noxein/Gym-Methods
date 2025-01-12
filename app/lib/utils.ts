@@ -1,5 +1,5 @@
 import { addDays, getDay, subDays } from "date-fns"
-import { Series, TrainingProgression, WeekDay, WeekDayPL } from "../types"
+import { LocalStorageTraining, ProgressedIndexesType, Series, SeriesWithExercise, TrainingProgression, WeekDay, WeekDayPL } from "../types"
 import { setUserLocale } from "../i18n/locale"
 import { Locale, locales } from "../i18n/config"
 
@@ -71,14 +71,14 @@ export const nameTrimmer = (string:string) => {
 }
 
 export const getLang = async () => {
-  const lang = localStorage.getItem('lang')
+  const lang = typeof window !== 'undefined' && localStorage.getItem('lang')
   if(!lang){
-    localStorage.setItem('lang','en')
+    typeof window !== 'undefined' && localStorage.setItem('lang','en')
     return setUserLocale('en')
   }
 
   if(!locales.includes(lang as Locale)){
-    localStorage.setItem('lang','en')
+    typeof window !== 'undefined' && localStorage.setItem('lang','en')
     return setUserLocale('en')
   }else{
     setUserLocale(lang as Locale)
@@ -88,33 +88,127 @@ export const getLang = async () => {
 
 export const checkIfShouldIncreaseDifficulty = (exerciseHistory: Series[],goal?:TrainingProgression) => {
     //DATA ARRAY ALWAYS HAS 2 ELEMENTS 
-    if(!goal || !goal.series || !goal.increase || !goal.repetitions || !goal.weightGoal) return false
-    if(exerciseHistory.length < goal.series) return false
+    if(!goal || !goal.series) return false
+    if(exerciseHistory.length < goal.series.length) return false
 
     let OlderSetsCopy = [...exerciseHistory]
+    let shouldIncrease = true
 
-    let totalSeriresGoal = 0
-    let totalWeightGoal = 0
 
-    for(let i = 0 ; i < exerciseHistory.length ; i ++){
-      const index = OlderSetsCopy.findIndex(x=>{
-        return x.weight >= goal.weightGoal! && x.repeat >= goal.repetitions!
+    for(let i = 0 ; i< exerciseHistory.length; i ++){
+      let index = goal.series.findIndex((exercisegoal)=>{
+        exercisegoal.repetitions! >= exerciseHistory[i].repeat && exercisegoal.weightGoal >= exerciseHistory[i].weight
       })
-      
-      if(index < 0) break
-      
+
+      if(index<0){
+        shouldIncrease = false
+        break
+      }
+
       OlderSetsCopy = [...OlderSetsCopy.slice(0,index),...OlderSetsCopy.slice(index+1,OlderSetsCopy.length)]
 
-      totalSeriresGoal = totalSeriresGoal + 1
-      totalWeightGoal = totalWeightGoal + 1
+    }
+    
+    if(!shouldIncrease) return false
+
+    return goal.series.map(exerciseGoal=>{
+      exerciseGoal.weightGoal = exerciseGoal.weightGoal + exerciseGoal.increase
+      return exerciseGoal
+    })
+}
+
+export const getProgressedSeriesIndexes = (series: Series[],goal?:TrainingProgression) => {
+  const progressedSeriesIndexes:ProgressedIndexesType = {series:[],goals:[]}
+  if(!goal || !goal.series) return progressedSeriesIndexes
+
+  goal.series.sort((a,b)=>{
+    if(a.weightGoal>b.weightGoal) return 1
+    return -1
+  })
+
+  let seriesCopy = [...series].sort((a,b)=>{
+    if(a>b) return 1
+    return -1
+  })
+
+  let goalSeriesCopy = [...goal.series]
+
+  for(let i = 0 ; i<seriesCopy.length; i++){
+    let index = goalSeriesCopy.findIndex(goal=>goal.weightGoal <= seriesCopy[i].weight && goal.repetitions <= seriesCopy[i].repeat)
+    if(index<0) continue
+    progressedSeriesIndexes.goals.push(goalSeriesCopy[index].id!)
+    progressedSeriesIndexes.series.push(seriesCopy[i].id!)
+
+    goalSeriesCopy = [...goalSeriesCopy.slice(0,index),...goalSeriesCopy.slice(index+1,goalSeriesCopy.length)]
+
+  }
+  return progressedSeriesIndexes
+}
+
+export const initializeInputsState = (exerciseid:string,requiresHandle: boolean, requiresTimeMesure: boolean,useremail:string) => {
+    
+    const data = localStorage.getItem(exerciseid+'training'+useremail)
+    if(data){
+        const parsedData = JSON.parse(data)
+        return parsedData as SeriesWithExercise
+    }
+    let dataObject: SeriesWithExercise = {
+        difficulty: 'easy',
+        repeat: 0,
+        side: 'Both',
+        weight: 0,
+        exerciseid,
+    }
+    if(requiresHandle) {
+        dataObject.handle = {
+            handleId: 'Sznur',
+            handleName: 'Sznur'
+        }
+    }
+    if(requiresTimeMesure){
+        dataObject.time = 0
+    }
+    localStorage.setItem(exerciseid,JSON.stringify(dataObject))
+    return dataObject
+}
+
+export const CheckIfTrainingExerciseGoalIsMet = (series:Series[],goal:TrainingProgression) => {
+  let goalCopy = {...goal}
+  if(!goal.series) return goalCopy
+
+  series.sort((a,b)=>{
+    if(a.weight>b.weight) return 1
+    return -1
+  })
+
+  goal.series?.sort((a,b)=>{
+    if(a.weightGoal>b.weightGoal) return 1
+    return -1
+  })
+
+  let goalCopyForSlicing = [...goal.series]
+  let shouldIncreaseGoal = true
+
+  for(let i = 0; i< series.length; i ++){
+    const index = goalCopyForSlicing.findIndex(goal=>{
+      return goal.weightGoal <= series[i].weight && goal.repetitions <= series[i].repeat
+    })
+    if(index>=0){
+      goalCopyForSlicing = [...goalCopyForSlicing.slice(0,index),...goalCopyForSlicing.slice(index+1,goalCopyForSlicing.length)]
+    }else{
+      shouldIncreaseGoal = false
+      continue
     }
 
-    if(!(totalSeriresGoal >= goal.series)) return false
-    if(!(totalWeightGoal >= goal.series)) return false
-    
-    return {
-      weight: goal.weightGoal + goal.increase,
-      repetitions: goal.repetitions,
-      series: goal.series
-    }
+  }
+
+  if(shouldIncreaseGoal && goalCopyForSlicing.length === 0){
+    //THAT MEANS WE UPDATE THE GOAL
+    goalCopy.series?.map(goal=>{
+      goal.weightGoal = goal.weightGoal + goal.increase
+      return goal
+    })
+
+  }
+  return goalCopy
 }

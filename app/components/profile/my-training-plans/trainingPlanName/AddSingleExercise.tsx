@@ -21,14 +21,12 @@ type AddExerciseType = {
 export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:AddExerciseType) => {
     const addExercise = () => {
         if(isTrainingInProgressPage){
-            console.log('23')
             setCurrentExercise && setCurrentExercise(x=>x)
             setPlanExercises && setPlanExercises(x=>{
                 if(x) return [{exerciseid:id,exercisename:text,id:uuidv4()},...x]
                 return [{exerciseid:id,exercisename:text,id:uuidv4()}]
             })
             setLocalStorageTrainingData && setLocalStorageTrainingData(x=>{
-                console.log('wedidit')
                 let xCopy = {...x}
                 xCopy.currentExerciseIndex = xCopy.exercises.length
 

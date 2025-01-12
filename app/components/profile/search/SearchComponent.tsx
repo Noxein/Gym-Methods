@@ -93,7 +93,6 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                 setLoading(false)
                 return
             } 
-            console.log('INITAL COUNT',count)
             count && setTotalItems(Number(count))
             handleSearch(false)
         }
@@ -121,7 +120,6 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                 })
             }
         })
-        console.log(obj)
         return obj
     }
 

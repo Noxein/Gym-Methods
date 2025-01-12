@@ -5,9 +5,8 @@ import { ModalContextsProvider } from './ModalContexts'
 
 type TrainingTypes = {
     trainingPlanData?: UserTrainingPlan,
-    exercisesThatProgressed: {[key:string]:SholudAddWeightType}
 }
-export const Training = async ({trainingPlanData,exercisesThatProgressed}:TrainingTypes) => {
+export const Training = async ({trainingPlanData}:TrainingTypes) => {
     const {ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure} = await userExercisesThatRequireHandlesOrTimeMesure()
     const exercisesObject = await getAllExercises()
     const allExercisesInOneArray = await AllExercisesInOneArray()
@@ -24,7 +23,6 @@ export const Training = async ({trainingPlanData,exercisesThatProgressed}:Traini
                     ExercisesThatRequireHandle={ExercisesThatRequireHandle}
                     ExercisesThatRequireTimeMesure={ExercisesThatRequireTimeMesure}
                     useremail={useremail}
-                    exercisesThatProgressed={exercisesThatProgressed}
                     />
             </ModalContextsProvider>
         </main>
