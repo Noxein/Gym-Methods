@@ -88,7 +88,7 @@ const SingleExercise = ({name,exercise,setPlanExercises}:SingleExerciseTypes) =>
                 <VerticalDots fill='#fff' width='20' height='30'/>
             </Icon>
 
-            <div className={`flex-1 flex flex-col bg-dark px-4 pt-4 rounded-lg`}> 
+            <div className={`flex-1 flex flex-col bg-dark px-4 py-4 rounded-lg`}> 
                 <span>{translatedName}</span>
             </div>
     
