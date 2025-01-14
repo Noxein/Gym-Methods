@@ -28,7 +28,8 @@
         "Change": "Zmień",
         "Of": "z",
         "Close": "Zakończ",
-        "TimeInSeconds": "Czas (sekundy)"
+        "TimeInSeconds": "Czas (sekundy)",
+        "Error": "Błąd"
     },
     "Login": {
         "Login": "Zaloguj",

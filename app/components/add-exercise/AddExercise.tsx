@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 import { ActionTypes, AddExerciceReducerType, ExerciseType, Side as SideType } from '../../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
 import { AddExerciseAction } from '../../actions'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Icon } from '../Icon'
 import { CheckIcon, PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ShowHistoryButton } from './ShowHistoryButton'
@@ -40,6 +40,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
     const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
 
     const pathname = usePathname()
+    const router = useRouter()
 
     useEffect(()=>{
         const data = localStorage.getItem(name+'singleExercise')
@@ -59,7 +60,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
         }]))
     }
     const ResetLocalStorage = () => {
-        localStorage.removeItem(name)
+        localStorage.removeItem(name+"singleExercise")
     }
     const FinishTraining = async () => {
         if(!checked) return
@@ -67,13 +68,14 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
         setLoading(true)
         
 
-        const possibleError = await AddExerciseAction(true,name,state.series,pathname.includes('training'),'',handle)
+        const possibleError = await AddExerciseAction(false,name,state.series,pathname.includes('training'),'',handle)
         if(possibleError) {
             setError(e(possibleError.errors))
             setLoading(false)
             return
         }
         ResetLocalStorage()
+        router.push('/home/add-exercise')
         setLoading(false)
     }
 

@@ -110,10 +110,12 @@ const ExerciseToClose = ({name,setData,email}:ExerciseToCloseTypes) => {
         setLoading(false)
     }
     return (
-        <div className="flex justify-between rounded-lg items-center h-10 gap-4">
-            <p className="bg-dark border-1 border-marmur flex-1 h-full flex items-center pl-4 rounded-lg">{name}</p>
-            <ErrorDiv error={error}/>
-            <Button className="py-2 my-2 mr-2 px-2" isPrimary onClick={handleCloseTraining} disabled={loading}>{t('CloseTraining')}</Button>
+        <div className="flex flex-col rounded-lg gap-1">
+            <div className="grid grid-cols-[2fr,1fr] gap-2">
+                <p className="bg-dark border-1 border-marmur flex-1 flex items-center px-4 rounded-lg py-2">{name}</p>
+                <Button className="py-2 mr-2 px-2 justify-stretch items-stretch" isPrimary onClick={handleCloseTraining} disabled={loading}>{t('CloseTraining')}</Button>
+            </div>
+            <ErrorDiv error={error} className="bg-dark text-red border-darkLight border-2 rounded-lg px-2 py-2 mt-1"/>
         </div>
     )
 }

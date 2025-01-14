@@ -28,7 +28,8 @@
         "Change": "Change",
         "Of": "of",
         "Close": "Close",
-        "TimeInSeconds": "Time (seconds)"
+        "TimeInSeconds": "Time (seconds)",
+        "Error": "Error"
     },
     "Login": {
         "Login": "Login",
