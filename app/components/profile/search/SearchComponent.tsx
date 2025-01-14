@@ -1,7 +1,7 @@
 'use client'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { ExerciseList } from './ExerciseList'
-import { ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, HistoryExercise, UserExercise } from '@/app/types'
+import { ExerciseTypes, ExerciseTypeWithHandle, HistoryExercise, UserExercise } from '@/app/types'
 import { SelectedExerciseContext } from './SelectedExerciseContext'
 import { Icon } from '../../Icon'
 import { ExpandIcon2, MagnyfingGlass } from '@/app/ui/icons/ExpandIcon'
@@ -135,7 +135,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     const d = useTranslations("DefaultExercises")
     const e = useTranslations("Errors")
 
-    const selectedExerciseFormatted = (longVersion:boolean) => {
+    const selectedExerciseFormatted = useCallback((longVersion:boolean) => {
         if(!selectedExercise) return t("AllExercises")
         const isLong = longVersion ? false : selectedExercise.length>=20
 
@@ -147,7 +147,8 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
         if(isLong) return d(nameTrimmer(selectedExercise)).slice(0,20) + '...'
 
         return d(nameTrimmer(selectedExercise))
-    }
+    },[selectedExercise])
+    
   return (
 <>
     <div className='text-white'>
