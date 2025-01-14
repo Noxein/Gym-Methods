@@ -158,7 +158,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
                     <Input labelName={t("To")} type='date' onChange={e=>handleDateChange(e.target.value,setTo)} disabled={loading}/>
                 </div>
                 <div className='mx-5 flex gap-2 flex-col'>
-                    <Button className='w-full bg-dark border-borderInteractive border-2 flex justify-between px-5 items-center py-2' onClick={handleShowExerciseList} isPrimary disabled={loading}>{selectedExerciseFormatted(true)} 
+                    <Button className='w-full bg-dark border-borderInteractive border-2 flex justify-between px-5 items-center py-2' onClick={handleShowExerciseList} isPrimary disabled={loading}>{showSearch ? selectedExerciseFormatted(true) : selectedExerciseFormatted(false)} 
                         <Icon>
                             <MagnyfingGlass fill='#fff' width='20'/>
                         </Icon>
