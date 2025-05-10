@@ -1,17 +1,18 @@
 'use client'
 import { useState, useRef, useEffect, useContext } from 'react'
-import { DifficultyLevelType , ExerciseType, LocalStorageTraining, ProgressedIndexesType, Series, SeriesWithExercise, SholudAddWeightType, Side as SideType, UserTrainingPlan } from '@/app/types'
+import { DifficultyLevelType , ExerciseType, LocalStorageTraining, SeriesWithExercise, Side as SideType, UserTrainingPlan } from '@/app/types'
 import { Icon } from '@/app/components/Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ShowHistoryButton } from '@/app/components/add-exercise/ShowHistoryButton'
 import { PreviousExercise } from '@/app/components/home/start-training/PreviousExercise'
 import { ButtonWithIcon } from '@/app/components/ui/ButtonWithIcon'
 import { DisplayCurrentSeresUsingState } from './DisplayCurrentSeresUsingState'
-import { getProgressedSeriesIndexes, initializeInputsState, localStorageSetter, nameTrimmer } from '@/app/lib/utils'
+import { initializeInputsState, localStorageSetter, nameTrimmer } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
 import { exercisesArr, handleTypes } from '@/app/lib/exercise-list'
 import { v4 } from 'uuid'
 import { ModalContexts } from './ModalContexts'
+import { ShowProgression } from './ShowProgression'
 
 type AddExerciseUsingStateType = {
     name:string,
@@ -31,9 +32,10 @@ type AddExerciseUsingStateType = {
     setProgressedIndexes: (index:number,localStorageTrainingData:LocalStorageTraining) => void,
     inputs: SeriesWithExercise,
     setInputs: React.Dispatch<React.SetStateAction<SeriesWithExercise>>,
+    trainingPlan: UserTrainingPlan;
 }
 
-export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,localStorageTrainingData,setLocalStorageTrainingData,useremail,setProgressedIndexes,inputs,setInputs}:AddExerciseUsingStateType) => {
+export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,localStorageTrainingData,setLocalStorageTrainingData,useremail,setProgressedIndexes,inputs,setInputs,trainingPlan}:AddExerciseUsingStateType) => {
     const[showHistory,setShowHistory] = useState(false)
     const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
 
@@ -117,7 +119,13 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
         <DisplayCurrentSeresUsingState trainingState={trainingState} localStorageTrainingData={localStorageTrainingData} setLocalStorageTrainingData={setLocalStorageTrainingData} showTimeMesure={showTimeMesure} setProgressedIndexes={setProgressedIndexes}/>
         <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory}/>
         {showHistory && <PreviousExercise exerciseid={exerciseid} historyCache={historyCache} setHistoryCache={setHistoryCache}/>}
-
+        
+        <ShowProgression 
+            trainingPlan={trainingPlan}
+            currentExercise={name}
+            inputs={inputs}
+            setInputs={setInputs}
+        />
     </div>
     )
 }

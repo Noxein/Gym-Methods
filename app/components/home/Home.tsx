@@ -6,7 +6,6 @@ import { IncomingTrainingsSkeleton } from '../Loading/home/IncomingTrainingsSkel
 import { LatestTrainingsSkeleton } from '../Loading/home/LatestTrainingsSkeleton'
 import { WidgetDataProvider } from './WidgetDataProvider'
 import { HomeWidgetSeleton } from '../Loading/home/HomeWidgetSeleton'
-import { OpenTrainingRemainder } from './OpenTrainingRemainder'
 
 type HomeTypes = {
   useremail?: string | null
@@ -29,7 +28,7 @@ export const Home = ({useremail}:HomeTypes) => {
         
       <AddExerciseButton />
 
-      <OpenTrainingRemainder useremail={useremail}/>
+      {/* <OpenTrainingRemainder useremail={useremail}/> */}
     </div>
   )
 }

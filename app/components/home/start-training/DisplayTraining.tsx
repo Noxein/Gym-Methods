@@ -151,7 +151,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 <h1 className='text-2xl'>{trainingPlanData.trainingname}</h1>
             </div>
             <div className='text-gray-400 flex gap-2 items-center'>
-                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowProgressionList} disabled={loading}>Progresja</Button>
+                {/* <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowProgressionList} disabled={loading}>Progresja</Button> */}
                 <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList} disabled={loading}>{u("Change")}</Button>
                 <span className='text-nowrap'>{localStorageTrainingData.currentExerciseIndex + 1} {u("Of")} {totalExercises}</span>
             </div>
@@ -173,6 +173,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 setProgressedIndexes={setProgressedIndexes}
                 inputs={inputs}
                 setInputs={setInputs}
+                trainingPlan={trainingPlanData}
             />
         }
         {error && <div className='text-red'>{error}</div>}
@@ -212,7 +213,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 handleEnd={handleCloseTraining}
             />}
 
-        {modalsContext?.showPlanProgressionModal &&
+        {/* {modalsContext?.showPlanProgressionModal &&
             <PlanProgressModal 
                 currentExercise={currentExerciseName}
                 trainingPlan={trainingPlanData}
@@ -220,7 +221,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 setLocalStorageTrainingData={setLocalStorageTrainingData}
                 inputs={inputs}
                 setInputs={setInputs}
-            />}
+            />} */}
 
     </div>)
 }
