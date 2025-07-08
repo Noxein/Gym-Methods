@@ -275,3 +275,22 @@ export type SholudAddWeightType = {
     increase: number;
     weightGoal: number;
 }
+
+export type ProgressionType = {
+    id: string
+    repetitions: number;
+    increase: number;
+    weightGoal: number;
+}
+export type Progression = {
+    id:string,
+    userid: string,
+    exerciseid:string,
+    exercisename:string
+    series:{
+        id:string,
+        increase:number,
+        weightGoal:number,
+        repetitions:number
+    }[]
+}

@@ -1,4 +1,4 @@
-import { getTrainingDataByName } from '@/app/actions'
+import { getAllUserProgressions, getTrainingDataByName } from '@/app/actions'
 import { BackLink } from '@/app/components/home/start-training/BackLink'
 import { Training } from '@/app/components/home/start-training/Training'
 import { TrainingError } from '@/app/components/home/start-training/TrainingError'
@@ -12,6 +12,7 @@ type Pagetypes = {
 export default async function page({params,searchParams}:Pagetypes){
     const decodedTrainingName = decodeURI(params.trainingName)
     const trainingData = await getTrainingDataByName(decodedTrainingName)
+    const progressions = await getAllUserProgressions()
 
     if(trainingData.error){
       return (
@@ -23,6 +24,6 @@ export default async function page({params,searchParams}:Pagetypes){
       )
     }
   return (
-        trainingData.data && <Training trainingPlanData={trainingData.data}/>
+        trainingData.data && <Training trainingPlanData={trainingData.data} progressions={progressions}/>
   )
 }

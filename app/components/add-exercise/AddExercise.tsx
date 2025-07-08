@@ -1,6 +1,6 @@
 'use client'
-import { useEffect, useState, useRef } from 'react'
-import { ActionTypes, AddExerciceReducerType, ExerciseType, Side as SideType } from '../../types'
+import { useEffect, useState, useRef, useContext } from 'react'
+import { ActionTypes, AddExerciceReducerType, ExerciseType, ProgressedIndexesType, Progression, Side as SideType } from '../../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
 import { AddExerciseAction } from '../../actions'
 import { usePathname, useRouter } from 'next/navigation'
@@ -11,10 +11,13 @@ import { PreviousExercise } from '../home/start-training/PreviousExercise'
 import { SmallLoaderDiv } from '../ui/SmallLoaderDiv'
 import { ErrorDiv } from '../ui/ErrorDiv'
 import { Button } from '../ui/Button'
-import { ButtonWithIcon } from '../ui/ButtonWithIcon'
 import { useTranslations } from 'next-intl'
-import { nameTrimmer } from '@/app/lib/utils'
+import { getProgressedSeriesIndexes, nameTrimmer } from '@/app/lib/utils'
 import { exercisesArr, handleTypes } from '@/app/lib/exercise-list'
+import { Timer } from './Timer'
+import { ButtonToAddSeriesExercise } from './ButtonToAddSeriesExercise'
+import { ShowProgressionSingleExercise } from './ShowProgressionSingleExercise'
+import { SingleExerciseProgressionContext } from '@/app/context/SingleExerciseProgressionContext'
 
 type AddExerciseType = {
     name:string,
@@ -29,9 +32,10 @@ type AddExerciseType = {
         id: string;
         handlename: string;
     }[],
+    exerciseProgression?: Progression,
 }
 
-export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles}:AddExerciseType) => {
+export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles,exerciseProgression}:AddExerciseType) => {
     const[error,setError] = useState<string>('')
     const[loading,setLoading] = useState(false)
     const[showHistory,setShowHistory] = useState(false)
@@ -42,24 +46,19 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
     const pathname = usePathname()
     const router = useRouter()
 
+    const {setSeriesIndexesThatMetGoal} = useContext(SingleExerciseProgressionContext)!
+
     useEffect(()=>{
         const data = localStorage.getItem(name+'singleExercise')
         if(data){
             const parsedData = JSON.parse(data)
             dispatch({type:"SETSERIESFROMMEMORY",payload:parsedData})
+
+            let indexes:ProgressedIndexesType = getProgressedSeriesIndexes(parsedData,exerciseProgression)
+            setSeriesIndexesThatMetGoal(indexes)
         }
     },[name])
     
-    const AddSeries = () => {
-        dispatch({type:'ADDSERIES'})
-        localStorage.setItem(name+'singleExercise',JSON.stringify([...state.series,{
-            weight: state.weight,
-            repeat: state.repeat,
-            time: state.time,
-            side: state.side,
-            difficulty: state.difficultyLevel,
-        }]))
-    }
     const ResetLocalStorage = () => {
         localStorage.removeItem(name+"singleExercise")
     }
@@ -69,7 +68,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
         setLoading(true)
         
 
-        const possibleError = await AddExerciseAction(false,name,state.series,pathname.includes('training'),'',handle)
+        const possibleError = await AddExerciseAction(false,name,state.series,pathname.includes('training'),'',handle,undefined,undefined,undefined,exerciseProgression)
         if(possibleError) {
             setError(e(possibleError.errors))
             setLoading(false)
@@ -86,6 +85,7 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
     const e = useTranslations("Errors")
 
     const exerciseName = exercisesArr.includes(name) ? d(nameTrimmer(name)) : name
+
   return (
     <div className={`px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'}`}>
         <h1 className={`text-marmur text-xl text-center font-medium`}>{exerciseName}</h1>
@@ -96,17 +96,16 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
                <Side dispatch={dispatch} state={state} />
                {requiresHandle && <Handle handle={handle} setHandle={setHandle} allHandles={allHandles}/>}
             </div>
-            
-            <ButtonWithIcon onClick={e=>{e.preventDefault();AddSeries()}} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading || loading}
-                buttonText={t('AddSeries')}
-                childrenIcon={
-                    <Icon className='bg-opacity-0 flex'>
-                    <PlusIcon /> 
-                </Icon>
-                }
-                >
+            <Timer />
 
-            </ButtonWithIcon>
+            <ButtonToAddSeriesExercise
+                name={name}
+                dispatch={dispatch}
+                isLoading={isLoading}
+                loading={loading}
+                state={state}
+                goal={exerciseProgression}
+            />
             <div className='grid mt-3 text-white w-full'>
                 <div className={` justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 pl-7 w-[100vw-28px] bg-dark`}>
                 <div className='font-light'>{u("Weight")}</div>
@@ -118,9 +117,16 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
         </div>
         </div>
 
-        <DisplayCurrentSeries exercisename={name} currentSeries={state.series} dispatchSeries={dispatch} isTraining={isTraining} showTimeMesure={showTimeMesure}/>
+        <DisplayCurrentSeries exercisename={name} currentSeries={state.series} dispatchSeries={dispatch} isTraining={isTraining} showTimeMesure={showTimeMesure} goal={exerciseProgression}/>
         <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory} loading={loading}/>
         {showHistory && <PreviousExercise exerciseid={exerciseid} historyCache={historyCache} setHistoryCache={setHistoryCache}/>}
+
+        <ShowProgressionSingleExercise 
+            progression={exerciseProgression}
+            currentExercise={name}
+            state={state}
+            dispatch={dispatch}
+        />
 
         <ErrorDiv error={error}/>
         

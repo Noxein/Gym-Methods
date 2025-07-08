@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef, useEffect, useContext } from 'react'
-import { DifficultyLevelType , ExerciseType, LocalStorageTraining, SeriesWithExercise, Side as SideType, UserTrainingPlan } from '@/app/types'
+import { DifficultyLevelType , ExerciseType, LocalStorageTraining, Progression, SeriesWithExercise, Side as SideType, UserTrainingPlan } from '@/app/types'
 import { Icon } from '@/app/components/Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ShowHistoryButton } from '@/app/components/add-exercise/ShowHistoryButton'
@@ -13,6 +13,9 @@ import { exercisesArr, handleTypes } from '@/app/lib/exercise-list'
 import { v4 } from 'uuid'
 import { ModalContexts } from './ModalContexts'
 import { ShowProgression } from './ShowProgression'
+import { Timer } from '../../add-exercise/Timer'
+import { TimerContext } from '@/app/context/TimerContext'
+import { ButtonToAddSeries } from './ButtonToAddSeries'
 
 type AddExerciseUsingStateType = {
     name:string,
@@ -33,45 +36,17 @@ type AddExerciseUsingStateType = {
     inputs: SeriesWithExercise,
     setInputs: React.Dispatch<React.SetStateAction<SeriesWithExercise>>,
     trainingPlan: UserTrainingPlan;
+    goal?: Progression,
 }
 
-export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,localStorageTrainingData,setLocalStorageTrainingData,useremail,setProgressedIndexes,inputs,setInputs,trainingPlan}:AddExerciseUsingStateType) => {
+export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,localStorageTrainingData,setLocalStorageTrainingData,useremail,setProgressedIndexes,inputs,setInputs,trainingPlan,goal}:AddExerciseUsingStateType) => {
     const[showHistory,setShowHistory] = useState(false)
     const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
-
-    const modalsContext = useContext(ModalContexts)
     
     useEffect(()=>{
         setInputs(initializeInputsState(exerciseid,requiresHandle,showTimeMesure,useremail))
     },[name])
-
-    const handleAddSeries = () => {
-
-        let localStorageTrainingDataCopy = {...localStorageTrainingData}
-
-        if(!localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].date){
-            localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].date = new Date()
-        }
-
-        localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets = [
-            ...localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].sets,
-            {
-                difficulty: inputs.difficulty,
-                repeat: inputs.repeat,
-                side: inputs.side,
-                weight: inputs.weight,
-                time:  inputs.time,
-                id: v4()
-            }
-        ]
-
-        localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
-
-        setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex,localStorageTrainingDataCopy)
-        setLocalStorageTrainingData(localStorageTrainingDataCopy)
-        
-    }
-
+    
     const d = useTranslations("DefaultExercises")
     const t = useTranslations("Home/Start-Training/[TrainingName]")
     const u = useTranslations("Utils")
@@ -94,16 +69,15 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
                {requiresHandle && <Handle allHandles={allHandles} inputs={inputs} setInputs={setInputs} trainingState={trainingState} setLocalStorageTrainingData={setLocalStorageTrainingData} localStorageTrainingData={localStorageTrainingData}/>}
             </div>
             
-            <ButtonWithIcon onClick={()=>handleAddSeries()} className={`mt-6 text-xl rounded-md py-4 flex items-center justify-between px-5 `} isPrimary disabled={isLoading}
-                buttonText={t("AddSeries")}
-                childrenIcon={
-                    <Icon className='bg-opacity-0 flex'>
-                    <PlusIcon /> 
-                </Icon>
-                }
-                >
-
-            </ButtonWithIcon>
+            <Timer />
+            
+            <ButtonToAddSeries 
+                localStorageTrainingData={localStorageTrainingData} 
+                inputs={inputs} 
+                setProgressedIndexes={setProgressedIndexes} 
+                setLocalStorageTrainingData={setLocalStorageTrainingData}
+                isLoading={isLoading}
+                />
 
             <div className='grid mt-3 text-white w-full'>
                 <div className={`justify-around grid ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'} mr-10 -mb-2 pl-7 w-[100vw-28px] bg-dark`} >
@@ -125,6 +99,7 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
             currentExercise={name}
             inputs={inputs}
             setInputs={setInputs}
+            goal={goal}
         />
     </div>
     )

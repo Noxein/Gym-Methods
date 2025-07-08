@@ -1,8 +1,10 @@
-import { useRef } from 'react'
-import { ActionTypes, ActionTypesEnum, DifficultyLevelType, Series, Side } from '../../types'
+import { useContext, useRef } from 'react'
+import { ActionTypes, ActionTypesEnum, DifficultyLevelType, ProgressedIndexesType, Progression, Series, Side } from '../../types'
 import { Icon } from '../Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import { useTranslations } from 'next-intl'
+import { SingleExerciseProgressionContext } from '@/app/context/SingleExerciseProgressionContext'
+import { getProgressedSeriesIndexes } from '@/app/lib/utils'
 
 type DisplayCurrentSeriesTypes = {
     exercisename:string,
@@ -10,12 +12,16 @@ type DisplayCurrentSeriesTypes = {
     dispatchSeries:React.Dispatch<ActionTypes>,
     showTimeMesure:boolean,
     isTraining: boolean,
+    goal?: Progression
 }
-export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,showTimeMesure,isTraining}:DisplayCurrentSeriesTypes) => {
+export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,showTimeMesure,isTraining,goal}:DisplayCurrentSeriesTypes) => {
+
+    const {seriesIndexesThatMetGoal,setSeriesIndexesThatMetGoal} = useContext(SingleExerciseProgressionContext)!
     const deleteSet = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,index:number) => {
         e.preventDefault()
         dispatchSeries({type:"DELETESERIES",payload:index})
-        localStorage.setItem(exercisename,JSON.stringify(currentSeries.filter((set,i)=>i!==index)))
+        console.log(currentSeries.filter((set,i)=>i!==index))
+        localStorage.setItem(exercisename+'singleExercise',JSON.stringify(currentSeries.filter((set,i)=>i!==index)))
     }
     const editInput = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,index:number,field:ActionTypesEnum) => {
         const arrayCopy = [...currentSeries]
@@ -23,11 +29,17 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
             if(e.target.value.length > 3) return
             dispatchSeries({type:field,index, payload:Number(e.target.value)});
             arrayCopy[index].weight = Number(e.target.value)
+
+            let indexes:ProgressedIndexesType = getProgressedSeriesIndexes([...arrayCopy],goal)
+            setSeriesIndexesThatMetGoal(indexes)
         }
         if(field === 'EDITSERIESREPEAT'){
             if(e.target.value.length > 3) return
             dispatchSeries({type:field,index, payload:Number(e.target.value)});
             arrayCopy[index].repeat = Number(e.target.value)
+
+            let indexes:ProgressedIndexesType = getProgressedSeriesIndexes([...arrayCopy],goal)
+            setSeriesIndexesThatMetGoal(indexes)
         }
         if(field === "EDITSERIESDIFFICULTY"){
             dispatchSeries({type:field,index, payload:e.target.value as DifficultyLevelType}); 
@@ -37,7 +49,7 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
             dispatchSeries({type:field,index, payload:e.target.value});
             arrayCopy[index].time = Number(e.target.value)
         }
-        localStorage.setItem(exercisename,JSON.stringify(arrayCopy))
+        localStorage.setItem(exercisename+'singleExercise',JSON.stringify(arrayCopy))
     }
     const handleChangeSide = (index:number,side:Side) => {
         const arrayCopy = [...currentSeries]
@@ -56,7 +68,7 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
     <div className='flex flex-col gap-2 mt-3 text-white mb-2'>
 
         {currentSeries && currentSeries.map((series,index)=>(
-            <div className={`flex bg-steel rounded-md py-[2px] ${index===0?'mt-2':null}`} key={index}>
+            <div className={`flex rounded-md py-[2px] ${index===0?'mt-2':null} ${seriesIndexesThatMetGoal?.series.includes(series.id!)?'bg-green':'bg-steel'}`} key={index}>
                 <div className='text-white text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
                     {series.side === 'Left'? 'L' : series.side === 'Right'? 'P' : 'O'}
                 </div>

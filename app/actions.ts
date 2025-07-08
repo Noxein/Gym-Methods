@@ -3,7 +3,7 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Series, SholudAddWeightType, Span, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Progression, Series, SholudAddWeightType, Span, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -106,7 +106,7 @@ const ComparePasswords = async (password:string,hasedPassword:string) => {
     return isCorrect
 }
 
-export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:{handleName:string,handleId:string},isLastExercise=false,date?:Date,originalTrainingId?: string) => {
+export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:{handleName:string,handleId:string},isLastExercise=false,date?:Date,originalTrainingId?: string,goal?: Progression) => {
     if(typeof redirectUser !== 'boolean')                                          return { errors: "Something went wrong" }
     if(!exerciseid || typeof exerciseid !== 'string')                              return { errors: "Something went wrong" }
     if(!Array.isArray(sets))                                                       return { errors: "Something went wrong" }
@@ -173,7 +173,14 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
         HandleId = usesHandle.handleId
     }
 
+
     try{
+        if(goal){
+            const data = CheckIfTrainingExerciseGoalIsMet(sets,goal)
+            const returnedData = await sql`
+                UPDATE gymprogressions SET series = ${JSON.stringify(data.series)} WHERE exerciseid = ${data.exerciseid} AND userid = ${userid}
+            `
+        }
         const returning = await sql`
         INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid,handlename,parenttrainingplan) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid},${HandleId},${HandleName},${parentTrainingPlanId})
         `
@@ -186,7 +193,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     if(redirectUser) redirect('/home/add-exercise')
 }
 
-export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:LocalStorageExercise[],trainingStartDate:Date,trainingGoalsExercises?:TrainingProgression[]) => {
+export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:LocalStorageExercise[],trainingStartDate:Date,trainingGoalsExercises?:Progression[]) => {
     if(typeof trainingPlanId !== 'string'){
         return { error: 'Something went wrong'}
     }
@@ -207,23 +214,26 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
         return { error : 'Something went wrong'}
     }
 
-    if(trainingGoalsExercises){
-        // UPDATE THE SELECTED TRAINING
-        trainingGoalsExercises.map(goal=>{
-            const exercise = exercises.find(exe=>exe.id === goal.id)
-            if(!exercise) return goal
-            const data = CheckIfTrainingExerciseGoalIsMet(exercise.sets,goal)
-            return data
-        })
+    // if(trainingGoalsExercises){
+    //     // UPDATE THE SELECTED TRAINING
+    //     trainingGoalsExercises.map(goal=>{
+    //         const exercise = exercises.find(exe=>exe.id === goal.id)
+    //         if(!exercise) return goal
+    //         const data = CheckIfTrainingExerciseGoalIsMet(exercise.sets,goal)
+    //         return data
+    //     })
 
-        await sql`
-            UPDATE gymuserstrainingplans SET exercises = ${JSON.stringify(trainingGoalsExercises)} WHERE id = ${trainingPlanId} AND userid = ${userid}
-        `
-    }
+    //     const returnedData = await sql`
+    //         UPDATE gymuserstrainingplans SET exercises = ${JSON.stringify(trainingGoalsExercises)} WHERE id = ${trainingPlanId} AND userid = ${userid}
+    //     `
+    //     console.log(returnedData)
+    // }
     exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
         if(!exercise.exerciseId) return { error: `Exercise dont have an id`}
 
-        const data = await AddExerciseAction(false,exercise.exerciseName,exercise.sets,true,id,exercise.handle,false,exercise.date,trainingPlanId)
+        const progression = trainingGoalsExercises?.find(x=>x.exerciseid === exercise.exerciseId)
+
+        const data = await AddExerciseAction(false,exercise.exerciseName,exercise.sets,true,id,exercise.handle,false,exercise.date,trainingPlanId,progression)
         if(data?.errors) return { error : 'Something went wrong'}
     })
 
@@ -1486,5 +1496,79 @@ export const getBasicSummaryData = async () => {
         return {data: parsedData, error: ''}
     }catch{
         return {data: [], error: 'Something went wrong'}
+    }
+}
+
+export const AddOrUpdateProgression = async (data:Progression) => {
+    const userid = await userID()
+
+    try{
+        const exists = await sql`
+            SELECT id FROM gymprogressions WHERE userid = ${userid} AND exerciseid = ${data.exerciseid}
+        `
+        if(exists.rows.length === 0){
+            //create
+            await sql`
+                INSERT INTO gymprogressions (id,exerciseid,exercisename,series,userid) VALUES (${v4()},${data.exerciseid},${data.exercisename},${JSON.stringify(data.series)},${userid})
+            `
+            revalidatePath('/home/profile/set-progressions')
+            return { error: '' }
+        }else{
+            //update
+            await sql`
+                UPDATE gymprogressions
+                SET series = ${JSON.stringify(data.series)}
+                WHERE id = ${data.id} AND userid = ${userid};
+            `
+        }
+        return { error: '' }
+    }catch(e){
+        return { error: 'Something went wrong' }
+    }
+}
+
+export const getAllUserProgressions = async () => {
+    const userid = await userID()
+
+    try{
+        const data = await sql`
+            SELECT * FROM gymprogressions WHERE userid = ${userid}
+        `
+        return data.rows as Progression[]
+    }catch(e){
+        console.log(e)
+        return [] as Progression[]
+    }
+}
+
+export const DeleteUserProgression = async (progressionid: string) => {
+    const userid = await userID()
+
+    try{
+        await sql`
+            DELETE FROM gymprogressions WHERE id = ${progressionid} AND userid = ${userid}
+        `
+        revalidatePath('/home/profile/set-progressions')
+        return {
+            error: ''
+        }
+    }catch(e){
+        console.log(e)
+        return {
+            error: "Something went wrong"
+        }
+    }
+}
+
+export const getUserExerciseProgression = async (exerciseid: string) => {
+    const userid = await userID()
+
+    try{
+        const data = await sql`
+        SELECT * FROM gymprogressions WHERE userid = ${userid} AND exerciseid = ${exerciseid}
+        `
+        return data.rows[0] as Progression
+    }catch{
+        return undefined
     }
 }

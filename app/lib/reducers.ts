@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { ActionTypes, AddExerciceReducerType, DifficultyLevelType, Side } from "../types";
 
 export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTypes):AddExerciceReducerType => {
@@ -71,7 +72,8 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
                 repeat: state.repeat,
                 difficulty: state.difficultyLevel,
                 time: state.time,
-                side: state.side
+                side: state.side,
+                id: action.payload as string
             }]};
         case 'SETSERIESFROMMEMORY':
             if(action.payload && typeof action.payload !== 'number' && typeof action.payload !== 'string'){

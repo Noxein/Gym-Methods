@@ -26,7 +26,7 @@ export const EditTempo = ({selectedExercise,setShowEditTempoModal}:EditTempoType
         setLoading(true)
         const isError = await AddOrUpdateTempo(selectedExercise.id,tempos)
         if(isError && isError.error){
-            setLoading(true)
+            setLoading(false)
             return setError(e(isError.error))
         } 
         setShowEditTempoModal(false)

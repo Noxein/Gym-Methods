@@ -95,6 +95,7 @@
         "MyHandles":"Moje uchwyty",
         "Summary": "Podsumowanie",
         "AccountSettings": "Ustawienia konta",
+        "SetProgressions": "Ustaw Progresje",
         "ChangePassword":"Zmień hasło",
         "Logout": "Wyloguj"
     },
@@ -145,6 +146,13 @@
         "TempoDown": "Tempo dół",
         "DownHold": "Wstrzymanie dół",
         "AreYouSure": "Czy napewno chcesz usunąć tempo do ćwiczenia"
+    },
+    "Home/Profile/Set-Progression": {
+        "Increase": "Przyrost",
+        "Repetitions": "Powtórzenia",
+        "Weight": "Ciężar",
+        "AddSeries": "Dodaj serie",
+        "AreYouSure": "Czy napewno chcesz usunąć progresję dla ćwiczenia"
     },
     "Home/Profile/Settings": {
         "Settings": "Ustawienia",
@@ -345,6 +353,7 @@
         "Settings": "Ustawienia",
         "Tempo": "Tempo",
         "History": "Historia",
+        "Progressions": "Progresje",
         "My training": "Moje treningi",
         "Edit training": "Edytuj trening",
         "Handles": "Uchwyty",

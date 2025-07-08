@@ -1,6 +1,6 @@
 'use client'
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, TrainingExerciseType, UserExercise, LocalStorageTraining, UserTrainingPlan, LocalStorageExercise, TrainingProgression, SholudAddWeightType, SeriesWithExercise, ProgressedIndexesType } from '@/app/types'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseTypes, UserExercise, LocalStorageTraining, UserTrainingPlan, LocalStorageExercise, TrainingProgression, SeriesWithExercise, ProgressedIndexesType, Progression } from '@/app/types'
+import { useContext, useState } from 'react'
 import { SaveTrainingToDatabase } from '@/app/actions'
 import { DisplayTrainingSkeleton } from '../../Loading/home/start-training/trainingName/DisplayTrainingSkeleton'
 import { ChangeExerciseList } from './ChangeExerciseList'
@@ -13,7 +13,6 @@ import { getProgressedSeriesIndexes, HideShowHTMLScrollbar, initializeInputsStat
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { PlanProgressModal } from './PlanProgressModal'
 
 type DisplayTrainingTypes = {
     trainingPlanData: UserTrainingPlan,
@@ -26,14 +25,16 @@ type DisplayTrainingTypes = {
     ExercisesThatRequireHandle: ExercisesThatRequireTimeMesureOrHandle[],
     ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[],
     useremail?: string | null,
+    progressions: Progression[]
 }
 
 
-export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,useremail}:DisplayTrainingTypes) => {
+export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,useremail,progressions}:DisplayTrainingTypes) => {
     const modalsContext = useContext(ModalContexts)
 
     const setProgressedIndexes = (index:number,localStorageTrainingDataArg:LocalStorageTraining) => {
-        const goal = trainingPlanData.exercises.find(x=>x.exercisename === localStorageTrainingDataArg.exercises[index].exerciseName)
+        //const goal = trainingPlanData.exercises.find(x=>x.exercisename === localStorageTrainingDataArg.exercises[index].exerciseName)
+        const goal = progressions.find(x=>x.exercisename === localStorageTrainingDataArg.exercises[index].exerciseName)
         let indexes:ProgressedIndexesType = getProgressedSeriesIndexes(localStorageTrainingDataArg.exercises[index].sets,goal)
         
         modalsContext?.setSeriesIndexesThatMetGoal(indexes)
@@ -77,6 +78,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
     const[showConfirmEndTrainingModal,setShowConfirmEndTrainingModal] = useState(false)
     const[localStorageTrainingData,setLocalStorageTrainingData] = useState<LocalStorageTraining>(()=>initializeLocalStorageData(trainingPlanData.trainingname,trainingPlanData.exercises,trainingPlanData.id))
 
+    const goal = progressions.find(x=>x.exerciseid === localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseId)
     const currentExerciseName = localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseName
     const currentExerciseId = localStorageTrainingData.exercises[localStorageTrainingData.currentExerciseIndex].exerciseId
     const totalExercises = localStorageTrainingData.exercises.length
@@ -124,7 +126,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
 
     const handleCloseTraining = async () => {
         setLoading(true)
-        const data = await SaveTrainingToDatabase(trainingPlanData.id,localStorageTrainingData.exercises,localStorageTrainingData.trainingStartDate,trainingPlanData.exercises)
+        const data = await SaveTrainingToDatabase(trainingPlanData.id,localStorageTrainingData.exercises,localStorageTrainingData.trainingStartDate,progressions)
         if(data && data.error){
             setLoading(false)
             return setError(data.error)
@@ -151,7 +153,6 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 <h1 className='text-2xl'>{trainingPlanData.trainingname}</h1>
             </div>
             <div className='text-gray-400 flex gap-2 items-center'>
-                {/* <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowProgressionList} disabled={loading}>Progresja</Button> */}
                 <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList} disabled={loading}>{u("Change")}</Button>
                 <span className='text-nowrap'>{localStorageTrainingData.currentExerciseIndex + 1} {u("Of")} {totalExercises}</span>
             </div>
@@ -174,6 +175,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 inputs={inputs}
                 setInputs={setInputs}
                 trainingPlan={trainingPlanData}
+                goal={goal}
             />
         }
         {error && <div className='text-red'>{error}</div>}
@@ -212,16 +214,6 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 showModal={setShowConfirmEndTrainingModal}
                 handleEnd={handleCloseTraining}
             />}
-
-        {/* {modalsContext?.showPlanProgressionModal &&
-            <PlanProgressModal 
-                currentExercise={currentExerciseName}
-                trainingPlan={trainingPlanData}
-                localStorageTrainingData={localStorageTrainingData}
-                setLocalStorageTrainingData={setLocalStorageTrainingData}
-                inputs={inputs}
-                setInputs={setInputs}
-            />} */}
 
     </div>)
 }

@@ -1,8 +1,10 @@
 'use client'
 import { useEffect, useReducer } from 'react'
 import { AddExercise } from './AddExercise'
-import { ActionTypes, AddExerciceReducerType } from '@/app/types'
+import { ActionTypes, AddExerciceReducerType, Progression } from '@/app/types'
 import { AddExerciceReducer } from '@/app/lib/reducers'
+import { TimerContextProvider } from '@/app/context/TimerContext'
+import { SingleExerciseProgressionProvider } from '@/app/context/SingleExerciseProgressionContext'
 
 const init = {
     weight: 0,
@@ -21,9 +23,10 @@ type AddExerciseStateProviderTypes = {
     allHandles: {
       id: string;
       handlename: string;
-    }[]
+    }[],
+    exerciseProgression?: Progression,
 }
-export const AddExerciseStateProvider = ({name,showTimeMesure,exerciseid,requiresHandle,allHandles}:AddExerciseStateProviderTypes) => {
+export const AddExerciseStateProvider = ({name,showTimeMesure,exerciseid,requiresHandle,allHandles,exerciseProgression}:AddExerciseStateProviderTypes) => {
     const[state,dispatch] = useReducer<(state: AddExerciceReducerType, action: ActionTypes) => AddExerciceReducerType>(AddExerciceReducer,init)
     
     useEffect(()=>{
@@ -42,6 +45,10 @@ export const AddExerciseStateProvider = ({name,showTimeMesure,exerciseid,require
     },[])
 
   return (
-    <AddExercise name={name} exerciseid={exerciseid} showTimeMesure={showTimeMesure} dispatch={dispatch} state={state} requiresHandle={requiresHandle} allHandles={allHandles}/>
+    <TimerContextProvider>
+      <SingleExerciseProgressionProvider>
+        <AddExercise name={name} exerciseid={exerciseid} showTimeMesure={showTimeMesure} dispatch={dispatch} state={state} requiresHandle={requiresHandle} allHandles={allHandles} exerciseProgression={exerciseProgression}/>
+      </SingleExerciseProgressionProvider>
+    </TimerContextProvider>
   )
 }

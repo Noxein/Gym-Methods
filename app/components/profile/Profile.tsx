@@ -2,7 +2,7 @@
 import { useTranslations } from 'next-intl'
 import { LinkBtn, UserEmail } from './LinkBtn'
 import { SignOutBtn } from './SignOutBtn'
-import { BookIcon, CalendarIcon, ExerciseIcon, HandleIcon, LockIcon, LogoutIcon, SettingsIcon, SummaryIcon, TimerIcon } from '@/app/ui/icons/ExpandIcon'
+import { BookIcon, CalendarIcon, ExerciseIcon, HandleIcon, LockIcon, LogoutIcon, PieChartIcon, SettingsIcon, SummaryIcon, TimerIcon } from '@/app/ui/icons/ExpandIcon'
 
 type ProfileTypes = {
   email: string
@@ -34,6 +34,9 @@ export const Profile = ({email}:ProfileTypes) => {
             <HandleIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/summary' text={t("Summary")}>
+            <PieChartIcon width={width} height={height} fill='#fff'/>
+          </LinkBtn>
+          <LinkBtn href='/home/profile/set-progressions' text={t("SetProgressions")}>
             <SummaryIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/settings' text={t("AccountSettings")}>

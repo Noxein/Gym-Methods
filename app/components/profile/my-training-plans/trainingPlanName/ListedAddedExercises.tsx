@@ -12,9 +12,8 @@ import { DetailedHTMLProps, InputHTMLAttributes } from 'react'
 type ListedAddedExercisesTypes = {
     planExercises: TrainingProgression[],
     setPlanExercises: React.Dispatch<React.SetStateAction<TrainingProgression[]>>,
-    showEdit: boolean,
 }
-export const ListedAddedExercises = ({planExercises,setPlanExercises,showEdit}:ListedAddedExercisesTypes) => {
+export const ListedAddedExercises = ({planExercises,setPlanExercises}:ListedAddedExercisesTypes) => {
     const getExerciesPos = (id:string) => { return planExercises.findIndex(x=>x.id===id)}
     const handleDragEnd = (event: { active: any; over: any }) => {
         const { active, over } = event
@@ -33,21 +32,6 @@ export const ListedAddedExercises = ({planExercises,setPlanExercises,showEdit}:L
         useSensor(KeyboardSensor,{
             coordinateGetter: sortableKeyboardCoordinates
         })
-    )
-    if(showEdit) return (
-        <div className='flex flex-col gap-2 mb-40 mt-2'>
-            <div className='flex gap-2 mx-5 text-white text-sm'>
-                <span className='flex-1'>Cel (KG)</span>
-                <span className='flex-1'>Powtórzenia</span>
-                <span className='flex-1'>Przyrost</span>
-                
-            </div>
-            {planExercises.map((exercise,index)=>{
-                return (
-                    <SingleExerciseEditable key={exercise.id} name={exercise.exercisename} exercise={exercise} setPlanExercises={setPlanExercises} index={index} planExercises={planExercises}/>
-                )
-            })}
-        </div>
     )
 
   return (
@@ -108,57 +92,57 @@ type SingleExerciseEditableTypes = {
     index: number,
     planExercises: TrainingProgression[]
 }
-const SingleExerciseEditable = ({name,exercise,setPlanExercises,index,planExercises}:SingleExerciseEditableTypes) => {
-    const d = useTranslations("DefaultExercises")
-    const translatedName = d(nameTrimmer(name)).includes("DefaultExercises") ? name : d(nameTrimmer(name))
+// const SingleExerciseEditable = ({name,exercise,setPlanExercises,index,planExercises}:SingleExerciseEditableTypes) => {
+//     const d = useTranslations("DefaultExercises")
+//     const translatedName = d(nameTrimmer(name)).includes("DefaultExercises") ? name : d(nameTrimmer(name))
 
-    const handleChange = (value:string,key:'series'|'repetitions'|'increase'|'weightGoal',nestedIndex:number) => {
-        setPlanExercises(callback=>{
-            let copy = [...callback]
-            if(!copy[index].series) return callback
+//     const handleChange = (value:string,key:'series'|'repetitions'|'increase'|'weightGoal',nestedIndex:number) => {
+//         setPlanExercises(callback=>{
+//             let copy = [...callback]
+//             if(!copy[index].series) return callback
 
-            if(key === 'increase')    copy[index].series[nestedIndex].increase = Number(value)
-            if(key === 'repetitions') copy[index].series[nestedIndex].repetitions = Number(value)
-            if(key === 'weightGoal')  copy[index].series[nestedIndex].weightGoal  = Number(value)
+//             if(key === 'increase')    copy[index].series[nestedIndex].increase = Number(value)
+//             if(key === 'repetitions') copy[index].series[nestedIndex].repetitions = Number(value)
+//             if(key === 'weightGoal')  copy[index].series[nestedIndex].weightGoal  = Number(value)
 
-            return copy
-        })
-    }
-    const handleAddSeries = () => {
-        arr.push(arr[arr.length-1] + 1)
-        let copy = [...planExercises]
-        if(!copy[index].series){
-            copy[index].series = [{increase:0,repetitions:0,weightGoal:0}]
-        }else{
-            copy[index].series = [...copy[index].series!,{increase:0,repetitions:0,weightGoal:0}]
-        }
-        setPlanExercises(copy)
-    }
+//             return copy
+//         })
+//     }
+//     const handleAddSeries = () => {
+//         arr.push(arr[arr.length-1] + 1)
+//         let copy = [...planExercises]
+//         if(!copy[index].series){
+//             copy[index].series = [{increase:0,repetitions:0,weightGoal:0}]
+//         }else{
+//             copy[index].series = [...copy[index].series!,{increase:0,repetitions:0,weightGoal:0}]
+//         }
+//         setPlanExercises(copy)
+//     }
 
-    const dataToMap = exercise.series ? exercise.series : []
+//     const dataToMap = exercise.series ? exercise.series : []
 
-    return(
-        <div className={`flex flex-col rounded-lg border-2 border-borderInteractive text-white`} >
-               <div className={`flex-1 bg-dark px-4 py-4 rounded-lg flex justify-between`}>
-                    <span>{translatedName} </span>
-               </div>
+//     return(
+//         <div className={`flex flex-col rounded-lg border-2 border-borderInteractive text-white`} >
+//                <div className={`flex-1 bg-dark px-4 py-4 rounded-lg flex justify-between`}>
+//                     <span>{translatedName} </span>
+//                </div>
 
-               <div className='flex gap-2 px-2 pb-2 rounded flex-col'>
-                    {dataToMap.map((singleSeries,nestedIndex)=>{
-                        return(
-                        <div key={`${arr[index]} ${nestedIndex}`} className='flex gap-2'>
-                            <Input type="number" value={singleSeries.weightGoal ? singleSeries.weightGoal : 0} onChange={e=>handleChange(e.target.value,'weightGoal',nestedIndex)}/>
-                            <Input type="number" value={singleSeries.repetitions ? singleSeries.repetitions : 0} onChange={e=>handleChange(e.target.value,'repetitions',nestedIndex)}/>
-                            <Input type="number" value={singleSeries.increase ? singleSeries.increase : 0} onChange={e=>handleChange(e.target.value,'increase',nestedIndex)}/>
-                        </div>
-                    )})}
-                    <Button isPrimary={false} onClick={handleAddSeries}>
-                        Dodaj serię
-                    </Button>
-               </div>
-        </div>
-    )
-}
+//                <div className='flex gap-2 px-2 pb-2 rounded flex-col'>
+//                     {dataToMap.map((singleSeries,nestedIndex)=>{
+//                         return(
+//                         <div key={`${arr[index]} ${nestedIndex}`} className='flex gap-2'>
+//                             <Input type="number" value={singleSeries.weightGoal ? singleSeries.weightGoal : 0} onChange={e=>handleChange(e.target.value,'weightGoal',nestedIndex)}/>
+//                             <Input type="number" value={singleSeries.repetitions ? singleSeries.repetitions : 0} onChange={e=>handleChange(e.target.value,'repetitions',nestedIndex)}/>
+//                             <Input type="number" value={singleSeries.increase ? singleSeries.increase : 0} onChange={e=>handleChange(e.target.value,'increase',nestedIndex)}/>
+//                         </div>
+//                     )})}
+//                     <Button isPrimary={false} onClick={handleAddSeries}>
+//                         Dodaj serię
+//                     </Button>
+//                </div>
+//         </div>
+//     )
+// }
 
 interface Input extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     

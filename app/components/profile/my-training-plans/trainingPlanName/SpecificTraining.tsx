@@ -1,9 +1,9 @@
 'use client'
-import { HideShowHTMLScrollbar, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
-import { ExerciseTypes, TrainingExerciseType, TrainingProgression, UserExercise, UserTrainingPlan, WeekDay } from '@/app/types'
+import { HideShowHTMLScrollbar, WeekDayArray } from '@/app/lib/utils'
+import { ExerciseTypes, TrainingProgression, UserExercise, UserTrainingPlan, WeekDay } from '@/app/types'
 import { useState } from 'react'
 import { MapExercises } from './MapExercises'
-import { PencilIcon, PlusIcon } from '@/app/ui/icons/ExpandIcon'
+import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { ListedAddedExercises } from './ListedAddedExercises'
 import { EditUserTraining } from '@/app/actions'
 import { useRouter } from 'next/navigation'
@@ -26,7 +26,6 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
   const[planWeekDay,setPlanWeekDay] = useState<WeekDay>(training.weekday)
   const[planExercises,setPlanExercises] = useState<TrainingProgression[]>(training.exercises)
   const[showAddExercise,setShowAddExercise] = useState(false)
-  const[showEditProgression,setShowEditProgression] = useState(false)
   const[error,setError] = useState('')
   const[loading,setLoading] = useState(false)
   
@@ -70,16 +69,8 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
         className='bg-green w-full'
         disabled={loading}
         />
-        <ButtonWithIcon 
-        isPrimary={!showEditProgression} 
-        buttonText='Edytuj cel'
-        onClick={()=>setShowEditProgression(cb=>!cb)}
-        childrenIcon={
-          <PencilIcon width='20' fill='#D9D9D9'/>
-        }
-        className='w-full mt-2'
-        />
-        {planExercises && <ListedAddedExercises planExercises={planExercises} setPlanExercises={setPlanExercises} showEdit={showEditProgression}/>}
+
+        {planExercises && <ListedAddedExercises planExercises={planExercises} setPlanExercises={setPlanExercises}/>}
 
         <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
 

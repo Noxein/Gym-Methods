@@ -1,8 +1,9 @@
 import { ExerciseNotFound } from '@/app/components/add-exercise/ExerciseNotFound'
-import { ArrayOfAllExercises, getAllHandleTypes, getUserExerciseIdUsingName, userExercisesThatRequireHandlesOrTimeMesure } from '@/app/actions'
+import { ArrayOfAllExercises, getAllHandleTypes, getUserExerciseIdUsingName, getUserExerciseProgression, userExercisesThatRequireHandlesOrTimeMesure } from '@/app/actions'
 import { AddExerciseStateProvider } from '@/app/components/add-exercise/AddExerciseStateProvider'
 import { exercisesArr } from '@/app/lib/exercise-list'
 import { getLocale, getTranslations } from 'next-intl/server'
+import { getUser } from '@/app/lib/getUserDb'
 
 export async function generateMetadata() {
   const locale = getLocale()
@@ -26,11 +27,12 @@ export default async function page({params}:{params:{exercisename:string}}){
   }
   const showTimeMesure = ExercisesThatRequireTimeMesure.some(exercise => exercise.exercisename === exerciseName)
   const requiresHandle = ExercisesThatRequireHandle.some(exercise => exercise.exercisename === exerciseName)
+  const exerciseProgression = await getUserExerciseProgression(exerciseid)
 
   if(!isExerciseInTheList) return <ExerciseNotFound />
   return (
     <div>
-      <AddExerciseStateProvider name={exerciseName} exerciseid={exerciseid} showTimeMesure={showTimeMesure} requiresHandle={requiresHandle} allHandles={allHandles}/>
+      <AddExerciseStateProvider name={exerciseName} exerciseid={exerciseid} showTimeMesure={showTimeMesure} requiresHandle={requiresHandle} allHandles={allHandles} exerciseProgression={exerciseProgression}/>
     </div>
   )
 }

@@ -95,6 +95,7 @@
         "MyHandles":"My handles",
         "Summary": "Summary",
         "AccountSettings": "Account settings",
+        "SetProgressions": "Set Progressions",
         "ChangePassword":"Change password",
         "Logout": "Sign out"
     },
@@ -145,6 +146,13 @@
         "TempoDown": "Tempo down",
         "DownHold": "Down hold",
         "AreYouSure": "Are you sure you want to delete tempo to this exercise"
+    },
+    "Home/Profile/Set-Progression": {
+        "Increase": "Increase",
+        "Repetitions": "Repetitions",
+        "Weight": "Weight",
+        "AddSeries":"Add series",
+        "AreYouSure": "Are you sure you want to delete progression for this exercise"
     },
     "Home/Profile/Settings": {
         "Settings": "Settings",
@@ -345,6 +353,7 @@
         "Settings": "Settings",
         "Tempo": "Tempo",
         "History": "History",
+        "Progressions": "Progressions",
         "My training": "My trainings",
         "Edit training": "Edit training",
         "Handles": "Handles",
