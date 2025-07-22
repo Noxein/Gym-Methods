@@ -212,3 +212,58 @@ export const CheckIfTrainingExerciseGoalIsMet = (series:Series[],goal:TrainingPr
   }
   return goalCopy
 }
+
+export const compareBetterSeries = (series1:Series[],series2:Series[]) => {
+  const weightPoints = 0.7
+  const numberOfRepetitionsPoint = 0.2
+  const numberOfSeriesPoints = 0.1
+
+  let series1Points = 0
+  let series2Points = 0
+
+  series1Points = getTotalRepetitons(series1,'repeat') * numberOfRepetitionsPoint + getTotalRepetitons(series1,'weight') * weightPoints + series1.length * numberOfSeriesPoints
+  series2Points = getTotalRepetitons(series2,'repeat') * numberOfRepetitionsPoint + getTotalRepetitons(series2,'weight') * weightPoints + series2.length * numberOfSeriesPoints
+
+  if(series1Points === series2Points) return {value: 'equal', score: series1Points}
+  if(series1Points > series2Points) return {value: 'series1', score: series1Points - series2Points}
+  return { value: 'series2', score: series1Points - series2Points}
+}
+
+const getTotalRepetitons = (series:Series[],name:'repeat'|'weight') => {
+  let num = 0
+  series.forEach(s=>num = num + s[name])
+  return num
+}
+
+function site(){
+  const datas = document.querySelectorAll('.ng-tns-c3249762721-2')
+
+  let arr = []
+  for(let i = 0; i< datas.length; i++){
+    if(i <= 1) continue
+    const hasClass = datas[i].querySelector('.sticker-percentage')
+    const hasLowStickerValue = datas[i].querySelector('.sticker-container')
+    if(!hasClass && !hasLowStickerValue) continue
+
+    if(hasLowStickerValue){
+      arr.push({element:datas[i],value:0})
+      continue
+    }
+    if(hasClass?.innerHTML.includes('&gt;')){
+      arr.push({element:datas[i],value:hasClass.innerHTML.slice(5,-5)})
+    }
+    arr.push({element:datas[i],value:hasClass?.innerHTML.slice(0,-5)})
+  }
+  datas.forEach((item,index)=>{
+    if(index === 0||index === 1) return
+    item.remove()
+  })
+  const elem = document.querySelector('.content-wrapper')
+  const newArr = arr.sort((a,b)=>{
+      console.log(a.value,b.value)
+    if(Number(a.value) > Number(b.value)) return 1
+    return -1
+  })
+  newArr.forEach(item=>elem?.appendChild(item.element))
+
+}

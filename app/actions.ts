@@ -3,12 +3,12 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, Progression, Series, SholudAddWeightType, Span, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SholudAddWeightType, Span, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
-import { Advancmentlevel, checkIfShouldIncreaseDifficulty, CheckIfTrainingExerciseGoalIsMet, Daysexercising, Goal, WeekDayArray, WeekDayArrayPL } from "./lib/utils";
+import { Advancmentlevel, checkIfShouldIncreaseDifficulty, CheckIfTrainingExerciseGoalIsMet, compareBetterSeries, Daysexercising, Goal, WeekDayArray, WeekDayArrayPL } from "./lib/utils";
 import { z } from "zod";
 import { addDays, format, isSameDay, isSameWeek, subDays } from "date-fns";
 import { AuthError } from "next-auth"; 
@@ -1568,6 +1568,90 @@ export const getUserExerciseProgression = async (exerciseid: string) => {
         SELECT * FROM gymprogressions WHERE userid = ${userid} AND exerciseid = ${exerciseid}
         `
         return data.rows[0] as Progression
+    }catch{
+        return undefined
+    }
+}
+
+export const GetProgressionsAndDeclines = async () => {
+    const userid = await userID()
+
+    const date = format(subDays(new Date(),30),'yyyy-MM-dd kk:mm:ss')
+    try{
+        const fetcher = await sql`
+            SELECT id, exerciseid, exercisename, date, sets FROM gymexercises WHERE userid = ${userid} AND date >= ${date} ORDER BY date DESC
+        `
+        const allExercises = fetcher.rows as ProgessionsDeclinesType[]
+
+        let obj = {} as {[key:string]: ProgessionsDeclinesType[]}
+        let ptrObj = {} as {[key:string]: ProgessionsDeclinesType[]} // here [0] will be odlest exercise and [1] will be newest
+ 
+        for(let i = 0; i < allExercises.length; i++){
+            //////////////////////////////////////////
+            /////HERE WE DO MY IDEA OBJECT////////////
+            //////////////////////////////////////////
+            if(obj[allExercises[i].exerciseid] && obj[allExercises[i].exerciseid].length < 2){
+                obj[allExercises[i].exerciseid].push(allExercises[i])
+            }
+            if(!obj[allExercises[i].exerciseid]){
+                obj[allExercises[i].exerciseid] = [allExercises[i]]
+            }
+            //////////////////////////////////////////
+            //////HERE IS PIOTR IDEA OBJ//////////////
+            //////////////////////////////////////////
+            if(!ptrObj[allExercises[i].exerciseid]){
+                ptrObj[allExercises[i].exerciseid] = [allExercises[i]]
+            }
+            if(ptrObj[allExercises[i].exerciseid] && obj[allExercises[i].exerciseid].length === 1){
+                if(ptrObj[allExercises[i].exerciseid][0].date.getDate() < allExercises[i].date.getDate()){
+                    ptrObj[allExercises[i].exerciseid].push(allExercises[i])
+                }else{
+                    ptrObj[allExercises[i].exerciseid][1] = ptrObj[allExercises[i].exerciseid][0]
+                    ptrObj[allExercises[i].exerciseid][0] = allExercises[i]
+                }
+            }
+            if(ptrObj[allExercises[i].exerciseid] && obj[allExercises[i].exerciseid].length === 2){
+                if(ptrObj[allExercises[i].exerciseid][0].date.getDate() > allExercises[i].date.getDate()){
+                    ptrObj[allExercises[i].exerciseid][0] = allExercises[i]
+                }
+                if(ptrObj[allExercises[i].exerciseid][1].date.getDate() < allExercises[i].date.getDate()){
+                    ptrObj[allExercises[i].exerciseid][1] = allExercises[i]
+                }
+            }
+            ///////////////////////////////////////////
+            ///////////////////////////////////////////
+        }
+        for (const property in obj) {
+            if(obj[property].length < 2) delete obj[property]
+        }
+        for (const property in ptrObj) {
+            if(ptrObj[property].length < 2) delete ptrObj[property]
+        }
+
+        let worstExercise = {} as {exercise: ProgessionsDeclinesType[], score: number}
+        let bestExercise = {} as {exercise: ProgessionsDeclinesType[], score: number}
+
+        for (const property in ptrObj) {
+            const compare = compareBetterSeries(ptrObj[property][1].sets,ptrObj[property][0].sets)
+            if(compare.value === 'equal') continue
+
+            if(!bestExercise.score && compare.score > 0){
+                console.log('he is applaying')
+                bestExercise = { exercise: ptrObj[property], score: compare.score}
+            } 
+            if(!worstExercise.score && compare.score < 0){
+                worstExercise = { exercise: ptrObj[property], score: compare.score}
+            } 
+
+            if(compare.score > 0 && compare.score > bestExercise.score) {
+                bestExercise = { exercise: ptrObj[property], score: compare.score}
+            }
+            if(compare.score < 0 && compare.score < worstExercise.score) {
+                worstExercise = { exercise: ptrObj[property], score: compare.score}
+            }
+        }
+
+        return {obj, bestExercise, worstExercise}
     }catch{
         return undefined
     }

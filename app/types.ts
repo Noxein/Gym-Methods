@@ -294,3 +294,11 @@ export type Progression = {
         repetitions:number
     }[]
 }
+
+export type ProgessionsDeclinesType = {
+    id: string, 
+    exerciseid: string,
+    exercisename: string, 
+    date: Date, 
+    sets: Series[]
+}

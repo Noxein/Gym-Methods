@@ -10,7 +10,9 @@ const config: Config = {
     extend: {
       colors:{
         green: '#3C9F65', //3C9F65 
+        'green-200': '#12301f',
         red: '#9F443C',
+        'red-200': '#301512',
         marmur: '#D9D9D9',
         dark: '#0D1317',
         darkLight: '#10191E',
