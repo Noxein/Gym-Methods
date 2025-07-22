@@ -56,7 +56,7 @@ const SelectedExerciseDisplay = ({exercise,setShowModal}:SelectedExerciseDisplay
               <CrossIcon fill='#9F443C' />
             </button>
           </div>
-          {exercise.map(x=>(<SingleExercise day={x.date} exercise={x}/>))}
+          {exercise.map((x,i)=>(<SingleExercise day={x.date} exercise={x} key={i}/>))}
         </div>
   )
 }
