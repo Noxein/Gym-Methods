@@ -21,7 +21,7 @@ export const TimerContextProvider = ({children}:{children: React.ReactNode}) => 
             1000)
         
         return () => clearTimeout(name)
-    },[timePassed])
+    },[timePassed,firstDate])
 
     return (
     <TimerContext.Provider value={{
