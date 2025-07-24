@@ -1,26 +1,33 @@
 'use client'
+import { differenceInSeconds } from "date-fns";
 import { createContext, useEffect, useState } from "react";
 
 export const TimerContext = createContext<TimerContextType|null>(null)
 
 type TimerContextType = {
-    currentSecond: number; 
-    setCurrentSecond: React.Dispatch<React.SetStateAction<number>>;
+    timePassed: number; 
+    setTimePassed: React.Dispatch<React.SetStateAction<number>>;
+    setFirstDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
 export const TimerContextProvider = ({children}:{children: React.ReactNode}) => {
-    const [currentSecond,setCurrentSecond] = useState<number>(0)
+    const[timePassed,setTimePassed] = useState<number>(0)
+    const[firstDate,setFirstDate] = useState<Date>(new Date())
 
     useEffect(()=>{
-        const name = setTimeout(()=>{setCurrentSecond(currentSecond+1)},1000)
+        const name = setTimeout(()=>{
+            const newsec = differenceInSeconds(new Date(),firstDate)
+            setTimePassed(newsec)},
+            1000)
         
         return () => clearTimeout(name)
-    },[currentSecond])
+    },[timePassed])
 
     return (
     <TimerContext.Provider value={{
-        currentSecond,
-        setCurrentSecond,
+        timePassed,
+        setTimePassed,
+        setFirstDate
         }}>
         {children}
     </TimerContext.Provider>

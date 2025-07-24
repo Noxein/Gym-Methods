@@ -45,7 +45,7 @@ export const ButtonToAddSeries = ({localStorageTrainingData,inputs,setProgressed
     
             setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex,localStorageTrainingDataCopy)
             setLocalStorageTrainingData(localStorageTrainingDataCopy)
-            timerContext?.setCurrentSecond(0)
+            timerContext?.setFirstDate(new Date())
             
         }
   return (

@@ -25,7 +25,7 @@ export const ButtonToAddSeriesExercise = ({name,dispatch,state,isLoading,loading
     const progressionContext = useContext(SingleExerciseProgressionContext)
     const {seriesIndexesThatMetGoal, setSeriesIndexesThatMetGoal} = progressionContext!
 
-    const { setCurrentSecond } = timeContext!
+    const { setFirstDate } = timeContext!
         const AddSeries = () => {
             
         const id = v4()
@@ -43,7 +43,7 @@ export const ButtonToAddSeriesExercise = ({name,dispatch,state,isLoading,loading
 
         let indexes:ProgressedIndexesType = getProgressedSeriesIndexes([...state.series,set],goal)
         setSeriesIndexesThatMetGoal(indexes)
-        setCurrentSecond(0)
+        setFirstDate(new Date())
     }
 
   return (

@@ -4,11 +4,11 @@ import React, { useContext, useEffect, useState } from 'react'
 export const Timer = () => {
 
     const timeContext = useContext(TimerContext)
-    const { currentSecond, setCurrentSecond } = timeContext!
+    const { timePassed, setTimePassed } = timeContext!
 
   return (
     <div className='text-sm text-white mt-6 text-right font-mono'>
-        {currentSecond / 60 >= 1 ? Math.floor(currentSecond / 60): '00'}:{currentSecond % 60 <=9?'0':null}{currentSecond % 60}    
+        {timePassed / 60 >= 1 ? Math.floor(timePassed / 60): '00'}:{timePassed % 60 <=9?'0':null}{timePassed % 60}    
     </div>
   )
 }
