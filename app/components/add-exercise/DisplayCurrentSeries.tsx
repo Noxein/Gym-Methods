@@ -46,7 +46,7 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
             arrayCopy[index].difficulty = e.target.value as DifficultyLevelType
         }
         if(field === 'EDITSERIESTIME'){
-            dispatchSeries({type:field,index, payload:e.target.value});
+            dispatchSeries({type:field,index, payload:Number(e.target.value)});
             arrayCopy[index].time = Number(e.target.value)
         }
         localStorage.setItem(exercisename+'singleExercise',JSON.stringify(arrayCopy))
