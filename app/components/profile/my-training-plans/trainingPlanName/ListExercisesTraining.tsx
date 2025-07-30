@@ -14,9 +14,10 @@ type ListExercisesTrainingTypes = {
     isTrainingInProgressPage?: boolean,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
+    localStorageTrainingData: LocalStorageTraining,
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
-export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=true,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:ListExercisesTrainingTypes) => {
+export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=true,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData}:ListExercisesTrainingTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `ml-${currentLevel*2}`
     
@@ -43,6 +44,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
                     isTrainingInProgressPage={isTrainingInProgressPage}
                     setShowExerciseList={setShowExerciseList}
                     setShowAddExercise={setShowAddExercise}
+                    localStorageTrainingData={localStorageTrainingData}
                     setLocalStorageTrainingData={setLocalStorageTrainingData}
                 />
             ))}
@@ -66,6 +68,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
                                 isTrainingInProgressPage={isTrainingInProgressPage}
                                 setShowExerciseList={setShowExerciseList}
                                 setShowAddExercise={setShowAddExercise}
+                                localStorageTrainingData={localStorageTrainingData}
                                 setLocalStorageTrainingData={setLocalStorageTrainingData}
                             />
                     ))}
@@ -98,6 +101,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
                         isTrainingInProgressPage={isTrainingInProgressPage}
                         setShowExerciseList={setShowExerciseList}
                         setShowAddExercise={setShowAddExercise}
+                        localStorageTrainingData={localStorageTrainingData}
                         setLocalStorageTrainingData={setLocalStorageTrainingData}
                     />
                 ))}

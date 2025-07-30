@@ -205,6 +205,7 @@ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesIn
                 exercisesObject={exercisesObject} 
                 isTrainingInProgressPage={true}
                 setShowExerciseList={modalsContext?.setShowExerciseList}
+                localStorageTrainingData={localStorageTrainingData}
                 setLocalStorageTrainingData={setLocalStorageTrainingData}
             />}
 

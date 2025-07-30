@@ -12,9 +12,10 @@ type SearchExercisesTypes = {
     isTrainingInProgressPage?: boolean,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
+    localStorageTrainingData: LocalStorageTraining,
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
-export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:SearchExercisesTypes) => {
+export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPlanExercises,localStorageTrainingData,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:SearchExercisesTypes) => {
     let filtered:(string | UserExercise)[] = []
 
       const context = useContext(LangContext)
@@ -47,6 +48,7 @@ export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPl
         isTrainingInProgressPage={isTrainingInProgressPage} 
         setShowExerciseList={setShowExerciseList}
         setShowAddExercise={setShowAddExercise}
+        localStorageTrainingData={localStorageTrainingData}
         setLocalStorageTrainingData={setLocalStorageTrainingData}
         />
   )
@@ -58,9 +60,10 @@ type FilteredExercisesTypes = {
     isTrainingInProgressPage?: boolean,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
+    localStorageTrainingData: LocalStorageTraining,
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
-export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:FilteredExercisesTypes) => {
+export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData}:FilteredExercisesTypes) => {
     const d = useTranslations("DefaultExercises")
     return (
         <div className='flex flex-col gap-2 mx-3'>
@@ -77,6 +80,7 @@ export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTra
                             isTrainingInProgressPage={isTrainingInProgressPage} 
                             setShowExerciseList={setShowExerciseList}
                             setShowAddExercise={setShowAddExercise}
+                            localStorageTrainingData={localStorageTrainingData}
                             setLocalStorageTrainingData={setLocalStorageTrainingData}
                             />
                     )
@@ -93,6 +97,7 @@ export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTra
                             isTrainingInProgressPage={isTrainingInProgressPage} 
                             setShowExerciseList={setShowExerciseList}
                             setShowAddExercise={setShowAddExercise}
+                            localStorageTrainingData={localStorageTrainingData}
                             setLocalStorageTrainingData={setLocalStorageTrainingData}
                             />
                     )

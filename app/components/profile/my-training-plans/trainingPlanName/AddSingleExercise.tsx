@@ -16,9 +16,10 @@ type AddExerciseType = {
     setCurrentExercise?: React.Dispatch<React.SetStateAction<number>>,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
+    localStorageTrainingData: LocalStorageTraining,
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
-export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:AddExerciseType) => {
+export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData}:AddExerciseType) => {
     const addExercise = () => {
         if(isTrainingInProgressPage){
             setCurrentExercise && setCurrentExercise(x=>x)
@@ -26,19 +27,22 @@ export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingIn
                 if(x) return [{exerciseid:id,exercisename:text,id:uuidv4()},...x]
                 return [{exerciseid:id,exercisename:text,id:uuidv4()}]
             })
-            setLocalStorageTrainingData && setLocalStorageTrainingData(x=>{
-                let xCopy = {...x}
-                xCopy.currentExerciseIndex = xCopy.exercises.length
+            let localStorageTrainingDataCopy = {...localStorageTrainingData}
+            
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            localStorageTrainingDataCopy.currentExerciseIndex = localStorageTrainingDataCopy.exercises.length
 
-                xCopy.exercises.push({
+                localStorageTrainingDataCopy.exercises.push({
                     exerciseId:id,
-                    id: String(xCopy.exercises.length),
+                    id: String(localStorageTrainingDataCopy.exercises.length),
                     exerciseName: text,
                     sets: [],
                 })
-                localStorageSetter(xCopy.trainingNameInLocalStrage,xCopy)
-                return xCopy
-            })
+                localStorageSetter(localStorageTrainingDataCopy.trainingNameInLocalStrage,localStorageTrainingDataCopy)
+
+            setLocalStorageTrainingData && setLocalStorageTrainingData(localStorageTrainingDataCopy)
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             setShowExerciseList && setShowExerciseList(false)
             setShowAddExercise && setShowAddExercise(false)
             return

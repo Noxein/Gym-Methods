@@ -13,10 +13,11 @@ type MapExercisesTypes = {
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
     isTrainingInProgressPage?: boolean,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
+    localStorageTrainingData: LocalStorageTraining,
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
 
-export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExercises,setShowAddExercise,isTrainingInProgressPage = false,setShowExerciseList,setLocalStorageTrainingData}:MapExercisesTypes) => {
+export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExercises,setShowAddExercise,isTrainingInProgressPage = false,setShowExerciseList,localStorageTrainingData,setLocalStorageTrainingData}:MapExercisesTypes) => {
     const[searchField,setSearchField] = useState('')
     
     const CloseExercises = () => {
@@ -42,10 +43,11 @@ export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExer
                 <SearchExercisesTraining 
                     allExercisesInOneArray={allExercisesInOneArray} 
                     searchTerm={searchField} 
-                    setPlanExercises={setPlanExercises} 
+                    setPlanExercises={setPlanExercises}
                     isTrainingInProgressPage={isTrainingInProgressPage} 
                     setShowExerciseList={setShowExerciseList}
                     setShowAddExercise={setShowAddExercise}
+                    localStorageTrainingData={localStorageTrainingData}
                     setLocalStorageTrainingData={setLocalStorageTrainingData}
                     />
                 :
@@ -55,6 +57,7 @@ export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExer
                     isTrainingInProgressPage={isTrainingInProgressPage} 
                     setShowExerciseList={setShowExerciseList}
                     setShowAddExercise={setShowAddExercise}
+                    localStorageTrainingData={localStorageTrainingData}
                     setLocalStorageTrainingData={setLocalStorageTrainingData}
                     />
                 }
