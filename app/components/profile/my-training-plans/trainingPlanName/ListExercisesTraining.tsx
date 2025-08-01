@@ -14,7 +14,7 @@ type ListExercisesTrainingTypes = {
     isTrainingInProgressPage?: boolean,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
-    localStorageTrainingData: LocalStorageTraining,
+    localStorageTrainingData?: LocalStorageTraining,
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
 export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=true,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData}:ListExercisesTrainingTypes) => {

@@ -12,7 +12,7 @@ type SearchExercisesTypes = {
     isTrainingInProgressPage?: boolean,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
-    localStorageTrainingData: LocalStorageTraining,
+    localStorageTrainingData?: LocalStorageTraining,
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
 export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPlanExercises,localStorageTrainingData,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:SearchExercisesTypes) => {
@@ -60,7 +60,7 @@ type FilteredExercisesTypes = {
     isTrainingInProgressPage?: boolean,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
-    localStorageTrainingData: LocalStorageTraining,
+    localStorageTrainingData?: LocalStorageTraining,
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
 export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData}:FilteredExercisesTypes) => {

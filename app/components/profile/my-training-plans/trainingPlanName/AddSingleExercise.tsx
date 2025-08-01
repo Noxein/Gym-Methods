@@ -16,12 +16,12 @@ type AddExerciseType = {
     setCurrentExercise?: React.Dispatch<React.SetStateAction<number>>,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
-    localStorageTrainingData: LocalStorageTraining,
+    localStorageTrainingData?: LocalStorageTraining,
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
 export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData}:AddExerciseType) => {
     const addExercise = () => {
-        if(isTrainingInProgressPage){
+        if(isTrainingInProgressPage && localStorageTrainingData){
             setCurrentExercise && setCurrentExercise(x=>x)
             setPlanExercises && setPlanExercises(x=>{
                 if(x) return [{exerciseid:id,exercisename:text,id:uuidv4()},...x]

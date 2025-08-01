@@ -13,7 +13,7 @@ type MapExercisesTypes = {
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
     isTrainingInProgressPage?: boolean,
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
-    localStorageTrainingData: LocalStorageTraining,
+    localStorageTrainingData?: LocalStorageTraining,
     setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
 }
 
