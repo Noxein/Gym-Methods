@@ -302,3 +302,65 @@ export type ProgessionsDeclinesType = {
     date: Date, 
     sets: Series[]
 }
+
+export type BigPlanData = {
+    id: string,
+    userid: string,
+    planname: string,
+    subplans:SubPlanData[],
+}
+
+type SubPlanData = {
+    id: string,
+    name: string,
+    exercises: ExerciseSubPlan[]
+}
+
+type ExerciseSubPlan = {
+    exerciseid: string,
+    exercisename: string,
+    sets:Sets[],
+    handle?: string,
+    date: Date,
+}
+
+type Sets = {
+    weightGoal: number,
+    repetitionsGoal: number,
+    timeGoal?: number,
+}
+
+///////////////////////////////////////////
+
+export type BigPlanStarter = {
+    id: string,
+    userid: string,
+    planname: string,
+    subplans:SubPlanStarter[]
+    startDate: Date,
+    endDate?: Date,
+}
+
+type SubPlanStarter = {
+    id: string,
+    name: string,
+    exercises: ExerciseSubPlanStarter[]
+    isCompleted: boolean,
+}
+
+type ExerciseSubPlanStarter = {
+    exercisename: string,
+    exerciseid: string,
+    sets: SetsStarter[],
+    handleUsed?: string,
+    date: Date,
+}
+
+type SetsStarter = {
+    weightGoal: number,
+    repetitionsGoal: number,
+    timeGoal?: number,
+    actualWeight:number,
+    actualRepetitions:number,
+    actualTime?:number,
+}
