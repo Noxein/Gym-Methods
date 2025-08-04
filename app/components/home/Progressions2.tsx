@@ -28,7 +28,7 @@ export const Progressions2 = ({setSwtich,bestExercise,worstExercise}:Progression
         </Icon>
         </div>
         <div className='flex gap-2 text-white'>
-            {worstExercise && worstExercise.exercise && worstExercise.exercise.length > 0 ? <div className={`${selectedExercise === 'both' ? 'w-1/2' : selectedExercise === 'worst'? 'w-3/4': 'w-1/4'} duration-200 p-2 rounded-lg bg-red text-center flex flex-col content-between justify-between gap-2`} onClick={()=>{setShowIncrease(false);setShowDecrease(true);setSelectedExercise('worst')}}>
+            {worstExercise && <div className={`${selectedExercise === 'both' ? 'w-1/2' : selectedExercise === 'worst'? 'w-3/4': 'w-1/4'} duration-200 p-2 rounded-lg bg-red text-center flex flex-col content-between justify-between gap-2`} onClick={()=>{setShowIncrease(false);setShowDecrease(true);setSelectedExercise('worst')}}>
                 <div>{worstExercise?.exercise[0].exercisename}</div>
 
                 {showDecrease && <div className='flex justify-between text-sm'>
@@ -47,8 +47,8 @@ export const Progressions2 = ({setSwtich,bestExercise,worstExercise}:Progression
                     </div>
                 </div>}
 
-            </div> : <div className='rounded-lg bg-red text-center flex-1 justify-center items-center flex'>Za mało danych</div>}
-            {bestExercise && bestExercise.exercise &&  bestExercise.exercise.length > 0 ? <div className={` ${selectedExercise === 'both' ? 'w-1/2' : selectedExercise === 'best'? 'w-3/4': 'w-1/4'} duration-200 p-2 rounded-lg bg-green text-center flex flex-col justify-between gap-2`} onClick={()=>{setShowDecrease(false);setShowIncrease(true);setSelectedExercise('best')}}>
+            </div>}
+            {bestExercise && <div className={` ${selectedExercise === 'both' ? 'w-1/2' : selectedExercise === 'best'? 'w-3/4': 'w-1/4'} duration-200 p-2 rounded-lg bg-green text-center flex flex-col justify-between gap-2`} onClick={()=>{setShowDecrease(false);setShowIncrease(true);setSelectedExercise('best')}}>
                 <p>{bestExercise?.exercise[0].exercisename}</p>
 
                 {showIncrease && <div className='flex justify-between text-sm'>
@@ -66,7 +66,7 @@ export const Progressions2 = ({setSwtich,bestExercise,worstExercise}:Progression
                         </p>))}
                     </div>
                 </div>}
-            </div> : <div className='rounded-lg bg-green text-center flex-1 justify-center items-center flex'>Za mało danych</div>}
+            </div>}
         </div>
     </div>
   )
