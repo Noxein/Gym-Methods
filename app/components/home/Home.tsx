@@ -6,12 +6,16 @@ import { IncomingTrainingsSkeleton } from '../Loading/home/IncomingTrainingsSkel
 import { LatestTrainingsSkeleton } from '../Loading/home/LatestTrainingsSkeleton'
 import { WidgetDataProvider } from './WidgetDataProvider'
 import { HomeWidgetSeleton } from '../Loading/home/HomeWidgetSeleton'
+import { LastTrainings } from './start-training/LastTrainings'
+import { getStartedTrainingsList } from '@/app/actions'
+import { LatestTrainingsHeader } from './LatestTrainingsHeader'
 
 type HomeTypes = {
   useremail?: string | null
 }
 
-export const Home = ({useremail}:HomeTypes) => {
+export const Home = async ({useremail}:HomeTypes) => {
+  const trainingList = await getStartedTrainingsList()
   return (
     <div className='mb-20'>
       <Suspense fallback={<HomeWidgetSeleton />}>
@@ -19,14 +23,18 @@ export const Home = ({useremail}:HomeTypes) => {
       </Suspense>
       
       <Suspense fallback={<IncomingTrainingsSkeleton />}>
-        <IncomingTrainings />
+        <IncomingTrainings trainingList={trainingList}/>
       </Suspense>
         
       <Suspense fallback={<LatestTrainingsSkeleton />}>
-        <LatestTrainings />
+      <div className='mt-20 text-white'>
+        <LatestTrainingsHeader />
+        <LastTrainings trainingList={trainingList}/>
+
+      </div>
       </Suspense>
         
-      <AddExerciseButton />
+      {/* <AddExerciseButton /> */}
 
       {/* <OpenTrainingRemainder useremail={useremail}/> */}
     </div>

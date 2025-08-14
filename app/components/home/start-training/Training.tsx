@@ -1,24 +1,25 @@
 import { DisplayTraining } from './DisplayTraining'
 import { AllExercisesInOneArray, getAllExercises, getAllHandleTypes, userEmail, userExercisesThatRequireHandlesOrTimeMesure, userID } from '@/app/actions'
-import { Progression, SholudAddWeightType, UserTrainingPlan } from '@/app/types'
+import { BigTrainingStarter, Progression, SholudAddWeightType, UserTrainingPlan } from '@/app/types'
 import { ModalContextsProvider } from './ModalContexts'
 import { TimerContextProvider } from '@/app/context/TimerContext'
+import { LongPlanContextProvider } from '@/app/context/LongPlanContext'
+import DisplayLongTermTraining from './DisplayLongTermTraining'
 
 type TrainingTypes = {
-    trainingPlanData?: UserTrainingPlan,
+    trainingPlanData: BigTrainingStarter,
     progressions: Progression[]
 }
 export const Training = async ({trainingPlanData,progressions}:TrainingTypes) => {
     const {ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure} = await userExercisesThatRequireHandlesOrTimeMesure()
-    const exercisesObject = await getAllExercises()
+    // const exercisesObject = await getAllExercises()
     const allExercisesInOneArray = await AllExercisesInOneArray()
     const allHandles = await getAllHandleTypes()
-    const useremail = await userEmail()
     return(
         <main>
-            <ModalContextsProvider>
+            <LongPlanContextProvider trainingPlanData={trainingPlanData}>
                 <TimerContextProvider>
-                    <DisplayTraining 
+                    {/* <DisplayTraining 
                         trainingPlanData={trainingPlanData!}
                         exercisesObject={exercisesObject}
                         allExercisesInOneArray={allExercisesInOneArray}
@@ -27,9 +28,12 @@ export const Training = async ({trainingPlanData,progressions}:TrainingTypes) =>
                         ExercisesThatRequireTimeMesure={ExercisesThatRequireTimeMesure}
                         useremail={useremail}
                         progressions={progressions}
+                        /> */}
+                        <DisplayLongTermTraining 
+                            allHandles={allHandles}
                         />
                     </TimerContextProvider>
-            </ModalContextsProvider>
+            </LongPlanContextProvider>
         </main>
     )
 }

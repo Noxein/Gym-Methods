@@ -29,7 +29,14 @@
         "Of": "z",
         "Close": "Zakończ",
         "TimeInSeconds": "Czas (sekundy)",
-        "Error": "Błąd"
+        "Error": "Błąd",
+        "Training with this name already exist, chose different one": "Trening o tej nazwie już istnieje, wybierz inną",
+        "New": "Nowość",
+        "Name": "Nazwa",
+        "AddSeries":"Dodaj serie",
+        "Import": "Importuj",
+        "AddExercise":"Dodaj ćwiczenie",
+        "AddTraining": "Dodaj trening"
     },
     "Login": {
         "Login": "Zaloguj",
@@ -73,7 +80,10 @@
         "OpenTrainings": "Masz niezakończone treningi z przed ponad 8 godzin",
         "CloseTraining": "Zakończ trening",
         "Close": "Zamknij",
-        "RemindLater": "Przypomnij później"
+        "RemindLater": "Przypomnij później",
+
+        "Of": "z",
+        "Finished": "ukończone"
     },
     "Home/Add-Exercise": {
         "AddExercise": "Dodaj ćwiczenie",
@@ -163,9 +173,17 @@
         "ChangeNotLikedExercise": "Zmień nie lubiane ćwiczenia",
         "Language": "Język"
     },
+    "Home/Profile/Long-Term-Plans": {
+        "LongTermPlans": "Plany długoterminowe",
+        "AddNewPlan": "Dodaj nowy plan",
+        "AreYouSureYouWannaDelete": "Czy napewno chcesz usunąć",
+        "DeleteThisTraining": "Usuń ten trening",
+        "TrainingsFromThisPlan": "Treningi z tego planu",
+        "DifferentTrainings": "Inne treningi"
+    },
     "Home/Start-Training": {
-        "StartTraining": "Rozpocznij trening",
-        "AddNewTraining":"Dodaj nowy trening",
+        "ContinueTraining": "Kontynuuj trening",
+        "StartNewTraining":"Rozpocznij nowy trening",
         "LatestTrainings":"Ostatnie treningi"
     },
     "Home/Start-Training/[TrainingName]": {
@@ -346,7 +364,8 @@
         "Unknown exercise in not favourtie exercises": "Nieznane ćwiczenie w nie lubianych ćwiczeniach",
         "Training not found": "Nie znaleziono treningu",
         "Exercise dont have an id": "Ćwiczenie nie ma id",
-        "Name cant be empty": "Nazwa nie może być pusta"
+        "Name cant be empty": "Nazwa nie może być pusta",
+        "There cant be any empty trainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie"
     },
     "Metadata": {
         "Profile": "Profil",

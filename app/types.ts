@@ -302,3 +302,88 @@ export type ProgessionsDeclinesType = {
     date: Date, 
     sets: Series[]
 }
+
+export type BigTrainingData = {
+    id: string,
+    userid: string,
+    name: string,
+    subplans: SubPlanData[],
+    lastedited: Date,
+}
+
+export type SubPlanData = {
+    id: string,
+    name: string,
+    exercises: ExerciseSubPlanData[]
+}
+
+export type ExerciseSubPlanData = {
+    exerciseid: string,
+    exercisename: string,
+    setgoals: SetsData[],
+    handle?: {
+        handleid: string,
+        handlename: string,
+    }
+    istimeexercise:boolean
+}
+
+export type SetsData = {
+    id:string,
+    weightgoal: number,
+    repetitionsgoal: number,
+    timegoal?: number,
+    side: Side,
+}
+
+export type EditedLongTermTraining = {
+    training: BigTrainingData,
+    lastedited: Date,
+}
+
+////////////////////////////////////////////////
+
+export type BigTrainingStarter = {
+    id: string,
+    parentid: string,
+    userid: string,
+    name: string,
+    subplans: SubPlanStarter[]
+    startdate: Date,
+    enddate: Date | null,
+    currentplanindex: number,
+    lastupdated: Date,
+}
+
+export type SubPlanStarter = {
+    id: string,
+    name: string,
+    exercises: ExerciseSubPlanStarter[],
+    date: Date | null,
+    iscompleted: boolean,
+}
+
+export type ExerciseSubPlanStarter = {
+    exerciseid: string,
+    exercisename: string,
+    setgoals: SetsDataStarter[],
+    handle?: {
+        handleid: string,
+        handlename: string,
+    }
+    date: Date | null,
+    istimeexercise:boolean,
+}
+
+export type SetsDataStarter = {
+    id: string,
+    side: Side,
+    weightgoal: number,
+    repetitionsgoal: number,
+    timegoal?: number,
+    actuallweight: number,
+    actuallrepetitions: number,
+    actualltime?: number,
+    isSetCompleted: boolean | undefined,
+}
+

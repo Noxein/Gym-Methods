@@ -9,7 +9,7 @@ export const NewTrainingBtn = () => {
     const t = useTranslations('Home');
     
   return (
-    <LinkWithIcon className='bg-green' linkText={t('AddNewTraining')} href={'/home/profile/my-training-plans?showAddModal=true'} childrenIcon={
+    <LinkWithIcon className='bg-green' linkText={t('AddNewTraining')} href={'/home/profile/long-term-plans'} childrenIcon={
         <Icon>
           <PlusIcon />
         </Icon>

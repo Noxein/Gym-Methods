@@ -18,7 +18,7 @@ export const MapExercises = ({exercisesObject,allExercisesInOneArray,handleClose
     
     const u = useTranslations("Utils")
     return (
-        <div className='fixed left-0 top-0 w-screen backdrop-blur-sm flex justify-center overflow-auto bottom-20 z-[60]'>
+        <div className='fixed left-0 top-0 w-screen backdrop-blur-sm flex justify-center overflow-auto bottom-[75px] z-[60]'>
             <div className={`flex flex-col w-full overflow-y-auto`}>
                 <div className={`flex pt-5 mb-5 items-center justify-center sticky top-0 left-0 bg-dark pb-2 border-b-[2px] border-borderInteractive`}>
                     <button onClick={handleClose}

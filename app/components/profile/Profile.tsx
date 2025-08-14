@@ -14,6 +14,8 @@ export const Profile = ({email}:ProfileTypes) => {
 
   const t = useTranslations("Home/Profile")
 
+  const newFeatureExpireDate = new Date(2025,8,6)
+
   return (
     <div className='flex flex-col gap-2'>
       <UserEmail email={email}/>
@@ -27,7 +29,7 @@ export const Profile = ({email}:ProfileTypes) => {
           <LinkBtn href='/home/profile/my-exercises' text={t("MyExercises")}>
             <ExerciseIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
-          <LinkBtn href='/home/profile/my-training-plans' text={t("MyTrainings")}>
+          <LinkBtn href='/home/profile/long-term-plans' text={t("MyTrainings")} isNewFeature={new Date().getTime()<newFeatureExpireDate.getTime()}>
             <BookIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/my-handles' text={t("MyHandles")}>

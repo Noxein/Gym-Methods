@@ -11,6 +11,7 @@ const config: Config = {
       colors:{
         green: '#3C9F65', //3C9F65 
         'green-200': '#12301f',
+        'green-700': '#2bb358',
         red: '#9F443C',
         'red-200': '#301512',
         marmur: '#D9D9D9',

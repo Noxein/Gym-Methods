@@ -4,6 +4,6 @@ import React from 'react'
 export const LatestTrainingsHeader = () => {
     const t = useTranslations('Home');
   return (
-    <h2 className='text-marmur text-2xl text-center mt-6'>{t('LatestTrainings')}</h2>
+    <h2 className='text-marmur text-2xl text-center my-6'>{t('LatestTrainings')}</h2>
   )
 }
