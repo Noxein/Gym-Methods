@@ -388,3 +388,37 @@ export const SwapIcon = ({width,height,fill}:{width?:string,height?:string,fill?
         </svg>
     )
 }
+
+export const ImportIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return(
+        <svg fill={fill? fill : "#000000"} width={width?width:iconWidth} height={height?height:iconHeight} version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 490.065 490.065" xmlSpace="preserve">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <g> 
+                    <g> 
+                        <path d="M223.783,340.965c3.7,3,8.7,3.7,13,1.6c4.3-2,7-6.3,7-11.1v-83.4c78,0.3,131.9,5.9,197.2,121.2c2.2,3.9,6.3,6.2,10.7,6.2 c1,0,2.1-0.1,3.1-0.4c5.4-1.4,9.1-6.3,9.1-11.8v-9.7c0.5-81.5,1.4-249.5-220.1-257.5v-83.8c0-4.7-2.7-9.1-7-11.1s-9.4-1.4-13,1.6 l-193.2,159.5c-2.8,2.3-4.5,5.8-4.5,9.4c0,3.7,1.6,7.1,4.4,9.4L223.783,340.965z M219.283,38.265v69.8c0,6.7,5.4,12.2,12.1,12.3 c92.1,0.9,151.8,29,182.6,86.1c19.4,35.8,24.1,78.1,25.2,113.6c-62.9-91.3-122-96.4-207.7-96.5l0,0c-3.2,0-6.4,1.3-8.7,3.6 s-3.6,5.4-3.6,8.7v69.7l-161.6-133.9L219.283,38.265z"></path> 
+                        <path d="M463.983,477.865v-53.8c0-6.8-5.5-12.3-12.3-12.3s-12.3,5.5-12.3,12.3v41.6h-386.3v-213.8c0-6.8-5.5-12.3-12.3-12.3 s-12.3,5.5-12.3,12.3v225.9c0,6.8,5.5,12.3,12.3,12.3h410.9C458.483,490.065,463.983,484.565,463.983,477.865z"></path> 
+                    </g> 
+                </g> 
+            </g>
+        </svg>
+    )
+}
+
+export const DoubleArrowIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return(
+        <svg fill={fill? fill : "#000000"} width={width?width:iconWidth} height={height?height:iconHeight} version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 192.689 192.689" xmlSpace="preserve">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <g> 
+                    <g id="Double_Chevron_Right"> 
+                        <path d="M188.527,87.755l-83.009-84.2c-4.692-4.74-12.319-4.74-17.011,0c-4.704,4.74-4.704,12.439,0,17.179l74.54,75.61 l-74.54,75.61c-4.704,4.74-4.704,12.439,0,17.179c4.704,4.74,12.319,4.74,17.011,0l82.997-84.2 C193.05,100.375,193.062,92.327,188.527,87.755z"></path> 
+                        {/* <path d="M104.315,87.755l-82.997-84.2c-4.704-4.74-12.319-4.74-17.011,0c-4.704,4.74-4.704,12.439,0,17.179l74.528,75.61 l-74.54,75.61c-4.704,4.74-4.704,12.439,0,17.179s12.319,4.74,17.011,0l82.997-84.2C108.838,100.375,108.85,92.327,104.315,87.755 z"></path>  */}
+                    </g> 
+                </g> 
+            </g>
+        </svg>
+    )
+}

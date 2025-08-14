@@ -29,7 +29,14 @@
         "Of": "of",
         "Close": "Close",
         "TimeInSeconds": "Time (seconds)",
-        "Error": "Error"
+        "Error": "Error",
+        "Training with this name already exist, chose different one": "Training with this name already exist, chose different one",
+        "New": "New",
+        "Name": "Name",
+        "AddSeries":"Add series",
+        "Import": "Import",
+        "AddExercise":"Add exercise",
+        "AddTraining": "Add training"
     },
     "Login": {
         "Login": "Login",
@@ -73,7 +80,10 @@
         "OpenTrainings": "Yout have opened trainings in progress",
         "CloseTraining": "Close training",
         "Close": "Close",
-        "RemindLater": "Remind me later"
+        "RemindLater": "Remind me later",
+
+        "Of": "of",
+        "Finished": "finished"
 
     },
     "Home/Add-Exercise": {
@@ -163,9 +173,17 @@
         "ChangeNotLikedExercise": "Change unliked exercises",
         "Language": "Language"
     },
+    "Home/Profile/Long-Term-Plans": {
+        "LongTermPlans": "Long term plans",
+        "AddNewPlan": "Add new plan",
+        "AreYouSureYouWannaDelete": "Are you sure you wanna delete",
+        "DeleteThisTraining": "Delete this training",
+        "TrainingsFromThisPlan": "Trainings from this plan",
+        "DifferentTrainings": "Different trainings"
+    },
     "Home/Start-Training": {
-        "StartTraining": "Start training",
-        "AddNewTraining":"Add new training",
+        "ContinueTraining": "Continue training",
+        "StartNewTraining":"Start new training",
         "LatestTrainings":"Latest trainings"
     },
     "Home/Start-Training/[TrainingName]": {
@@ -346,7 +364,8 @@
         "Unknown exercise in not favourtie exercises": "Unknown exercise in disliked exercises",
         "Training not found": "Training not found",
         "Exercise dont have an id": "Exercise dont have an id",
-        "Name cant be empty": "Name cant be empty"
+        "Name cant be empty": "Name cant be empty",
+        "There cant be any empty trainings": "Each training has to have at least one exercise"
     },
     "Metadata": {
         "Profile": "Profile",

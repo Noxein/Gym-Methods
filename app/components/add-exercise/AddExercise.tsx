@@ -261,8 +261,8 @@ const Handle = ({handle,setHandle,allHandles}:HandleTypes) => {
     return (
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
-            <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Right")}</label>
-            <select name="handle" id="side" className='bg-dark pl-3 text-marmur border-white border-[1px] rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value) as {id:string, handlename: string})}>
+            <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Handle")}</label>
+            <select name="handle" id="side" className='bg-dark pl-3 text-marmur border-borderInteractive border-2 rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value) as {id:string, handlename: string})}>
                 {allHandles.map(handle=>{
                     const name = handleTypes.includes(handle.handlename) ? h(nameTrimmer(handle.handlename)) : handle.handlename 
                     return <option value={JSON.stringify(handle)} key={handle.id}>{name}</option>

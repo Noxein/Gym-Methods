@@ -3,7 +3,7 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { ExercisesThatRequireTimeMesureOrHandle, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SholudAddWeightType, Span, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/SetupOneOfThree";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -859,27 +859,19 @@ export const DeleteUserTraining = async (trainingid:string) => {
     redirect('/home/profile/my-training-plans')
 }
 
-export const getTrainingDataByName = async (name:string) => {
-    if(typeof name !== 'string') return { error: "Something went wrong" }
+export const getTrainingDataById = async (id:string) => {
+    if(typeof id !== 'string') return { error: "Something went wrong" }
     const userid = await userID()
 
     try{
         const list = await sql`
-            SELECT * FROM gymuserstrainingplans WHERE userid = ${userid} AND trainingname = ${name}
+            SELECT * FROM bigtrainingstarters WHERE userid = ${userid} AND id = ${id}
         `
         if(list.rowCount === 0) return { error: 'Training not found' }
         
-        const dataWithIds = list.rows[0] as UserTrainingPlan
-
-        dataWithIds.exercises.map(exercise=>{
-            exercise.series?.map(seria=>{
-                seria.id = v4()
-                return seria
-            })
-            return exercise
-        })
+        const dataWithIds = list.rows[0] as BigTrainingStarter
         
-        return {data: dataWithIds as UserTrainingPlan, error: ''}
+        return {data: dataWithIds , error: ''}
     }catch(e){
         console.log(e)
         return { error: 'Something went wrong' }
@@ -1636,7 +1628,6 @@ export const GetProgressionsAndDeclines = async () => {
             if(compare.value === 'equal') continue
 
             if(!bestExercise.score && compare.score > 0){
-                console.log('he is applaying')
                 bestExercise = { exercise: ptrObj[property], score: compare.score}
             } 
             if(!worstExercise.score && compare.score < 0){
@@ -1654,5 +1645,232 @@ export const GetProgressionsAndDeclines = async () => {
         return {obj, bestExercise, worstExercise}
     }catch{
         return undefined
+    }
+}
+
+export const getAllUserLongTermPlans = async () => {
+    const userid = await userID()
+
+    try{
+        const data = await sql`
+            SELECT * FROM bigtraining WHERE userid = ${userid}
+        `
+        return data.rows as BigTrainingData[]
+    }catch(e){
+        return []
+    }
+}
+
+export const createNewLongTermPlan = async (name: string) => {
+    const userid = await userID()
+
+    if(name === '') return {error: "Name cant be empty"}
+    if(typeof name !== 'string') return { error: "Something went wrong"}
+    try{
+        const doesexist = await sql`
+            SELECT 1 FROM bigtraining WHERE userid = ${userid} AND name = ${name}
+        `
+
+        if(doesexist.rows.length > 0){
+            return { error: "Training with this name already exist, chose different one"}
+        }
+
+        let obj: SubPlanData[] = [{
+            exercises: [],
+            id: v4(),
+            name: 'Mój pierwszy plan'
+        }]
+        await sql`
+            INSERT INTO bigtraining (id, userid, name, subplans) VALUES (${v4()}, ${userid}, ${name}, ${JSON.stringify(obj)})
+        `
+        revalidatePath('/home/profile/long-term-plans')
+    }catch(e){
+        console.log(e)
+        return {
+            error: "Something went wrong"
+        }
+    }
+}
+
+export const getPlanData = async (planname: string) => {
+    const userid = await userID()
+
+    try{
+        const data = await sql`
+            SELECT * FROM bigtraining WHERE userid = ${userid} AND name =${planname}
+        `
+
+        if(data.rows.length < 1){
+            console.log('bład32131232')
+            return {data : {} as BigTrainingData, error: 'Training not found' }
+        } 
+
+        return {data : data.rows[0] as BigTrainingData, error: '' }
+    }catch(e){
+        console.log('bład',e)
+        return { data: {} as BigTrainingData,  error: "Coś poszło nie tak" }
+    }
+}
+
+export const handleSaveLongTermPlan = async (plan: BigTrainingData,userDate: Date) => {
+    const userid = await userID()
+
+    let emptyExercisesArrays = false
+
+    for(let i = 0 ; i< plan.subplans.length; i++) {
+        if(plan.subplans[i].exercises.length === 0){
+            emptyExercisesArrays = true
+            break
+        } 
+    }
+    if(emptyExercisesArrays){
+        return { error: "There cant be any empty trainings" }
+    }
+    try{
+        await sql`
+            UPDATE bigtraining SET name = ${plan.name}, subplans = ${JSON.stringify(plan.subplans)}, lastedited = ${JSON.stringify(userDate)} WHERE id = ${plan.id} AND userid = ${userid}
+        `
+    }catch{
+        return {error: "Something went wrong"}
+    }
+}
+
+export const handleDeleteLongTermPlan = async (planName:string) => {
+    const userid = await userID()
+
+    if(planName==='' || typeof planName !== 'string'){
+        return {error: "Something went wrong"}
+    }
+
+    try{
+        await sql`
+            DELETE FROM bigtraining WHERE userid = ${userid} AND name = ${planName}
+        `
+    }catch{
+        return {error: "Something went wrong"}
+    }
+    revalidatePath('/home/profile/long-term-plans')
+}
+
+export const createStarterBigPlan = async (plan: BigTrainingData, userDate: Date) => {
+    const userid = await userID()
+
+    let obj:BigTrainingStarter = {
+        currentplanindex: 0,
+        id: v4(),
+        lastupdated: userDate,
+        parentid: plan.id,
+        name: plan.name,
+        subplans: [],
+        userid: plan.userid,
+        startdate: userDate,
+        enddate: null
+    }
+    let id = ''
+    for(let i = 0 ; i < plan.subplans.length ; i++){
+        let obj2: SubPlanStarter = {...plan.subplans[i],date:null,iscompleted:false,exercises:[]}
+
+        for(let j = 0; j< plan.subplans[i].exercises.length; j++){
+            let obj3: ExerciseSubPlanStarter = {...plan.subplans[i].exercises[j],date:null,setgoals:[]}
+
+            for(let k = 0; k < plan.subplans[i].exercises[j].setgoals.length; k++){
+                let obj4: SetsDataStarter = {...plan.subplans[i].exercises[j].setgoals[k],actuallweight:0,actuallrepetitions:0,actualltime:0, isSetCompleted: undefined}
+                obj3.setgoals.push(obj4)
+            }
+            obj2.exercises.push(obj3)
+        }
+        obj.subplans.push(obj2)
+    }
+    try{
+        const retureningID = await sql`
+            INSERT INTO bigtrainingstarters 
+            (id,parentid,userid,name,subplans,startdate,enddate,currentplanindex,lastupdated)
+            VALUES 
+            (${v4()},${obj.id},${userid},${obj.name},${JSON.stringify(obj.subplans)},${JSON.stringify(userDate)},${null},${0},${JSON.stringify(userDate)})
+            RETURNING id
+        `
+        id = retureningID.rows[0].id
+        
+    }catch(e){
+        console.log(e)
+        return{ error: "Something went wrong"}
+    }
+    redirect(`/home/start-training/${id}`)
+}
+
+export const updateBigPlan = async (planData: BigTrainingStarter, userDate: Date) => {
+    const userid = await userID()
+
+    try{
+        planData.subplans[planData.currentplanindex].exercises.forEach(async(exercise)=>{
+            let handle = undefined
+            let sets:Series[] = []
+            exercise.setgoals.forEach(goal=>{
+                let series:Series = {
+                    difficulty: 'medium',
+                    repeat: goal.actuallrepetitions,
+                    side: goal.side,
+                    weight: goal.actuallweight,
+                    id: goal.id,
+                    time: goal.actualltime
+                }
+                sets.push(series)
+            })
+            if(exercise.handle){
+                handle = {
+                    handleName: exercise.handle.handlename,
+                    handleId: exercise.handle.handleid
+                }
+            }
+            await AddExerciseAction(false,exercise.exerciseid,sets,false,undefined,handle,false,userDate)
+        })
+    }catch(error){
+        return {error: 'Something went wrong'}
+    }
+
+
+    planData.subplans[planData.currentplanindex].iscompleted = true
+    planData.subplans[planData.currentplanindex].date = userDate
+
+    if(planData.currentplanindex === planData.subplans.length - 1){
+        //its last plan so we set enddate 
+        planData.enddate = userDate
+    }else{
+        // its not last plan so we add one to plan index
+        planData.currentplanindex = planData.currentplanindex + 1
+    }
+    planData.lastupdated = userDate
+    
+    try{
+        
+        if(planData.enddate){
+            await sql`
+                UPDATE bigtrainingstarters SET subplans = ${JSON.stringify(planData.subplans)}, enddate = ${planData.enddate ? JSON.stringify(planData.enddate): 'NULL'}, currentplanindex = ${planData.currentplanindex}, lastupdated = ${JSON.stringify(planData.lastupdated)} WHERE id = ${planData.id} AND userid = ${userid}
+            `
+        }else{
+            await sql`
+                UPDATE bigtrainingstarters SET subplans = ${JSON.stringify(planData.subplans)}, currentplanindex = ${planData.currentplanindex}, lastupdated = ${JSON.stringify(planData.lastupdated)} WHERE id = ${planData.id} AND userid = ${userid}
+            `
+        }
+
+    }catch(e){
+        console.log(e)
+        return 
+    }
+    redirect('/home')
+}
+
+export const getStartedTrainingsList = async () => {
+    const userid = await userID()
+
+    try{
+        const list = await sql`
+            SELECT * FROM bigtrainingstarters WHERE enddate IS NULL AND userid = ${userid} ORDER BY lastupdated DESC
+        `
+
+        return list.rows as BigTrainingStarter[]
+
+    }catch(e){
+        console.log(e)
     }
 }
