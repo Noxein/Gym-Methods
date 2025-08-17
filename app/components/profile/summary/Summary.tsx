@@ -4,6 +4,7 @@ import { AllExercisesInOneArray, getAllExercises, getSummaryData, userExercisesT
 import { ErrorDiv } from '../../ui/ErrorDiv'
 import { Charts } from './Charts'
 import { SummaryContextProvider } from '@/app/context/SummaryContext'
+import NotEnoughData from './NotEnoughData'
 
 export const Summary = async () => {
 
@@ -13,7 +14,7 @@ export const Summary = async () => {
     const allExercisesObject = await getAllExercises()
     if(!data){
         return (
-            <ErrorDiv error='Coś poszło nie tak'/>
+            <NotEnoughData />
         )
     }
   return (
