@@ -10,8 +10,10 @@ export const LongPlanEditorContext = createContext<LongPlanEditorContextTypes|nu
 type LongPlanEditorContextTypes = {
     planData: BigTrainingData | null,
     setPlanData: React.Dispatch<React.SetStateAction<BigTrainingData | null>>
+
     planIndexRef: React.MutableRefObject<number>,
     exerciseIndexRef: React.MutableRefObject<number>,
+
     showDeleteExercisePopUp: boolean,
     setShowDeleteExercisePopUp: React.Dispatch<React.SetStateAction<boolean>>
     showDeleteTrainigPopUp: boolean,
@@ -36,12 +38,12 @@ type ModalContextsProviderTypes = {
 }
 
 export const LongPlanEditorProvider = ({children}:ModalContextsProviderTypes) => {
-    const planIndexRef = useRef(0)
-    const exerciseIndexRef = useRef(0)
     const params = useParams()
     const[showDeleteExercisePopUp,setShowDeleteExercisePopUp] = useState(false)
     const[showDeleteTrainigPopUp,setShowDeleteTrainigPopUp] = useState(false)
     const[showImportTrainingModal,setShowImportTrainingModal] = useState(false)
+    const planIndexRef = useRef(0)
+    const exerciseIndexRef = useRef(0)
     const[handleAndTimeMesureExercises,setHandleAndTimeMesureExercises] = useState<{    
         ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[];
         ExercisesThatRequireHandle: ExercisesThatRequireTimeMesureOrHandle[]} | null>(null)
@@ -98,8 +100,10 @@ export const LongPlanEditorProvider = ({children}:ModalContextsProviderTypes) =>
         <LongPlanEditorContext.Provider value={{
             planData,
             setPlanData,
+
             planIndexRef,
             exerciseIndexRef,
+
             showDeleteExercisePopUp,
             setShowDeleteExercisePopUp,
             showDeleteTrainigPopUp,

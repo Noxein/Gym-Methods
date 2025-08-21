@@ -15,7 +15,7 @@ function DeleteExerciseModal() {
         const planDataCopy = {...planData!}
         const filtered = planDataCopy.subplans[planIndexRef.current].exercises.filter((item,index)=>index!==exerciseIndexRef.current) 
         planDataCopy.subplans[planIndexRef.current].exercises = filtered
-        exerciseIndexRef.current = exerciseIndexRef.current === 0 ? 0 : exerciseIndexRef.current - 1
+
         setShowDeleteExercisePopUp(false)
         updateToLocalStorage(planDataCopy)
         setPlanData(planDataCopy)

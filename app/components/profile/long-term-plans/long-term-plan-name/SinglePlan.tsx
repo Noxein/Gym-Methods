@@ -19,7 +19,6 @@ type SinglePlanType = {
 function SinglePlan({plan, planIndex, allExercisesInOneArray}:SinglePlanType) {
     const[isOpen,setIsOpen] = useState(false)
     const[selecedExerciseIndex,setSelectedExerciseIndex] = useState(0)
-
     const { planData,setPlanData,planIndexRef,setShowDeleteTrainigPopUp,setShowImportTrainingModal,setShowAddExercise,updateToLocalStorage,state } = useContext(LongPlanEditorContext)!
     const d = useTranslations("DefaultExercises")
     const u = useTranslations("Utils")
@@ -56,7 +55,7 @@ function SinglePlan({plan, planIndex, allExercisesInOneArray}:SinglePlanType) {
         HideShowHTMLScrollbar('hide')
         setShowAddExercise(true)
     }
-
+    
     if(isOpen) return (
         <div className={`text-white flex flex-col px-5 py-2 bg-darkLight duration-200 rounded-lg `} onClick={()=>planIndexRef.current = planIndex}>
                 <button onClick={flip} className="flex justify-end">        
@@ -83,7 +82,7 @@ function SinglePlan({plan, planIndex, allExercisesInOneArray}:SinglePlanType) {
 
             <div className="bg-steel my-5 rounded-lg">
                 <div className="flex flex-col gap-4">
-                    {plan.exercises.map((exercise,exerciseIndex)=><SingleExercise setSelectedExerciseIndex={setSelectedExerciseIndex} selecedExerciseIndex={selecedExerciseIndex} key={exercise.exerciseid} exercise={exercise} planIndex={planIndex} exerciseIndex={exerciseIndex} allExercisesInOneArray={allExercisesInOneArray}/>)}
+                    {plan.exercises && plan.exercises.map((exercise,exerciseIndex)=><SingleExercise setSelectedExerciseIndex={setSelectedExerciseIndex} selecedExerciseIndex={selecedExerciseIndex} key={exercise.exerciseid} exercise={exercise} planIndex={planIndex} exerciseIndex={exerciseIndex} allExercisesInOneArray={allExercisesInOneArray}/>)}
                 </div>
             </div>
 

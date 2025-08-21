@@ -15,7 +15,7 @@ function DeleteTrainingModal() {
         const planDataCopy = {...planData!}
         const filtered = planDataCopy.subplans.filter((item,index)=>index!==planIndexRef.current) 
         planDataCopy.subplans = filtered
-        planIndexRef.current = planIndexRef.current === 0 ? 0 : planIndexRef.current - 1
+        planIndexRef.current === 0 ? planIndexRef.current = 0 : planIndexRef.current = planIndexRef.current - 1
         setShowDeleteTrainigPopUp(false)
         updateToLocalStorage(planDataCopy)
         setPlanData(planDataCopy)

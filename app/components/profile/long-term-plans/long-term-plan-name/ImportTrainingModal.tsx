@@ -6,6 +6,7 @@ import { ExerciseSubPlanData, SubPlanData, UserExercise, UserTrainingPlan } from
 import { PlusIcon } from "@/app/ui/icons/ExpandIcon";
 import { useTranslations } from "next-intl";
 import { useContext } from "react";
+import { v4 } from "uuid";
 
 type ImportTrainingModalTypes = {
     UserTrainings: UserTrainingPlan[],
@@ -15,10 +16,17 @@ function ImportTrainingModal({UserTrainings,allExercisesInOneArray}:ImportTraini
     const {planData,setPlanData,planIndexRef,setShowImportTrainingModal,handleAndTimeMesureExercises,handles,updateToLocalStorage } = useContext(LongPlanEditorContext)!
 
     const handleCloneTraining = (index:number) => {
-        let planDataCopy = {...planData!}
-        planDataCopy.subplans[planIndexRef.current] = planDataCopy.subplans[index]
+        let planDataCopy = structuredClone(planData!)
+        let planToCopy = JSON.parse(JSON.stringify(planDataCopy.subplans[index]))
+
+        planToCopy.id = planDataCopy.subplans[planIndexRef.current].id
+        planToCopy.name = planDataCopy.subplans[planIndexRef.current].name
+
+        planDataCopy.subplans[planIndexRef.current] = planToCopy
+
         updateToLocalStorage(planDataCopy)
         setPlanData(planDataCopy)
+
         HideShowHTMLScrollbar('show')
         setShowImportTrainingModal(false)
         
@@ -71,8 +79,8 @@ function ImportTrainingModal({UserTrainings,allExercisesInOneArray}:ImportTraini
                 <p className="text-center text-xl my-2">{t("TrainingsFromThisPlan")}</p>
 
                 <div className="flex flex-col gap-4 rounded">
-                    {planData!.subplans.map((plan,index)=>
-                    <div key={plan.id} className="flex-col bg-darkLight p-2">
+                    {planData!.subplans.map((plan,index)=>{
+                    return (<div key={plan.id} className="flex-col bg-darkLight p-2">
                         <div className="flex justify-between">
                             <p>{plan.name}</p>
                             <button onClick={()=>handleCloneTraining(index)}>
@@ -86,7 +94,7 @@ function ImportTrainingModal({UserTrainings,allExercisesInOneArray}:ImportTraini
                         <div className="flex flex-col ">
                             {plan.exercises.map((exercise,index)=><ExerciseName allExercisesInOneArray={allExercisesInOneArray} name={exercise.exercisename} key={exercise.exerciseid}/>)}
                         </div>
-                    </div>)}
+                    </div>)})}
                 </div>
 
             </div>

@@ -3,7 +3,7 @@
 import { Icon } from "@/app/components/Icon";
 import { LongPlanEditorContext } from "@/app/context/LongPlanEditorContext";
 import { nameTrimmer } from "@/app/lib/utils";
-import { ExerciseSubPlanData, SetsData, Side, UserExercise } from "@/app/types";
+import { BigTrainingData, ExerciseSubPlanData, SetsData, Side, UserExercise } from "@/app/types";
 import { TrashIcon } from "@/app/ui/icons/ExpandIcon";
 import { useTranslations } from "next-intl";
 import { useContext } from "react";
@@ -20,7 +20,7 @@ type SingleExerciseTypes = {
 
 function SingleExercise({exercise,planIndex,exerciseIndex,selecedExerciseIndex,setSelectedExerciseIndex,allExercisesInOneArray}:SingleExerciseTypes) {
 
-    const { planData,setPlanData,setShowDeleteExercisePopUp,exerciseIndexRef,handles,updateToLocalStorage,state } = useContext(LongPlanEditorContext)!
+    const { planData,setPlanData,setShowDeleteExercisePopUp,exerciseIndexRef,handles,updateToLocalStorage,state,planIndexRef } = useContext(LongPlanEditorContext)!
     
     const u = useTranslations("Utils")
     const d = useTranslations("DefaultExercises")
@@ -28,17 +28,19 @@ function SingleExercise({exercise,planIndex,exerciseIndex,selecedExerciseIndex,s
     const newName = allExercisesInOneArray.includes(exercise.exercisename) ? d(nameTrimmer(exercise.exercisename)) : exercise.exercisename
 
     const addSeries = () => {
+        const eIndex = exerciseIndex
+        const pIndex = planIndex
         if(state === 'uploading') return
 
-        let planDataCopy = {...planData!}
-        let arr = planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals
+        let planDataCopy = structuredClone(planData!)
+        let arr = planDataCopy.subplans[pIndex].exercises[eIndex].setgoals
 
         if(arr.length > 0){
             let latest = {...arr[arr.length-1]}
             latest.id = v4()
-            planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals.push(latest)
+            planDataCopy.subplans[pIndex].exercises[eIndex].setgoals.push(latest)
         }else{
-            if(planDataCopy.subplans[planIndex].exercises[exerciseIndex].istimeexercise){
+            if(planDataCopy.subplans[pIndex].exercises[eIndex].istimeexercise){
                 let obj = {
                     id: v4(),
                     repetitionsgoal:0,
@@ -46,7 +48,7 @@ function SingleExercise({exercise,planIndex,exerciseIndex,selecedExerciseIndex,s
                     weightgoal:0,
                     timegoal: 1,
                 }
-                planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals.push(obj)
+                planDataCopy.subplans[pIndex].exercises[eIndex].setgoals.push(obj)
             }else{
                 let obj = {
                     id: v4(),
@@ -54,7 +56,7 @@ function SingleExercise({exercise,planIndex,exerciseIndex,selecedExerciseIndex,s
                     side:"Both" as Side,
                     weightgoal:0,
                 }
-                planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals.push(obj)
+                planDataCopy.subplans[pIndex].exercises[eIndex].setgoals.push(obj)
             }
         }
 
@@ -74,13 +76,13 @@ function SingleExercise({exercise,planIndex,exerciseIndex,selecedExerciseIndex,s
         
         const parsedHandle = JSON.parse(value) as {id: string;handlename: string;}
         let planDataCopy = {...planData!}
-        planDataCopy.subplans[planIndex].exercises[selecedExerciseIndex].handle = {handleid: parsedHandle.id, handlename: parsedHandle.handlename}
+        planDataCopy.subplans[planIndexRef.current].exercises[selecedExerciseIndex].handle = {handleid: parsedHandle.id, handlename: parsedHandle.handlename}
 
         updateToLocalStorage(planDataCopy)
         setPlanData(planDataCopy)
     }
     return (
-    <div className={`bg-[#141e24] p-2 rounded-lg ${exerciseIndex === exerciseIndexRef.current? 'opacity-100' : 'opacity-50'}`} onClick={clickDivHandler}>
+    <div className={`bg-[#141e24] p-2 rounded-lg ${exerciseIndex === exerciseIndexRef.current ? 'opacity-100' : 'opacity-50'}`} onClick={clickDivHandler}>
 
         <div className="flex justify-between items-center border-b-2 border-borderInteractive">
 
@@ -113,7 +115,7 @@ function SingleExercise({exercise,planIndex,exerciseIndex,selecedExerciseIndex,s
             </div>
             {exerciseIndex === exerciseIndexRef.current ? 
             <div>
-                {exercise.setgoals.map((setGoal,setGoalIndex)=><SetGoal key={setGoal.id} setGoal={setGoal} planIndex={planIndex} exerciseIndex={exerciseIndex} setGoalIndex={setGoalIndex} istimeexercise={exercise.istimeexercise}/>)}
+                {exercise && exercise.setgoals && exercise.setgoals.map((setGoal,setGoalIndex)=><SetGoal key={setGoal.id} setGoal={setGoal} planIndex={planIndex} exerciseIndex={exerciseIndex} setGoalIndex={setGoalIndex} istimeexercise={exercise.istimeexercise}/>)}
             </div> : 
             <div className="text-neutral-400 flex flex-col">
                 {exercise.setgoals.map(set=><div key={set.id} className="flex">
@@ -162,48 +164,68 @@ function SetGoal({setGoal,planIndex,exerciseIndex,setGoalIndex,istimeexercise}:S
 
     const u = useTranslations("Utils")
 
-    const { planData,setPlanData,updateToLocalStorage,state } = useContext(LongPlanEditorContext)!
+    const { planData,setPlanData,updateToLocalStorage,state,planIndexRef } = useContext(LongPlanEditorContext)!
     const seriesData = setGoal
 
     const handleDeleteSeries = () => {
+        const pIndex = planIndex
+
         if(state === 'uploading') return
-        const planDataCopy = {...planData!}
-        const filtered = planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals.filter((item,index)=>index!==setGoalIndex)
-        planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals = filtered
+
+        let planDataCopy = structuredClone(planData!)
+        const filtered = planDataCopy.subplans[pIndex].exercises[exerciseIndex].setgoals.filter((item,index)=>index!==setGoalIndex)
+        planDataCopy.subplans[pIndex].exercises[exerciseIndex].setgoals = filtered
+
         updateToLocalStorage(planDataCopy)
         setPlanData(planDataCopy)
     }
 
     const editSide = () => {
+        const pIndex = planIndex
+
         if(state === 'uploading') return
-        const planDataCopy = {...planData!}
-        const side = planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals[setGoalIndex].side
+
+        let planDataCopy = structuredClone(planData!)
+        const side = planDataCopy.subplans[pIndex].exercises[exerciseIndex].setgoals[setGoalIndex].side
         const newSide = side === 'Both' ? 'Left' : side === 'Left' ? "Right" : "Both"
-        planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals[setGoalIndex].side = newSide
+        planDataCopy.subplans[pIndex].exercises[exerciseIndex].setgoals[setGoalIndex].side = newSide
+
         updateToLocalStorage(planDataCopy)
         setPlanData(planDataCopy)
     }
 
     const editWeight = (value: number) => {
+        const pIndex = planIndex
+
         if(state === 'uploading') return
-        const planDataCopy = {...planData!}
-        planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals[setGoalIndex].weightgoal = value
+
+        let planDataCopy = structuredClone(planData!)
+        planDataCopy.subplans[pIndex].exercises[exerciseIndex].setgoals[setGoalIndex].weightgoal = value
+
         updateToLocalStorage(planDataCopy)
         setPlanData(planDataCopy)
     }
 
     const editRepetitions = (value: number) => {
+        const pIndex = planIndex
+
         if(state === 'uploading') return
-        const planDataCopy = {...planData!}
-        planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals[setGoalIndex].repetitionsgoal = value
+
+        let planDataCopy = structuredClone(planData!)
+        planDataCopy.subplans[pIndex].exercises[exerciseIndex].setgoals[setGoalIndex].repetitionsgoal = value
+
         updateToLocalStorage(planDataCopy)
         setPlanData(planDataCopy)
     }
 
     const editTime = (value: number) => {
+        const pIndex = planIndex
+
         if(state === 'uploading') return
-        const planDataCopy = {...planData!}
-        planDataCopy.subplans[planIndex].exercises[exerciseIndex].setgoals[setGoalIndex].timegoal = value
+
+        let planDataCopy = structuredClone(planData!)
+        planDataCopy.subplans[pIndex].exercises[exerciseIndex].setgoals[setGoalIndex].timegoal = value
+
         updateToLocalStorage(planDataCopy)
         setPlanData(planDataCopy)
     }
