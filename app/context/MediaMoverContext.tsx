@@ -2,31 +2,24 @@
 import { BigTrainingStarter, ProgressedIndexesType } from "@/app/types";
 import { createContext, useEffect, useState } from "react";
 
-export const LongPlanContext = createContext<LongPlanContextTypes|null>(null)
+export const MediaMoverContext = createContext<MediaMoverContextTypes|null>(null)
 
-type LongPlanContextTypes = {
-    planData: BigTrainingStarter,
-    setPlanData: React.Dispatch<React.SetStateAction<BigTrainingStarter>>,
-    currentExerciseIndex: number,
-    setCurrentExerciseIndex: React.Dispatch<React.SetStateAction<number>>,
+type MediaMoverContextTypes = {
     start: number,
     current: number,
     totalwidth: number,
-    touchEnd: (e: React.TouchEvent<HTMLDivElement>) => void,
+    touchEnd: (e: React.TouchEvent<HTMLDivElement>) => "none" | "right" | "left",
     touchMove: (e: React.TouchEvent<HTMLDivElement>) => void,
 }
 
 type ModalContextsProviderTypes = {
     children: React.ReactNode,
-    trainingPlanData: BigTrainingStarter
 }
 
-export const LongPlanContextProvider = ({children,trainingPlanData}:ModalContextsProviderTypes) => {
-    const[planData, setPlanData] = useState(trainingPlanData)
+export const MediaMoverContextProvider = ({children}:ModalContextsProviderTypes) => {
     const[start,setStart] = useState(0)
     const[current,setCurrent] = useState(0)
     const[totalwidth,setTotalWidth] = useState(0)
-    const[currentExerciseIndex,setCurrentExerciseIndex] = useState(0)
 
     useEffect(()=>{
         const elem = document.querySelector('.elementWidth')
@@ -42,35 +35,34 @@ export const LongPlanContextProvider = ({children,trainingPlanData}:ModalContext
     }
     
     const touchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-        console.log('ye')
         const end = e.changedTouches[0].clientX
 
-        console.log(start,end,totalwidth)
         if(Math.abs(start-end) < totalwidth/2 || start === 0){
             console.log('RETURNED PREMATURLY')
             setStart(0)
             setCurrent(0)
-            return
+            return 'none'
         } 
         if(start < end){
             // swipe to right
-            currentExerciseIndex > 0 && setCurrentExerciseIndex(currentExerciseIndex-1)
+            //currentExerciseIndex > 0 && setCurrentExerciseIndex(currentExerciseIndex-1)
+            setStart(0)
+            setCurrent(0)
+            return 'right'
         }else{
             //swipe to left
-            currentExerciseIndex < planData.subplans[planData.currentplanindex].exercises.length - 1 && setCurrentExerciseIndex(currentExerciseIndex+1)
+            setStart(0)
+            setCurrent(0)
+            return 'left'
+            //currentExerciseIndex < planData.subplans[planData.currentplanindex].exercises.length - 1 && setCurrentExerciseIndex(currentExerciseIndex+1)
         }
-        setStart(0)
-        setCurrent(0)
+
 
     }
 
     
     return(
-        <LongPlanContext.Provider value={{
-            planData,
-            setPlanData,
-            currentExerciseIndex,
-            setCurrentExerciseIndex,
+        <MediaMoverContext.Provider value={{
             start,
             current,
             totalwidth,
@@ -78,6 +70,6 @@ export const LongPlanContextProvider = ({children,trainingPlanData}:ModalContext
             touchMove
             }}>
                 {children}
-        </LongPlanContext.Provider>
+        </MediaMoverContext.Provider>
     )
 }

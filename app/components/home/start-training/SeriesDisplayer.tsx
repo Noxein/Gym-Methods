@@ -5,6 +5,7 @@ import CheckobxTrueFalse from "../../ui/CheckboxTrueFalse";
 import { nameTrimmer } from "@/app/lib/utils";
 import { handleTypes } from "@/app/lib/exercise-list";
 import { useTranslations } from "next-intl";
+import { TimerContext } from "@/app/context/TimerContext";
 
 type SeriesDisplayerTypes = {
     exercise: ExerciseSubPlanStarter,
@@ -15,7 +16,6 @@ type SeriesDisplayerTypes = {
 }
 
 function SeriesDisplayer({exercise,allHandles}:SeriesDisplayerTypes) {
-    
     const {
         planData,
         setPlanData,
@@ -26,7 +26,7 @@ function SeriesDisplayer({exercise,allHandles}:SeriesDisplayerTypes) {
 
     const handleChange = (handle:string) => {
         const parsedHandle = JSON.parse(handle) as {id: string;handlename: string;}
-        let planDataCopy = {...planData}
+        let planDataCopy = structuredClone(planData)
 
         planDataCopy.subplans[planDataCopy.currentplanindex].exercises[currentExerciseIndex].handle = {handleid: parsedHandle.id, handlename: parsedHandle.handlename}
 
@@ -75,6 +75,8 @@ const SingleSet = ({goal,seriesIndex}:SingleSetTypes) => {
         currentExerciseIndex
     } = useContext(LongPlanContext)!
 
+    const { setFirstDate, setTimePassed } = useContext(TimerContext)!
+
     const checkIfSetIsMet = () => {
         if(goal.isSetCompleted === undefined) return undefined
         if(goal.isSetCompleted) return 'met'
@@ -87,11 +89,17 @@ const SingleSet = ({goal,seriesIndex}:SingleSetTypes) => {
     const[repetitions,setRepetitins] = useState(goal.actuallrepetitions)
     const[time,setTime] = useState(goal.actualltime)
 
-
+    const timerReset = () => {
+        if(typeof goalMet === 'undefined'){
+            setFirstDate(new Date())
+            setTimePassed(0)
+        }
+    }
 
     const flipT = () => {
+        timerReset()
         setGoalMet('met')
-        let planDataCopy = {...planData}
+        let planDataCopy = structuredClone(planData)
         let series = {...planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex]}
         series.actuallrepetitions = series.repetitionsgoal
         series.actuallweight = series.weightgoal
@@ -102,8 +110,9 @@ const SingleSet = ({goal,seriesIndex}:SingleSetTypes) => {
         setPlanData(planDataCopy)
     }
     const flipF = () => {
+        timerReset()
         setGoalMet('notmet')
-        let planDataCopy = {...planData}
+        let planDataCopy = structuredClone(planData)
         let series = {...planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex]}
         planDataCopy.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex] = series
         series.isSetCompleted = false
@@ -111,7 +120,7 @@ const SingleSet = ({goal,seriesIndex}:SingleSetTypes) => {
     }
 
     const handleInputChange = (value:number,changedField:'weight'|'repetition'|'time') => {
-        let planDataCopy = {...planData}
+        let planDataCopy = structuredClone(planData)
         let series = {...planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex]}
         if(changedField==='weight'){
             setWeight(value)
