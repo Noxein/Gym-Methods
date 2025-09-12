@@ -16,7 +16,6 @@ type ModalContextsProviderTypes = {
 
 export const SingleExerciseProgressionProvider = ({children}:ModalContextsProviderTypes) => {
     const[seriesIndexesThatMetGoal,setSeriesIndexesThatMetGoal] = useState<ProgressedIndexesType>({goals:[],series:[]})
-    console.log(seriesIndexesThatMetGoal)
     return(
         <SingleExerciseProgressionContext.Provider value={{
             seriesIndexesThatMetGoal,

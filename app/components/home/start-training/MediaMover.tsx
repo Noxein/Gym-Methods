@@ -18,7 +18,6 @@ function MediaMover({allHandles}:MediaMoverTypes) {
     } = useContext(LongPlanContext)!
 
     const currentPlanName = planData.subplans[planData.currentplanindex].name
-    console.log('MEDIA MOVER')
     return (
         <MediaMoverContextProvider>         
             <MediaMoverContextConsumer currentExerciseIndex={currentExerciseIndex} allHandles={allHandles} currentPlanName={currentPlanName} planData={planData}/>

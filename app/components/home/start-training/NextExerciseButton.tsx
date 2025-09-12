@@ -14,7 +14,6 @@ function NextExerciseButton() {
 
     const nextExercise = () => {
         if(currentExerciseIndex===totalExercises - 1) return
-        console.log(currentExerciseIndex)
         setCurrentExerciseIndex(currentExerciseIndex+1)
         setFirstDate(new Date())
         setTimePassed(0)

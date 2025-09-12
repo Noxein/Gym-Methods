@@ -1,5 +1,5 @@
 'use client'
-import { BigTrainingStarter, ProgressedIndexesType } from "@/app/types";
+import { BigTrainingStarter, ProgressedIndexesType, SubPlanStarter } from "@/app/types";
 import { createContext, useEffect, useState } from "react";
 
 export const LongPlanContext = createContext<LongPlanContextTypes|null>(null)
@@ -14,6 +14,8 @@ type LongPlanContextTypes = {
     totalwidth: number,
     touchEnd: (e: React.TouchEvent<HTMLDivElement>) => void,
     touchMove: (e: React.TouchEvent<HTMLDivElement>) => void,
+    setCurrentLocalData: (currentPlan: SubPlanStarter) => void,
+    deleteCurrentLocalData: () => void
 }
 
 type ModalContextsProviderTypes = {
@@ -31,8 +33,16 @@ export const LongPlanContextProvider = ({children,trainingPlanData}:ModalContext
     useEffect(()=>{
         const elem = document.querySelector('.elementWidth')
         if(elem){
-            console.log(elem)
             setTotalWidth(elem?.clientWidth)
+        }
+
+        const currentPlanLocalData = localStorage.getItem('currenPlanLocalData')
+        if(currentPlanLocalData){
+            const parsedData = JSON.parse(currentPlanLocalData) as SubPlanStarter
+
+            let planClone = structuredClone(planData)
+            planClone.subplans[planClone.currentplanindex] = parsedData
+            setPlanData(planClone)
         }
     },[])
 
@@ -41,13 +51,18 @@ export const LongPlanContextProvider = ({children,trainingPlanData}:ModalContext
         if(!start) setStart(e.changedTouches[0].clientX)
     }
     
+    const setCurrentLocalData = (currentPlan: SubPlanStarter) => {
+        localStorage.setItem('currenPlanLocalData',JSON.stringify(currentPlan))
+    }
+
+    const deleteCurrentLocalData = () => {
+        localStorage.removeItem('currenPlanLocalData')
+    }
+
     const touchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-        console.log('ye')
         const end = e.changedTouches[0].clientX
 
-        console.log(start,end,totalwidth)
         if(Math.abs(start-end) < totalwidth/2 || start === 0){
-            console.log('RETURNED PREMATURLY')
             setStart(0)
             setCurrent(0)
             return
@@ -75,7 +90,9 @@ export const LongPlanContextProvider = ({children,trainingPlanData}:ModalContext
             current,
             totalwidth,
             touchEnd,
-            touchMove
+            touchMove,
+            setCurrentLocalData,
+            deleteCurrentLocalData
             }}>
                 {children}
         </LongPlanContext.Provider>

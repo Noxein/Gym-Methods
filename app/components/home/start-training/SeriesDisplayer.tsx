@@ -1,6 +1,6 @@
 import { LongPlanContext } from "@/app/context/LongPlanContext";
 import { ExerciseSubPlanStarter, SetsDataStarter } from "@/app/types";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CheckobxTrueFalse from "../../ui/CheckboxTrueFalse";
 import { nameTrimmer } from "@/app/lib/utils";
 import { handleTypes } from "@/app/lib/exercise-list";
@@ -20,7 +20,7 @@ function SeriesDisplayer({exercise,allHandles}:SeriesDisplayerTypes) {
         planData,
         setPlanData,
         currentExerciseIndex,
-        setCurrentExerciseIndex
+        setCurrentLocalData
     } = useContext(LongPlanContext)!
 
 
@@ -30,6 +30,7 @@ function SeriesDisplayer({exercise,allHandles}:SeriesDisplayerTypes) {
 
         planDataCopy.subplans[planDataCopy.currentplanindex].exercises[currentExerciseIndex].handle = {handleid: parsedHandle.id, handlename: parsedHandle.handlename}
 
+        setCurrentLocalData(planDataCopy.subplans[planDataCopy.currentplanindex])
         setPlanData(planDataCopy)
     }
         
@@ -72,76 +73,42 @@ const SingleSet = ({goal,seriesIndex}:SingleSetTypes) => {
     const {
         planData,
         setPlanData,
-        currentExerciseIndex
+        currentExerciseIndex,
+        setCurrentLocalData
     } = useContext(LongPlanContext)!
-
-    const { setFirstDate, setTimePassed } = useContext(TimerContext)!
 
     const checkIfSetIsMet = () => {
         if(goal.isSetCompleted === undefined) return undefined
         if(goal.isSetCompleted) return 'met'
         return 'notmet'
-}
-
-    const[goalMet,setGoalMet] = useState<undefined|'met'|'notmet'>(checkIfSetIsMet())
-
-    const[weight,setWeight] = useState(goal.actuallweight)
-    const[repetitions,setRepetitins] = useState(goal.actuallrepetitions)
-    const[time,setTime] = useState(goal.actualltime)
-
-    const timerReset = () => {
-        if(typeof goalMet === 'undefined'){
-            setFirstDate(new Date())
-            setTimePassed(0)
-        }
     }
 
-    const flipT = () => {
-        timerReset()
-        setGoalMet('met')
-        let planDataCopy = structuredClone(planData)
-        let series = {...planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex]}
-        series.actuallrepetitions = series.repetitionsgoal
-        series.actuallweight = series.weightgoal
-        if(series.timegoal) series.actualltime = series.weightgoal
-        series.isSetCompleted = true
-
-        planDataCopy.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex] = series
-        setPlanData(planDataCopy)
-    }
-    const flipF = () => {
-        timerReset()
-        setGoalMet('notmet')
-        let planDataCopy = structuredClone(planData)
-        let series = {...planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex]}
-        planDataCopy.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex] = series
-        series.isSetCompleted = false
-        setPlanData(planDataCopy)
-    }
+    const goalMet = checkIfSetIsMet() 
+    const repetitions = goal.actuallrepetitions
+    const weight = goal.actuallweight
+    const time = goal.actualltime
 
     const handleInputChange = (value:number,changedField:'weight'|'repetition'|'time') => {
         let planDataCopy = structuredClone(planData)
         let series = {...planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex]}
         if(changedField==='weight'){
-            setWeight(value)
             series.actuallweight = value
         } 
         if(changedField==='repetition'){
-            setRepetitins(value)
             series.actuallrepetitions = value
         } 
         if(changedField==='time'){
-            setTime(value)
             series.actualltime = value
         } 
         planDataCopy.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex] = series
+        setCurrentLocalData(planDataCopy.subplans[planData.currentplanindex])
         setPlanData(planDataCopy)
 
     }
     return(
         <div className={`px-4 py-2 border-2 border-borderInteractive rounded-lg flex flex-col  ${goalMet!== undefined && goalMet === 'met' ? 'bg-gradient-to-tr from-green-700 to-green' : goalMet!== undefined && goalMet === 'notmet' ? 'bg-gradient-to-r from-red to-red-200' : ''}`}>
             <div className="flex justify-around">
-                <CheckobxTrueFalse typeOfCheckbox='green' isChecked={goalMet===undefined ? false : goalMet==='met' ? true : false} isActive={goalMet!==undefined} onClick={flipT}/>
+                <CheckobxTrueFalse typeOfCheckbox='green' isChecked={goalMet===undefined ? false : goalMet==='met' ? true : false} isActive={goalMet!==undefined} goalMet={goalMet} seriesIndex={seriesIndex}/>
 
                 <div className="flex-1 justify-around flex">
                     <span>{goal.repetitionsgoal} x</span>
@@ -149,7 +116,7 @@ const SingleSet = ({goal,seriesIndex}:SingleSetTypes) => {
                     {goal.timegoal && <span>{goal.timegoal} s</span>}
                 </div>
 
-                <CheckobxTrueFalse typeOfCheckbox='red' isChecked={goalMet===undefined ? false : goalMet==='notmet' ? true : false} isActive={goalMet!==undefined} onClick={flipF}/>
+                <CheckobxTrueFalse typeOfCheckbox='red' isChecked={goalMet===undefined ? false : goalMet==='notmet' ? true : false} isActive={goalMet!==undefined} goalMet={goalMet} seriesIndex={seriesIndex}/>
             </div>
             {goalMet === 'notmet' && 
                 <div className="flex gap-2 mx-5 mt-2">

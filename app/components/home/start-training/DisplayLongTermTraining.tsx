@@ -18,6 +18,7 @@ import { TimerContext } from "@/app/context/TimerContext";
 import TimerWrapper from "./TimerWrapper";
 import NextExerciseButton from "./NextExerciseButton";
 import PreviousExerciseButton from "./PreviousExerciseButton";
+import { useRouter } from "next/navigation";
 
 type DisplayLongTermTrainingTypes = {
     allHandles: {
@@ -30,21 +31,40 @@ function DisplayLongTermTraining({allHandles}:DisplayLongTermTrainingTypes) {
     const {
         planData,
         currentExerciseIndex,
+        deleteCurrentLocalData
     } = useContext(LongPlanContext)!
+
+    const router = useRouter()
 
     const[showHistory,setShowHistory] = useState(false)
     const[historyCache,setHistoryCache] = useState<{ [key: string]: ExerciseType | null; } | undefined>({})
     const[showCloseTrainingModal,setShowCloseTrainingModal] = useState(false)
+    const[loading,setLoading] = useState(false)
+    const[error,setError] = useState('')
 
     const currentExerciseId = planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex].exerciseid 
     
     const flip = () => {
         setShowCloseTrainingModal(!showCloseTrainingModal)
     }
+
     const handleCloseTraining = async (planData:BigTrainingStarter) => {
+        setLoading(true)
+
         const error = await  updateBigPlan(planData,new Date())
+
+        if(error){
+            setError(error.error)
+            setLoading(false)
+            return
+        }
+
+        deleteCurrentLocalData()
+        router.push('/home')
+        setLoading(false)
+
     }
-    console.log('MOVED')
+
     return ( <div className="mx-5 mb-44">
         <div className="flex justify-between mt-2">
             <p className="text-neutral-400">{planData.name}</p>
@@ -73,7 +93,7 @@ function DisplayLongTermTraining({allHandles}:DisplayLongTermTrainingTypes) {
         </div>
         {showCloseTrainingModal && 
             <BlurBackgroundModal onClick={flip}>
-                <CloseTrainingModal flip={flip} handleCloseTraining={handleCloseTraining}/>
+                <CloseTrainingModal flip={flip} handleCloseTraining={handleCloseTraining} loading={loading} error={error}/>
             </BlurBackgroundModal>}
     </div> );
 }

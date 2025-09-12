@@ -27,7 +27,6 @@ function MediaMoverContextConsumer({currentExerciseIndex,currentPlanName,planDat
         touchEnd,
         touchMove
     } = useContext(MediaMoverContext)!
-        console.log('MEDIA MOVER CONSUMER')
         
     const media = (e: React.TouchEvent<HTMLDivElement>) => {
         const val = touchEnd(e)
@@ -46,7 +45,7 @@ function MediaMoverContextConsumer({currentExerciseIndex,currentPlanName,planDat
         {planData.subplans[planData.currentplanindex].exercises.map(exercise=>            
             <div className="relative duration-75 w-[94vw]" key={exercise.exerciseid} style={{ transform: `translateX(-${currentExerciseIndex * totalwidth - (current - start)}px)`}}>
                 <div className={`bg-darkLight rounded-lg px-5 h-[calc(50vh)] w-[94vw] mt-2 overflow-scroll elementWidth`}>
-                    <div className="text-center text-white text-2xl font-semibold sticky top-0  ">
+                    <div className="text-center text-white text-2xl font-semibold sticky top-0  z-30">
                         <p className="bg-darkLight pt-5">{currentPlanName} - {exercise.exercisename}</p>
                         <div className="h-5 w-full bg-gradient-to-b from-darkLight to-transparent">
 

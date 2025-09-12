@@ -1857,7 +1857,6 @@ export const updateBigPlan = async (planData: BigTrainingStarter, userDate: Date
         console.log(e)
         return 
     }
-    redirect('/home')
 }
 
 export const getStartedTrainingsList = async () => {

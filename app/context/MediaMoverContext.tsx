@@ -24,7 +24,6 @@ export const MediaMoverContextProvider = ({children}:ModalContextsProviderTypes)
     useEffect(()=>{
         const elem = document.querySelector('.elementWidth')
         if(elem){
-            console.log(elem)
             setTotalWidth(elem?.clientWidth)
         }
     },[])
@@ -38,7 +37,6 @@ export const MediaMoverContextProvider = ({children}:ModalContextsProviderTypes)
         const end = e.changedTouches[0].clientX
 
         if(Math.abs(start-end) < totalwidth/2 || start === 0){
-            console.log('RETURNED PREMATURLY')
             setStart(0)
             setCurrent(0)
             return 'none'
