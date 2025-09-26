@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useRef, useContext } from 'react'
-import { ActionTypes, AddExerciceReducerType, ExerciseType, ProgressedIndexesType, Progression, Side as SideType } from '../../types'
+import { ActionTypes, AddExerciceReducerType, ExerciseType, InputsType, ProgressedIndexesType, Progression, Side as SideType } from '../../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
 import { AddExerciseAction } from '../../actions'
 import { usePathname, useRouter } from 'next/navigation'
@@ -35,6 +35,18 @@ type AddExerciseType = {
     exerciseProgression?: Progression,
 }
 
+const updateInputsInMemory = (state:AddExerciceReducerType,exerciseName: string) => {
+    let stateCopy = {
+        difficultyLevel: state.difficultyLevel,
+        repeat: state.repeat,
+        side: state.side,
+        time: state.time,
+        weight: state.weight
+    } as InputsType
+
+    localStorage.setItem(exerciseName+'singleExerciseMemoryData',JSON.stringify(stateCopy))
+}
+
 export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch,isLoading = false,exerciseid,requiresHandle,allHandles,exerciseProgression}:AddExerciseType) => {
     const[error,setError] = useState<string>('')
     const[loading,setLoading] = useState(false)
@@ -48,8 +60,20 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
 
     const {setSeriesIndexesThatMetGoal} = useContext(SingleExerciseProgressionContext)!
 
+    
+
     useEffect(()=>{
         const data = localStorage.getItem(name+'singleExercise')
+        const inputs = localStorage.getItem(name+'singleExerciseMemoryData')
+
+        if(inputs){
+            const parsedInputs = JSON.parse(inputs) as InputsType
+            dispatch({type:'WEIGHT',payload:parsedInputs.weight})
+            dispatch({type:'REPEAT',payload:parsedInputs.repeat})
+            dispatch({type:'SIDE',payload:parsedInputs.side})
+            dispatch({type:'DIFFICULTY',payload:parsedInputs.difficultyLevel})
+            dispatch({type:'TIME',payload:parsedInputs.time})
+        }
         if(data){
             const parsedData = JSON.parse(data)
             dispatch({type:"SETSERIESFROMMEMORY",payload:parsedData})
@@ -59,6 +83,8 @@ export const AddExercise = ({name,showTimeMesure,isTraining=false,state,dispatch
         }
     },[name])
     
+    updateInputsInMemory(state,name)
+
     const ResetLocalStorage = () => {
         localStorage.removeItem(name+"singleExercise")
     }
@@ -175,11 +201,15 @@ const Label = ({sClass,...rest}:LabelType) => {
 
 const WeightAndRepeatInputs = ({dispach,state}:{dispach:React.Dispatch<ActionTypes>,state:AddExerciceReducerType}) => {
     const u = useTranslations("Utils")
+
+    const weightChange = (value: string) => {
+        dispach({type:"WEIGHT",payload:Number(value)})
+    }
     return (
         <div className='flex items-center gap-2'>
             <div className='flex flex-col flex-1 relative'>
                 <Label htmlFor='weight'>{u("Weight")}</Label>
-                <Input type="number" id='weight' onChange={e=>dispach({type:"WEIGHT",payload:Number(e.target.value)})} value={state.weight} min={1}/>
+                <Input type="number" id='weight' onChange={e=>weightChange(e.target.value)} value={state.weight} min={1}/>
             </div>
 
             <div className='flex flex-col flex-1 relative'>

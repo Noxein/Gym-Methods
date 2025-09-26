@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { ActionTypes, AddExerciceReducerType, DifficultyLevelType, Side } from "../types";
+import { ActionTypes, AddExerciceReducerType, DifficultyLevelType, Series, Side } from "../types";
 
 export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTypes):AddExerciceReducerType => {
     if(typeof action.payload === 'number'){
@@ -78,7 +78,7 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
         case 'SETSERIESFROMMEMORY':
             if(action.payload && typeof action.payload !== 'number' && typeof action.payload !== 'string'){
                 return {
-                    ...state, series: action.payload
+                    ...state, series: action.payload as Series[]
                 }
             };
         case 'DELETESERIES':

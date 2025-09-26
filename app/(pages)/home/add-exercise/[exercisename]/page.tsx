@@ -3,7 +3,6 @@ import { ArrayOfAllExercises, getAllHandleTypes, getUserExerciseIdUsingName, get
 import { AddExerciseStateProvider } from '@/app/components/add-exercise/AddExerciseStateProvider'
 import { exercisesArr } from '@/app/lib/exercise-list'
 import { getLocale, getTranslations } from 'next-intl/server'
-import { getUser } from '@/app/lib/getUserDb'
 
 export async function generateMetadata() {
   const locale = getLocale()

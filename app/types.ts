@@ -27,11 +27,13 @@ export type DifficultyLevelType = 'easy'|'medium'|'hard'
 
 export type ActionTypes = {
     type: ActionTypesEnum
-    payload?: number | DifficultyLevelType | Series[] | string,
+    payload?: number | DifficultyLevelType | Series[] | string
     index?: number
 }
 
-export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES' | 'EDITSERIESKG' | 'EDITSERIESREPEAT' | 'EDITSERIESSIDE' | 'EDITSERIESDIFFICULTY' | 'TIME' | 'EDITSERIESTIME' | 'RESETSTATE' | 'SIDE'
+export type InputsType = {weight: number, repeat: number, side: Side ,difficultyLevel: DifficultyLevelType ,time: number}
+
+export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES' | 'EDITSERIESKG' | 'EDITSERIESREPEAT' | 'EDITSERIESSIDE' | 'EDITSERIESDIFFICULTY' | 'TIME' | 'EDITSERIESTIME' | 'RESETSTATE' | 'SIDE' | 'SETINPUTS'
 
 export type UserExercise = {
     id:string,

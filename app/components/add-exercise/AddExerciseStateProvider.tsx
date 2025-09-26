@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useReducer } from 'react'
 import { AddExercise } from './AddExercise'
-import { ActionTypes, AddExerciceReducerType, Progression } from '@/app/types'
+import { ActionTypes, AddExerciceReducerType, InputsType, Progression } from '@/app/types'
 import { AddExerciceReducer } from '@/app/lib/reducers'
 import { TimerContextProvider } from '@/app/context/TimerContext'
 import { SingleExerciseProgressionProvider } from '@/app/context/SingleExerciseProgressionContext'
@@ -26,9 +26,32 @@ type AddExerciseStateProviderTypes = {
     }[],
     exerciseProgression?: Progression,
 }
+
+const initalData = (exerciseName:string) => {
+  let init = {
+    weight: 0,
+    repeat: 0,
+    side: 'Both',
+    series:[],
+    difficultyLevel: "easy",
+    time: 0
+  } as AddExerciceReducerType
+
+  const data = localStorage.getItem(exerciseName+'singleExerciseMemoryData')
+  if(!data) return init
+
+  const parsedData = JSON.parse(data) as InputsType
+  init.difficultyLevel = parsedData.difficultyLevel
+  init.repeat = parsedData.repeat
+  init.side = parsedData.side
+  init.time = parsedData.time
+  init.weight = parsedData.weight
+
+  return init
+}
+
 export const AddExerciseStateProvider = ({name,showTimeMesure,exerciseid,requiresHandle,allHandles,exerciseProgression}:AddExerciseStateProviderTypes) => {
-    const[state,dispatch] = useReducer<(state: AddExerciceReducerType, action: ActionTypes) => AddExerciceReducerType>(AddExerciceReducer,init)
-    
+    const[state,dispatch] = useReducer<(state: AddExerciceReducerType, action: ActionTypes) => AddExerciceReducerType>(AddExerciceReducer,initalData(name))
     useEffect(()=>{
       const data = localStorage.getItem('lastexercises')
 
@@ -38,6 +61,8 @@ export const AddExerciseStateProvider = ({name,showTimeMesure,exerciseid,require
       } 
 
       const parsedData: string[] = JSON.parse(data)
+
+      if(parsedData.includes(name)) return
       if(parsedData.length === 1) return localStorage.setItem('lastexercises',JSON.stringify([name,parsedData[0]]))
 
       localStorage.setItem('lastexercises',JSON.stringify([name,parsedData[0]]))
