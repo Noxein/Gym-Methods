@@ -1,4 +1,4 @@
-import { AllExercisesInOneArray, getAllExercises, GetUserTrainings } from "@/app/actions"
+import { AllExercisesInOneArray, getAllExercises, getUserLongTrainigs, GetUserTrainings } from "@/app/actions"
 import LongTermPlan from "@/app/components/profile/long-term-plans/long-term-plan-name/LongTermPlan"
 import { LongPlanEditorProvider } from "@/app/context/LongPlanEditorContext"
 

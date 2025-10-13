@@ -1,7 +1,7 @@
 'use client'
 import { BigTrainingData, EditedLongTermTraining, ExercisesThatRequireTimeMesureOrHandle } from "@/app/types";
-import { createContext, useEffect, useRef, useState } from "react";
-import { getAllHandleTypes, getPlanData, userExercisesThatRequireHandlesOrTimeMesure } from "../actions";
+import { createContext, MutableRefObject, useEffect, useRef, useState } from "react";
+import { getAllHandleTypes, getPlanData, getUserLongTrainigs, userExercisesThatRequireHandlesOrTimeMesure } from "../actions";
 import { useParams } from "next/navigation";
 import { localStorageSetter } from "../lib/utils";
 
@@ -14,8 +14,10 @@ type LongPlanEditorContextTypes = {
     planIndexRef: React.MutableRefObject<number>,
     exerciseIndexRef: React.MutableRefObject<number>,
 
+    showCloneTraingModal: boolean,
+    setShowCloneTraingModal: React.Dispatch<React.SetStateAction<boolean>>,
     showDeleteExercisePopUp: boolean,
-    setShowDeleteExercisePopUp: React.Dispatch<React.SetStateAction<boolean>>
+    setShowDeleteExercisePopUp: React.Dispatch<React.SetStateAction<boolean>>,
     showDeleteTrainigPopUp: boolean,
     setShowDeleteTrainigPopUp: React.Dispatch<React.SetStateAction<boolean>>,
     showImportTrainingModal: boolean,
@@ -31,6 +33,11 @@ type LongPlanEditorContextTypes = {
     setState: React.Dispatch<React.SetStateAction<'loading'|'idle'|'error'|'succes'|'uploading'>>,
     updateToLocalStorage: (obj:BigTrainingData) => void,
     errorMessage:string,
+    userTrainings: MutableRefObject<{
+        id: string;
+        name: string;
+    }[]>,
+    clonePlan: (planName: string) => Promise<void>
 }
 
 type ModalContextsProviderTypes = {
@@ -42,6 +49,8 @@ export const LongPlanEditorProvider = ({children}:ModalContextsProviderTypes) =>
     const[showDeleteExercisePopUp,setShowDeleteExercisePopUp] = useState(false)
     const[showDeleteTrainigPopUp,setShowDeleteTrainigPopUp] = useState(false)
     const[showImportTrainingModal,setShowImportTrainingModal] = useState(false)
+    const[showCloneTraingModal,setShowCloneTraingModal] = useState(false)
+    const userTrainings = useRef<{id:string, name: string}[]>([])
     const planIndexRef = useRef(0)
     const exerciseIndexRef = useRef(0)
     const[handleAndTimeMesureExercises,setHandleAndTimeMesureExercises] = useState<{    
@@ -93,9 +102,24 @@ export const LongPlanEditorProvider = ({children}:ModalContextsProviderTypes) =>
             setPlanData(planDataForSettlement as BigTrainingData)
 
             setState('succes')
+
+            const userLongTrainigs = await getUserLongTrainigs()
+            userTrainings.current = userLongTrainigs
+
         }
         func()
+        
     },[])
+
+    const clonePlan = async (planName:string) => {
+        let data = await getPlanData(planName)
+
+        if(data.error) return
+
+        data.data.name = planData?.name!
+        data.data.id = planData?.id!
+        setPlanData(data.data)
+    }
     return(
         <LongPlanEditorContext.Provider value={{
             planData,
@@ -104,6 +128,8 @@ export const LongPlanEditorProvider = ({children}:ModalContextsProviderTypes) =>
             planIndexRef,
             exerciseIndexRef,
 
+            showCloneTraingModal,
+            setShowCloneTraingModal,
             showDeleteExercisePopUp,
             setShowDeleteExercisePopUp,
             showDeleteTrainigPopUp,
@@ -117,7 +143,9 @@ export const LongPlanEditorProvider = ({children}:ModalContextsProviderTypes) =>
             state,
             setState,
             updateToLocalStorage,
-            errorMessage
+            errorMessage,
+            userTrainings,
+            clonePlan
             }}>
                 {children}
         </LongPlanEditorContext.Provider>
