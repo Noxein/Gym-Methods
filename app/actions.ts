@@ -1701,7 +1701,6 @@ export const getPlanData = async (planname: string) => {
         `
 
         if(data.rows.length < 1){
-            console.log('bład32131232')
             return {data : {} as BigTrainingData, error: 'Training not found' }
         } 
 
@@ -1871,5 +1870,20 @@ export const getStartedTrainingsList = async () => {
 
     }catch(e){
         console.log(e)
+    }
+}
+
+export const getUserLongTrainigs = async () => {
+    const userid = await userID()
+
+    try{
+        const list = await sql`
+            SELECT id,name FROM bigtraining WHERE userid = ${userid}
+        `
+
+        return list.rows as {id: string, name: string}[]
+
+    }catch(e){
+        return []
     }
 }

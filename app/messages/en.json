@@ -36,7 +36,8 @@
         "AddSeries":"Add series",
         "Import": "Import",
         "AddExercise":"Add exercise",
-        "AddTraining": "Add training"
+        "AddTraining": "Add training",
+        "Clone": "Clone"
     },
     "Login": {
         "Login": "Login",
@@ -180,6 +181,11 @@
         "DeleteThisTraining": "Delete this training",
         "TrainingsFromThisPlan": "Trainings from this plan",
         "DifferentTrainings": "Different trainings"
+    },
+    "Home/Profile/Long-Term-Plans/[LongTermPlanName]":{
+        "CloneTraining": "Clone training",
+        "WhichTrainingToClone": "Which training to clone",
+        "AreYouSureYouWantToCloneTraining": "Are you sure you want to clone training"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Continue training",
