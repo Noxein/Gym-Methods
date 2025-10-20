@@ -14,7 +14,7 @@ interface CheckobxTrueFalseTypes extends React.DetailedHTMLProps<React.HTMLAttri
 
 function CheckobxTrueFalse({typeOfCheckbox,isChecked,isActive,goalMet,seriesIndex,...rest}:CheckobxTrueFalseTypes) {
 
-        const { setFirstDate, setTimePassed } = useContext(TimerContext)!
+        const { newDateSetter, setTimePassed } = useContext(TimerContext)!
     
     const {
         planData,
@@ -25,7 +25,7 @@ function CheckobxTrueFalse({typeOfCheckbox,isChecked,isActive,goalMet,seriesInde
 
         const timerReset = () => {
         if(typeof goalMet === 'undefined'){
-            setFirstDate(new Date())
+            newDateSetter(new Date())
             setTimePassed(0)
         }
     }

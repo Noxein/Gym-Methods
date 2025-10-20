@@ -13,14 +13,14 @@ function PreviousExerciseButton() {
     } = useContext(LongPlanContext)!
 
     const {
-        setFirstDate,
+        newDateSetter,
         setTimePassed,
     } = useContext(TimerContext)!
     
     const previousExercise = () => {
         if(currentExerciseIndex=== 0) return
         setCurrentExerciseIndex(currentExerciseIndex-1)
-        setFirstDate(new Date())
+        newDateSetter(new Date())
         setTimePassed(0)
     }
 

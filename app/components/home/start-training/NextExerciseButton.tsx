@@ -7,6 +7,11 @@ import { TimerContext } from "@/app/context/TimerContext";
 
 function NextExerciseButton() {
     const {
+        newDateSetter,
+        setTimePassed,
+    } = useContext(TimerContext)!
+
+    const {
         planData,
         currentExerciseIndex,
         setCurrentExerciseIndex,
@@ -15,14 +20,9 @@ function NextExerciseButton() {
     const nextExercise = () => {
         if(currentExerciseIndex===totalExercises - 1) return
         setCurrentExerciseIndex(currentExerciseIndex+1)
-        setFirstDate(new Date())
+        newDateSetter(new Date())
         setTimePassed(0)
     }
-
-    const {
-        setFirstDate,
-        setTimePassed,
-    } = useContext(TimerContext)!
 
     const totalExercises = planData.subplans[planData.currentplanindex].exercises.length
 
