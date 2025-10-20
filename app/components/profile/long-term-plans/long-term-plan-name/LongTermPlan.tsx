@@ -17,6 +17,7 @@ import { LoaderFullScreen } from "@/app/components/Loading/LoaderFullScreen";
 import { ErrorDiv } from "@/app/components/ui/ErrorDiv";
 import { handleSaveLongTermPlan } from "@/app/actions";
 import { useTranslations } from "next-intl";
+import CloneTrainingModal from "./CloneTrainingModal";
 
 type LongTermPlanTypes = {
     UserTrainings: UserTrainingPlan[],
@@ -27,10 +28,13 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
 
     const e = useTranslations('Errors')
     const u = useTranslations("Utils")
+    const t = useTranslations("Home/Profile/Long-Term-Plans/[LongTermPlanName]")
     
     const { 
         planData,
         setPlanData,
+        showCloneTraingModal,
+        setShowCloneTraingModal,
         showDeleteExercisePopUp,
         setShowDeleteExercisePopUp,
         showDeleteTrainigPopUp,
@@ -129,6 +133,9 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
         router.push('/home/profile/long-term-plans')
     }
     
+    const showCloneTraingModalFunc = () => {
+        setShowCloneTraingModal(true)
+    }
 
     if(state === 'loading') return <LoaderFullScreen />
     
@@ -137,7 +144,9 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
     return (
     <div className="mx-5 mt-5 flex flex-col mb-24 relative min-h-[calc(100vh-100px)]">
 
-        <p className="text-3xl text-center text-white font-normal">{planData?.name}</p>
+        <p className="text-3xl text-center text-white font-normal pb-4">{planData?.name}</p>
+
+        <Button isPrimary className="mb-4" onClick={showCloneTraingModalFunc}>{t("CloneTraining")}</Button>
 
         <div className="flex flex-col gap-4">
             {planData && planData.subplans?.map((plan,planIndex)=><SinglePlan key={plan.id} plan={plan} planIndex={planIndex} allExercisesInOneArray={allExercisesInOneArray}/>)}
@@ -169,6 +178,10 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
             handleClose={handleCloseAddExercise}
             handleSelect={handleSelectExercise}
         />}
+
+        {showCloneTraingModal && <BlurBackgroundModal onClick={()=>setShowCloneTraingModal(false)}>
+            <CloneTrainingModal />
+        </BlurBackgroundModal>}
       
     </div>);
 }

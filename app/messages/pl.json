@@ -36,7 +36,8 @@
         "AddSeries":"Dodaj serie",
         "Import": "Importuj",
         "AddExercise":"Dodaj ćwiczenie",
-        "AddTraining": "Dodaj trening"
+        "AddTraining": "Dodaj trening",
+        "Clone": "Skopiuj"
     },
     "Login": {
         "Login": "Zaloguj",
@@ -180,6 +181,11 @@
         "DeleteThisTraining": "Usuń ten trening",
         "TrainingsFromThisPlan": "Treningi z tego planu",
         "DifferentTrainings": "Inne treningi"
+    },
+    "Home/Profile/Long-Term-Plans/[LongTermPlanName]":{
+        "CloneTraining": "Skopiuj trening",
+        "WhichTrainingToClone": "Który trening skopiować",
+        "AreYouSureYouWantToCloneTraining": "Czy napewno chcesz skopiować trening"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Kontynuuj trening",
