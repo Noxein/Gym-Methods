@@ -225,7 +225,7 @@ const DifficultyLevel = ({dispach,state,showTimeMesure}:{dispach:React.Dispatch<
     return(<div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='difficulty' className={`text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark`} >{u("Difficulty")}</label>
-            <select name="difficulty" id="difficulty" className={`bg-dark pl-3 text-marmur border-borderInteractive border-2 rounded-md h-10`} onChange={e=>{dispach({type:"DIFFICULTY",payload:e.target.value as 'easy'|'medium'|'hard'})}}>
+            <select name="difficulty" id="difficulty" className={`bg-dark pl-3 text-marmur border-borderInteractive border-2 rounded-md h-10`} value={state.difficultyLevel} onChange={e=>{dispach({type:"DIFFICULTY",payload:e.target.value as 'easy'|'medium'|'hard'})}}>
                 <option value="easy">{u("Easy")}</option>
                 <option value="medium">{u("Medium")}</option>
                 <option value="hard">{u("Hard")}</option>
