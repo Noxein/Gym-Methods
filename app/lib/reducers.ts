@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { ActionTypes, AddExerciceReducerType, DifficultyLevelType, Series, Side } from "../types";
+import { ActionTypes, AddExerciceReducerType, DifficultyLevelType, HandleType, Series, Side } from "../types";
 
 export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTypes):AddExerciceReducerType => {
     if(typeof action.payload === 'number'){
@@ -66,6 +66,8 @@ export const AddExerciceReducer = (state:AddExerciceReducerType,action:ActionTyp
     }
 
     switch (action.type) {
+        case 'HANDLE':
+            return { ...state, handle: action.payload as HandleType };
         case "ADDSERIES":
             return { ...state, series: [...state.series, { 
                 weight: state.weight,

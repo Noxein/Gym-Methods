@@ -17,7 +17,7 @@ export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseLi
   const[searchField,setSearchField] = useState('')
   const[lastExercises,setLastExercises] = useState<string[]>([])
   useEffect(()=>{
-    const lastExercisesA = localStorage.getItem('lastexercises')
+    const lastExercisesA = localStorage.getItem('twoRecentExercises')
     if(!lastExercisesA) return
 
     const parsedData: string[] = JSON.parse(lastExercisesA)

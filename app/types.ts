@@ -19,6 +19,7 @@ export type AddExerciceReducerType = {
     series: Series[],
     difficultyLevel: DifficultyLevelType,
     time?: number,
+    handle?: HandleType
 }
 
 export type Side = 'Both' | 'Left' | 'Right'
@@ -27,13 +28,13 @@ export type DifficultyLevelType = 'easy'|'medium'|'hard'
 
 export type ActionTypes = {
     type: ActionTypesEnum
-    payload?: number | DifficultyLevelType | Series[] | string
+    payload?: number | DifficultyLevelType | Series[] | string | HandleType
     index?: number
 }
 
 export type InputsType = {weight: number, repeat: number, side: Side ,difficultyLevel: DifficultyLevelType ,time: number}
 
-export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES' | 'EDITSERIESKG' | 'EDITSERIESREPEAT' | 'EDITSERIESSIDE' | 'EDITSERIESDIFFICULTY' | 'TIME' | 'EDITSERIESTIME' | 'RESETSTATE' | 'SIDE' | 'SETINPUTS'
+export type ActionTypesEnum = 'WEIGHT'|'REPEAT'|'TEMPOUP'|'TEMPODOWN'|'ADDSERIES'|'DIFFICULTY'|'SETSERIESFROMMEMORY'|'DELETESERIES' | 'EDITSERIESKG' | 'EDITSERIESREPEAT' | 'EDITSERIESSIDE' | 'EDITSERIESDIFFICULTY' | 'TIME' | 'EDITSERIESTIME' | 'RESETSTATE' | 'SIDE' | 'SETINPUTS' |'HANDLE'
 
 export type UserExercise = {
     id:string,
@@ -389,3 +390,17 @@ export type SetsDataStarter = {
     isSetCompleted: boolean | undefined,
 }
 
+export type SingleExerciseLocalMemoryData = {
+    weight: number,
+    repeat: number,
+    side: Side,
+    difficultyLevel: DifficultyLevelType,
+    time?: number,
+    series: Series[],
+    handle?: HandleType,
+}
+
+export type HandleType = {
+    id: string,
+    handlename: string,
+}

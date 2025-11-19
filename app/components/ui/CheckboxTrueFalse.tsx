@@ -25,7 +25,8 @@ function CheckobxTrueFalse({typeOfCheckbox,isChecked,isActive,goalMet,seriesInde
 
         const timerReset = () => {
         if(typeof goalMet === 'undefined'){
-            newDateSetter(new Date())
+            const exerciseName = planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex].exercisename
+            newDateSetter(new Date(),exerciseName)
             setTimePassed(0)
         }
     }

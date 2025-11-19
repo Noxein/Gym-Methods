@@ -19,8 +19,9 @@ function NextExerciseButton() {
 
     const nextExercise = () => {
         if(currentExerciseIndex===totalExercises - 1) return
+        const exerciseName = planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex+1].exercisename
         setCurrentExerciseIndex(currentExerciseIndex+1)
-        newDateSetter(new Date())
+        newDateSetter(new Date(),exerciseName)
         setTimePassed(0)
     }
 

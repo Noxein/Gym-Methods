@@ -2,28 +2,28 @@ import React, { useContext } from 'react'
 import { ButtonWithIcon } from '../ui/ButtonWithIcon';
 import { Icon } from '../Icon';
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon';
-import { ActionTypes, AddExerciceReducerType, ProgressedIndexesType, Progression, ProgressionType, SholudAddWeightType } from '@/app/types';
+import { ActionTypes, AddExerciceReducerType, ProgressedIndexesType, Progression, ProgressionType, SholudAddWeightType, SingleExerciseLocalMemoryData } from '@/app/types';
 import { useTranslations } from 'next-intl';
 import { TimerContext } from '@/app/context/TimerContext';
 import { SingleExerciseProgressionContext } from '@/app/context/SingleExerciseProgressionContext';
 import { v4 } from 'uuid';
 import { getProgressedSeriesIndexes } from '@/app/lib/utils';
+import { ExerciseDataContext } from '@/app/context/ExerciseDataContext';
 
 type ButtonToAddSeriesExerciseTypes = {
-    name: string,
     dispatch: (value: ActionTypes) => void,
     state: AddExerciceReducerType,
     isLoading: boolean,
     loading: boolean,
-    goal?: Progression
 }
 
-export const ButtonToAddSeriesExercise = ({name,dispatch,state,isLoading,loading,goal}:ButtonToAddSeriesExerciseTypes) => {
+export const ButtonToAddSeriesExercise = ({dispatch,state,isLoading,loading}:ButtonToAddSeriesExerciseTypes) => {
     const t = useTranslations("Home/Add-Exercise/[Exercise-Name]")
     
     const timeContext = useContext(TimerContext)
     const progressionContext = useContext(SingleExerciseProgressionContext)
     const {seriesIndexesThatMetGoal, setSeriesIndexesThatMetGoal} = progressionContext!
+    const { exerciseData, progressions } = useContext(ExerciseDataContext)!
 
     const { newDateSetter, setTimePassed } = timeContext!
         const AddSeries = () => {
@@ -39,11 +39,20 @@ export const ButtonToAddSeriesExercise = ({name,dispatch,state,isLoading,loading
             difficulty: state.difficultyLevel,
             id: id
         }
-        localStorage.setItem(name+'singleExercise',JSON.stringify([...state.series,set]))
+        const data = localStorage.getItem(name+'singleExerciseChanged')
+        let dataParsed = data ? JSON.parse(data) as SingleExerciseLocalMemoryData : null
 
-        let indexes:ProgressedIndexesType = getProgressedSeriesIndexes([...state.series,set],goal)
+        if(dataParsed){
+            dataParsed.series = [...dataParsed.series,set]
+            localStorage.setItem(name+'singleExerciseChanged',JSON.stringify(dataParsed))
+        }
+
+        
+        const progression = progressions[exerciseData.name]
+
+        let indexes:ProgressedIndexesType = getProgressedSeriesIndexes([...state.series,set],progression)
         setSeriesIndexesThatMetGoal(indexes)
-        newDateSetter(new Date())
+        newDateSetter(new Date(), exerciseData.name)
         setTimePassed(0)
     }
 
