@@ -5,32 +5,34 @@ import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import { useTranslations } from 'next-intl'
 import { SingleExerciseProgressionContext } from '@/app/context/SingleExerciseProgressionContext'
 import { getProgressedSeriesIndexes } from '@/app/lib/utils'
+import { ExerciseDataContext } from '@/app/context/ExerciseDataContext'
 
 type DisplayCurrentSeriesTypes = {
-    exercisename:string,
     currentSeries:Series[],
     dispatchSeries:React.Dispatch<ActionTypes>,
-    showTimeMesure:boolean,
     isTraining: boolean,
-    goal?: Progression
 }
-export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,showTimeMesure,isTraining,goal}:DisplayCurrentSeriesTypes) => {
+export const DisplayCurrentSeries = ({currentSeries,dispatchSeries,isTraining}:DisplayCurrentSeriesTypes) => {
 
+    const { exerciseData, progressions, loading } = useContext(ExerciseDataContext)!
+        
     const {seriesIndexesThatMetGoal,setSeriesIndexesThatMetGoal} = useContext(SingleExerciseProgressionContext)!
     const deleteSet = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,index:number) => {
         e.preventDefault()
         dispatchSeries({type:"DELETESERIES",payload:index})
         console.log(currentSeries.filter((set,i)=>i!==index))
-        localStorage.setItem(exercisename+'singleExercise',JSON.stringify(currentSeries.filter((set,i)=>i!==index)))
+        localStorage.setItem(exerciseData.name+'singleExerciseChanged',JSON.stringify(currentSeries.filter((set,i)=>i!==index)))
     }
     const editInput = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,index:number,field:ActionTypesEnum) => {
+        const progression = progressions[exerciseData.name]
+
         const arrayCopy = [...currentSeries]
         if(field === 'EDITSERIESKG'){
             if(e.target.value.length > 3) return
             dispatchSeries({type:field,index, payload:Number(e.target.value)});
             arrayCopy[index].weight = Number(e.target.value)
 
-            let indexes:ProgressedIndexesType = getProgressedSeriesIndexes([...arrayCopy],goal)
+            let indexes:ProgressedIndexesType = getProgressedSeriesIndexes([...arrayCopy],progression)
             setSeriesIndexesThatMetGoal(indexes)
         }
         if(field === 'EDITSERIESREPEAT'){
@@ -38,7 +40,7 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
             dispatchSeries({type:field,index, payload:Number(e.target.value)});
             arrayCopy[index].repeat = Number(e.target.value)
 
-            let indexes:ProgressedIndexesType = getProgressedSeriesIndexes([...arrayCopy],goal)
+            let indexes:ProgressedIndexesType = getProgressedSeriesIndexes([...arrayCopy],progression)
             setSeriesIndexesThatMetGoal(indexes)
         }
         if(field === "EDITSERIESDIFFICULTY"){
@@ -49,7 +51,7 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
             dispatchSeries({type:field,index, payload:Number(e.target.value)});
             arrayCopy[index].time = Number(e.target.value)
         }
-        localStorage.setItem(exercisename+'singleExercise',JSON.stringify(arrayCopy))
+        localStorage.setItem(exerciseData.name+'singleExerciseChanged',JSON.stringify(arrayCopy))
     }
     const handleChangeSide = (index:number,side:Side) => {
         const arrayCopy = [...currentSeries]
@@ -61,18 +63,18 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
 
         arrayCopy[index].side = newSide
         dispatchSeries({type:'EDITSERIESSIDE',index,payload:newSide})
-        localStorage.setItem(exercisename,JSON.stringify(arrayCopy))
+        localStorage.setItem(exerciseData.name,JSON.stringify(arrayCopy))
     }
     const u = useTranslations("Utils")
   return (
     <div className='flex flex-col gap-2 mt-3 text-white mb-2'>
 
-        {currentSeries && currentSeries.map((series,index)=>(
+        {!loading && currentSeries && currentSeries.map((series,index)=>(
             <div className={`flex rounded-md py-[2px] ${index===0?'mt-2':null} ${seriesIndexesThatMetGoal?.series.includes(series.id!)?'bg-green':'bg-steel'}`} key={index}>
                 <div className='text-white text-xl flex items-center justify-center text-center px-1 cursor-pointer w-6' onClick={(e)=>handleChangeSide(index,series.side as Side)}>
                     {series.side === 'Left'? 'L' : series.side === 'Right'? 'P' : 'O'}
                 </div>
-                <div className={`flex-1 bg-dark px-2 py-3 grid ml-[1px] my-[1px] rounded-md ${showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'}`}>
+                <div className={`flex-1 bg-dark px-2 py-3 grid ml-[1px] my-[1px] rounded-md ${exerciseData.showTimeMesure?'grid-cols-[repeat(4,1fr)]':'grid-cols-[repeat(3,1fr)]'}`}>
                     <div className='flex'>
                         <Input type="number" maxLength={3} max={3} value={series.weight} className={`w-full mr-1 bg-dark`} onChange={(e)=>{editInput(e,index,'EDITSERIESKG')}}/> 
                     </div>
@@ -89,7 +91,7 @@ export const DisplayCurrentSeries = ({exercisename,currentSeries,dispatchSeries,
                         </select>
                     </div>
 
-                    {showTimeMesure && 
+                    {exerciseData.showTimeMesure && 
                     <div>
                         <Input type="number" value={series.time} className={`w-[calc(100%-10px)] mr-1 bg-dark ml-4`} onChange={(e)=>{editInput(e,index,'EDITSERIESTIME')}}/> 
                     </div>}

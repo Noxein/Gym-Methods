@@ -1,14 +1,15 @@
+import { ExerciseDataContext } from '@/app/context/ExerciseDataContext'
 import { ActionTypes, AddExerciceReducerType, Progression, SeriesWithExercise, UserTrainingPlan } from '@/app/types'
 import React, { useContext } from 'react'
 
 type ShowProgressionSingleExerciseType = {
-    progression?: Progression,
-    currentExercise: string,
     state: AddExerciceReducerType,
     dispatch: React.Dispatch<ActionTypes>,
 }
-export const ShowProgressionSingleExercise = ({progression,currentExercise,state,dispatch}:ShowProgressionSingleExerciseType) => {
-    const data = progression
+export const ShowProgressionSingleExercise = ({state,dispatch}:ShowProgressionSingleExerciseType) => {
+    const { exerciseData, progressions } = useContext(ExerciseDataContext)!
+
+    const data = progressions[exerciseData.name]
 
     const handleEditInputs = (seria:{repetitions: number,
         increase: number,

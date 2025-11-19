@@ -24,6 +24,7 @@ export const ButtonToAddSeries = ({localStorageTrainingData,inputs,setProgressed
         const handleAddSeries = () => {
     
             let localStorageTrainingDataCopy = {...localStorageTrainingData}
+            const exerciseName = localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].exerciseName
     
             if(!localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].date){
                 localStorageTrainingDataCopy.exercises[localStorageTrainingDataCopy.currentExerciseIndex].date = new Date()
@@ -45,7 +46,7 @@ export const ButtonToAddSeries = ({localStorageTrainingData,inputs,setProgressed
     
             setProgressedIndexes(localStorageTrainingDataCopy.currentExerciseIndex,localStorageTrainingDataCopy)
             setLocalStorageTrainingData(localStorageTrainingDataCopy)
-            timerContext?.newDateSetter(new Date())
+            timerContext?.newDateSetter(new Date(),exerciseName)
             timerContext?.setTimePassed(0)
             
         }
