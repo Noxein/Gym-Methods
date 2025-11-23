@@ -19,15 +19,16 @@ export const TimerContextProvider = ({children}:{children: React.ReactNode}) => 
 
     const getExerciseTime = () => {
         const time = localStorage.getItem(name+'date')
+        const nowDate = new Date()
 
         if(!time){
-            const date = new Date()
-            localStorage.setItem(name+'date',JSON.stringify(date))
-            return date
+            localStorage.setItem(name+'date',JSON.stringify(nowDate))
+            return nowDate
         }
 
-        const date = new Date(JSON.parse(time))
-        return date
+        const exerciseDate = new Date(JSON.parse(time))
+        if(differenceInSeconds(new Date(),exerciseDate) > 3600) return nowDate
+        return exerciseDate
     }
 
 
@@ -45,6 +46,7 @@ export const TimerContextProvider = ({children}:{children: React.ReactNode}) => 
     useEffect(()=>{
         const name = setTimeout(()=>{
             const newsec = differenceInSeconds(new Date(),firstDate)
+            console.log(newsec,firstDate)
             setTimePassed(newsec)},
             1000)
         
@@ -53,7 +55,7 @@ export const TimerContextProvider = ({children}:{children: React.ReactNode}) => 
 
     const newDateSetter = (date:Date,exerciseName:string) => {
         localStorage.setItem(exerciseName+'date',JSON.stringify(date))
-        setFirstDate(date)
+        setFirstDate(new Date(date))
     }
 
     return (

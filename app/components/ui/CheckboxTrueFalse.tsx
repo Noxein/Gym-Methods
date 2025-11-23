@@ -23,7 +23,7 @@ function CheckobxTrueFalse({typeOfCheckbox,isChecked,isActive,goalMet,seriesInde
         setCurrentLocalData
     } = useContext(LongPlanContext)!
 
-        const timerReset = () => {
+    const timerReset = () => {
         if(typeof goalMet === 'undefined'){
             const exerciseName = planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex].exercisename
             newDateSetter(new Date(),exerciseName)

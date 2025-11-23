@@ -1,7 +1,7 @@
 'use client'
 
 import { LongPlanContext } from "@/app/context/LongPlanContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SeriesDisplayer from "./SeriesDisplayer";
 import { ShowHistoryButton } from "../../add-exercise/ShowHistoryButton";
 import { PreviousExercise } from "./PreviousExercise";
@@ -19,6 +19,7 @@ import TimerWrapper from "./TimerWrapper";
 import NextExerciseButton from "./NextExerciseButton";
 import PreviousExerciseButton from "./PreviousExerciseButton";
 import { useRouter } from "next/navigation";
+import { differenceInSeconds } from "date-fns";
 
 type DisplayLongTermTrainingTypes = {
     allHandles: {
@@ -35,6 +36,8 @@ function DisplayLongTermTraining({allHandles}:DisplayLongTermTrainingTypes) {
     } = useContext(LongPlanContext)!
 
     const router = useRouter()
+
+    
 
     const[showHistory,setShowHistory] = useState(false)
     const[historyCache,setHistoryCache] = useState<{ [key: string]: ExerciseType | null; } | undefined>({})
@@ -64,6 +67,7 @@ function DisplayLongTermTraining({allHandles}:DisplayLongTermTrainingTypes) {
         setLoading(false)
 
     }
+    console.log('render DisplayLongTermTraining')
 
     return ( <div className="mx-5 mb-44">
         <div className="flex justify-between mt-2">
