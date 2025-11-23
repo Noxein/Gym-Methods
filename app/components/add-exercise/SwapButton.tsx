@@ -21,14 +21,15 @@ function SwapExerciseButton({dispatch,state}:SwapButtonTypes) {
     const getExerciseTime = () => {
         const time = localStorage.getItem(newExerciseName+'date')
 
+        const nowDate = new Date()
         if(!time){
-            const date = new Date()
-            localStorage.setItem(newExerciseName+'date',JSON.stringify(date))
-            return date
+            localStorage.setItem(newExerciseName+'date',JSON.stringify(nowDate))
+            return nowDate
         }
 
-        const date = new Date(JSON.parse(time))
-        return date
+        const exerciseDate = new Date(JSON.parse(time))
+        if(differenceInSeconds(new Date(),exerciseDate) > 3600) return nowDate
+        return exerciseDate
     }
 
     const swapExercise = async () => {
