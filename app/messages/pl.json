@@ -185,7 +185,8 @@
     "Home/Profile/Long-Term-Plans/[LongTermPlanName]":{
         "CloneTraining": "Skopiuj trening",
         "WhichTrainingToClone": "Który trening skopiować",
-        "AreYouSureYouWantToCloneTraining": "Czy napewno chcesz skopiować trening"
+        "AreYouSureYouWantToCloneTraining": "Czy napewno chcesz skopiować trening",
+        "IncreaseWeight": "Zwiększ ciężar o (%)"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Kontynuuj trening",
@@ -327,7 +328,9 @@
         "6": "6",
         "7": "7",
         "en": "Angielski",
-        "pl": "Poliski"
+        "pl": "Poliski",
+        "%": "%",
+        "kg": "kg"
     },
     "Languages": {
         "Polish": "Polski",

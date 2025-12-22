@@ -39,12 +39,12 @@ export const ButtonToAddSeriesExercise = ({dispatch,state,isLoading,loading}:But
             difficulty: state.difficultyLevel,
             id: id
         }
-        const data = localStorage.getItem(name+'singleExerciseChanged')
+        const data = localStorage.getItem(exerciseData.name+'singleExerciseChanged')
         let dataParsed = data ? JSON.parse(data) as SingleExerciseLocalMemoryData : null
 
         if(dataParsed){
             dataParsed.series = [...dataParsed.series,set]
-            localStorage.setItem(name+'singleExerciseChanged',JSON.stringify(dataParsed))
+            localStorage.setItem(exerciseData.name+'singleExerciseChanged',JSON.stringify(dataParsed))
         }
 
         

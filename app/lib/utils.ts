@@ -267,3 +267,6 @@ function site(){
   newArr.forEach(item=>elem?.appendChild(item.element))
 
 }
+export const localStorageStringForLongTermPlan = (planName: string) => {
+    return `long-term-plan-save-${planName}`
+}
