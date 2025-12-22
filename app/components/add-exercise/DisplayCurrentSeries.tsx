@@ -1,5 +1,5 @@
 import { useContext, useRef } from 'react'
-import { ActionTypes, ActionTypesEnum, DifficultyLevelType, ProgressedIndexesType, Progression, Series, Side } from '../../types'
+import { ActionTypes, ActionTypesEnum, DifficultyLevelType, ProgressedIndexesType, Progression, Series, Side, SingleExerciseLocalMemoryData } from '../../types'
 import { Icon } from '../Icon'
 import { TrashIcon } from '@/app/ui/icons/ExpandIcon'
 import { useTranslations } from 'next-intl'
@@ -11,8 +11,9 @@ type DisplayCurrentSeriesTypes = {
     currentSeries:Series[],
     dispatchSeries:React.Dispatch<ActionTypes>,
     isTraining: boolean,
+    state: SingleExerciseLocalMemoryData
 }
-export const DisplayCurrentSeries = ({currentSeries,dispatchSeries,isTraining}:DisplayCurrentSeriesTypes) => {
+export const DisplayCurrentSeries = ({currentSeries,dispatchSeries,isTraining,state}:DisplayCurrentSeriesTypes) => {
 
     const { exerciseData, progressions, loading } = useContext(ExerciseDataContext)!
         
@@ -20,8 +21,9 @@ export const DisplayCurrentSeries = ({currentSeries,dispatchSeries,isTraining}:D
     const deleteSet = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,index:number) => {
         e.preventDefault()
         dispatchSeries({type:"DELETESERIES",payload:index})
-        console.log(currentSeries.filter((set,i)=>i!==index))
-        localStorage.setItem(exerciseData.name+'singleExerciseChanged',JSON.stringify(currentSeries.filter((set,i)=>i!==index)))
+        let objCopy = {...state}
+        objCopy.series = currentSeries.filter((set,i)=>i!==index)
+        localStorage.setItem(exerciseData.name+'singleExerciseChanged',JSON.stringify(objCopy))
     }
     const editInput = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,index:number,field:ActionTypesEnum) => {
         const progression = progressions[exerciseData.name]

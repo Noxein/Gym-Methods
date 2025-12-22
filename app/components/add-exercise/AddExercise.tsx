@@ -3,7 +3,7 @@ import { useEffect, useState, useRef, useContext, useReducer } from 'react'
 import { ActionTypes, AddExerciceReducerType, ExerciseType, HandleType, ProgressedIndexesType, Side as SideType, SingleExerciseLocalMemoryData } from '../../types'
 import { DisplayCurrentSeries } from './DisplayCurrentSeries'
 import { AddExerciseAction } from '../../actions'
-import { usePathname, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { Icon } from '../Icon'
 import { CheckIcon, PlusIcon, SwapIcon } from '@/app/ui/icons/ExpandIcon'
 import { ShowHistoryButton } from './ShowHistoryButton'
@@ -77,13 +77,15 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
     const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
 
     const pathname = usePathname()
-    const router = useRouter()
+    const params = useParams()
 
 
     const {setSeriesIndexesThatMetGoal} = useContext(SingleExerciseProgressionContext)!
 
-        useEffect(()=>{
-        const data = localStorage.getItem(exerciseData.name+'singleExerciseChanged') 
+    useEffect(()=>{
+        const paramsName = decodeURI(params.exercisename as string)
+        const data = localStorage.getItem(paramsName+'singleExerciseChanged') 
+
         const parsedData = data ? JSON.parse(data) as SingleExerciseLocalMemoryData : null
 
         if(parsedData){
@@ -95,7 +97,7 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
             dispatch({type:"SETSERIESFROMMEMORY",payload:parsedData.series})
             dispatch({type:"HANDLE", payload: parsedData.handle ? {id: parsedData.handle.id, handlename: parsedData.handle.handlename} as HandleType : undefined})
 
-            const progression = progressions[exerciseData.name]
+            const progression = progressions[paramsName]
             let indexes:ProgressedIndexesType = getProgressedSeriesIndexes(parsedData.series,progression)
             setSeriesIndexesThatMetGoal(indexes)
         }
@@ -195,7 +197,7 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
         </div>
         </div>
 
-        <DisplayCurrentSeries currentSeries={state.series} dispatchSeries={dispatch} isTraining={isTraining}/>
+        <DisplayCurrentSeries currentSeries={state.series} dispatchSeries={dispatch} isTraining={isTraining} state={state}/>
         <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory} loading={loading}/>
         {showHistory && <PreviousExercise exerciseid={exerciseData.exerciseid} historyCache={historyCache} setHistoryCache={setHistoryCache}/>}
 

@@ -22,6 +22,8 @@ type LongPlanEditorContextTypes = {
     setShowDeleteTrainigPopUp: React.Dispatch<React.SetStateAction<boolean>>,
     showImportTrainingModal: boolean,
     setShowImportTrainingModal: React.Dispatch<React.SetStateAction<boolean>>,
+    showIncreaseWeightModal: boolean,
+    setShowIncreaseWeightModal: React.Dispatch<React.SetStateAction<boolean>>,
     handleAndTimeMesureExercises: {    
         ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[],
         ExercisesThatRequireHandle: ExercisesThatRequireTimeMesureOrHandle[]
@@ -50,6 +52,7 @@ export const LongPlanEditorProvider = ({children}:ModalContextsProviderTypes) =>
     const[showDeleteTrainigPopUp,setShowDeleteTrainigPopUp] = useState(false)
     const[showImportTrainingModal,setShowImportTrainingModal] = useState(false)
     const[showCloneTraingModal,setShowCloneTraingModal] = useState(false)
+    const[showIncreaseWeightModal,setShowIncreaseWeightModal] = useState(false)
     const userTrainings = useRef<{id:string, name: string}[]>([])
     const planIndexRef = useRef(0)
     const exerciseIndexRef = useRef(0)
@@ -145,8 +148,10 @@ export const LongPlanEditorProvider = ({children}:ModalContextsProviderTypes) =>
             updateToLocalStorage,
             errorMessage,
             userTrainings,
-            clonePlan
-            }}>
+            clonePlan,
+            showIncreaseWeightModal,
+            setShowIncreaseWeightModal
+}}>
                 {children}
         </LongPlanEditorContext.Provider>
     )

@@ -11,13 +11,14 @@ import { v4 } from "uuid";
 import DeleteTrainingModal from "./DeleteTrainingModal";
 import ImportTrainingModal from "./ImportTrainingModal";
 import { MapExercises } from "@/app/components/ui/MapExercises";
-import { HideShowHTMLScrollbar, localStorageSetter } from "@/app/lib/utils";
+import { HideShowHTMLScrollbar, localStorageSetter, localStorageStringForLongTermPlan } from "@/app/lib/utils";
 import { useRouter } from "next/navigation";
 import { LoaderFullScreen } from "@/app/components/Loading/LoaderFullScreen";
 import { ErrorDiv } from "@/app/components/ui/ErrorDiv";
 import { handleSaveLongTermPlan } from "@/app/actions";
 import { useTranslations } from "next-intl";
 import CloneTrainingModal from "./CloneTrainingModal";
+import IncreaseWeightModal from "./IncreaseWeightModal";
 
 type LongTermPlanTypes = {
     UserTrainings: UserTrainingPlan[],
@@ -41,6 +42,8 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
         setShowDeleteTrainigPopUp,
         showImportTrainingModal,
         setShowImportTrainingModal,
+        showIncreaseWeightModal,
+        setShowIncreaseWeightModal,
         showAddExercise,
         setShowAddExercise,
         planIndexRef,
@@ -54,6 +57,7 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
 
     const router = useRouter()
     const[error,setError] = useState('')
+    const[hasSaveBeenSet,setHasSaveBeenSet] = useState(false)
 
     const addTraining = () => {
         if(state === 'uploading') return
@@ -137,6 +141,18 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
         setShowCloneTraingModal(true)
     }
 
+    const addWeightModal = () => {
+        HideShowHTMLScrollbar('hide')
+        setShowIncreaseWeightModal(true)
+
+        if(hasSaveBeenSet) return
+
+        const string = localStorageStringForLongTermPlan(planData?.name!)
+        localStorageSetter(string,JSON.stringify(planData!))
+        
+        setHasSaveBeenSet(true)
+    }
+
     if(state === 'loading') return <LoaderFullScreen />
     
     if(state === 'error') return <BlurBackgroundModal><ErrorDiv error={e(errorMessage)}/></BlurBackgroundModal> 
@@ -146,7 +162,11 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
 
         <p className="text-3xl text-center text-white font-normal pb-4">{planData?.name}</p>
 
-        <Button isPrimary className="mb-4" onClick={showCloneTraingModalFunc}>{t("CloneTraining")}</Button>
+        <div className="flex gap-2 items-stretch mb-4">
+            <Button isPrimary className="flex-1" onClick={showCloneTraingModalFunc}>{t("CloneTraining")}</Button>
+            <Button isPrimary className="flex-1" onClick={addWeightModal}>{t("IncreaseWeight")}</Button>
+        </div>
+
 
         <div className="flex flex-col gap-4">
             {planData && planData.subplans?.map((plan,planIndex)=><SinglePlan key={plan.id} plan={plan} planIndex={planIndex} allExercisesInOneArray={allExercisesInOneArray}/>)}
@@ -181,6 +201,10 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
 
         {showCloneTraingModal && <BlurBackgroundModal onClick={()=>setShowCloneTraingModal(false)}>
             <CloneTrainingModal />
+        </BlurBackgroundModal>}
+
+        {showIncreaseWeightModal && <BlurBackgroundModal onClick={()=>{setShowIncreaseWeightModal(false),HideShowHTMLScrollbar('show')}}>
+            <IncreaseWeightModal setShowIncreaseWeightModal={setShowIncreaseWeightModal} />
         </BlurBackgroundModal>}
       
     </div>);
