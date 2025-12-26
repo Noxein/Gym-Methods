@@ -48,9 +48,13 @@ function IncreaseWeightModal({setShowIncreaseWeightModal}: {setShowIncreaseWeigh
                     //increase weight goals
                     for(let k = 0; k<planDataCopy.subplans[i].exercises[j].setgoals.length; k++){
                         if(unit === '%'){
-                            planDataCopy.subplans[i].exercises[j].setgoals[k].weightgoal = planDataCopy.subplans[i].exercises[j].setgoals[k].weightgoal + (planDataCopy.subplans[i].exercises[j].setgoals[k].weightgoal * (value/100))
+                            const newValue = planDataCopy.subplans[i].exercises[j].setgoals[k].weightgoal + (planDataCopy.subplans[i].exercises[j].setgoals[k].weightgoal * (value/100))
+                            const roundedValueToQuarter = Math.round(newValue * 4) / 4
+                            planDataCopy.subplans[i].exercises[j].setgoals[k].weightgoal = roundedValueToQuarter
                         } else {
-                            planDataCopy.subplans[i].exercises[j].setgoals[k].weightgoal = planDataCopy.subplans[i].exercises[j].setgoals[k].weightgoal + value
+                            const newValue = planDataCopy.subplans[i].exercises[j].setgoals[k].weightgoal + value
+                            const roundedValueToQuarter = Math.round(newValue * 4) / 4
+                            planDataCopy.subplans[i].exercises[j].setgoals[k].weightgoal = roundedValueToQuarter
                         }
                     }
                 }
