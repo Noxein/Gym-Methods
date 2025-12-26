@@ -110,7 +110,7 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
 
     if(firstLoad){
         return(
-            <div className='flex justify-center items-center h-[100dvh]'>)
+            <div className='flex justify-center items-center h-[100dvh]'>
                 <LoaderFullScreen />
             </div>
         )
