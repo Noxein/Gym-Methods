@@ -5,9 +5,10 @@ import { Button } from '../ui/Button';
 import { setUserLocale } from '@/app/i18n/locale';
 import { Locale } from '@/app/i18n/config'
 import { useTranslations } from 'next-intl';
+import { FirstSetupSelectedSteps } from '@/app/types';
 
 type ChoseLanguageTypes = {
-    setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
+    setCurrentStep:React.Dispatch<React.SetStateAction<FirstSetupSelectedSteps>>,
 }
 
 export const ChoseLanguage = ({setCurrentStep}:ChoseLanguageTypes) => {
@@ -34,7 +35,7 @@ export const ChoseLanguage = ({setCurrentStep}:ChoseLanguageTypes) => {
             </div>
 
             <div className={`fixed bottom-0 left-0 right-0 flex mx-5 mb-5`}>
-                <Button className='flex-1 text-2xl' isPrimary onClick={e=>{e.preventDefault();setCurrentStep(step=>step+1)}}>{t("Next")}</Button>
+                <Button className='flex-1 text-2xl' isPrimary onClick={e=>{e.preventDefault();setCurrentStep('purpose')}}>{t("Next")}</Button>
             </div>
         </form>
     </CenterComponent>

@@ -2,27 +2,28 @@ import { useState } from 'react'
 import { Mapper } from './Mapper'
 import { exerciseList } from '@/app/lib/exercise-list'
 import { SecondStepDataValidation } from '@/app/actions'
-import { dataType } from './SetupOneOfThree'
+import { dataType } from './Goal'
 import { Button } from '../ui/Button'
 import { ErrorDiv } from '../ui/ErrorDiv'
 import { useTranslations } from 'next-intl'
+import { FirstSetupSelectedSteps } from '@/app/types'
 
 type StepTwoOutOfThree = {
-    setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
+    setCurrentStep:React.Dispatch<React.SetStateAction<FirstSetupSelectedSteps>>,
     favouriteExercises: string[],
     setExercisesToDelete: React.Dispatch<React.SetStateAction<string[]>>,
     exercisesToDelete: string[],
     data: dataType,
 }
 
-export const StepThreeOutOfThree = ({setCurrentStep,favouriteExercises,setExercisesToDelete,exercisesToDelete,data}:StepTwoOutOfThree) => {
+export const ExercisesSelector = ({setCurrentStep,favouriteExercises,setExercisesToDelete,exercisesToDelete,data}:StepTwoOutOfThree) => {
     const[error,setError] = useState('')
 
     const ValidateData = async () => {
         const validData = SecondStepDataValidation(favouriteExercises)
         if(validData && validData.error) return setError(e(validData.error))
 
-        setCurrentStep(step=>step+1)
+        setCurrentStep('not-fav-exercises')
     }
 
     const t = useTranslations("FirstSetup")
@@ -38,7 +39,7 @@ export const StepThreeOutOfThree = ({setCurrentStep,favouriteExercises,setExerci
         <ErrorDiv error={error}/>
 
         <div className={`fixed bottom-0 left-0 right-0 flex gap-2 px-5 pb-5 bg-dark`}>
-            <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)}>{t("Back")}</Button>
+            <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep('training-creator')}>{t("Back")}</Button>
             <Button className='flex-1 text-2xl' onClick={ValidateData} isPrimary >{t("Next")}</Button>
         </div>
     </div>

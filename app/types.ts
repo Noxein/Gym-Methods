@@ -404,3 +404,5 @@ export type HandleType = {
     id: string,
     handlename: string,
 }
+
+export type FirstSetupSelectedSteps = 'language'|'purpose'|'goal'|'training-creator'|'fav-exercises'|'not-fav-exercises'

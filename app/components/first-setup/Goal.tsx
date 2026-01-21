@@ -5,6 +5,7 @@ import { CenterComponent } from '@/app/components/CenterComponent'
 import { Button } from '../ui/Button'
 import { ErrorDiv } from '../ui/ErrorDiv'
 import { useTranslations } from 'next-intl'
+import { FirstSetupSelectedSteps } from '@/app/types'
 
 export type dataType = {
     goal:string,
@@ -12,12 +13,12 @@ export type dataType = {
     daysexercising:string,
 }
 type SetupOneOfThree = {
-    setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
+    setCurrentStep:React.Dispatch<React.SetStateAction<FirstSetupSelectedSteps>>,
     data:dataType,
     setData: React.Dispatch<React.SetStateAction<dataType>>
 }
 
-export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) => {
+export const Goal = ({setCurrentStep,data,setData}:SetupOneOfThree) => {
     const[error,setError] = useState<{
         goal: string;
         advancmentlevel: string;
@@ -46,7 +47,7 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
             }
             return setError(dataCopy)
         } 
-        setCurrentStep(x=>x+1)
+        setCurrentStep('training-creator')
     }
 
     const t = useTranslations("FirstSetup")
@@ -75,7 +76,7 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
                 setData={setData}/>
             <ErrorDiv error={error.somethinWentWrong}/>
             <div className={`fixed bottom-0 left-0 right-0 flex mx-5 mb-5 gap-4`}>
-                <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)}>{t("Back")}</Button>
+                <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep('purpose')}>{t("Back")}</Button>
                 <Button className='flex-1 text-2xl' isPrimary onClick={e=>{e.preventDefault();ValidateData()}}>{t("Next")}</Button>
             </div>
         </form>

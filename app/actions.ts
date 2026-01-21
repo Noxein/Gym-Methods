@@ -4,7 +4,7 @@ import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
 import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
-import { dataType } from "./components/first-setup/SetupOneOfThree";
+import { dataType } from "./components/first-setup/Goal";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";

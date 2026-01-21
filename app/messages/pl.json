@@ -330,7 +330,10 @@
         "en": "Angielski",
         "pl": "Poliski",
         "%": "%",
-        "kg": "kg"
+        "kg": "kg",
+        "Trener": "Trener",
+        "Casual": "Casual",
+        "Podopieczny trenera": "Podopieczny trenera"
     },
     "Languages": {
         "Polish": "Polski",
