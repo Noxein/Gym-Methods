@@ -1,8 +1,9 @@
 import { ExpandIcon, PlusIcon } from "@/app/ui/icons/ExpandIcon"
 import { useContext, useState } from "react"
-import { Icon } from "../Icon"
+
 import { useTranslations } from "next-intl"
 import { nameTrimmer } from "@/app/lib/utils"
+import { Icon } from "../../Icon"
 
 type StepTwoOutOfThree = {
     item:any, 

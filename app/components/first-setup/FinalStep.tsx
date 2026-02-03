@@ -1,7 +1,7 @@
 'use client'
 import React, { useContext, useState } from 'react'
 import { Button } from '../ui/Button'
-import { dataType } from './Goal'
+import { dataType } from './Casual/Goal'
 import { Mapper } from './Mapper'
 import { exerciseList } from '@/app/lib/exercise-list'
 import { FirstSetupFinish, SecondStepDataValidation } from '@/app/actions'

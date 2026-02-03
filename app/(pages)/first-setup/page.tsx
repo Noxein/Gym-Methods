@@ -1,6 +1,7 @@
 import React from 'react'
 import { FirstSetup } from '@/app/components/first-setup/FirstSetup'
 import { getLocale, getTranslations } from 'next-intl/server';
+import { cookies } from 'next/headers';
 
 export async function generateMetadata() {
   const locale = getLocale()
@@ -12,5 +13,9 @@ export async function generateMetadata() {
 }
 
 export default function Setup(){
-  return <FirstSetup />
+
+  const cookieStore = cookies()
+  const jwt = cookieStore.get('jwt')?.value;
+
+  return <FirstSetup jwt={jwt} />
 }

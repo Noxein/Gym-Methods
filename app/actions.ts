@@ -4,7 +4,7 @@ import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
 import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
-import { dataType } from "./components/first-setup/Goal";
+import { dataType } from "./components/first-setup/Casual/Goal";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
@@ -15,7 +15,47 @@ import { AuthError } from "next-auth";
 import { Begginer1_3FBW_FirstVariation, Begginer1_3FBW_SecondVariation, Beginner4_7Lower_FirstVariation, Beginner4_7Lower_SecondVariation, Beginner4_7Upper_FirstVariation, Beginner4_7Upper_SecondVariation } from "./lib/TrainingPlansData";
 import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
 import { v4 } from "uuid";
+import { cookies } from 'next/headers'
 
+export const setCookie = async (name:string,value:string) => {
+    const cookieStore = await cookies()
+    cookieStore.set(name, value)
+}
+
+export const getCookie = async (name:string) => {
+    const cookieStore = await cookies()
+    const cookie = cookieStore.get(name)
+    return cookie?.value
+}
+
+export const updateTraineeInfo = async () => {
+    const userid = await userID()
+
+    // make sure user is connected as trainer
+
+    try{
+        const isUserConnectedToTrainer = await sql`SELECT id FROM trainertrainee WHERE traineeid = ${userid}`
+
+        if(isUserConnectedToTrainer.rows.length === 0) throw new Error("User is not connected to a trainer")
+
+        await sql`UPDATE gymusers SET purpose = 'trainee', setupcompleted = true WHERE id = ${userid}`
+
+
+        return
+    }catch(e){
+        
+    }
+}
+
+export const handleSaveTrainerSetup = async () => {
+    const userid = await userID()
+
+    try{
+        await sql`UPDATE gymusers SET purpose = 'trainer', setupcompleted = true WHERE id = ${userid}`
+    }catch(e){
+        
+    }
+}
 export const LoginNoFormData = async (email:string,password:string) => {
     if(typeof email !== 'string' || typeof password !== 'string'){
         return { error: "Something went wrong"}

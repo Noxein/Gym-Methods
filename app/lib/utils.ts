@@ -270,3 +270,5 @@ function site(){
 export const localStorageStringForLongTermPlan = (planName: string) => {
     return `long-term-plan-save-${planName}`
 }
+
+export const WSString = "ws://localhost:3000/pairUsers"
