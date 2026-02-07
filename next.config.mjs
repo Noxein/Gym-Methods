@@ -4,8 +4,9 @@ const withNextIntl = createNextIntlPlugin('./app/i18n/requests.ts')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    turbopack:{},
     experimental:{
-        turbo:{}
+        
     }
 };
 
