@@ -34,7 +34,7 @@ export const DefaultExercisesMap = ({item,clickHandler,objectName,currentLevel=0
     }
     if(Array.isArray(item)){
         return (<div className={`relative flex flex-col font-semibold`}>
-            <ExpandBtn text={d(objectName)} isExpanded={showChildren} 
+            <ExpandBtn text={d(objectName!)} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}/>
 
         {showChildren && <div className='flex flex-col gap-2 font-normal'>

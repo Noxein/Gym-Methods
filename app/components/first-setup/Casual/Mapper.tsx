@@ -32,7 +32,7 @@ export const Mapper = ({item,objectName,currentLevel=0,stateSetter,state,filterE
     if(Array.isArray(item)){
         return (<div className={`flex flex-col bg-dark ${mLeft} font-semibold`}>
             <ExpandBtn 
-                text={d(objectName)} 
+                text={d(objectName!)} 
                 isExpanded={showChildren} 
                 onClick={ExpandBtnFunc} 
                 mLeft={mLeft}

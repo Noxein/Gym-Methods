@@ -18,7 +18,7 @@ type MyHandlesTypes = {
     }[]
 }
 export const MyHandles = ({handles}:MyHandlesTypes) => {
-    const currentSelectedHanle = useRef<{id:string,handlename:string}>(undefined)
+    const currentSelectedHanle = useRef<{id:string,handlename:string}|undefined>(undefined)
 
     const[showDeleteModal,setShowDeleteModal] = useState(false)
     const[showAddModal,setShowAddModal] = useState(false)

@@ -1,7 +1,7 @@
 
-import { DEFAULT_LOGIN_REDIRECT, authRoutes, publicRoutes, apiAuthPrefix } from '../../routes';
+import { DEFAULT_LOGIN_REDIRECT, authRoutes, publicRoutes, apiAuthPrefix } from './routes';
 import NextAuth from 'next-auth';
-import authConfig from '../../auth.config';
+import authConfig from './auth.config';
 import { auth as mainauth } from '@/auth'
 import { NextRequest } from 'next/server';
 
