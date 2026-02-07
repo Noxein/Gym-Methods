@@ -1,3 +1,4 @@
+"use client"
 import { useState } from 'react'
 import { exerciseList } from '@/app/lib/exercise-list'
 import { SecondStepDataValidation } from '@/app/actions'
@@ -24,7 +25,7 @@ export const ExercisesSelector = ({setCurrentStep,favouriteExercises,setExercise
     const[error,setError] = useState('')
 
     const ValidateData = async () => {
-        const validData = SecondStepDataValidation(favouriteExercises)
+        const validData = await SecondStepDataValidation(favouriteExercises)
         if(validData && validData.error) return setError(e(validData.error))
 
         setCurrentStep('not-fav-exercises')

@@ -50,7 +50,8 @@
     "Register": {
         "Register": "Register",
         "Password": "Password",
-        "RepeatPAssword": "Repeat password"
+        "RepeatPassword": "Repeat password",
+        "Username": "Username"
     },
     "FirstSetup": {
         "Next": "Next",
@@ -90,7 +91,7 @@
 
     },
     "Home/Add-Exercise": {
-        "AddExercise":"Add exercise",
+        "AddExercise":"Start exercise",
         "LatestExercises": "LATEST TRAININGS"
     },
     "Home/Add-Exercise/[Exercise-Name]": {
@@ -347,6 +348,7 @@
          "Wrong email format": "Wrong email format",
          "Password are different": "Password are different",
          "Password should be at least 8 chracters long": "Password should be at least 8 chracters long",
+         "Please set username": "Please set username",
          "Email taken": "This email id taken",
          "Wrong goal chosen": "Wrong goal was chosen, choose diffrent one",
          "Wrong advancment level chosen": "Wrong advancment level was chosen, choose diffrent one",

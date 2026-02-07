@@ -50,7 +50,8 @@
     "Register": {
         "Register": "Zarejestruj",
         "Password": "Hasło",
-        "RepeatPAssword": "Powtórz hasło"
+        "RepeatPassword": "Powtórz hasło",
+        "Username": "Nazwa użytkownika"
     },
     "FirstSetup": {
         "Next": "Dalej",
@@ -89,7 +90,7 @@
         "Finished": "ukończone"
     },
     "Home/Add-Exercise": {
-        "AddExercise": "Dodaj ćwiczenie",
+        "AddExercise": "Rozpocznij ćwiczenie",
         "LatestExercises": "OSTATNIE ĆWICZENIA" 
     },
     "Home/Add-Exercise/[Exercise-Name]": {
@@ -347,6 +348,7 @@
         "Wrong email format": "Zły format adresu email",
         "Password are different": "Hasła różnią się",
         "Password should be at least 8 chracters long": "Hasło powinno się składać z minimum 8 znaków",
+        "Please set username": "Proszę wpisać nazwę użytkownika",
         "Email taken": "Ten adres email jest zajęty",
         "Wrong goal chosen": "Został wybrany zły cel, wybierz inny",
         "Wrong advancment level chosen": "Został wybrany zły poziom zaawansowania, wybierz inny",

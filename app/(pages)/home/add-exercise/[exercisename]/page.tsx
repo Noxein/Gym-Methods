@@ -15,9 +15,10 @@ export async function generateMetadata() {
 
 
 
-export default async function page({params}:{params:{exercisename:string}}){
+export default async function page(props:{params: Promise<{exercisename:string}>}) {
+  const params = await props.params;
   let shouldContinue = false
-  
+
   const exerciseName = decodeURI(params.exercisename)
   const isDefaultExercise = exercisesArr.includes(exerciseName)
   if(isDefaultExercise){

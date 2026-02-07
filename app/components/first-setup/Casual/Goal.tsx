@@ -40,7 +40,7 @@ export const Goal = ({setCurrentStep,data,setData,selectPurpose}:SetupOneOfThree
     const daysexercising = ['1','2','3','4','5','6','7']
 
     const ValidateData = async () => {
-        const validatedData = FistStepDataValidation(data)
+        const validatedData = await FistStepDataValidation(data)
 
         if(validatedData?.error && validatedData?.error.isError){
             const dataCopy = {...validatedData?.error}

@@ -1,5 +1,5 @@
-import { userEmail } from "@/app/actions";
-import { Home } from "@/app/components/home/Home";
+import { getUserPurpose, userEmail } from "@/app/actions";
+import { CasualUserHome } from "@/app/components/home/CasualUserHome";
 import { getLocale, getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {
@@ -13,9 +13,10 @@ export async function generateMetadata() {
 
 export default async function page(){
     const useremail = await userEmail()
+    const userPurpose = await getUserPurpose()
     return(
         <div className="flex flex-col items-center w-full overflow-x-hidden">
-            <Home useremail={useremail}/>
+            <CasualUserHome useremail={useremail}/>
         </div>
     )
 } 

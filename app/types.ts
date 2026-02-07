@@ -407,3 +407,5 @@ export type HandleType = {
 
 export type FirstSetupFirstStep = 'language'|'purpose'|'final'
 export type FirstSetupSelectedSteps = 'language'|'purpose'|'goal'|'training-creator'|'fav-exercises'|'not-fav-exercises'
+
+export type UserPurposeType = 'Casual'|'Trener'|'Podopieczny trenera'

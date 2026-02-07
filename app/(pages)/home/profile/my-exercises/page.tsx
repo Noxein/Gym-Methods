@@ -11,7 +11,8 @@ export async function generateMetadata() {
     };
   }
 
-export default async function page({searchParams}:{searchParams:{showAddModal: string}}){
+export default async function page(props:{searchParams: Promise<{showAddModal: string}>}) {
+    const searchParams = await props.searchParams;
     const exercises = await getUserExercises()
     const showModal = !!(searchParams && searchParams.showAddModal || false)
     return(

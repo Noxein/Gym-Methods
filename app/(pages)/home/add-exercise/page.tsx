@@ -3,7 +3,8 @@ import { ExerciseListMapped } from "@/app/components/add-exercise/ExerciseListMa
 import { getLocale, getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {
-    const locale = getLocale()
+    const locale = await getLocale()
+    console.log(locale)
     const t = await getTranslations({locale, namespace: 'Metadata'});
    
     return {

@@ -10,8 +10,9 @@ export async function generateMetadata() {
   };
 }
 
-export default async function page({params}:{params:{trainingPlanName:string}}){
+export default async function page(props:{params: Promise<{trainingPlanName:string}>}) {
+  const params = await props.params;
   const trainingName = decodeURI(params.trainingPlanName)
 
-return <MyTraingPlansPage trainingName={trainingName}/>
+  return <MyTraingPlansPage trainingName={trainingName}/>
 }

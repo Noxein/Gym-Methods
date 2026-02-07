@@ -1,4 +1,4 @@
-import { FirstSetupFirstStep, FirstSetupSelectedSteps } from "@/app/types";
+import { FirstSetupFirstStep, FirstSetupSelectedSteps, UserPurposeType } from "@/app/types";
 import { Button } from "../ui/Button";
 import { useTranslations } from "next-intl";
 import { Select } from "../ui/SelectField";
@@ -7,8 +7,8 @@ import Navigator from "./Navigator";
 
 type PurposeProps = {
     setCurrentStep:React.Dispatch<React.SetStateAction<FirstSetupFirstStep>>,
-    purpose:string,
-    setPurpose:React.Dispatch<React.SetStateAction<string>>,
+    purpose:UserPurposeType,
+    setPurpose:React.Dispatch<React.SetStateAction<UserPurposeType>>,
 }
 function Puropse({setCurrentStep,purpose,setPurpose}:PurposeProps) {
 
@@ -18,7 +18,7 @@ function Puropse({setCurrentStep,purpose,setPurpose}:PurposeProps) {
     const purposeOptions = ['Casual','Trener','Podopieczny trenera']
 
     const handlePurposeChange = (e:React.ChangeEvent<HTMLSelectElement>)=>{
-        setPurpose(e.target.value)
+        setPurpose(e.target.value as UserPurposeType)
     }
     return ( 
         <CenterComponent>

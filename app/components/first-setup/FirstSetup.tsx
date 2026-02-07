@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { ChoseLanguage } from './ChoseLanguage'
-import { FirstSetupFirstStep } from '@/app/types'
+import { FirstSetupFirstStep, UserPurposeType } from '@/app/types'
 import Purpose from './Purpose'
 import SecondStep from './SecondStep'
 
@@ -11,7 +11,7 @@ type FirstSetupProps = {
 export const FirstSetup = ({jwt}: FirstSetupProps) => {
     const[currentStep,setCurrentStep] = useState<FirstSetupFirstStep>('language')
 
-    const[purpose,setPurpose] = useState<string>('Casual')
+    const[purpose,setPurpose] = useState<UserPurposeType>('Casual')
 
   return (
     currentStep==='language'?<ChoseLanguage setCurrentStep={setCurrentStep}/>:

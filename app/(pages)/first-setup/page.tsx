@@ -12,9 +12,9 @@ export async function generateMetadata() {
   };
 }
 
-export default function Setup(){
+export default async function Setup() {
 
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const jwt = cookieStore.get('jwt')?.value;
 
   return <FirstSetup jwt={jwt} />
