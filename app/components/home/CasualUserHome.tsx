@@ -14,7 +14,7 @@ type HomeTypes = {
   useremail?: string | null
 }
 
-export const Home = async ({useremail}:HomeTypes) => {
+export const CasualUserHome = async ({useremail}:HomeTypes) => {
   const trainingList = await getStartedTrainingsList()
   return (
     <div className='mb-20'>

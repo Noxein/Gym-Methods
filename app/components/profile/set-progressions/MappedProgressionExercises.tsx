@@ -42,7 +42,7 @@ export const MappedProgressionExercises = ({item,objectName,currentLevel=0,isLas
     }
     if(Array.isArray(item)){
         return (<div className={`flex flex-col ${mLeft} font-semibold`}>
-            <ExpandBtn text={d(objectName)} isExpanded={showChildren} 
+            <ExpandBtn text={d(objectName!)} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}/>
 
         {showChildren && <div className='flex flex-col gap-2 font-normal'>

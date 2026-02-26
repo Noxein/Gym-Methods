@@ -1,11 +1,9 @@
 import { Profile } from "@/app/components/profile/Profile";
+import { MetaDataTranslations } from "@/app/lib/utils";
 import { auth } from "@/auth";
-import { Metadata } from "next";
-import { getLocale, getTranslations } from "next-intl/server";
   
 export async function generateMetadata() {
-    const locale = getLocale()
-    const t = await getTranslations({locale, namespace: 'Metadata'});
+  const t = await MetaDataTranslations()
    
     return {
       title: t('Profile')

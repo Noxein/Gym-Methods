@@ -47,7 +47,7 @@ export const SelectedDateInfo = ({dayData,selectedDay,Last30DaysExercises}:Selec
                     </div>
                 </div>
                 <p className='mt-2 row-start-3 col-start-1'>
-                    {t('averageKG',{weight: averageWeight, isMore: averageWeightWord })}
+                    {t('averageKG',{weight: averageWeight, isMore: String(averageWeightWord) })}
                 </p>
 
 
@@ -58,7 +58,7 @@ export const SelectedDateInfo = ({dayData,selectedDay,Last30DaysExercises}:Selec
                     </div>
                 </div>
                 <p className='mt-2 row-start-3 col-start-2'>
-                    {t('averageRepeat',{repetition: averageSeries, isMore: averageSeriesWord })}
+                    {t('averageRepeat',{repetition: averageSeries, isMore: String(averageSeriesWord) })}
                 </p>
 
         </div>

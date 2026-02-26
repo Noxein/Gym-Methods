@@ -29,7 +29,7 @@ type DisplayTrainingTypes = {
 }
 
 
-export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,useremail,progressions}:DisplayTrainingTypes) => {
+ export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,useremail,progressions}:DisplayTrainingTypes) => {
     const modalsContext = useContext(ModalContexts)
 
     const setProgressedIndexes = (index:number,localStorageTrainingDataArg:LocalStorageTraining) => {

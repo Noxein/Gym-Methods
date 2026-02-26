@@ -5,25 +5,25 @@ import { TrainingError } from '@/app/components/home/start-training/TrainingErro
 import { Button } from '@/app/components/ui/Button'
 
 type Pagetypes = {
-    params:{trainingName:string}
-    searchParams: { inProgress: string }
+    params: Promise<{trainingName:string}>
+    searchParams: Promise<{ inProgress: string }>
 } 
 
-export default async function page({params,searchParams}:Pagetypes){
-    const decodedTrainingId = decodeURI(params.trainingName)
-    const trainingData = await getTrainingDataById(decodedTrainingId)
-    const progressions = await getAllUserProgressions()
+export default async function page(props:Pagetypes) {
+  const params = await props.params;
+  const decodedTrainingId = decodeURI(params.trainingName)
+  const trainingData = await getTrainingDataById(decodedTrainingId)
 
-    if(trainingData.error){
-      return (
-      <TrainingError message={trainingData.error}>
-        <Button className='px-4 flex-1'>
-          <BackLink />
-        </Button>
-      </TrainingError>
-      )
-    }
+  if(trainingData.error){
+    return (
+    <TrainingError message={trainingData.error}>
+      <Button className='px-4 flex-1'>
+        <BackLink />
+      </Button>
+    </TrainingError>
+    )
+  }
   return (
-        trainingData.data && <Training trainingPlanData={trainingData.data} progressions={progressions}/>
+        trainingData.data && <Training trainingPlanData={trainingData.data} />
   )
 }

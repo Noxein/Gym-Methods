@@ -69,7 +69,7 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
 
     const { exerciseData, progressions, newExerciseName, twoRecentExercises, firstLoad, loading, setLoading, finishOneExercise } = useContext(ExerciseDataContext)!
 
-    const[state,dispatch] = useReducer<(state: AddExerciceReducerType, action: ActionTypes) => AddExerciceReducerType>(AddExerciceReducer,initalData(exerciseData.name))
+    const[state,dispatch] = useReducer(AddExerciceReducer,initalData(exerciseData.name))
     const[error,setError] = useState<string>('')
     //const[loading,setLoading] = useState(false)
     const[showHistory,setShowHistory] = useState(false)

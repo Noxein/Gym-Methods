@@ -1,17 +1,17 @@
 import { MyTraingPlansPage } from '@/app/components/profile/my-training-plans/trainingPlanName/MyTraingPlansPage'
-import { getLocale, getTranslations } from 'next-intl/server';
+import { MetaDataTranslations } from '@/app/lib/utils';
 
 export async function generateMetadata() {
-  const locale = getLocale()
-  const t = await getTranslations({locale, namespace: 'Metadata'});
+  const t = await MetaDataTranslations()
  
   return {
     title: t('Edit training')
   };
 }
 
-export default async function page({params}:{params:{trainingPlanName:string}}){
+export default async function page(props:{params: Promise<{trainingPlanName:string}>}) {
+  const params = await props.params;
   const trainingName = decodeURI(params.trainingPlanName)
 
-return <MyTraingPlansPage trainingName={trainingName}/>
+  return <MyTraingPlansPage trainingName={trainingName}/>
 }

@@ -3,8 +3,8 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
-import { dataType } from "./components/first-setup/SetupOneOfThree";
+import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { dataType } from "./components/first-setup/Casual/Goal";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
@@ -15,7 +15,47 @@ import { AuthError } from "next-auth";
 import { Begginer1_3FBW_FirstVariation, Begginer1_3FBW_SecondVariation, Beginner4_7Lower_FirstVariation, Beginner4_7Lower_SecondVariation, Beginner4_7Upper_FirstVariation, Beginner4_7Upper_SecondVariation } from "./lib/TrainingPlansData";
 import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
 import { v4 } from "uuid";
+import { cookies } from 'next/headers'
 
+export const setCookie = async (name:string,value:string) => {
+    const cookieStore = await cookies()
+    cookieStore.set(name, value)
+}
+
+export const getCookie = async (name:string) => {
+    const cookieStore = await cookies()
+    const cookie = cookieStore.get(name)
+    return cookie?.value
+}
+
+export const updateTraineeInfo = async () => {
+    const userid = await userID()
+
+    // make sure user is connected as trainer
+
+    try{
+        const isUserConnectedToTrainer = await sql`SELECT id FROM trainertrainee WHERE traineeid = ${userid}`
+
+        if(isUserConnectedToTrainer.rows.length === 0) throw new Error("User is not connected to a trainer")
+
+        await sql`UPDATE gymusers SET purpose = 'trainee', setupcompleted = true WHERE id = ${userid}`
+
+
+        return
+    }catch(e){
+        
+    }
+}
+
+export const handleSaveTrainerSetup = async () => {
+    const userid = await userID()
+
+    try{
+        await sql`UPDATE gymusers SET purpose = 'trainer', setupcompleted = true WHERE id = ${userid}`
+    }catch(e){
+        
+    }
+}
 export const LoginNoFormData = async (email:string,password:string) => {
     if(typeof email !== 'string' || typeof password !== 'string'){
         return { error: "Something went wrong"}
@@ -49,10 +89,11 @@ const validateEmail = (email:string) => {
       );
   };
 
-export const Register = async (email:string,password:string,confirmpassword:string) => {
+export const Register = async (email:string,userName:string,password:string,confirmpassword:string) => {
     let error = {
         email: '',
         password: '',
+        userName: '',
         confirmpassword: '',
         somethingWentWrong: '',
         isError: false
@@ -64,7 +105,7 @@ export const Register = async (email:string,password:string,confirmpassword:stri
         error.email = 'Wrong email format'
         error.isError = true
     }
-    if(typeof email !== 'string' || typeof password !== 'string' || typeof confirmpassword !== 'string'){
+    if(typeof email !== 'string' || typeof password !== 'string' || typeof confirmpassword !== 'string'||typeof userName !== 'string'){
         error.somethingWentWrong = "Something went wrong"
         error.isError = true
     }
@@ -74,6 +115,10 @@ export const Register = async (email:string,password:string,confirmpassword:stri
     }
     if(password.length < 8){
         error.password = 'Password should be at least 8 chracters long'
+        error.isError = true
+    }
+    if(!userName){
+        error.userName = "Please set username"
         error.isError = true
     }
 
@@ -97,7 +142,7 @@ export const Register = async (email:string,password:string,confirmpassword:stri
     const hasedPassword = await hash(password,10)
 
     await sql`
-        INSERT INTO gymusers (email,password) VALUES (${email},${hasedPassword})
+        INSERT INTO gymusers (email,password,username) VALUES (${email},${hasedPassword},${userName})
     `
     return { error }
 }
@@ -240,7 +285,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     revalidatePath('/home')
 }
 
-export const FistStepDataValidation = (data:dataType) => {
+export const FistStepDataValidation = async (data:dataType) => {
     let error = {
         goal: '',
         advancmentlevel: '',
@@ -269,7 +314,7 @@ export const FistStepDataValidation = (data:dataType) => {
 
 }
 
-export const SecondStepDataValidation = (exercises:string[]) => {
+export const SecondStepDataValidation = async (exercises:string[]) => {
     let error = false
     if(!Array.isArray(exercises)){
         error = true
@@ -281,10 +326,11 @@ export const SecondStepDataValidation = (exercises:string[]) => {
         return { error: 'Wrong exercises chosen'}
     }
 }
+
 export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],favourtiteExercises:string[]) => {
     let isError = false
     const userid = await userID()
-    const validateData = FistStepDataValidation(data)
+    const validateData = await FistStepDataValidation(data)
     for(const [key,value] of Object.entries(data)){
         if(typeof value !== 'string') return { error: "Something went wrong" }
     }
@@ -593,6 +639,17 @@ export const getUserHandles = async () => {
     }catch(e){
         console.log(e,'Error occured actions.ts file getUserHandles function')
         return [] as {id: string,handlename: string}[]
+    }
+}
+
+export const getUserPurpose = async () => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`SELECT purpose FROM gymusers WHERE id = ${userid}`
+        return result.rows[0].purpose as UserPurposeType
+    }catch{
+        return ''
     }
 }
 
