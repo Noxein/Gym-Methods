@@ -9,7 +9,8 @@ const COOKIE_NAME = 'NEXT_LOCALE';
 
 export async function getUserLocale() {
     const store = await cookies();
-    const locale = store.get('locale')?.value || defaultLocale;
+    console.log(store.get(COOKIE_NAME))
+    const locale = store.get(COOKIE_NAME)?.value || defaultLocale;
 
   return locale
 }
