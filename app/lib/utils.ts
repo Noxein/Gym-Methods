@@ -2,6 +2,7 @@ import { addDays, getDay, subDays } from "date-fns"
 import { LocalStorageTraining, ProgressedIndexesType, Series, SeriesWithExercise, TrainingProgression, WeekDay, WeekDayPL } from "../types"
 import { setUserLocale } from "../i18n/locale"
 import { Locale, locales } from "../i18n/config"
+import { getLocale, getTranslations } from "next-intl/server"
 
 export const WeekDayArray = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
 export const WeekDayArrayPL = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela']
@@ -274,3 +275,9 @@ export const localStorageStringForLongTermPlan = (planName: string) => {
 }
 
 export const WSString = "ws://localhost:3000/pairUsers"
+
+export const MetaDataTranslations = async () => {
+  const locale = await getLocale()
+  const t = await getTranslations({locale, namespace: 'Metadata'});
+  return t
+}

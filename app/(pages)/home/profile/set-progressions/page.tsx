@@ -1,10 +1,9 @@
 import { AllExercisesInOneArray, getAllExercises, getAllUserProgressions } from "@/app/actions";
 import { SetProgressions } from "@/app/components/profile/set-progressions/SetProgressions";
-import { getLocale, getTranslations } from "next-intl/server";
+import { MetaDataTranslations } from "@/app/lib/utils";
 
 export async function generateMetadata() {
-    const locale = getLocale()
-    const t = await getTranslations({locale, namespace: 'Metadata'});
+  const t = await MetaDataTranslations()
    
     return {
       title: t('Progressions')

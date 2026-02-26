@@ -26,7 +26,7 @@ export const SettingsMapper = ({item,objectName,currentLevel=0,stateSetter,state
     if(Array.isArray(item)){
         return (<div className={`flex flex-col ${mLeft} font-semibold`}>
             <ExpandBtn 
-                text={d(objectName)} 
+                text={d(objectName!)} 
                 isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} 
                 mLeft={mLeft}/>
