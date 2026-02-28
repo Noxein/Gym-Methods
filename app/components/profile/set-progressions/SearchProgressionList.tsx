@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { FilteredProgressions } from './FilteredProgressions'
 import { Progression, SelectedExerciseWithTempo, UserExercise, UserExerciseTempoReturnType } from '@/app/types'
-import { LangContext } from '@/app/context/LocaleProvider'
+import  LocaleContext  from '@/app/context/LocaleContext'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
 
@@ -15,7 +15,7 @@ type SearchListType = {
 }
 export const SearchProgressionList = ({searchTerm,allExercisesInOneArray,progressions,setSelectedExercise,setShowEditTempoModal,setShowDeleteTempoModal}:SearchListType) => {
 
-  const context = useContext(LangContext)
+  const context = useContext(LocaleContext)
   let filtered:(string | UserExercise)[] = []
 
   const d = useTranslations('DefaultExercises')

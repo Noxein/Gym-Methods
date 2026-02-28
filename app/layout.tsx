@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { BodyColorProvider } from "./components/BodyColorProvider";
-import { LocaleDataProvider } from "./context/LocaleDataProvider";
 import { getLocale, getMessages } from "next-intl/server";
-import { NextIntlClientProvider } from "next-intl";
+import { Locale, NextIntlClientProvider } from "next-intl";
 import { SelectLanguage } from "./components/SelectLanguage";
 import { Main } from "./Main";
+import { getUserLocale } from "./i18n/locale";
+import { LocaleProvider } from "./context/LocaleContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +24,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
+  const locale = await getUserLocale()
   const messages = await getMessages();
 
   return (
@@ -31,14 +32,11 @@ export default async function RootLayout({
       
         <body className={`${inter.className} flex flex-col min-h-screen`}>
           <NextIntlClientProvider messages={messages}>
-            <LocaleDataProvider>
-                {/* {showSelectLang ? <SelectLanguage /> : children }
-                {children} */}
-                <Main>
+            <LocaleProvider lang={locale}>
+              
                   {children}
-                </Main>
               <BodyColorProvider />
-            </LocaleDataProvider>
+              </LocaleProvider>
           </NextIntlClientProvider>
         </body>
     

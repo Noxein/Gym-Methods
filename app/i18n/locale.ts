@@ -12,7 +12,7 @@ export async function getUserLocale() {
     console.log(store.get(COOKIE_NAME))
     const locale = store.get(COOKIE_NAME)?.value || defaultLocale;
 
-  return locale
+  return locale as Locale;
 }
 
 export async function setUserLocale(locale: Locale) {

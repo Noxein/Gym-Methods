@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { FilteredTempos } from './FilteredTempos'
 import { SelectedExerciseWithTempo, UserExercise, UserExerciseTempoReturnType } from '@/app/types'
-import { LangContext } from '@/app/context/LocaleProvider'
+import  LocaleContext  from '@/app/context/LocaleContext'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
 
@@ -15,7 +15,7 @@ type SearchListType = {
 }
 export const SearchList = ({searchTerm,allExercisesInOneArray,tempos,setSelectedExercise,setShowEditTempoModal,setShowDeleteTempoModal}:SearchListType) => {
 
-  const context = useContext(LangContext)
+  const context = useContext(LocaleContext)
   let filtered:(string | UserExercise)[] = []
 
   const d = useTranslations('DefaultExercises')

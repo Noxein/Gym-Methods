@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { FilteredExercises } from './FilteredExercises'
 import { UserExercise } from '@/app/types'
-import { LangContext } from '@/app/context/LocaleProvider'
+import  LocaleContext  from '@/app/context/LocaleContext'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
 
@@ -10,7 +10,7 @@ type SearchExercisesTypes = {
     searchTerm: string
 }
 export const SearchExercises = ({allExercisesInOneArray,searchTerm}:SearchExercisesTypes) => {
-  const context = useContext(LangContext)
+  const context = useContext(LocaleContext)
   let filtered:(string | UserExercise)[] = []
 
   const d = useTranslations('DefaultExercises')
