@@ -15,6 +15,10 @@ export default auth(async(req) =>{
     if(nextUrl.pathname === '/'){ 
         return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl))
     }
+    
+    if (req.nextUrl.pathname.startsWith("/api")) {
+        return NextResponse.next();
+    }
 
     const isApiAuthRoute = apiAuthPrefix.includes(nextUrl.pathname)
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
@@ -49,6 +53,6 @@ export default auth(async(req) =>{
 
 export const config = {
     matcher: [
-        '/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'
+        "/((?!api|_next/static|_next/image|favicon.ico).*)",
     ]
 }

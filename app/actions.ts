@@ -16,6 +16,13 @@ import { Begginer1_3FBW_FirstVariation, Begginer1_3FBW_SecondVariation, Beginner
 import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
 import { v4 } from "uuid";
 import { cookies } from 'next/headers'
+import cloudinary from "cloudinary";
+
+cloudinary.v2.config({
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 export const setCookie = async (name:string,value:string) => {
     const cookieStore = await cookies()
@@ -1942,5 +1949,29 @@ export const getUserLongTrainigs = async () => {
 
     }catch(e){
         return []
+    }
+}
+
+export const updateAvatar = async (secureUrl: string, publicId: string) => {
+    const userid = await userID()
+
+    try{
+        const hasAvatar = await sql`
+            SELECT avatarpublicid FROM gymusers WHERE id = ${userid} AND avatarpublicid IS NOT NULL
+        `
+        if(hasAvatar.rows.length > 0){
+            // delete old avatar from cloudinary
+            cloudinary.v2.api.delete_resources([hasAvatar.rows[0].avatarpublicid], function(error,result) {
+                if(error) {
+                    throw new Error('Error occured while deleting image from cloudinary: ' + error);
+                }
+            })
+        }
+        await sql`
+            UPDATE gymusers SET avatarurl = ${secureUrl}, avatarpublicid = ${publicId} WHERE id = ${userid}
+        `
+    }catch(e){
+        console.log(e)
+        return {error: 'Something went wrong'}
     }
 }

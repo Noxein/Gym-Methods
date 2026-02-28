@@ -7,7 +7,15 @@ const nextConfig = {
     turbopack:{},
     experimental:{
         
-    }
+    },
+    // images:{
+    //     remotePatterns:[
+    //         {
+    //             protocol:'https',
+    //             hostname:'res.cloudinary.com',
+    //         }
+    //     ]
+    // }
 };
 
 export default withNextIntl(nextConfig);
