@@ -28,18 +28,15 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      
-        <body className={`${inter.className} flex flex-col min-h-screen`}>
-          <NextIntlClientProvider messages={messages}>
-            <LocaleProvider lang={locale}>
-              
-                  {children}
-              <BodyColorProvider />
-              </LocaleProvider>
-          </NextIntlClientProvider>
-        </body>
-    
+    <html lang={locale}> 
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          <LocaleProvider lang={locale}>       
+            {children}
+            <BodyColorProvider />
+          </LocaleProvider>
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

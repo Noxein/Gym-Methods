@@ -1,7 +1,5 @@
 import { Suspense } from 'react'
-import { AddExerciseButton } from './AddExerciseButton'
 import { IncomingTrainings } from './IncomingTrainings'
-import { LatestTrainings } from './LatestTrainings'
 import { IncomingTrainingsSkeleton } from '../Loading/home/IncomingTrainingsSkeleton'
 import { LatestTrainingsSkeleton } from '../Loading/home/LatestTrainingsSkeleton'
 import { WidgetDataProvider } from './WidgetDataProvider'
@@ -33,10 +31,6 @@ export const CasualUserHome = async ({useremail}:HomeTypes) => {
 
       </div>
       </Suspense>
-        
-      {/* <AddExerciseButton /> */}
-
-      {/* <OpenTrainingRemainder useremail={useremail}/> */}
     </div>
   )
 }

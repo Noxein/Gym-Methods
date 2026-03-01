@@ -5,6 +5,7 @@ import Cropper from "react-easy-crop";
 import { Point, Area } from "react-easy-crop";
 import { getCroppedImg } from '@/app/lib/utils';
 import { PictureIcon } from '@/app/ui/icons/ExpandIcon';
+import { useTranslations } from 'next-intl';
 
 type AvatarSelectorProps = {
     setCurrentStep: React.Dispatch<React.SetStateAction<'language' | 'setavatar' | 'purpose' | 'final'>>
@@ -21,6 +22,9 @@ function AvatarSelector({ setCurrentStep }: AvatarSelectorProps) {
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const[loading,setLoading] = useState(false)
     const[error,setError] = useState<string>('')
+
+    const t = useTranslations('FirstSetup')
+    const e = useTranslations('Errors')
 
     const inputRef = useRef<HTMLInputElement>(null)
 
@@ -41,7 +45,7 @@ function AvatarSelector({ setCurrentStep }: AvatarSelectorProps) {
         reader.readAsDataURL(blob);
     });
 
-    const handleDoneCrop = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleDoneCrop = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         if(loading) return;
         if(error) setError('')
         setLoading(true)
@@ -60,32 +64,34 @@ function AvatarSelector({ setCurrentStep }: AvatarSelectorProps) {
             });
 
             if(!response.ok) {
-                setError("Failed to upload avatar");
+                setError(e("Failed to upload avatar"));
                 setLoading(false);
                 return;
             }
             setLoading(false)
         }
         setCurrentStep('purpose')
-        e.preventDefault()
+        event.preventDefault()
     }
 
-    const handlePrev = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handlePrev = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         if(loading) return;
         if(imageUrl) {
             URL.revokeObjectURL(imageUrl)
             return setImageUrl('')
         }
         setCurrentStep('language')
-        e.preventDefault()
+        event.preventDefault()
     }
+
+
     return ( 
     <div >
         <input type="file" accept='image/*' onChange={handleFileChange} ref={inputRef} className='invisible'/>
 
         <div className='flex items-center justify-center '>
             <button  className='text-white flex' onClick={() => inputRef.current?.click()}>
-                {imageUrl ? "Change Image" : "Upload Image"}
+                {imageUrl ? t('Change Image') : t('Upload Image')}
                 <PictureIcon className='w-6 h-6 ml-2 mx-auto' fill='#fff' />
             </button>
         </div>

@@ -31,12 +31,11 @@ function Puropse({setCurrentStep,purpose,setPurpose}:PurposeProps) {
                         valuesToLoop={purposeOptions}
                         name='advancmentlevel'
                         onChange={handlePurposeChange}
-                        value={purpose}
-                        defaultValue={purpose}
+                        value={purpose}                        
                         />
 
                     <Navigator 
-                        prev={()=>setCurrentStep('language')}
+                        prev={()=>setCurrentStep('setavatar')}
                         next={e=>{setCurrentStep('final');e.preventDefault()}}
                     />
             </div> 

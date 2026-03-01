@@ -7,7 +7,7 @@ const LocaleContext = createContext<Locale|null>('en');
 
 export default LocaleContext;
 
-const LocaleProvider = async ({children,lang}:{children:React.ReactNode,lang:Locale}) => {
+const LocaleProvider = ({children,lang}:{children:React.ReactNode,lang:Locale}) => {
     return(
         <LocaleContext.Provider value={lang as Locale}>
             {children}

@@ -45,9 +45,7 @@ export const updateTraineeInfo = async () => {
 
         if(isUserConnectedToTrainer.rows.length === 0) throw new Error("User is not connected to a trainer")
 
-        await sql`UPDATE gymusers SET purpose = 'trainee', setupcompleted = true WHERE id = ${userid}`
-
-
+        await sql`UPDATE gymusers SET purpose = 'Podopieczny trenera', setupcompleted = true WHERE id = ${userid}`
         return
     }catch(e){
         
@@ -58,7 +56,7 @@ export const handleSaveTrainerSetup = async () => {
     const userid = await userID()
 
     try{
-        await sql`UPDATE gymusers SET purpose = 'trainer', setupcompleted = true WHERE id = ${userid}`
+        await sql`UPDATE gymusers SET purpose = 'Trener', setupcompleted = true WHERE id = ${userid}`
     }catch(e){
         
     }
@@ -323,11 +321,16 @@ export const FistStepDataValidation = async (data:dataType) => {
 
 export const SecondStepDataValidation = async (exercises:string[]) => {
     let error = false
+    console.log(exercises)
     if(!Array.isArray(exercises)){
+        console.log('Wrong exercises data')
         error = true
     }
     exercises.map(exercise=>{
-        if(!exercisesArr.includes(exercise)) error = true
+        if(!exercisesArr.includes(exercise)){
+            console.log('Wrong exercise:',exercise, typeof exercise)
+             error = true         
+        }
     })
     if(error){
         return { error: 'Wrong exercises chosen'}
@@ -350,7 +353,7 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
     try{
         await sql`
             UPDATE gymusers
-            SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
+            SET purpose = 'Casual', goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
             WHERE id = ${userid};
         `
         await createTrainingPlans(favourtiteExercises,deleteExercises,Number(data.daysexercising))

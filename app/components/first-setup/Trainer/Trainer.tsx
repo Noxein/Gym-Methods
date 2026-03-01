@@ -4,13 +4,14 @@ import Navigator from "@/app/components/first-setup/Navigator";
 import { Button } from "../../ui/Button";
 import { useRouter } from "next/navigation";
 import { handleSaveTrainerSetup } from "@/app/actions";
+import { useState } from "react";
 
 type TrainerProps = {
     setCurrentStep: React.Dispatch<React.SetStateAction<FirstSetupFirstStep>>
 }
 function Trainer({setCurrentStep}: TrainerProps) {
 
-
+    const[loading,setLoading] = useState(false)
 
     const handleBack = () => {
         setCurrentStep('purpose');
@@ -18,15 +19,18 @@ function Trainer({setCurrentStep}: TrainerProps) {
 
     const handleFinish = async() => {
         // Finalize setup for trainer
+        setLoading(true)
         await handleSaveTrainerSetup();
     }
 
     const handleGoHome = async() => {
+        setLoading(true)
         await handleFinish();
         navigator.push('/home');
     }
 
     const handleGoAddTrainee = async() => {
+        setLoading(true)
         await handleFinish();
         navigator.push('/home/my-trainees/add-trainee');
     }
@@ -37,8 +41,8 @@ function Trainer({setCurrentStep}: TrainerProps) {
                 <h1 className="text-3xl font-medium mb-10 text-center">Co dalej</h1>
 
                 <div className="flex gap-4">
-                    <Button onClick={handleGoAddTrainee} className="flex-1" isPrimary>Dodaj podopiecznego</Button>
-                    <Button onClick={handleGoHome} className="flex-1" isPrimary>Strona główna</Button>
+                    <Button onClick={handleGoAddTrainee} disabled={loading} className="flex-1" isPrimary>Dodaj podopiecznego</Button>
+                    <Button onClick={handleGoHome} disabled={loading} className="flex-1" isPrimary>Strona główna</Button>
                 </div>
 
             </div>
@@ -47,6 +51,7 @@ function Trainer({setCurrentStep}: TrainerProps) {
                 next={()=>{}}
                 prev={handleBack}
                 hideNext
+                loading={loading}
             />
         </CenterComponent>
      );

@@ -66,7 +66,9 @@
         "ExercisesYouCantDo": "Select which exercises you dont want cant/dont want to do:",
         "ExercisesYouWantToDo1/2": "Select which exercises",
         "ExercisesYouWantToDo2/2": "has to be in your plan:",
-        "ChooseLanguage": "Choose language"
+        "ChooseLanguage": "Choose language",
+        "Change Image": "Change image",
+        "Upload Image": "Upload image"
     },
     "Home": {
         "ThatDay" : "That day",
@@ -381,7 +383,8 @@
         "Training not found": "Training not found",
         "Exercise dont have an id": "Exercise dont have an id",
         "Name cant be empty": "Name cant be empty",
-        "There cant be any empty trainings": "Each training has to have at least one exercise"
+        "There cant be any empty trainings": "Each training has to have at least one exercise",
+        "Failed to upload avatar": "Failed to upload avatar"
     },
     "Metadata": {
         "Profile": "Profile",
