@@ -37,3 +37,7 @@ export const DEFAULT_LOGIN_REDIRECT = '/home'
 export const protectedRoutes = [
     '/home',
 ]
+
+export const trainerRoutes = [
+    '/home/profile/my-trainees'
+]

@@ -1,9 +1,9 @@
 
-import { DEFAULT_LOGIN_REDIRECT, authRoutes, publicRoutes, apiAuthPrefix } from './routes';
+import { DEFAULT_LOGIN_REDIRECT, authRoutes, publicRoutes, apiAuthPrefix, trainerRoutes } from './routes';
 import NextAuth from 'next-auth';
 import authConfig from './auth.config';
 import { auth as mainauth } from '@/auth'
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 const { auth } = NextAuth(authConfig)
 
@@ -12,7 +12,9 @@ export default auth(async(req) =>{
     const { nextUrl } = req;
     const user = await mainauth()
 
-    if(nextUrl.pathname === '/'){ 
+    const isTrainer = user?.user?.purpose === "Trener"
+
+    if(nextUrl.pathname === '/'){
         return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl))
     }
     
@@ -23,6 +25,7 @@ export default auth(async(req) =>{
     const isApiAuthRoute = apiAuthPrefix.includes(nextUrl.pathname)
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
     const isAuthRoute = authRoutes.includes(nextUrl.pathname)
+    const isTrainerRoute = trainerRoutes.includes(nextUrl.pathname)
 
     const isSetupRoute = nextUrl.pathname.includes('/first-setup')
     const isSetupCompleted = user?.user?.setupcompleted
@@ -44,6 +47,9 @@ export default auth(async(req) =>{
         return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl))
     }
 
+    if(isTrainerRoute && !isTrainer){
+        return Response.redirect(new URL('/home',nextUrl))
+    }
 
     if(isSetupRoute && isSetupCompleted){
         return Response.redirect(new URL('/home',nextUrl))
@@ -53,6 +59,6 @@ export default auth(async(req) =>{
 
 export const config = {
     matcher: [
-        "/((?!api|_next/static|_next/image|favicon.ico).*)",
+        "/((?!api|_next/static|_next/image|favicon.ico|manifest.webmanifest).*)",
     ]
 }

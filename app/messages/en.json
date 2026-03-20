@@ -37,7 +37,11 @@
         "Import": "Import",
         "AddExercise":"Add exercise",
         "AddTraining": "Add training",
-        "Clone": "Clone"
+        "Clone": "Clone",
+        "Confirm": "Confirm",
+        "Date": "Date",
+        "Exercises": "Exercises",
+        "Day": "Day"
     },
     "Login": {
         "Login": "Login",
@@ -81,6 +85,7 @@
         "AddNewTraining": "Add new training",
         "LatestTrainings": "Latest trainings",
         "Series": "series",
+        "Repetitions": "repetitions",
         "AddExercise": "Add exercise",
 
         "OpenTrainings": "Yout have opened trainings in progress",
@@ -113,7 +118,15 @@
         "AccountSettings": "Account settings",
         "SetProgressions": "Set Progressions",
         "ChangePassword":"Change password",
-        "Logout": "Sign out"
+        "Logout": "Sign out",
+        "Trainees": "Trainees",
+        "Handles": "Handles",
+        "Exercises": "Exercises",
+        "TrainingAccount": "Workout account",
+        "TrainerAccount": "Trainer account",
+        "CasualAccount": "Casual account",
+        "MyTrainees": "My trainees",
+        "TrainingSchemas": "Training schemas"
     },
     "Home/Profile/Change-Password" : {
         "ChangePassword": "Change password",
@@ -192,6 +205,30 @@
         "WhichTrainingToClone": "Which training to clone",
         "AreYouSureYouWantToCloneTraining": "Are you sure you want to clone training",
         "IncreaseWeight": "Increase weight by (%)"
+    },
+    "Home/Profile/My-Trainees/Schemas":{
+        "AddNewSchema": "Create new training template"
+    },
+    "Home/Profile/My-Trainees/Schemas/Create":{
+        "PlanName": "Plan name",
+        "AreYouSureYouWantToDeletePlan": "Are you sure you want to delete plan",
+        "AddExercise":"Add exercise",
+        "AddPlan": "Add plan",
+        "NewPlan": "New plan",
+        "AreYouSureYouWantToCancel": "Are you sure you want to cancel? All unsaved changes will be lost",
+        "Show side selection": "Show side selection",
+        "User needs to have different weights for each side": "User needs to have different weights for each side",
+        "importTemplate": "Import template",
+        "loadingTemplates": "Loading templates...",
+        "noTemplatesAvailable": "No templates available for import.",
+        "availableTemplates": "Available templates:",
+        "importThisTemplate": "Import this template",
+        "TrainingName": "Training name",
+        "EditTraining": "Edit training",
+        "AddSet": "Add set",
+        "RepetitionsMin": "Min repetitions",
+        "RepetitionsMax": "Max repetitions",
+        "TimeInSeconds": "Time in seconds"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Continue training",
@@ -338,7 +375,12 @@
         "kg": "kg",
         "Trener": "Trainer",
         "Casual": "Casual",
-        "Podopieczny trenera": "Trainer's client"
+        "Podopieczny trenera": "Trainer's client",
+        "Left":"Left",
+        "Right": "Right",
+        "Both": "Both",
+        "Yes": "Yes",
+        "No": "No"   
     },
     "Languages": {
         "Polish": "Polish",
@@ -384,7 +426,13 @@
         "Exercise dont have an id": "Exercise dont have an id",
         "Name cant be empty": "Name cant be empty",
         "There cant be any empty trainings": "Each training has to have at least one exercise",
-        "Failed to upload avatar": "Failed to upload avatar"
+        "Failed to upload avatar": "Failed to upload avatar",
+        "SchemaNameCannotBeEmpty": "Schema name cannot be empty",
+        "ThereCantBeAnyEmptyTrainings": "Each training has to have at least one exercise",
+        "AllTrainingsMustHaveAName": "Each training must have a name",
+        "SchemasNotFound": "No training templates found. Create a new training plan and then save it as a template to assign it to your trainees!",
+        "Plan must have a name": "Plan must have a name",
+        "Plan must have at least one sub-plan": "Plan must have at least one sub-plan"
     },
     "Metadata": {
         "Profile": "Profile",

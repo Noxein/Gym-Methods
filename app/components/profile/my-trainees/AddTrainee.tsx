@@ -7,7 +7,7 @@ import { BlurBackgroundModal } from "../../BlurBackgroundModal";
 import AddTraineeModal from "./AddTraineeModal";
 
 function AddTrainee() {
-    const[showModal,setShowModal] = useState(true);
+    const[showModal,setShowModal] = useState(false);
     return ( 
         <>
             <ButtonWithIcon 

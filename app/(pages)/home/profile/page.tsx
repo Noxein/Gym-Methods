@@ -1,4 +1,7 @@
-import { Profile } from "@/app/components/profile/Profile";
+
+import { CasualProfile } from "@/app/components/profile/CasualProfile";
+import TraineeProfile from "@/app/components/profile/TraineeProfile";
+import TrainerProfile from "@/app/components/profile/TrainerProfile";
 import { MetaDataTranslations } from "@/app/lib/utils";
 import { auth } from "@/auth";
   
@@ -10,8 +13,14 @@ export async function generateMetadata() {
     };
 }
 export default async function page() {
-    const email = (await auth())!.user?.email!
-    return(
-        <Profile email={email}/>
-    )
+    const userData = await auth()
+    const email = userData?.user?.email! 
+    const purpose = userData?.user?.purpose!
+    const trainercurrentaccounttype = userData?.user?.trainercurrentaccounttype
+
+    if(purpose === 'Casual' || trainercurrentaccounttype === 'Casual') return <CasualProfile email={email} trainercurrentaccounttype={trainercurrentaccounttype}/>
+
+    if(purpose === 'Podopieczny trenera') return <TraineeProfile email={email}/>
+
+    return <TrainerProfile email={email} />   
 }

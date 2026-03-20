@@ -3,7 +3,7 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, Trainee, TrainerPlanSchema, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/Casual/Goal";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -17,6 +17,7 @@ import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
 import { v4 } from "uuid";
 import { cookies } from 'next/headers'
 import cloudinary from "cloudinary";
+import { error } from "console";
 
 cloudinary.v2.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -1976,5 +1977,101 @@ export const updateAvatar = async (secureUrl: string, publicId: string) => {
     }catch(e){
         console.log(e)
         return {error: 'Something went wrong'}
+    }
+}
+
+export const getTrainees = async () => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`
+            SELECT gymusers.username, gymusers.avatarurl, gymusers.id FROM trainertrainee INNER JOIN gymusers ON trainertrainee.traineeid = gymusers.id WHERE trainertrainee.trainerid = ${userid}
+        `
+        console.log(result.rows)
+        return result.rows as Trainee[]
+    }catch(e){
+        console.log(e)
+        return []
+    }
+}
+
+export const getTraineeData = async (traineeId: string) => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`
+            SELECT gymusers.username, gymusers.avatarurl, gymusers.id FROM trainertrainee INNER JOIN gymusers ON trainertrainee.traineeid = gymusers.id WHERE trainertrainee.trainerid = ${userid} AND trainertrainee.traineeid = ${traineeId}
+        `
+        return result.rows[0] as Trainee
+    }catch(e){
+        console.log(e)
+        return null
+    }
+}
+
+export const switchAccount = async () => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`
+           SELECT purpose,trainercurrentaccounttype FROM gymusers WHERE id = ${userid} AND purpose = 'Trener'
+        `
+        if(result.rows.length === 0){
+            console.log('User is not trainer',result.rows)
+            return {error: 'Something went wrong'}
+        }
+        const currentType = result.rows[0].trainercurrentaccounttype
+        const newType = currentType === 'Trener' ? 'Casual' : 'Trener'
+        await sql`
+            UPDATE gymusers SET trainercurrentaccounttype = ${newType} WHERE id = ${userid}
+        `
+
+    }catch(e){
+        console.log(e)
+        return {error: 'Something went wrong'}
+    }finally{
+        revalidatePath('/home')
+        redirect('/home')
+    }
+}
+
+export const getTrainerSchemas = async () => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`
+            SELECT * FROM trainerplanschemas WHERE trainerid = ${userid}
+        `
+        return {
+            schemas: result.rows as TrainerPlanSchema[],
+            error: ''
+        }
+    }catch(e){
+        console.log(e)
+        return {
+            schemas: [],
+            error: 'Something went wrong'
+        }
+    }
+}
+
+export const getSchemaData = async (schemaId: string) => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`
+            SELECT * FROM trainerplanschemas WHERE trainerid = ${userid} AND id = ${schemaId}
+        `
+        return {
+            schema: result.rows[0] as TrainerPlanSchema,
+            error: result.rows.length > 0 ? '' : 'Schema not found'
+        }
+
+    }catch(e){
+        console.log(e)
+        return {
+            schema: null,
+            error: 'Something went wrong'
+        }
     }
 }

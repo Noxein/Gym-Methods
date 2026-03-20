@@ -10,7 +10,7 @@ type MapExercisesTypes = {
     exercisesObject:ExerciseTypes,
     allExercisesInOneArray: (string | UserExercise)[],
     handleClose: (...params:any) => any,
-    handleSelect: (name:string) => void,
+    handleSelect: (id:string, name?:string) => void,
 }
 
 export const MapExercises = ({exercisesObject,allExercisesInOneArray,handleClose,handleSelect}:MapExercisesTypes) => {

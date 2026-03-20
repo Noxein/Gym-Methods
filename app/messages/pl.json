@@ -37,7 +37,11 @@
         "Import": "Importuj",
         "AddExercise":"Dodaj ćwiczenie",
         "AddTraining": "Dodaj trening",
-        "Clone": "Skopiuj"
+        "Clone": "Skopiuj",
+        "Confirm": "Potwierdź",
+        "Date": "Data",
+        "Exercises": "Ćwiczenia",
+        "Day": "Dzień"
     },
     "Login": {
         "Login": "Zaloguj",
@@ -81,6 +85,7 @@
         "AddNewTraining": "Dodaj nowy trening",
         "LatestTrainings": "Ostatnie treningi",
         "Series": "{lastNumber, select, 0 {serii} 1 {seria} 2 {serie} 3 {serie} 4{serie} 5 {serii} other {serii} }",
+        "Repetitions": "{lastNumber, select, 0 {powtórzeń} 1 {powtórzenie} 2 {powtórzenia} 3 {powtórzenia} 4{powtórzenia} 5 {powtórzeń} other {powtórzeń} }",
         "AddExercise": "Dodaj ćwiczenie",
 
         "OpenTrainings": "Masz niezakończone treningi z przed ponad 8 godzin",
@@ -113,7 +118,15 @@
         "AccountSettings": "Ustawienia konta",
         "SetProgressions": "Ustaw Progresje",
         "ChangePassword":"Zmień hasło",
-        "Logout": "Wyloguj"
+        "Logout": "Wyloguj",
+        "Trainees": "Podopieczni",
+        "Handles": "Uchwyty",
+        "Exercises": "Ćwiczenia",
+        "TrainingAccount": "Konto treningowe",
+        "TrainerAccount": "Konto trenera",
+        "CasualAccount": "Konto treningowe",
+        "MyTrainees": "Moi podopieczni",
+        "TrainingSchemas": "Schematy treningowe"
     },
     "Home/Profile/Change-Password" : {
         "ChangePassword": "Zmień hasło",
@@ -192,6 +205,30 @@
         "WhichTrainingToClone": "Który trening skopiować",
         "AreYouSureYouWantToCloneTraining": "Czy napewno chcesz skopiować trening",
         "IncreaseWeight": "Zwiększ ciężar o (%)"
+    },
+    "Home/Profile/My-Trainees/Schemas":{
+        "AddNewSchema": "Stwórz nowy schemat treningowy"
+    },
+    "Home/Profile/My-Trainees/Schemas/Create":{
+        "PlanName": "Nazwa planu",
+        "AreYouSureYouWantToDeletePlan": "Czy napewno chcesz usunąć plan",
+        "AddExercise":"Dodaj ćwiczenie",
+        "AddPlan": "Dodaj plan",
+        "NewPlan": "Nowy plan",
+        "AreYouSureYouWantToCancel": "Czy napewno chcesz anulować? Wszystkie niezapisane zmiany zostaną utracone",
+        "Show side selection": "Pokazywać wybór strony",
+        "User needs to have different weights for each side": "Użytkownik potrzebuje różnych ciężarów dla każdej strony",
+        "importTemplate": "Zaimportuj szablon",
+        "loadingTemplates": "Ładowanie szablonów...",
+        "noTemplatesAvailable": "Brak dostępnych szablonów do zaimportowania.",
+        "availableTemplates": "Dostępne szablony:",
+        "importThisTemplate": "Zaimportuj ten szablon",
+        "TrainingName": "Nazwa treningu",
+        "EditTraining": "Edytuj trening",
+        "AddSet": "Dodaj serię",
+        "RepetitionsMin": "Min powtórzenia",
+        "RepetitionsMax": "Max powtórzenia",
+        "TimeInSeconds": "Czas (sekundy)"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Kontynuuj trening",
@@ -338,7 +375,12 @@
         "kg": "kg",
         "Trener": "Trener",
         "Casual": "Casual",
-        "Podopieczny trenera": "Podopieczny trenera"
+        "Podopieczny trenera": "Podopieczny trenera",
+        "Left":"Lewo",
+        "Right": "Prawo",
+        "Both": "Obie",
+        "Yes": "Tak",
+        "No": "Nie"   
     },
     "Languages": {
         "Polish": "Polski",
@@ -384,7 +426,11 @@
         "Exercise dont have an id": "Ćwiczenie nie ma id",
         "Name cant be empty": "Nazwa nie może być pusta",
         "There cant be any empty trainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie",
-        "Failed to upload avatar": "Nie udało się przesłać avatara"
+        "Failed to upload avatar": "Nie udało się przesłać avatara",
+        "SchemaNameCannotBeEmpty": "Nazwa schematu nie może być pusta",
+        "ThereCantBeAnyEmptyTrainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie",
+        "AllTrainingsMustHaveAName": "Każdy trening musi mieć nazwę",
+        "SchemasNotFound": "Brak szablonów treningowych. Stwórz nowy plan treningowy, a następnie zapisz go jako szablon, aby móc go przypisać swoim podopiecznym!"
     },
     "Metadata": {
         "Profile": "Profil",

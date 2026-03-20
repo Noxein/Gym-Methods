@@ -327,8 +327,8 @@ export type ExerciseSubPlanData = {
     handle?: {
         handleid: string,
         handlename: string,
-    }
-    istimeexercise:boolean
+    },
+    istimeexercise:boolean,
 }
 
 export type SetsData = {
@@ -409,3 +409,68 @@ export type FirstSetupFirstStep = 'language'|'purpose'|'final'|'setavatar'
 export type FirstSetupSelectedSteps = 'language'|'purpose'|'goal'|'training-creator'|'fav-exercises'|'not-fav-exercises'
 
 export type UserPurposeType = 'Casual'|'Trener'|'Podopieczny trenera'
+
+export type Trainee = {
+    id: string,
+    username: string, 
+    avatarurl: string
+}
+
+export type TraineePlan = {
+    id: string,
+    name: string,
+    plan: TraineeSingleTraining[],
+    iscompleted: boolean,
+    trainerid?: string,
+    traineeid?: string,
+    lastedited?: Date,
+}
+
+export type TraineeSingleTraining = {
+    id: string,
+    name: string,
+    exercises: TraineeSingleExercise[],
+    date: Date,
+    iscompleted: boolean,
+}
+
+export type TraineeSingleExercise = {
+    id: string,
+    exerciseid: string,
+    exercisename: string,
+    sets:{
+        goal: TraineeSetGoal,
+        actual: Series,
+    }[],
+    handle?: HandleType,
+}
+
+export type TraineeSetGoal = {
+    id: string,
+    weightgoal: number,
+    repetitionsgoalmin: number,
+    repetitionsgoalmax: number,
+    timegoal?: number,
+    side: Side,
+}
+
+export type TrainerPlanSchema = {
+    id: string,
+    trainerid: string,
+    name: string,
+    plan: TrainerSingleTrainingSchema[],
+    lastedited: Date,
+}
+
+export type TrainerSingleTrainingSchema = {
+    id: string,
+    name: string,
+    exercises: TrainerSingleExerciseSchema[],
+}
+
+export type TrainerSingleExerciseSchema = {
+    id: string,
+    exerciseid: string,
+    exercisename: string,
+    handle? : HandleType,
+}

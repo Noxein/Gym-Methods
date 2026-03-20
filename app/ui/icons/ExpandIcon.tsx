@@ -428,3 +428,20 @@ export const PictureIcon = ({width,height,fill,className}:{width?:string,height?
             <svg fill={fill? fill : "#000000"} width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" className={className}><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M30 2.497h-28c-1.099 0-2 0.901-2 2v23.006c0 1.099 0.9 2 2 2h28c1.099 0 2-0.901 2-2v-23.006c0-1.099-0.901-2-2-2zM30 27.503l-28-0v-5.892l8.027-7.779 8.275 8.265c0.341 0.414 0.948 0.361 1.379 0.035l3.652-3.306 6.587 6.762c0.025 0.025 0.053 0.044 0.080 0.065v1.85zM30 22.806l-5.876-6.013c-0.357-0.352-0.915-0.387-1.311-0.086l-3.768 3.282-8.28-8.19c-0.177-0.214-0.432-0.344-0.709-0.363-0.275-0.010-0.547 0.080-0.749 0.27l-7.309 7.112v-14.322h28v18.309zM23 12.504c1.102 0 1.995-0.894 1.995-1.995s-0.892-1.995-1.995-1.995-1.995 0.894-1.995 1.995c0 1.101 0.892 1.995 1.995 1.995z"></path> </g></svg>
     )
 }
+
+export const UsersIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return (
+        <svg height={height?height:iconHeight} width={width?width:iconWidth} version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 60.671 60.671" xmlSpace="preserve" fill={fill? fill : "#000000"}><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <ellipse cx="30.336" cy="12.097" rx="11.997" ry="12.097"></ellipse> <path d="M35.64,30.079H25.031c-7.021,0-12.714,5.739-12.714,12.821v17.771h36.037V42.9 C48.354,35.818,42.661,30.079,35.64,30.079z"></path> </g> </g> </g></svg>
+    )
+}
+
+export const PlanIcon = ({width,height,fill}:{width?:string,height?:string,fill?:string}) => {
+    return(
+        <svg fill={fill? fill : "#000000"} width={width?width:iconWidth} height={height?height:iconHeight} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+                <path d="M39,32H61a2,2,0,0,0,2-2V26a6,6,0,0,0-6-6H43a6,6,0,0,0-6,6v4A2,2,0,0,0,39,32Zm33-7H70a.94.94,0,0,0-1,1v4a8,8,0,0,1-8,8H39a8,8,0,0,1-8-8V26a.94.94,0,0,0-1-1H28a6,6,0,0,0-6,6V74a6,6,0,0,0,6,6H72a6,6,0,0,0,6-6V31A6,6,0,0,0,72,25ZM39,68a2,2,0,0,1-2,2H35a2,2,0,0,1-2-2V66a2,2,0,0,1,2-2h2a2,2,0,0,1,2,2Zm0-10a2,2,0,0,1-2,2H35a2,2,0,0,1-2-2V56a2,2,0,0,1,2-2h2a2,2,0,0,1,2,2Zm0-10a2,2,0,0,1-2,2H35a2,2,0,0,1-2-2V46a2,2,0,0,1,2-2h2a2,2,0,0,1,2,2ZM67,68a2,2,0,0,1-2,2H45a2,2,0,0,1-2-2V66a2,2,0,0,1,2-2H65a2,2,0,0,1,2,2Zm0-10a2,2,0,0,1-2,2H45a2,2,0,0,1-2-2V56a2,2,0,0,1,2-2H65a2,2,0,0,1,2,2Zm0-10a2,2,0,0,1-2,2H45a2,2,0,0,1-2-2V46a2,2,0,0,1,2-2H65a2,2,0,0,1,2,2Z"></path> 
+            </g>
+        </svg>
+    )
+}

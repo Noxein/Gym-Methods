@@ -1,5 +1,5 @@
-import { addDays, getDay, subDays } from "date-fns"
-import { LocalStorageTraining, ProgressedIndexesType, Series, SeriesWithExercise, TrainingProgression, WeekDay, WeekDayPL } from "../types"
+import { addDays, addMonths, getDay, getDaysInMonth, subDays, subMonths } from "date-fns"
+import { LocalStorageTraining, ProgressedIndexesType, Series, SeriesWithExercise, TraineePlan, TrainingProgression, WeekDay, WeekDayPL } from "../types"
 import { setUserLocale } from "../i18n/locale"
 import { Locale, locales } from "../i18n/config"
 import { getLocale, getTranslations } from "next-intl/server"
@@ -314,4 +314,86 @@ export async function getCroppedImg(
       resolve(blob!);
     }, "image/jpeg");
   });
+}
+
+export const getOffsetDays = (date: Date) => {
+  // 0-6, 0 is Sunday, 1 is Monday, ..., 6 is Saturday
+  //0 should be 6, 1 should be 0, 2 should be 1, 3 should be 2, 4 should be 3, 5 should be 4, 6 should be 5
+  const weekDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+
+  if(weekDay === 0) return 6
+  
+  return weekDay - 1
+}
+
+const offsetDaysNextMonth = (date: Date) => {
+  const offsetDays = getOffsetDays(date)
+  if(offsetDays === 0) return 0
+  return 7 - offsetDays
+}
+
+export const offsetDaysPreviousMonthArray = (date: Date) => {
+  const newDate = subMonths(date,1)
+  const numberOfDaysInMonth = getDaysInMonth(newDate)
+  const offsetDays = getOffsetDays(date)
+
+  let arr:Date[] = []
+  for(let i = 0 ; i< offsetDays; i++){
+    arr.push(new Date(newDate.getFullYear(), newDate.getMonth(), numberOfDaysInMonth-i))
+  }
+  return arr.reverse()
+}
+
+export const offsetDaysNextMonthArray = (date: Date) => {
+  const newDate = addMonths(date,1)
+
+  const offsetDays = offsetDaysNextMonth(newDate)
+  if(offsetDays === 0) return []
+
+  let arr:Date[] = []
+  for(let i = 0 ; i< offsetDays; i++){
+    arr.push(new Date(newDate.getFullYear(), newDate.getMonth(), i+1))
+  }
+  return arr
+}
+
+export const TraineePlanErrorChecker = (plan : TraineePlan, locale: Locale) => {
+  if(!plan.name || plan.name.trim() === '') return locale === 'en' ? 
+    'Plan must have a name' : 
+    'Plan musi mieć nazwę'
+  if(plan.plan.length === 0) return locale === 'en' ? 
+    'Plan must have at least one sub-plan' : 
+    'Plan musi mieć przynajmniej jeden podplan'
+  for(let i = 0; i< plan.plan.length; i++){
+    const subPlan = plan.plan[i]
+    if(!subPlan.name || subPlan.name.trim() === '') return locale === 'en' ? 
+      `Sub-plan ${i+1} must have a name` : 
+      `Podplan ${i+1} musi mieć nazwę`
+    if(subPlan.exercises.length === 0) return locale === 'en' ? 
+      `Sub-plan ${i+1} must have at least one exercise` : 
+      `Podplan ${i+1} musi mieć przynajmniej jedno ćwiczenie`
+    for(let j = 0; j< subPlan.exercises.length; j++){
+      const exercise = subPlan.exercises[j]
+      if(!exercise.exercisename || exercise.exercisename.trim() === '') return locale === 'en' ? 
+        `Exercise ${j+1} in sub-plan ${i+1} must have a name` : 
+        `Ćwiczenie ${j+1} w podplanie ${i+1} musi mieć nazwę`
+      if(exercise.sets.length === 0) return locale === 'en' ? 
+        `Exercise ${j+1} in sub-plan ${i+1} must have at least one set` : 
+        `Ćwiczenie ${j+1} w podplanie ${i+1} musi mieć przynajmniej jedną serię`
+      for(let k = 0; k< exercise.sets.length; k++){
+        const set = exercise.sets[k]
+        if(set.goal.repetitionsgoalmin <= 0) return locale === 'en' ? 
+          `Set ${k+1} in exercise ${j+1} in sub-plan ${i+1} must have a minimum repetition goal greater than 0` : 
+          `Zestaw ${k+1} w ćwiczeniu ${j+1} w podplanie ${i+1} musi mieć minimalny cel powtórzeń większy niż 0`
+        if(set.goal.repetitionsgoalmax < set.goal.repetitionsgoalmin) return locale === 'en' ? 
+          `Set ${k+1} in exercise ${j+1} in sub-plan ${i+1} must have a maximum repetition goal greater than or equal to the minimum repetition goal` : 
+          `Zestaw ${k+1} w ćwiczeniu ${j+1} w podplanie ${i+1} musi mieć maksymalny cel powtórzeń większy lub równy minimalnemu celowi powtórzeń`
+        if(set.goal.weightgoal < 0) return locale === 'en' ? 
+          `Set ${k+1} in exercise ${j+1} in sub-plan ${i+1} must have a weight goal greater than or equal to 0` : 
+          `Zestaw ${k+1} w ćwiczeniu ${j+1} w podplanie ${i+1} musi mieć cel wagowy większy lub równy 0`
+      }
+    }
+  }
+  return null
+  
 }

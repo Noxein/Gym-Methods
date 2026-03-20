@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { BodyColorProvider } from "./components/BodyColorProvider";
-import { getLocale, getMessages } from "next-intl/server";
-import { Locale, NextIntlClientProvider } from "next-intl";
-import { SelectLanguage } from "./components/SelectLanguage";
-import { Main } from "./Main";
+import { getMessages } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
 import { getUserLocale } from "./i18n/locale";
 import { LocaleProvider } from "./context/LocaleContext";
 
