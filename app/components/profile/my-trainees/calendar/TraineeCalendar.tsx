@@ -9,7 +9,7 @@ type TraineeCalendarProps = {
 }
 function TraineeCalendar({ traineeData }: TraineeCalendarProps) {
     return ( 
-        <div className="mb-24">
+        <div className="mb-44">
             <TraineeInfo info={traineeData}/>
 
             <Schedule />

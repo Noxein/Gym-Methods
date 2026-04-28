@@ -3,15 +3,18 @@
 import { useState } from "react";
 import Calendar from "./Calendar";
 import Trainings from "./Trainings";
+import ActionButtons from "@/app/components/ui/ActionButtons";
+import Actions from "./Actions";
 
 function Schedule() {
     const[selectedDate, setSelectedDate] = useState(new Date());
-    const[allTrainings, setAllTrainings] = useState([]); // tutaj powinien być typ treningu, ale nie mam jeszcze zdefiniowanego, więc daję any
     return ( 
         <>
             <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
 
-            <Trainings selectedDate={selectedDate} allTrainings={allTrainings}/>
+            <Trainings selectedDate={selectedDate}/>
+
+            <Actions />
 
         </>
      );

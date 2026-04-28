@@ -72,6 +72,7 @@ export const TrainingContextProvider = ({ children, locale, userData, allHandles
                 exercises: [],
                 iscompleted: false,
                 name: 'plan1',
+                lastedited: new Date()
             }
         ],
         iscompleted: false,

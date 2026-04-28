@@ -7,6 +7,7 @@ import { HomeWidgetSeleton } from '../Loading/home/HomeWidgetSeleton'
 import { LastTrainings } from './start-training/LastTrainings'
 import { getStartedTrainingsList } from '@/app/actions'
 import { LatestTrainingsHeader } from './LatestTrainingsHeader'
+import ExerciseProgressionWidget from './TraineeHome/ExerciseProgressionWidget'
 
 type HomeTypes = {
   useremail?: string | null
@@ -15,9 +16,9 @@ type HomeTypes = {
 export const CasualUserHome = async ({useremail}:HomeTypes) => {
   const trainingList = await getStartedTrainingsList()
   return (
-    <div className='mb-20'>
+    <div className='mb-20 w-full'>
       <Suspense fallback={<HomeWidgetSeleton />}>
-        <WidgetDataProvider />
+        <ExerciseProgressionWidget />
       </Suspense>
       
       <Suspense fallback={<IncomingTrainingsSkeleton />}>

@@ -2,6 +2,7 @@
 import { Icon } from "@/app/components/Icon";
 import { Button } from "@/app/components/ui/Button";
 import LocaleContext from "@/app/context/LocaleContext";
+import TraineeCalendarContext from "@/app/context/TraineeCalendarContext";
 import { getOffsetDays, MonthNamesArray, MonthNamesArrayPL, offsetDaysNextMonthArray, offsetDaysPreviousMonthArray, WeekDayArray, WeekDayArrayPL } from "@/app/lib/utils";
 import { ExpandIcon2 } from "@/app/ui/icons/ExpandIcon";
 import { addMonths, format, getDaysInMonth, isSameDay, subMonths } from "date-fns";
@@ -16,6 +17,7 @@ function Calendar({ selectedDate, setSelectedDate }: CalendarProps) {
     const offsetStart = getOffsetDays(selectedDate);
 
     const localeContext = useContext(LocaleContext);
+    const { plans } = useContext(TraineeCalendarContext)!;
 
     const arrayOfWeekDays = localeContext === 'pl' ? WeekDayArrayPL : WeekDayArray;
     const currentMonth = localeContext === 'pl' ? MonthNamesArrayPL[MonthNamesArray.indexOf(format(selectedDate, 'MMMM'))] : format(selectedDate, 'MMMM');
@@ -60,11 +62,14 @@ function Calendar({ selectedDate, setSelectedDate }: CalendarProps) {
             {offsetArrPrevMonth.map((date, index) => (
                 <div key={`empty-${index}`} className="text-gray-500 flex items-center justify-center h-12 font-mono" onClick={() => handleClickDayFromNextOrPrevMonth(date)}>{format(date, 'dd')}</div>
             ))}
-            {Array.from({ length: daysInMonth }, (_, i) => (
-                <div key={i} className={`text-white flex items-center justify-center h-12 font-mono ${isSameDay(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i + 1), selectedDate) ? 'bg-blue-500 rounded-full' : ''}`} onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i + 1))}>
-                    {i + 1}
+            {Array.from({ length: daysInMonth }, (_, i) => {
+            const trainingInThisDay = plans.some(training => training.plan.some(pln => isSameDay(pln.date, new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i + 1))))
+            return (
+                <div key={i} className={`text-white relative flex flex-col items-center justify-center h-12 font-mono ${isSameDay(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i + 1), selectedDate) ? 'bg-blue-500/80 rounded-full' : ''}`} onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i + 1))}>
+                    <div>{i + 1}</div>
+                    {trainingInThisDay && <div className="absolute bottom-0 w-full h-1 bg-blue-400 rounded-full mt-1"></div>}
                 </div>
-            ))}
+            )})}
             {offsetArrNextMonth.map((date, index) => (
                 <div key={`empty-next-${index}`} className="text-gray-500 flex items-center justify-center h-12 font-mono" onClick={() => handleClickDayFromNextOrPrevMonth(date)}>{format(date, 'dd')}</div>
             ))}

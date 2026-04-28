@@ -19,13 +19,14 @@ export default { providers: [
     
                 const { email, password } = await LoginSchema.parseAsync(credentials)
         
-    
-                user = await getUser(email)
-                if(!user){
+                const result = await getUser(email)
+                if(!result){
                     throw new Error("Użytkownik nie znaleziony")
                 }
                 
-                const correctPassword = await compare(password,user.password)
+                user = result.user
+                
+                const correctPassword = await compare(password,result.password)
                 if(!correctPassword) throw new Error("Coś poszło nie tak")
                 
                 return user

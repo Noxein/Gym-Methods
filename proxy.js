@@ -1,16 +1,12 @@
 
 import { DEFAULT_LOGIN_REDIRECT, authRoutes, publicRoutes, apiAuthPrefix, trainerRoutes } from './routes';
-import NextAuth from 'next-auth';
-import authConfig from './auth.config';
-import { auth as mainauth } from '@/auth'
-import { NextRequest, NextResponse } from 'next/server';
-
-const { auth } = NextAuth(authConfig)
+import { auth } from '@/auth'
+import { NextResponse } from 'next/server';
 
 export default auth(async(req) =>{
     const isLoggedIn = !!req.auth;
     const { nextUrl } = req;
-    const user = await mainauth()
+    const user = req.auth
 
     const isTrainer = user?.user?.purpose === "Trener"
 

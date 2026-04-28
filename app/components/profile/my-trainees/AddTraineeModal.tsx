@@ -20,7 +20,7 @@ function AddTraineeModal() {
     const[loadingKey,setLoadingKey] = useState<boolean>(true);
     
     useEffect(() => {
-        ws.current = new WebSocket(WSString);
+        ws.current = new WebSocket(`${WSString}/pairUsers`);
         ws.current.onopen = async () => {
             ws.current?.send(JSON.stringify({type:"SET_JWT", userid: await userID(), requestedKey: true}))
             //comes back ws.onmessage with jwtoken 

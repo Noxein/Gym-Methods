@@ -49,9 +49,11 @@ function ImportPlan() {
                         }))
                     ],
                     iscompleted: false,
+                    lastedited: new Date()
                 }))
             ],
             iscompleted: false,
+            lastedited: new Date(),
         } 
         console.log(schemaPlan)
         setPlan(schemaPlan);

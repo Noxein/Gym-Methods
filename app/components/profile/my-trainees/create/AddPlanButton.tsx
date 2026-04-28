@@ -23,7 +23,8 @@ function AddPlanButton() {
             name: `Plan ${planCopy.plan.length + 1}`,
             date: addDays(new Date(), planCopy.plan.length + 1),
             exercises: [],
-            iscompleted: false
+            iscompleted: false,
+            lastedited: new Date()
         }
         planCopy.plan.push(newPlan)
         setPlan(planCopy)

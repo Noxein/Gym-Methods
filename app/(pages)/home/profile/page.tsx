@@ -18,9 +18,9 @@ export default async function page() {
     const purpose = userData?.user?.purpose!
     const trainercurrentaccounttype = userData?.user?.trainercurrentaccounttype
 
-    if(purpose === 'Casual' || trainercurrentaccounttype === 'Casual') return <CasualProfile email={email} trainercurrentaccounttype={trainercurrentaccounttype}/>
+    if(purpose === 'Casual' || trainercurrentaccounttype === 'Casual') return <CasualProfile purpose={purpose} email={email} trainercurrentaccounttype={trainercurrentaccounttype}/>
 
     if(purpose === 'Podopieczny trenera') return <TraineeProfile email={email}/>
 
-    return <TrainerProfile email={email} />   
+    return <TrainerProfile email={email} purpose={purpose}/>   
 }

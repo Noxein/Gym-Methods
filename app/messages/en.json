@@ -41,7 +41,10 @@
         "Confirm": "Confirm",
         "Date": "Date",
         "Exercises": "Exercises",
-        "Day": "Day"
+        "Day": "Day",
+        "addTraining": "Add training",
+        "addNewTraining": "Add new training",
+        "close": "Close"
     },
     "Login": {
         "Login": "Login",
@@ -206,6 +209,13 @@
         "AreYouSureYouWantToCloneTraining": "Are you sure you want to clone training",
         "IncreaseWeight": "Increase weight by (%)"
     },
+    "Home/Profile/My-Trainees":{
+        "SearchForTrainee": "Search for trainee",
+        "NoTrainees": "No trainees.",
+        "ManageTrainings": "Manage trainings",
+        "CreateNewTraining": "Create new training",
+        "TrainingHistory": "Training history"
+    },
     "Home/Profile/My-Trainees/Schemas":{
         "AddNewSchema": "Create new training template"
     },
@@ -229,6 +239,12 @@
         "RepetitionsMin": "Min repetitions",
         "RepetitionsMax": "Max repetitions",
         "TimeInSeconds": "Time in seconds"
+    },
+    "Home/Profile/My-Trainees/Calendar":{
+        "AreYouSureYouWantToCancel": "Are you sure you want to cancel? All unsaved changes will be lost",
+        "AreYouSureYouWantToSaveChanges": "Are you sure you want to save changes?",
+        "NoTrainingsScheduled": "No trainings scheduled for this day.",
+        "TrainingsForDate": "Trainings for date"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Continue training",

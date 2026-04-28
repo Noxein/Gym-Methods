@@ -274,7 +274,7 @@ export const localStorageStringForLongTermPlan = (planName: string) => {
     return `long-term-plan-save-${planName}`
 }
 
-export const WSString = "ws://localhost:3000/pairUsers"
+export const WSString = "ws://localhost:3000"
 
 export const MetaDataTranslations = async () => {
   const locale = await getLocale()
@@ -397,3 +397,11 @@ export const TraineePlanErrorChecker = (plan : TraineePlan, locale: Locale) => {
   return null
   
 }
+
+ export function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+   let timer: ReturnType<typeof setTimeout>;
+   return (...args: Parameters<T>) => {
+     clearTimeout(timer);
+     timer = setTimeout(() => fn(...args), delay);
+   };
+ }

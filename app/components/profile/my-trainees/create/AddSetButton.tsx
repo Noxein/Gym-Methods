@@ -20,7 +20,8 @@ function AddSetButton({ planIndex, exerciseIndex }: AddSetButtonProps) {
         let latestSet = setsLength > 0 ? structuredClone(planCopy.plan[planIndex].exercises[exerciseIndex].sets[setsLength - 1]) : null
         let set:{
             goal: TraineeSetGoal;
-            actual: Series
+            actual: Series,
+            isSetCompleted: boolean | undefined
         } = {
             goal: {
                 id: v4(),
@@ -37,7 +38,8 @@ function AddSetButton({ planIndex, exerciseIndex }: AddSetButtonProps) {
                 weight: 0,
                 time: 0,
                 side: 'Both'
-            }
+            },
+            isSetCompleted: undefined
         }
         if(latestSet){
             set = latestSet

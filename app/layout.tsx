@@ -6,6 +6,7 @@ import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { getUserLocale } from "./i18n/locale";
 import { LocaleProvider } from "./context/LocaleContext";
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,12 +29,14 @@ export default async function RootLayout({
   return (
     <html lang={locale}> 
       <body className={`${inter.className} flex flex-col min-h-screen`}>
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          <LocaleProvider lang={locale}>       
-            {children}
-            <BodyColorProvider />
-          </LocaleProvider>
-        </NextIntlClientProvider>
+        <SessionProvider>
+          <NextIntlClientProvider messages={messages} locale={locale}>
+            <LocaleProvider lang={locale}>       
+              {children}
+              <BodyColorProvider />
+            </LocaleProvider>
+          </NextIntlClientProvider>
+        </SessionProvider>
       </body>
     </html>
   );

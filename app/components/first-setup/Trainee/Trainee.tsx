@@ -29,7 +29,7 @@ function Trainee({setCurrentStep,jwt}: TraineeProps) {
     }
 
     useEffect(() => {
-        ws.current = new WebSocket(WSString);
+        ws.current = new WebSocket(`${WSString}/pairUsers`);
         ws.current.onopen = async () => {
             ws.current?.send(JSON.stringify({type:"SET_JWT", userid: await userID(),requstedKey: true}))
         };

@@ -432,6 +432,7 @@ export type TraineeSingleTraining = {
     exercises: TraineeSingleExercise[],
     date: Date,
     iscompleted: boolean,
+    lastedited: Date,
 }
 
 export type TraineeSingleExercise = {
@@ -441,6 +442,7 @@ export type TraineeSingleExercise = {
     sets:{
         goal: TraineeSetGoal,
         actual: Series,
+        isSetCompleted: boolean | undefined,
     }[],
     handle?: HandleType,
 }
@@ -474,3 +476,10 @@ export type TrainerSingleExerciseSchema = {
     exercisename: string,
     handle? : HandleType,
 }
+
+export type ProgressionType2 = {
+        exerciseid: string;
+        exercisename: string;
+        set: Series;
+        date: Date;
+    }

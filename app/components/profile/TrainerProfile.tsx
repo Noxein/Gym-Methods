@@ -3,12 +3,14 @@ import { LinkBtn, UserEmail } from "./LinkBtn";
 import { useTranslations } from "next-intl";
 import { SignOutBtn } from "./SignOutBtn";
 import SwitchProfileButton from "./SwitchProfileButton";
+import { UserPurposeType } from "@/app/types";
 
 type ProfileTypes = {
     email: string,
+    purpose: UserPurposeType
 }
 
-function TrainerProfile({email}:ProfileTypes) {
+function TrainerProfile({email, purpose}:ProfileTypes) {
   const width = '30px'
   const height = '30px'
 
@@ -17,7 +19,7 @@ function TrainerProfile({email}:ProfileTypes) {
     <div className='flex flex-col gap-2'>
       <UserEmail email={email}/>
       <div className='mx-5 flex flex-col gap-4 min-h-[calc(100dvh-100px)]'>
-        <SwitchProfileButton text={t("CasualAccount")}>
+        <SwitchProfileButton text={t("CasualAccount")} purpose={purpose}>
           <ExerciseIcon width={width} height={height} fill='#fff'/>
         </SwitchProfileButton>
 

@@ -3,7 +3,7 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, Trainee, TrainerPlanSchema, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsData, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, Trainee, TrainerPlanSchema, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/Casual/Goal";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -17,7 +17,7 @@ import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
 import { v4 } from "uuid";
 import { cookies } from 'next/headers'
 import cloudinary from "cloudinary";
-import { error } from "console";
+import { useSession } from "next-auth/react";
 
 cloudinary.v2.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -1636,83 +1636,55 @@ export const getUserExerciseProgression = async (exerciseid: string) => {
 export const GetProgressionsAndDeclines = async () => {
     const userid = await userID()
 
-    const date = format(subDays(new Date(),30),'yyyy-MM-dd kk:mm:ss')
+    const date = format(subDays(new Date(),30),'yyyy-MM-dd kk:mm:ss') // last month exercises
+
     try{
-        const fetcher = await sql`
+        const result = await sql`
             SELECT id, exerciseid, exercisename, date, sets FROM gymexercises WHERE userid = ${userid} AND date >= ${date} ORDER BY date DESC
         `
-        const allExercises = fetcher.rows as ProgessionsDeclinesType[]
 
-        let obj = {} as {[key:string]: ProgessionsDeclinesType[]}
-        let ptrObj = {} as {[key:string]: ProgessionsDeclinesType[]} // here [0] will be odlest exercise and [1] will be newest
- 
-        for(let i = 0; i < allExercises.length; i++){
-            //////////////////////////////////////////
-            /////HERE WE DO MY IDEA OBJECT////////////
-            //////////////////////////////////////////
-            if(obj[allExercises[i].exerciseid] && obj[allExercises[i].exerciseid].length < 2){
-                obj[allExercises[i].exerciseid].push(allExercises[i])
+        const goals: { [key: string]: string } = {
+            'Wznosy bokiem': '100'
+        } // todo add and fetch goals for execises
+        
+        const allExercises = result.rows as ProgessionsDeclinesType[]
+
+        let progressions = {} as {[key:string]: {exerciseid: string, exercisename: string, set: Series, date: Date}[]}
+
+        for(let i = 0 ; i < allExercises.length ; i++){
+            const exercise = allExercises[i]
+
+            if(progressions[exercise.exerciseid]?.length === 2) continue
+
+            if(!progressions[exercise.exerciseid]){
+                progressions[exercise.exerciseid] = []
             }
-            if(!obj[allExercises[i].exerciseid]){
-                obj[allExercises[i].exerciseid] = [allExercises[i]]
-            }
-            //////////////////////////////////////////
-            //////HERE IS PIOTR IDEA OBJ//////////////
-            //////////////////////////////////////////
-            if(!ptrObj[allExercises[i].exerciseid]){
-                ptrObj[allExercises[i].exerciseid] = [allExercises[i]]
-            }
-            if(ptrObj[allExercises[i].exerciseid] && obj[allExercises[i].exerciseid].length === 1){
-                if(ptrObj[allExercises[i].exerciseid][0].date.getDate() < allExercises[i].date.getDate()){
-                    ptrObj[allExercises[i].exerciseid].push(allExercises[i])
-                }else{
-                    ptrObj[allExercises[i].exerciseid][1] = ptrObj[allExercises[i].exerciseid][0]
-                    ptrObj[allExercises[i].exerciseid][0] = allExercises[i]
-                }
-            }
-            if(ptrObj[allExercises[i].exerciseid] && obj[allExercises[i].exerciseid].length === 2){
-                if(ptrObj[allExercises[i].exerciseid][0].date.getDate() > allExercises[i].date.getDate()){
-                    ptrObj[allExercises[i].exerciseid][0] = allExercises[i]
-                }
-                if(ptrObj[allExercises[i].exerciseid][1].date.getDate() < allExercises[i].date.getDate()){
-                    ptrObj[allExercises[i].exerciseid][1] = allExercises[i]
-                }
-            }
-            ///////////////////////////////////////////
-            ///////////////////////////////////////////
+            let bestWeightSet = exercise.sets.sort((a,b)=>{
+                if(a.weight > b.weight) return -1
+                return 1
+            })
+
+            progressions[exercise.exerciseid].push({
+                exerciseid: exercise.exerciseid,
+                exercisename: exercise.exercisename,
+                set: bestWeightSet[0],
+                date: exercise.date
+            })
         }
-        for (const property in obj) {
-            if(obj[property].length < 2) delete obj[property]
-        }
-        for (const property in ptrObj) {
-            if(ptrObj[property].length < 2) delete ptrObj[property]
+        
+        for(const [key, value] of Object.entries(progressions)){
+            if(value.length < 2) delete progressions[key]
+            value.sort((a,b)=>{
+                if(a.date.getDate() > b.date.getDate()) return -1
+                return 1
+            })
         }
 
-        let worstExercise = {} as {exercise: ProgessionsDeclinesType[], score: number}
-        let bestExercise = {} as {exercise: ProgessionsDeclinesType[], score: number}
+        // const compare = compareBetterSeries(obj[property][1].sets,obj[property][0].sets)
 
-        for (const property in ptrObj) {
-            const compare = compareBetterSeries(ptrObj[property][1].sets,ptrObj[property][0].sets)
-            if(compare.value === 'equal') continue
-
-            if(!bestExercise.score && compare.score > 0){
-                bestExercise = { exercise: ptrObj[property], score: compare.score}
-            } 
-            if(!worstExercise.score && compare.score < 0){
-                worstExercise = { exercise: ptrObj[property], score: compare.score}
-            } 
-
-            if(compare.score > 0 && compare.score > bestExercise.score) {
-                bestExercise = { exercise: ptrObj[property], score: compare.score}
-            }
-            if(compare.score < 0 && compare.score < worstExercise.score) {
-                worstExercise = { exercise: ptrObj[property], score: compare.score}
-            }
-        }
-
-        return {obj, bestExercise, worstExercise}
+        return { goals, progressions, error: '' }
     }catch{
-        return undefined
+        return { goals: {}, progressions: {}, error: 'Something went wrong' }
     }
 }
 
@@ -2025,13 +1997,13 @@ export const switchAccount = async () => {
         await sql`
             UPDATE gymusers SET trainercurrentaccounttype = ${newType} WHERE id = ${userid}
         `
+        // update session to new account type
 
     }catch(e){
         console.log(e)
         return {error: 'Something went wrong'}
     }finally{
         revalidatePath('/home')
-        redirect('/home')
     }
 }
 

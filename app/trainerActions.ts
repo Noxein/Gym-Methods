@@ -100,3 +100,70 @@ export const handleAddTrainingForTrainee = async (plan: TraineePlan, traineeid: 
         return { success: false, error: "Something went wrong" }
     }
 }
+
+export const getTraineePlans = async (traineeid: string) => {
+    const userid = await userID()
+
+    try{
+        const response = await sql`
+            SELECT * FROM trainertraineeplans WHERE traineeid = ${traineeid} AND trainerid = ${userid} AND iscompleted = false ORDER BY lastedited DESC
+        `
+        return response.rows as TraineePlan[]
+    }    catch(error){
+        console.error("Error fetching trainee plans:", error);
+        return []
+    }
+}
+
+export const updateManyTraineePlan = async (plans: TraineePlan[], plansIds: string[]) => {
+    const userid = await userID()
+
+    const plansFilteredAndSorted = plans.filter(plan => plansIds.includes(plan.id)).sort((a,b)=> a.id.localeCompare(b.id))
+    const idsSorted = plansIds.sort((a,b) => a.localeCompare(b))
+
+    const mappedPlans = plansFilteredAndSorted.map(pln => JSON.stringify(pln.plan))
+
+    try{
+
+        const result = await sql.query(`
+            UPDATE trainertraineeplans AS t
+            SET plan = data.plan, lastedited = $4
+            FROM UNNEST($1::json[], $2::uuid[]) AS data(plan, id)
+            WHERE t.id = data.id AND t.trainerid = $3
+        `,[mappedPlans, idsSorted, userid, JSON.stringify(new Date())])
+        revalidatePath('/home/profile/my-trainees')
+        return { success: true, error: null }
+
+    }catch(error){
+        console.error("Error updating trainee plans:", error);
+        return { success: false, error: "Something went wrong" }
+    }
+}
+
+export const getHomeScreenData = async () => {
+    const userid = await userID()
+
+    try{
+        const traineesWithoutPlansResponse = await sql`
+            SELECT gymusers.purpose, gymusers.username, gymusers.avatarurl, tt.*  FROM gymusers 
+            INNER JOIN trainertrainee AS tt ON gymusers.id = tt.traineeid
+            WHERE gymusers.id = tt.traineeid AND tt.trainerid = ${userid} AND NOT EXISTS (SELECT 1 FROM trainertraineeplans t WHERE t.traineeid = gymusers.id AND t.trainerid = ${userid} AND t.iscompleted = false)
+        `
+        const response = await sql`
+            SELECT gymusers.purpose, gymusers.username, gymusers.avatarurl, tt.* , t.*  FROM gymusers 
+            INNER JOIN trainertrainee AS tt ON gymusers.id = tt.traineeid
+            INNER JOIN trainertraineeplans AS t ON t.traineeid = gymusers.id AND t.trainerid = ${userid} AND t.iscompleted = false
+            WHERE gymusers.id = tt.traineeid AND tt.trainerid = ${userid} AND t.iscompleted = false ORDER BY t.lastedited DESC
+        `
+        console.log(traineesWithoutPlansResponse.rows)
+        return response.rows[0]
+    }catch(error){
+        console.error("Error fetching home screen data:", error);
+        return null  
+    }
+}
+
+
+            // SELECT gymusers.purpose, gymusers.trainercurrentaccounttype, gymusers.username, t.*  FROM gymusers 
+            // INNER JOIN trainertraineeplans AS t ON gymusers.id = t.trainerid 
+            // INNER JOIN trainertrainee AS tt ON tt.traineeid = gymusers.id  WHERE gymusers.id = tt.trainerid AND t.iscompleted = false ORDER BY t.lastedited DESC

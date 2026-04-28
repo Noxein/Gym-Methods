@@ -1,4 +1,3 @@
-import { getUserPurpose, userEmail } from "@/app/actions";
 import { CasualUserHome } from "@/app/components/home/CasualUserHome";
 import TraineeHomeScreen from "@/app/components/home/TraineeHome/TraineeHomeScreen";
 import TrainerHomeScreen from "@/app/components/home/TrainerHome/TrainerHomeScreen";
@@ -19,6 +18,7 @@ export default async function page(){
       const email = userData?.user?.email! 
       const purpose = userData?.user?.purpose!
       const trainercurrentaccounttype = userData?.user?.trainercurrentaccounttype
+      const name = userData?.user?.username!
 
     if(!purpose || purpose === 'Casual' || trainercurrentaccounttype === 'Casual') return( 
       <div className="flex flex-col items-center w-full overflow-x-hidden">
@@ -28,7 +28,7 @@ export default async function page(){
     
     if(purpose === 'Podopieczny trenera') return(
       <div className="flex flex-col items-center w-full overflow-x-hidden">
-        <TraineeHomeScreen/>
+        <TraineeHomeScreen name={name}/>
       </div>
     )
 

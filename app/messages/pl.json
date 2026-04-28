@@ -41,7 +41,10 @@
         "Confirm": "Potwierdź",
         "Date": "Data",
         "Exercises": "Ćwiczenia",
-        "Day": "Dzień"
+        "Day": "Dzień",
+        "addTraining": "Dodaj trening",
+        "addNewTraining": "Dodaj nowy trening",
+        "close": "Zamknij"
     },
     "Login": {
         "Login": "Zaloguj",
@@ -206,6 +209,13 @@
         "AreYouSureYouWantToCloneTraining": "Czy napewno chcesz skopiować trening",
         "IncreaseWeight": "Zwiększ ciężar o (%)"
     },
+    "Home/Profile/My-Trainees":{
+        "SearchForTrainee": "Szukaj podopiecznego",
+        "NoTrainees": "Brak podopiecznych.",
+        "ManageTrainings": "Zarządzaj treningami",
+        "CreateNewTraining": "Stwórz nowy trening",
+        "TrainingHistory": "Historia treningów"
+    },
     "Home/Profile/My-Trainees/Schemas":{
         "AddNewSchema": "Stwórz nowy schemat treningowy"
     },
@@ -229,6 +239,12 @@
         "RepetitionsMin": "Min powtórzenia",
         "RepetitionsMax": "Max powtórzenia",
         "TimeInSeconds": "Czas (sekundy)"
+    },
+    "Home/Profile/My-Trainees/Calendar":{
+        "AreYouSureYouWantToCancel": "Czy na pewno chcesz anulować zmiany? Wszystkie niezapisane zmiany zostaną utracone.",
+        "AreYouSureYouWantToSaveChanges": "Czy na pewno chcesz zapisać zmiany?",
+        "NoTrainingsScheduled": "Brak treningów zaplanowanych na ten dzień.",
+        "TrainingsForDate": "Treningi z dnia"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Kontynuuj trening",
