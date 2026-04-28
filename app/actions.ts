@@ -62,7 +62,7 @@ export const LoginNoFormData = async (email:string,password:string) => {
     }
     try{
         const response = await signIn('credentials',{
-            email,
+            email: email.toLowerCase(),
             password,
             redirect: false,
         })
