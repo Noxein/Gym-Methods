@@ -127,7 +127,7 @@ export const Register = async (email:string,userName:string,password:string,conf
     }
 
     const emailExist = await sql`
-        SELECT FROM gymusers WHERE email = ${email}
+        SELECT FROM gymusers WHERE email = ${email.toLowerCase()}
     `
 
     if(emailExist.rows[0]){
@@ -142,7 +142,7 @@ export const Register = async (email:string,userName:string,password:string,conf
     const hasedPassword = await hash(password,10)
 
     await sql`
-        INSERT INTO gymusers (email,password,username) VALUES (${email},${hasedPassword},${userName})
+        INSERT INTO gymusers (email,password,username) VALUES (${email.toLowerCase()},${hasedPassword},${userName})
     `
     return { error }
 }
