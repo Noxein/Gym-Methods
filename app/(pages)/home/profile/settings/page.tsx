@@ -1,11 +1,10 @@
 import { getAccountSettings } from "@/app/actions";
 import { SettingsPage } from "@/app/components/profile/settings/SettingsPage";
-import { getLocale, getTranslations } from "next-intl/server";
+import { MetaDataTranslations } from "@/app/lib/utils";
 
 
 export async function generateMetadata() {
-    const locale = getLocale()
-    const t = await getTranslations({locale, namespace: 'Metadata'});
+  const t = await MetaDataTranslations()
    
     return {
       title: t('Settings')

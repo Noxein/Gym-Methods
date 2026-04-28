@@ -50,20 +50,23 @@
     "Register": {
         "Register": "Zarejestruj",
         "Password": "Hasło",
-        "RepeatPAssword": "Powtórz hasło"
+        "RepeatPassword": "Powtórz hasło",
+        "Username": "Nazwa użytkownika"
     },
     "FirstSetup": {
         "Next": "Dalej",
         "Back": "Wstecz",
         "Finish": "Zakończ",
-        "GoalQuestion": "Jaki cel treningu Cię interesuje?",
-        "AdvamcmentLevelQuestion": "Jaki jest Twój poziom zaawansowania?",
-        "DaysTrainingQuestion": "Ile dni w tygodniu chcesz ćwiczyć?",
+        "Goal": "Cel treningowy",
+        "AdvamcmentLevel": "Poziom zaawansowania",
+        "DaysTrainingPerWeek": "Dni treningowe w tygodniu",
         "WantMyOwnTraining": "Chcę stworzyć własny trening",
         "WantReadyTraining": "Chcę gotowy trening",
-        "ExercisesYouCantDo": "Zaznacz jakich ćwiczeń nie możesz/nie chcesz wykonywać:",
+        "ExercisesYouCanDo": "Zaznacz jakie ćwiczenie lubisz/chcesz wykonywać:",
+        "ExercisesYouCantDo": "Zaznacz jakich ćwiczeń nie lubiesz/chcesz wykonywać:",
         "ExercisesYouWantToDo1/2": "Zaznacz jakie ćwiczenia",
-        "ExercisesYouWantToDo2/2": "muszą być w Twoim planie:"
+        "ExercisesYouWantToDo2/2": "muszą być w Twoim planie:",
+        "ChooseLanguage": "Wybierz język"
     },
     "Home": {
         "ThatDay" : "Tego dnia",
@@ -87,7 +90,7 @@
         "Finished": "ukończone"
     },
     "Home/Add-Exercise": {
-        "AddExercise": "Dodaj ćwiczenie",
+        "AddExercise": "Rozpocznij ćwiczenie",
         "LatestExercises": "OSTATNIE ĆWICZENIA" 
     },
     "Home/Add-Exercise/[Exercise-Name]": {
@@ -185,7 +188,8 @@
     "Home/Profile/Long-Term-Plans/[LongTermPlanName]":{
         "CloneTraining": "Skopiuj trening",
         "WhichTrainingToClone": "Który trening skopiować",
-        "AreYouSureYouWantToCloneTraining": "Czy napewno chcesz skopiować trening"
+        "AreYouSureYouWantToCloneTraining": "Czy napewno chcesz skopiować trening",
+        "IncreaseWeight": "Zwiększ ciężar o (%)"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Kontynuuj trening",
@@ -240,7 +244,7 @@
         "Maszynanaprostybrzucha": "Maszyna na prosty brzucha",
         "Maszynanaskosy": "Maszyna na skosy",
         "Maszynanatriceps": "Maszyna na triceps",
-        "Maszynawyciskanienadgłowę(OHP)": "Maszyna wycisanie nad głowę(OHP)",
+        "Maszynawyciskanienadgłowę(OHP)": "Maszyna wyciskanie nad głowę(OHP)",
         "Podciąganienadrążkunachwytem": "Podciąganie na drążku nachwytem",
         "Podciąganienadrążkupodchwytem": "Podciąganie na drążku podchwytem",
         "Pompki": "Pompki",
@@ -326,8 +330,13 @@
         "5": "5",
         "6": "6",
         "7": "7",
-        "en": "Angielski",
-        "pl": "Poliski"
+        "en": "English",
+        "pl": "Polski",
+        "%": "%",
+        "kg": "kg",
+        "Trener": "Trener",
+        "Casual": "Casual",
+        "Podopieczny trenera": "Podopieczny trenera"
     },
     "Languages": {
         "Polish": "Polski",
@@ -339,6 +348,7 @@
         "Wrong email format": "Zły format adresu email",
         "Password are different": "Hasła różnią się",
         "Password should be at least 8 chracters long": "Hasło powinno się składać z minimum 8 znaków",
+        "Please set username": "Proszę wpisać nazwę użytkownika",
         "Email taken": "Ten adres email jest zajęty",
         "Wrong goal chosen": "Został wybrany zły cel, wybierz inny",
         "Wrong advancment level chosen": "Został wybrany zły poziom zaawansowania, wybierz inny",

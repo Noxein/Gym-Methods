@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
 import { FirstSetupFinish } from '@/app/actions'
-import { Button } from '../ui/Button'
+import { Button } from '@/app/components/ui/Button'
 import { useRouter } from 'next/navigation'
-import { dataType } from './SetupOneOfThree'
-import { ErrorDiv } from '../ui/ErrorDiv'
-import { SmallLoaderDiv } from '../ui/SmallLoaderDiv'
+import { dataType } from '@/app/components/first-setup/Casual/Goal'
+import { ErrorDiv } from '@/app/components/ui/ErrorDiv'
+import { SmallLoaderDiv } from '@/app/components/ui/SmallLoaderDiv'
 import { useTranslations } from 'next-intl'
+import { FirstSetupSelectedSteps } from '@/app/types'
 
 type StepTwoOutOfThree = {
-    setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
+    setCurrentStep:React.Dispatch<React.SetStateAction<FirstSetupSelectedSteps>>,
     exercisesToDelete: string[],
     setExercisesToDelete: React.Dispatch<React.SetStateAction<string[]>>,
     favouriteExercises: string[],
     data: dataType,
 }
-export const StepTwoOutOfThree = ({setCurrentStep,exercisesToDelete,setExercisesToDelete,favouriteExercises,data}:StepTwoOutOfThree) => {
+export const TrainingCreator = ({setCurrentStep,exercisesToDelete,setExercisesToDelete,favouriteExercises,data}:StepTwoOutOfThree) => {
     const[error,setError] = useState('')
     const[loading,setLoading] = useState(false)
     const router = useRouter()
@@ -40,7 +41,7 @@ export const StepTwoOutOfThree = ({setCurrentStep,exercisesToDelete,setExercises
             <Button className='text-xl' onClick={redirectToCreateTraining} isPrimary disabled={loading}>
                 {t("WantMyOwnTraining")}
             </Button>
-            <Button className='text-xl' onClick={()=>setCurrentStep(page=>page+1)} isPrimary disabled={loading}>
+            <Button className='text-xl' onClick={()=>setCurrentStep('fav-exercises')} isPrimary disabled={loading}>
                 {t("WantReadyTraining")}
             </Button>
 
@@ -48,7 +49,7 @@ export const StepTwoOutOfThree = ({setCurrentStep,exercisesToDelete,setExercises
             <ErrorDiv error={error}/>
             
             <div className={`fixed bottom-0 left-0 right-0 flex gap-2 px-5 py-5 bg-dark`}>
-                <Button className='text-xl flex-1' onClick={()=>setCurrentStep(page=>page-1)} disabled={loading}>
+                <Button className='text-xl flex-1' onClick={()=>setCurrentStep('goal')} disabled={loading}>
                 {t("Back")}
                 </Button>
             </div>

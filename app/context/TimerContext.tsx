@@ -46,7 +46,6 @@ export const TimerContextProvider = ({children}:{children: React.ReactNode}) => 
     useEffect(()=>{
         const name = setTimeout(()=>{
             const newsec = differenceInSeconds(new Date(),firstDate)
-            console.log(newsec,firstDate)
             setTimePassed(newsec)},
             1000)
         

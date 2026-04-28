@@ -21,6 +21,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `ml-${currentLevel*2}`
     
+    console.log(item)
     const t = useTranslations("Home/Profile/My-Training-Plans/[TrainingPlanName]")
     const d = useTranslations("DefaultExercises")
 

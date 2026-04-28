@@ -15,16 +15,17 @@ export const RegisterForm = () => {
   const[showRepeatPassword,setShowRepeatPassword] = useState(false)
 
   const[email,setEmail] = useState('')
+  const[userName,setUserName] = useState('')
   const[password,setPassword] = useState('')
   const[confirmPassword,setConfirmPassword] = useState('')
 
-  const[errors,setErrors] = useState({email:'',password:'',confirmpassword:'',somethingWentWrong: '',isError:false})
+  const[errors,setErrors] = useState({email:'',userName:'',password:'',confirmpassword:'',somethingWentWrong: '',isError:false})
   const[loading,setLoading] = useState(false)
   const router = useRouter()
 
   const handleRegister = async () => {
     setLoading(true)
-    const data = await Register(email,password,confirmPassword)
+    const data = await Register(email,userName,password,confirmPassword)
     if(data.error.isError) {
       setLoading(false)
 
@@ -51,10 +52,13 @@ export const RegisterForm = () => {
       <InputGroup id='email' text='Email' type='email' onChange={e=>setEmail(e.target.value)} value={email} disabled={loading}/>
       <ErrorDiv error={errors.email} className='text-lg -mt-3'/>
 
+      <InputGroup id='username' text={t("Username")} type='text' onChange={e=>setUserName(e.target.value)} value={userName} disabled={loading}/>
+      <ErrorDiv error={errors.userName} className='text-lg -mt-3'/>
+
       <InputGroup id='password' text={t("Password")} type={showPassword?'text':'password'} setShowPassword={setShowPassword} showPassword={showPassword} onChange={e=>setPassword(e.target.value)} value={password} disabled={loading}/>
       <ErrorDiv error={errors.password} className='text-lg -mt-3'/>
 
-      <InputGroup id='confirmpassword' text={t("RepeatPAssword")} type={showRepeatPassword?'text':'password'} setShowPassword={setShowRepeatPassword} showPassword={showRepeatPassword} onChange={e=>setConfirmPassword(e.target.value)} value={confirmPassword} disabled={loading}/>
+      <InputGroup id='confirmpassword' text={t("RepeatPassword")} type={showRepeatPassword?'text':'password'} setShowPassword={setShowRepeatPassword} showPassword={showRepeatPassword} onChange={e=>setConfirmPassword(e.target.value)} value={confirmPassword} disabled={loading}/>
       <ErrorDiv error={errors.confirmpassword} className='text-lg -mt-3'/>
 
       <ErrorDiv error={errors.somethingWentWrong} className='text-lg -mt-3'/>

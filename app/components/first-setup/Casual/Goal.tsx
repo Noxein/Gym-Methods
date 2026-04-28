@@ -2,9 +2,12 @@
 import { FistStepDataValidation } from '@/app/actions'
 import { useState } from 'react'
 import { CenterComponent } from '@/app/components/CenterComponent'
-import { Button } from '../ui/Button'
-import { ErrorDiv } from '../ui/ErrorDiv'
+import { Button } from '../../ui/Button'
+import { ErrorDiv } from '../../ui/ErrorDiv'
 import { useTranslations } from 'next-intl'
+import { FirstSetupFirstStep, FirstSetupSelectedSteps } from '@/app/types'
+import { Select as SelectUI } from '../../ui/SelectField'
+import Navigator from '../Navigator'
 
 export type dataType = {
     goal:string,
@@ -12,12 +15,13 @@ export type dataType = {
     daysexercising:string,
 }
 type SetupOneOfThree = {
-    setCurrentStep:React.Dispatch<React.SetStateAction<number>>,
+    setCurrentStep:React.Dispatch<React.SetStateAction<FirstSetupSelectedSteps>>,
     data:dataType,
-    setData: React.Dispatch<React.SetStateAction<dataType>>
+    setData: React.Dispatch<React.SetStateAction<dataType>>,
+    selectPurpose: React.Dispatch<React.SetStateAction<FirstSetupFirstStep>>,
 }
 
-export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) => {
+export const Goal = ({setCurrentStep,data,setData,selectPurpose}:SetupOneOfThree) => {
     const[error,setError] = useState<{
         goal: string;
         advancmentlevel: string;
@@ -36,7 +40,7 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
     const daysexercising = ['1','2','3','4','5','6','7']
 
     const ValidateData = async () => {
-        const validatedData = FistStepDataValidation(data)
+        const validatedData = await FistStepDataValidation(data)
 
         if(validatedData?.error && validatedData?.error.isError){
             const dataCopy = {...validatedData?.error}
@@ -46,7 +50,7 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
             }
             return setError(dataCopy)
         } 
-        setCurrentStep(x=>x+1)
+        setCurrentStep('training-creator')
     }
 
     const t = useTranslations("FirstSetup")
@@ -56,28 +60,29 @@ export const SetupOneOfThree = ({setCurrentStep,data,setData}:SetupOneOfThree) =
     <CenterComponent>
         <form className='flex flex-col gap-4 mb-20 mx-5'>
             <Select 
-                labelText={t("GoalQuestion")}
+                labelText={t("Goal")}
                 options={goal}
                 name='goal'
                 error={error.goal}
                 setData={setData}/>
             <Select 
-                labelText={t("AdvamcmentLevelQuestion")}
+                labelText={t("AdvamcmentLevel")}
                 options={advancmentlevel}
                 name='advancmentlevel'
                 error={error.advancmentlevel}
                 setData={setData}/>
             <Select 
-                labelText={t("DaysTrainingQuestion")}
+                labelText={t("DaysTrainingPerWeek")}
                 options={daysexercising}
                 name='daysexercising'
                 error={error.daysexercising}
                 setData={setData}/>
             <ErrorDiv error={error.somethinWentWrong}/>
-            <div className={`fixed bottom-0 left-0 right-0 flex mx-5 mb-5 gap-4`}>
-                <Button className='flex-1 text-2xl' onClick={()=>setCurrentStep(step=>step-1)}>{t("Back")}</Button>
-                <Button className='flex-1 text-2xl' isPrimary onClick={e=>{e.preventDefault();ValidateData()}}>{t("Next")}</Button>
-            </div>
+            
+            <Navigator 
+                prev={()=>selectPurpose('purpose')}
+                next={e=>{e.preventDefault();ValidateData()}}
+            />
         </form>
     </CenterComponent>
   )
@@ -102,17 +107,9 @@ const Select = ({labelText, options, name, error, setData}:SelectTypes) => {
         })
     }
     return(
-        <div className='flex flex-col text-white gap-1'>
-            <label htmlFor={name} className='text-xl'>{labelText}</label>
-            <select name={name} id={name} defaultValue={options[0]} onChange={e=>setDataFunc(e.target.value)}
-                className={`rounded-lg px-2 py-2 bg-dark border-marmur border-1 text-xl`}
-                >
-                {options.map((option,index)=>(
-                    <option value={option} key={option}>
-                        {SL(option)}
-                    </option>
-                ))}
-            </select>
+        <div className='flex flex-col text-white gap-1 mb-2'>            
+            <SelectUI labelName={labelText} valuesToLoop={options} onChange={e=>setDataFunc(e.target.value)}/>
+
             <ErrorDiv error={error}/>
         </div>
     )

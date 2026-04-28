@@ -1,9 +1,8 @@
 import { ChangePasswordPage } from "@/app/components/home/change-password/ChangePasswordPage"
-import { getLocale, getTranslations } from "next-intl/server";
+import { MetaDataTranslations } from "@/app/lib/utils";
 
 export async function generateMetadata() {
-    const locale = getLocale()
-    const t = await getTranslations({locale, namespace: 'Metadata'});
+  const t = await MetaDataTranslations()
    
     return {
       title: t('Change password')

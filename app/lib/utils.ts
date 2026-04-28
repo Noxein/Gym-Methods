@@ -2,6 +2,7 @@ import { addDays, getDay, subDays } from "date-fns"
 import { LocalStorageTraining, ProgressedIndexesType, Series, SeriesWithExercise, TrainingProgression, WeekDay, WeekDayPL } from "../types"
 import { setUserLocale } from "../i18n/locale"
 import { Locale, locales } from "../i18n/config"
+import { getLocale, getTranslations } from "next-intl/server"
 
 export const WeekDayArray = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
 export const WeekDayArrayPL = ['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela']
@@ -16,6 +17,8 @@ export const DifficultyArrayPL = ['Łatwa','Średnia','Trudna']
 export const Goal = ['Siła','Hipertrofia','Oba']
 export const Advancmentlevel = ['Początkujący','Średniozaawansowany','Zaawansowany']
 export const Daysexercising = ['1','2','3','4','5','6','7']
+
+export const purposeOptions = ['Casual','Trener','Podopieczny trenera']
 
  
 export const GetMonth = (date:Date) => {
@@ -266,4 +269,15 @@ function site(){
   })
   newArr.forEach(item=>elem?.appendChild(item.element))
 
+}
+export const localStorageStringForLongTermPlan = (planName: string) => {
+    return `long-term-plan-save-${planName}`
+}
+
+export const WSString = "ws://localhost:3000/pairUsers"
+
+export const MetaDataTranslations = async () => {
+  const locale = await getLocale()
+  const t = await getTranslations({locale, namespace: 'Metadata'});
+  return t
 }

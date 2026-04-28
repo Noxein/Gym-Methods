@@ -50,20 +50,23 @@
     "Register": {
         "Register": "Register",
         "Password": "Password",
-        "RepeatPAssword": "Repeat password"
+        "RepeatPassword": "Repeat password",
+        "Username": "Username"
     },
     "FirstSetup": {
         "Next": "Next",
         "Back": "Back",
         "Finish": "Finish",
-        "GoalQuestion": "What your goal is?",
-        "AdvamcmentLevelQuestion": "What is your advancemnt level?",
-        "DaysTrainingQuestion": "How many days a week you want to train?",
+        "Goal": "Goal",
+        "AdvamcmentLevel": "Advancment level",
+        "DaysTrainingPerWeek": "Days training per week",
         "WantMyOwnTraining": "I want to create my own training",
         "WantReadyTraining": "I want prepared training",
-        "ExercisesYouCantDo": "Select which exercises you dont want to/cant do:",
+        "ExercisesYouCanDo": "Select which exercises you like/want to do:",
+        "ExercisesYouCantDo": "Select which exercises you dont want cant/dont want to do:",
         "ExercisesYouWantToDo1/2": "Select which exercises",
-        "ExercisesYouWantToDo2/2": "has to be in your plan:"
+        "ExercisesYouWantToDo2/2": "has to be in your plan:",
+        "ChooseLanguage": "Choose language"
     },
     "Home": {
         "ThatDay" : "That day",
@@ -88,7 +91,7 @@
 
     },
     "Home/Add-Exercise": {
-        "AddExercise":"Add exercise",
+        "AddExercise":"Start exercise",
         "LatestExercises": "LATEST TRAININGS"
     },
     "Home/Add-Exercise/[Exercise-Name]": {
@@ -185,7 +188,8 @@
     "Home/Profile/Long-Term-Plans/[LongTermPlanName]":{
         "CloneTraining": "Clone training",
         "WhichTrainingToClone": "Which training to clone",
-        "AreYouSureYouWantToCloneTraining": "Are you sure you want to clone training"
+        "AreYouSureYouWantToCloneTraining": "Are you sure you want to clone training",
+        "IncreaseWeight": "Increase weight by (%)"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Continue training",
@@ -327,7 +331,12 @@
         "6": "6",
         "7": "7",
         "en": "English",
-        "pl": "Polish"
+        "pl": "Polski",
+        "%": "%",
+        "kg": "kg",
+        "Trener": "Trainer",
+        "Casual": "Casual",
+        "Podopieczny trenera": "Trainer's client"
     },
     "Languages": {
         "Polish": "Polish",
@@ -339,6 +348,7 @@
          "Wrong email format": "Wrong email format",
          "Password are different": "Password are different",
          "Password should be at least 8 chracters long": "Password should be at least 8 chracters long",
+         "Please set username": "Please set username",
          "Email taken": "This email id taken",
          "Wrong goal chosen": "Wrong goal was chosen, choose diffrent one",
          "Wrong advancment level chosen": "Wrong advancment level was chosen, choose diffrent one",

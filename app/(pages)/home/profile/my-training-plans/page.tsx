@@ -1,19 +1,19 @@
 import { GetUserTrainings } from "@/app/actions"
 import { MyTrainingPlans } from "@/app/components/profile/my-training-plans/MyTrainingPlans"
-import { getLocale, getTranslations } from "next-intl/server";
+import { MetaDataTranslations } from "@/app/lib/utils";
 
 export async function generateMetadata() {
-    const locale = getLocale()
-    const t = await getTranslations({locale, namespace: 'Metadata'});
+  const t = await MetaDataTranslations()
    
     return {
       title: t('My training')
     };
   }
 
-export default async function page({searchParams}:{searchParams:{showAddModal:string}}){
-        const UserTrainings = await GetUserTrainings()
-        const showModal = !!(searchParams && searchParams.showAddModal || false)
+export default async function page(props:{searchParams: Promise<{showAddModal:string}>}) {
+    const searchParams = await props.searchParams;
+    const UserTrainings = await GetUserTrainings()
+    const showModal = !!(searchParams && searchParams.showAddModal || false)
     return (
         <MyTrainingPlans UserTrainings={UserTrainings} showAddModalUrl={showModal}/>
     )
