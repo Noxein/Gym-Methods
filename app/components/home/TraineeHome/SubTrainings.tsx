@@ -5,19 +5,13 @@ import NextTraining from "./NextTraining";
 
 type Props = {
     plan: TraineePlan,
-    planLength: number
 }
 
-function SubTrainings({ plan, planLength }: Props) {
-
-    const currentDay = plan.plan.findIndex(x=>x.iscompleted===false)!
+function SubTrainings({ plan }: Props) {
 
     return ( 
         <div>
-            {isSameDay(new Date(plan.plan[0].date), new Date()) ? 
-                <TodaysTraining key={plan.id} training={plan} currentDay={currentDay} planLength={planLength} /> : 
-                <NextTraining plan={plan} currentDay={currentDay} />
-            }
+            <NextTraining plan={plan} />
         </div>
      );
 }

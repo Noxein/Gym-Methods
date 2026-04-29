@@ -155,11 +155,11 @@ export const getHomeScreenData = async () => {
             INNER JOIN trainertraineeplans AS t ON t.traineeid = gymusers.id AND t.trainerid = ${userid} AND t.iscompleted = false
             WHERE gymusers.id = tt.traineeid AND tt.trainerid = ${userid} AND t.iscompleted = false ORDER BY t.lastedited DESC
         `
-        console.log(traineesWithoutPlansResponse.rows)
-        return response.rows[0]
+        
+        return {trainings: response.rows[0], traineesWithoutPlans: traineesWithoutPlansResponse.rows, error: null}
     }catch(error){
         console.error("Error fetching home screen data:", error);
-        return null  
+        return {trainings: null, traineesWithoutPlans: [], error: "Something went wrong"}  
     }
 }
 

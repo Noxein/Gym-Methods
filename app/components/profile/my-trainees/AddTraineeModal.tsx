@@ -82,7 +82,7 @@ function AddTraineeModal() {
                 <h1 className="text-3xl font-medium mb-10 text-center">Podopieczny dodany pomyślnie!</h1>
 
                 <div className="flex gap-4">
-                    <Button className="flex-1" isPrimary onClick={()=>navigation.push('/home/profile/my-trainees/add-training')}>Dodaj trening</Button>
+                    <Button className="flex-1" isPrimary onClick={()=>navigation.push(`/home/profile/my-trainees/${traineeInfo.id}/create`)}>Dodaj trening</Button>
                     <Button className="flex-1" isPrimary onClick={()=>navigation.push('/home')}>Strona główna</Button>
                 </div>
 

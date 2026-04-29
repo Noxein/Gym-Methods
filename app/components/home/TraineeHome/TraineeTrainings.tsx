@@ -11,15 +11,10 @@ type TraineeTrainingsProps = {
 function TraineeTrainings({traineeTrainings}:TraineeTrainingsProps) {
     if(traineeTrainings.length === 0) return "Brak treningu"
 
-    const currentDay = traineeTrainings.reduce((latest, training) => {
-        if(training.iscompleted) latest = latest + 1
-        return latest
-    }, 0)
-
     return ( 
         <div>
             {traineeTrainings.map((training) => {
-                return <SubTrainings key={training.id} plan={training} planLength={training.plan.length}/>
+                return <SubTrainings key={training.id} plan={training}/>
             })}
         </div>
      );
