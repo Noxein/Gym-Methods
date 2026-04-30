@@ -18,7 +18,7 @@ export default async function page(props:{params: Promise<{exercisename:string}>
   const params = await props.params;
   let shouldContinue = false
 
-  const exerciseName = decodeURI(params.exercisename)
+  const exerciseName = decodeURIComponent(params.exercisename)
   const isDefaultExercise = exercisesArr.includes(exerciseName)
   if(isDefaultExercise){
     if(exercisesArr.includes(exerciseName)) shouldContinue = true

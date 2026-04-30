@@ -78,10 +78,11 @@ const LinkToTraining = ({trainingname,setSelectedExercise,setShowDeleteTrainingM
         setShowDeleteTrainingModal(true)
     }
     
+    const encodedTrainingName = encodeURIComponent(trainingname)
     return(
         <div className={`text-xl rounded-lg flex items-center bg-borderInteractive`}>
 
-            <Link href={`/home/profile/long-term-plans/${trainingname}`} className='flex flex-1 items-center rounded-lg p-[2px]'>
+            <Link href={`/home/profile/long-term-plans/${encodedTrainingName}`} className='flex flex-1 items-center rounded-lg p-[2px]'>
                 <div className={`bg-dark py-3 rounded-lg flex-1 px-4`}>
                 {trainingname}
                 </div>

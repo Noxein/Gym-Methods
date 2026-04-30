@@ -7,7 +7,7 @@ import { ExerciseTypes } from "@/app/types";
 
 export default async function page(props:{params: Promise<{trainingName:string}>}) {
     const params = await props.params;
-    const decodedTrainingId = decodeURI(params.trainingName)
+    const decodedTrainingId = decodeURIComponent(params.trainingName)
     const trainingPlanData = await GetUserTrainingByName(decodedTrainingId)
     const planData = trainingPlanData.training
     const ExercisesThatRequireHandlesOrTimeMesure = await userExercisesThatRequireHandlesOrTimeMesure()

@@ -133,7 +133,7 @@ export const ExerciseDataContextProvider = ({children,twoRecentExercises}:{child
 
             let exerciseProgression = {} as Progression
             let exerciseid = ''
-            const exerciseUrlName = decodeURI(window.location.pathname.split('/')[3])
+            const exerciseUrlName = decodeURIComponent(window.location.pathname.split('/')[3])
 
             if(!exercisesArr.includes(recentExercises[0])){
                 exerciseid = await getUserExerciseIdUsingName(exerciseUrlName)

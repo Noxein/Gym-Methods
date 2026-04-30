@@ -72,7 +72,9 @@ export const LongPlanEditorProvider = ({children}:ModalContextsProviderTypes) =>
     }
 
     useEffect(()=>{
-        const name = decodeURI(params['long-term-plan-name'] as string)
+        const name = decodeURIComponent(params['long-term-plan-name'] as string)
+
+        console.log('fetching data for plan: ', name)
         
         const func = async () => {
             setState('loading')

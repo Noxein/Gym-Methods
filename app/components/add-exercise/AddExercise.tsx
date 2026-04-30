@@ -83,7 +83,7 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
     const {setSeriesIndexesThatMetGoal} = useContext(SingleExerciseProgressionContext)!
 
     useEffect(()=>{
-        const paramsName = decodeURI(params.exercisename as string)
+        const paramsName = decodeURIComponent(params.exercisename as string)
         const data = localStorage.getItem(paramsName+'singleExerciseChanged') 
 
         const parsedData = data ? JSON.parse(data) as SingleExerciseLocalMemoryData : null

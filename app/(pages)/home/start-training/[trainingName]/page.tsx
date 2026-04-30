@@ -11,7 +11,7 @@ type Pagetypes = {
 
 export default async function page(props:Pagetypes) {
   const params = await props.params;
-  const decodedTrainingId = decodeURI(params.trainingName)
+  const decodedTrainingId = decodeURIComponent(params.trainingName)
   const trainingData = await getTrainingDataById(decodedTrainingId)
 
   if(trainingData.error){
