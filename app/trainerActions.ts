@@ -2,7 +2,7 @@
 
 import { sql } from "@vercel/postgres"
 import { userID } from "./actions"
-import { TraineePlan, TrainerPlanSchema } from "./types"
+import { Trainee, TraineePlan, TraineesAndTrainings, TraineesWithoutPlans, TrainerPlanSchema, UserPurposeType } from "./types"
 import { v4 } from "uuid"
 import { revalidatePath } from "next/cache"
 import { TraineePlanErrorChecker } from "./lib/utils"
@@ -156,10 +156,10 @@ export const getHomeScreenData = async () => {
             WHERE gymusers.id = tt.traineeid AND tt.trainerid = ${userid} AND t.iscompleted = false ORDER BY t.lastedited DESC
         `
         
-        return {trainings: response.rows[0], traineesWithoutPlans: traineesWithoutPlansResponse.rows, error: null}
+        return {trainings: response.rows as TraineesAndTrainings[], traineesWithoutPlans: traineesWithoutPlansResponse.rows as TraineesWithoutPlans[], error: null}
     }catch(error){
         console.error("Error fetching home screen data:", error);
-        return {trainings: null, traineesWithoutPlans: [], error: "Something went wrong"}  
+        return {trainings: [], traineesWithoutPlans: [], error: "Something went wrong"}  
     }
 }
 

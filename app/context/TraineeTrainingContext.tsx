@@ -58,7 +58,7 @@ export const TraineeTrainingContextProvider = ({children,training,userid,allHand
 
         ws.current.onopen = () => {
             console.log("WebSocket połączony");
-            ws.current!.send(JSON.stringify({type:"FIRST_CONNECT", userid,trainingData,userPurpose }));
+            ws.current!.send(JSON.stringify({type:"FIRST_CONNECT", userid,training: trainingData,userPurpose }));
         }
 
         ws.current.onmessage = (event) => {
@@ -160,6 +160,7 @@ export const TraineeTrainingContextProvider = ({children,training,userid,allHand
 
         series.actual.repeat = series.goal.repetitionsgoalmax
         series.actual.weight = series.goal.weightgoal
+        series.isSetCompleted = true
         if(series.actual.time) series.actual.time = series.goal.timegoal
         
         trainingCopy.exercises[currentExerciseIndex].sets[seriesIndex] = series

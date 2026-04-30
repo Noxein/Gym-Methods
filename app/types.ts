@@ -483,3 +483,24 @@ export type ProgressionType2 = {
         set: Series;
         date: Date;
     }
+
+export type TraineesAndTrainings = {
+    purpose: UserPurposeType,
+    username: string,
+    avatarurl: string,
+    traineeid: string,
+    trainerid: string,
+    pairedat: Date,
+    id: string,
+    name: string,
+    plan: TraineeSingleTraining[],
+    lastedited: Date,
+    iscompleted: boolean
+}
+
+export type TraineesWithoutPlans = {
+    purpose: UserPurposeType,
+    username: string,   
+    avatarurl: string,
+    traineeid: string,
+}

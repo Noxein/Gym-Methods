@@ -108,30 +108,13 @@ const SingleSet = ({training,goal,seriesIndex, handleInputChange, flipT, flipF}:
     const weight = goal.actual.weight
     const time = goal.actual.time
 
-    // const handleInputChange = (value:number,changedField:'weight'|'repetition'|'time') => {
-    //     let planDataCopy = structuredClone(planData)
-    //     let series = {...planData.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex]}
-    //     if(changedField==='weight'){
-    //         series.actuallweight = value
-    //     } 
-    //     if(changedField==='repetition'){
-    //         series.actuallrepetitions = value
-    //     } 
-    //     if(changedField==='time'){
-    //         series.actualltime = value
-    //     } 
-    //     planDataCopy.subplans[planData.currentplanindex].exercises[currentExerciseIndex].setgoals[seriesIndex] = series
-    //     setCurrentLocalData(planDataCopy.subplans[planData.currentplanindex])
-    //     setPlanData(planDataCopy)
-
-    // }
     return(
         <div className={`px-4 py-2 border-2 border-borderInteractive rounded-lg flex flex-col  ${goalMet!== undefined && goalMet === 'met' ? 'bg-gradient-to-tr from-green-700 to-green' : goalMet!== undefined && goalMet === 'notmet' ? 'bg-gradient-to-r from-red to-red-200' : ''}`}>
             <div className="flex justify-around">
                 <CheckobxTrueFalse typeOfCheckbox='green' isChecked={goalMet===undefined ? false : goalMet==='met' ? true : false} isActive={goalMet!==undefined} goalMet={goalMet} seriesIndex={seriesIndex} flipT={flipT} flipF={flipF}/>
 
                 <div className="flex-1 justify-around flex">
-                    <span>{goal.goal.repetitionsgoalmin} x</span>
+                    <span>{goal.goal.repetitionsgoalmin} - {goal.goal.repetitionsgoalmax} x</span>
                     <span>{goal.goal.weightgoal} KG</span>
                     {goal.goal.timegoal && <span>{goal.goal.timegoal} s</span>}
                 </div>

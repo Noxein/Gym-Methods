@@ -1,5 +1,5 @@
 import { addDays, addMonths, getDay, getDaysInMonth, subDays, subMonths } from "date-fns"
-import { LocalStorageTraining, ProgressedIndexesType, Series, SeriesWithExercise, TraineePlan, TrainingProgression, WeekDay, WeekDayPL } from "../types"
+import { LocalStorageTraining, ProgressedIndexesType, Series, SeriesWithExercise, TraineePlan, TraineeSingleTraining, TrainingProgression, WeekDay, WeekDayPL } from "../types"
 import { setUserLocale } from "../i18n/locale"
 import { Locale, locales } from "../i18n/config"
 import { getLocale, getTranslations } from "next-intl/server"
@@ -230,6 +230,38 @@ export const compareBetterSeries = (series1:Series[],series2:Series[]) => {
   if(series1Points === series2Points) return {value: 'equal', score: series1Points}
   if(series1Points > series2Points) return {value: 'series1', score: series1Points - series2Points}
   return { value: 'series2', score: series1Points - series2Points}
+}
+
+type TraineeTrainingSet = TraineeSingleTraining["exercises"][number]["sets"][number]
+
+const CheckIfTraineeTrainingSetIsProgressive = (set: TraineeTrainingSet) => {
+  if(typeof set.isSetCompleted === 'boolean') return set.isSetCompleted
+
+  const repetitionGoalMet = set.actual.repeat >= set.goal.repetitionsgoalmin
+  const weightGoalMet = set.goal.weightgoal <= 0 || set.actual.weight >= set.goal.weightgoal
+  const timeGoalMet = typeof set.goal.timegoal !== 'number' || set.goal.timegoal <= 0 || (set.actual.time ?? 0) >= set.goal.timegoal
+
+  return repetitionGoalMet && weightGoalMet && timeGoalMet
+}
+
+export const GetOverallTraineeTrainingProgression = (training: TraineeSingleTraining): 'progressive' | 'regressive' | 'neutral' => {
+  let progressiveSets = 0
+  let regressiveSets = 0
+
+  training.exercises.forEach(exercise => {
+    exercise.sets.forEach(set => {
+      if(CheckIfTraineeTrainingSetIsProgressive(set)){
+        progressiveSets++
+        return
+      }
+
+      regressiveSets++
+    })
+  })
+
+  if(progressiveSets === regressiveSets) return 'neutral'
+  if(progressiveSets > regressiveSets) return 'progressive'
+  return 'regressive'
 }
 
 const getTotalRepetitons = (series:Series[],name:'repeat'|'weight') => {
