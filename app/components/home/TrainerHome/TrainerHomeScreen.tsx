@@ -4,8 +4,10 @@ import { Suspense } from "react";
 import DaysWidget from "../DaysWidget";
 import { HomeWidgetSeleton } from "../../Loading/home/HomeWidgetSeleton";
 import PlanTrainings from "./PlanTrainings";
+import { TrainerHomeContextProvidr } from "./TrainerHomeContext";
+import { UserPurposeType } from "@/app/types";
 
-async function TrainerHomeScreen() {
+async function TrainerHomeScreen({ purpose }: { purpose: UserPurposeType }) {
 
     const trainerData = await getHomeScreenData()
 
@@ -17,15 +19,17 @@ async function TrainerHomeScreen() {
         )
     }
     return ( 
-        <div className="flex flex-col items-center w-full overflow-x-hidden px-5">
-            <Suspense fallback={<HomeWidgetSeleton />}>
-                <DaysWidget />
-            </Suspense>
+        <TrainerHomeContextProvidr ids={trainerData.allTraineesIDs} userid={trainerData.userid!} userPurpose={purpose}>
+            <div className="flex flex-col items-center w-full overflow-x-hidden px-5">
+                <Suspense fallback={<HomeWidgetSeleton />}>
+                    <DaysWidget />
+                </Suspense>
 
-            <MyStudents trainings={trainerData.trainings}/>
+                <MyStudents trainings={trainerData.trainings} />
 
-            {trainerData.traineesWithoutPlans.length > 0 && <PlanTrainings traineesWithoutPlans={trainerData.traineesWithoutPlans}/>}
-        </div>
+                {trainerData.traineesWithoutPlans.length > 0 && <PlanTrainings traineesWithoutPlans={trainerData.traineesWithoutPlans}/>}
+            </div>
+        </TrainerHomeContextProvidr>
      );
 }
 

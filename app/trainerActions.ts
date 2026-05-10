@@ -155,11 +155,30 @@ export const getHomeScreenData = async () => {
             INNER JOIN trainertraineeplans AS t ON t.traineeid = gymusers.id AND t.trainerid = ${userid} AND t.iscompleted = false
             WHERE gymusers.id = tt.traineeid AND tt.trainerid = ${userid} AND t.iscompleted = false ORDER BY t.lastedited DESC
         `
-        
-        return {trainings: response.rows as TraineesAndTrainings[], traineesWithoutPlans: traineesWithoutPlansResponse.rows as TraineesWithoutPlans[], error: null}
+        let arrOfIds: string[] = []
+        let oneNewestTrainingForEachTrainee:Map<string, TraineesAndTrainings> = new Map()
+        response.rows.forEach(row => { 
+            if(!arrOfIds.includes(row.traineeid)) arrOfIds.push(row.traineeid) 
+
+            if(!oneNewestTrainingForEachTrainee.has(row.traineeid)){
+                oneNewestTrainingForEachTrainee.set(row.traineeid, row as TraineesAndTrainings)   
+            }
+            const training = oneNewestTrainingForEachTrainee.get(row.traineeid)
+
+            if(!training) return
+            
+            if(training?.lastedited.getDate() < new Date().getDate()) return
+            if(training?.lastedited.getDate() > row.lastedited.getDate()){
+                oneNewestTrainingForEachTrainee.set(row.traineeid, row as TraineesAndTrainings) 
+            }
+
+        })
+        const mapConvertedToArray = Array.from(oneNewestTrainingForEachTrainee.values())
+
+        return {trainings: mapConvertedToArray, traineesWithoutPlans: traineesWithoutPlansResponse.rows as TraineesWithoutPlans[], error: null, allTraineesIDs: arrOfIds, userid}
     }catch(error){
         console.error("Error fetching home screen data:", error);
-        return {trainings: [], traineesWithoutPlans: [], error: "Something went wrong"}  
+        return {trainings: [], traineesWithoutPlans: [], allTraineesIDs: [], error: "Something went wrong"}  
     }
 }
 
@@ -167,3 +186,35 @@ export const getHomeScreenData = async () => {
             // SELECT gymusers.purpose, gymusers.trainercurrentaccounttype, gymusers.username, t.*  FROM gymusers 
             // INNER JOIN trainertraineeplans AS t ON gymusers.id = t.trainerid 
             // INNER JOIN trainertrainee AS tt ON tt.traineeid = gymusers.id  WHERE gymusers.id = tt.trainerid AND t.iscompleted = false ORDER BY t.lastedited DESC
+export const JoinTraining = async (trainingId: string) => {
+    
+    const userid = await userID()
+
+    try {
+        const response = await sql`
+            SELECT * FROM trainertraineeplans WHERE trainerid = ${userid} AND id = ${trainingId}
+        `
+
+        if(response.rows.length === 0) throw new Error("Nie można znaleźć treningu o podanym ID")
+
+        return {response: response.rows[0] as TraineePlan, error: null}
+    }catch(err) {
+        const e = err as Error
+        return {response: null, error: e.message}
+    }
+
+}
+
+export const getTraineeIdByTrainingId = async (trainingId: string) => {
+    try {
+        const response = await sql`
+            SELECT traineeid FROM trainertraineeplans WHERE id = ${trainingId}
+        `
+        if(response.rows.length === 0) throw new Error("Nie można znaleźć treningu o podanym ID")
+
+        return {traineeId: response.rows[0].traineeid as string, error: null}
+    }catch(err) {
+        const e = err as Error
+        return {traineeId: null, error: e.message}
+    }
+} 

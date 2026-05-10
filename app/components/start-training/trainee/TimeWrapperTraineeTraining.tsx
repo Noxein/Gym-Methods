@@ -6,13 +6,14 @@ import { differenceInSeconds } from "date-fns";
 
 type TimeWrapperTraineeTrainingTypes = {
     currentExerciseIndex: number;
-    training: TraineeSingleTraining
+    training: TraineeSingleTraining | null
 }
 function TimeWrapperTraineeTraining({ currentExerciseIndex, training }: TimeWrapperTraineeTrainingTypes) {
 
     const { setTimePassed,newDateSetter } = useContext(TimerContext)!
     
     useEffect(() => {
+        if(!training) return;
         const currentExerciseName = training.exercises[currentExerciseIndex].exercisename
 
         const timerData = localStorage.getItem(currentExerciseName+'date')
