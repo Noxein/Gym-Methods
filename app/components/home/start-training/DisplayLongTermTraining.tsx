@@ -20,6 +20,7 @@ import NextExerciseButton from "./NextExerciseButton";
 import PreviousExerciseButton from "./PreviousExerciseButton";
 import { useRouter } from "next/navigation";
 import { differenceInSeconds } from "date-fns";
+import { useTranslations } from "next-intl";
 
 type DisplayLongTermTrainingTypes = {
     allHandles: {
@@ -29,6 +30,7 @@ type DisplayLongTermTrainingTypes = {
 }
 
 function DisplayLongTermTraining({allHandles}:DisplayLongTermTrainingTypes) {
+    const t = useTranslations("Home/Start-Training/[TrainingName]")
     const {
         planData,
         currentExerciseIndex,
@@ -91,7 +93,7 @@ function DisplayLongTermTraining({allHandles}:DisplayLongTermTrainingTypes) {
         <div className="flex gap-2 mt-2 fixed bottom-20 w-[calc(100vw-40px)]">
             <PreviousExerciseButton />
 
-            <Button isPrimary className="flex-1 h-16" onClick={flip}>Zakończ trening</Button>
+            <Button isPrimary className="flex-1 h-16" onClick={flip}>{t("CloseTraining")}</Button>
 
             <NextExerciseButton />
         </div>

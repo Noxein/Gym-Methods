@@ -42,6 +42,12 @@
         "Date": "Date",
         "Exercises": "Exercises",
         "Day": "Day",
+        "Email": "Email",
+        "Language": "Language",
+        "Homepage": "Homepage",
+        "Unit": "Unit",
+        "Progression": "Progression",
+        "RepetitionsCount": "{count, plural, one {# repetition} other {# repetitions}}",
         "addTraining": "Add training",
         "addNewTraining": "Add new training",
         "close": "Close"
@@ -75,7 +81,15 @@
         "ExercisesYouWantToDo2/2": "has to be in your plan:",
         "ChooseLanguage": "Choose language",
         "Change Image": "Change image",
-        "Upload Image": "Upload image"
+        "Upload Image": "Upload image",
+        "PurposeQuestion": "What do you use the app for?",
+        "UserType": "User type",
+        "WhatNext": "What next",
+        "AddTrainee": "Add trainee",
+        "EnterTrainerCode": "Enter the trainer code",
+        "WaitingForTrainerResponse": "Waiting for the trainer's response...",
+        "ConnectedToTrainer": "Connected to the trainer!",
+        "RedirectHomeSoon": "You will be redirected to the homepage soon."
     },
     "Home": {
         "ThatDay" : "That day",
@@ -207,17 +221,29 @@
         "CloneTraining": "Clone training",
         "WhichTrainingToClone": "Which training to clone",
         "AreYouSureYouWantToCloneTraining": "Are you sure you want to clone training",
-        "IncreaseWeight": "Increase weight by (%)"
+        "IncreaseWeight": "Increase weight by (%)",
+        "IncreaseWeightForExercises": "Increase weight in exercises",
+        "SelectExercisesToIncrease": "Select which exercises to increase:",
+        "IncreaseWeightAction": "Increase weight",
+        "RevertAllChanges": "Revert all changes",
+        "RevertIncreaseChangesConfirm": "Are you sure you want to revert all changes related to increasing exercise weight?"
     },
     "Home/Profile/My-Trainees":{
         "SearchForTrainee": "Search for trainee",
         "NoTrainees": "No trainees.",
         "ManageTrainings": "Manage trainings",
         "CreateNewTraining": "Create new training",
-        "TrainingHistory": "Training history"
+        "TrainingHistory": "Training history",
+        "YourTrainerCode": "Your trainer code",
+        "TraineeAddedSuccessfully": "Trainee added successfully!",
+        "AcceptTraineeRequest": "Accept the trainee's join request",
+        "Accept": "Accept",
+        "AddTrainee": "Add trainee"
     },
     "Home/Profile/My-Trainees/Schemas":{
-        "AddNewSchema": "Create new training template"
+        "AddNewSchema": "Create new training template",
+        "DeleteSchemas": "Delete schemas",
+        "DeleteSelectedSchemasConfirm": "Are you sure you want to delete selected schemas?"
     },
     "Home/Profile/My-Trainees/Schemas/Create":{
         "PlanName": "Plan name",
@@ -249,14 +275,41 @@
     "Home/Start-Training": {
         "ContinueTraining": "Continue training",
         "StartNewTraining":"Start new training",
-        "LatestTrainings":"Latest trainings"
+        "LatestTrainings":"Latest trainings",
+        "BasicTrainings": "Basic trainings",
+        "AdvancedTrainings": "Advanced trainings",
+        "NoBasicTrainings": "No basic trainings available. Create a new training to get started!"
     },
     "Home/Start-Training/[TrainingName]": {
         "AddSeries": "Add series",
         "CloseTraining": "Close trening",
         "SelectExercise": "Select exercise",
         "DiffrentExercise": "Change exercise",
-        "AreYouSure": "Are you sure you want to close this training?"
+        "AreYouSure": "Are you sure you want to close this training?",
+        "CloseExercise": "Finish exercise",
+        "AreYouSureNamed": "Are you sure you want to close training: {name}?"
+    },
+    "Home/TrainerHome": {
+        "PlanTraining": "Plan training",
+        "MyStudents": "My students",
+        "UserInTraining": "user in training",
+        "LastTraining": "Last training: {date}",
+        "DayProgress": "{trainingName} - Day {current} / {total}",
+        "Connect": "Connect"
+    },
+    "Home/TraineeHome": {
+        "TodayTraining": "Today's training",
+        "DayProgress": "{trainingName} - Day {current} / {total}",
+        "TimeRange": "Time {start}h - {end}h",
+        "StartTraining": "Start training",
+        "OnDate": "On {date}",
+        "YouHaveTraining": "You have training {name} - Day {current} / {total}",
+        "NoTrainingScheduled": "You have no scheduled training",
+        "Current": "Current",
+        "Previous": "Previous",
+        "OfGoal": "of goal",
+        "Progressions": "Progressions",
+        "NotEnoughData": "Not enough data"
     },
     "DefaultExercises": {
         "Wielostawowe": "Multi Joint",
@@ -443,12 +496,16 @@
         "Name cant be empty": "Name cant be empty",
         "There cant be any empty trainings": "Each training has to have at least one exercise",
         "Failed to upload avatar": "Failed to upload avatar",
-        "SchemaNameCannotBeEmpty": "Schema name cannot be empty",
-        "ThereCantBeAnyEmptyTrainings": "Each training has to have at least one exercise",
-        "AllTrainingsMustHaveAName": "Each training must have a name",
-        "SchemasNotFound": "No training templates found. Create a new training plan and then save it as a template to assign it to your trainees!",
-        "Plan must have a name": "Plan must have a name",
-        "Plan must have at least one sub-plan": "Plan must have at least one sub-plan"
+         "SchemaNameCannotBeEmpty": "Schema name cannot be empty",
+         "ThereCantBeAnyEmptyTrainings": "Each training has to have at least one exercise",
+         "AllTrainingsMustHaveAName": "Each training must have a name",
+         "SchemasNotFound": "No training templates found. Create a new training plan and then save it as a template to assign it to your trainees!",
+         "Plan must have a name": "Plan must have a name",
+         "Plan must have at least one sub-plan": "Plan must have at least one sub-plan",
+         "Trainee data not found": "Trainee data not found",
+         "Schema not found": "Schema not found",
+         "Error fetching training data": "Error fetching training data",
+         "Page not found": "Page not found"
     },
     "Metadata": {
         "Profile": "Profile",

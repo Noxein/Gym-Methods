@@ -2,18 +2,21 @@ import { Button } from "@/app/components/ui/Button";
 import ConfirmModalContext from "@/app/context/ConfirmModalContext";
 import { deleteSchemas } from "@/app/trainerActions";
 import { useContext } from "react";
+import { useTranslations } from "next-intl";
 
 type DeleteSchemaOptionsProps = {
     setShowDelete: React.Dispatch<React.SetStateAction<boolean>>;
     selectedSchemasIds: string[];
 }
 function DeleteSchemaOptions({ setShowDelete, selectedSchemasIds }: DeleteSchemaOptionsProps) {
+    const u = useTranslations("Utils")
+    const t = useTranslations("Home/Profile/My-Trainees/Schemas")
 
     const { modalState, setModalState } = useContext(ConfirmModalContext)!
     const handleOpenModal = () => {
         setModalState({
             isOpen: true,
-            message: 'Are you sure you want to delete selected schemas?',
+            message: t("DeleteSelectedSchemasConfirm"),
             onConfirm: () => handleDelete(),
             onDecline: () => setModalState({ ...modalState, isOpen: false })
         })
@@ -41,8 +44,8 @@ function DeleteSchemaOptions({ setShowDelete, selectedSchemasIds }: DeleteSchema
     }
     return ( 
         <div className="fixed bottom-24 w-full flex justify-center left-0 gap-4">
-            <Button className="text-blue-400 border-blue-400 w-full ml-4" onClick={() => setShowDelete(false)}>Cancel</Button>
-            <Button className="bg-blue-400 text-white w-full mr-4" onClick={handleOpenModal}>Delete</Button>
+            <Button className="text-blue-400 border-blue-400 w-full ml-4" onClick={() => setShowDelete(false)}>{u("Cancel")}</Button>
+            <Button className="bg-blue-400 text-white w-full mr-4" onClick={handleOpenModal}>{u("Delete")}</Button>
         </div>
      );
 }

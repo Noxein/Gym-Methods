@@ -286,10 +286,11 @@ const Handle = ({allHandles,inputs,trainingState,setInputs,localStorageTrainingD
     },[])
 
     const h = useTranslations("Handles")
+    const u = useTranslations("Utils")
     return (
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
-            <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>Uchwyt</label>
+            <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Handle")}</label>
             <select name="handle" value={jsomHandleValue} id="side" className='bg-dark pl-3 text-marmur border-borderInteractive border-[2px] rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value))}>
                 {allHandles.map(handle=>{
                     const formattedHandleName = handleTypes.some(pre=> pre === handle.handlename) ? h(handle.handlename.replaceAll(" ",'')) : handle.handlename

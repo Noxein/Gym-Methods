@@ -7,8 +7,11 @@ import { HideShowHTMLScrollbar } from "@/app/lib/utils";
 import { ExerciseTypes, TrainingExerciseType } from "@/app/types";
 import { useState, useContext, ChangeEventHandler, SelectHTMLAttributes, ChangeEvent } from "react";
 import DeleteChangeModal from "./DeleteChangesModal";
+import { useTranslations } from "next-intl";
 
 function IncreaseWeightModal({setShowIncreaseWeightModal}: {setShowIncreaseWeightModal: (show: boolean) => void}) {
+    const t = useTranslations("Home/Profile/Long-Term-Plans/[LongTermPlanName]")
+    const u = useTranslations("Utils")
     const { 
         planData,
         setPlanData
@@ -87,15 +90,15 @@ function IncreaseWeightModal({setShowIncreaseWeightModal}: {setShowIncreaseWeigh
 
     return ( 
     <div onClick={e=>e.stopPropagation()} className="bg-dark-700 p-5 text-white rounded-lg max-w-md w-full flex-col flex">
-        <p className="mb-10 text-xl font-semibold text-center">Zwiększ mase w ćwiczeniach</p>
+        <p className="mb-10 text-xl font-semibold text-center">{t("IncreaseWeightForExercises")}</p>
 
         <div className="flex gap-2">
             <Input labelName={unit} className="flex-1" onChange={e=>setValue(Number(e.target.value))}/>
-            <Select labelName="Jednostka" valuesToLoop={['%','kg']} onChange={handleUnitChange}/>
+            <Select labelName={u("Unit")} valuesToLoop={['%','kg']} onChange={handleUnitChange}/>
         </div>
 
         <div className="flex flex-col overflow-y-auto max-h-64 my-5">
-            <p className="mb-2">Zaznacz które ćwiczenia zwiększyć: </p>
+            <p className="mb-2">{t("SelectExercisesToIncrease")}</p>
             {allExercises && allExercises.map((exercise,index)=>(
                 <div key={exercise.id} className="flex items-center mb-2 ml-2"
                 onClick={()=>HandleClickExercise(exercise.id)}
@@ -107,8 +110,8 @@ function IncreaseWeightModal({setShowIncreaseWeightModal}: {setShowIncreaseWeigh
                     <span>{exercise.exercisename}</span>
                 </div>))}
         </div>
-        <Button isPrimary onClick={handleIncreaseWeight}>Zwiększ ciężar</Button>
-        <Button onClick={()=>setShowDeleteChangesModal(true)} className="mt-2" >Cofnij wszystkie zmiany</Button>
+        <Button isPrimary onClick={handleIncreaseWeight}>{t("IncreaseWeightAction")}</Button>
+        <Button onClick={()=>setShowDeleteChangesModal(true)} className="mt-2" >{t("RevertAllChanges")}</Button>
 
         {showDeleteChangesModal && <BlurBackgroundModal>
             <DeleteChangeModal handleClose={()=>setShowDeleteChangesModal(false)} hideBothModals={hideBothModals}/>

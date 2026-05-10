@@ -3,12 +3,15 @@ import { Trainee } from "@/app/types";
 import { useState } from "react";
 import { Button } from "../../ui/Button";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 type TraineesProps = {
     trainees: Trainee[]
 }
 
 function Trainees({trainees}:TraineesProps) {
+    const p = useTranslations("Home/Profile")
+    const t = useTranslations("Home/Profile/My-Trainees")
 
     const[traineesState,setTraineesState] = useState<Trainee[]>(trainees)
 
@@ -16,9 +19,9 @@ function Trainees({trainees}:TraineesProps) {
 
     return ( 
         <div className="text-white">
-            <h1 className="text-2xl font-bold">Trainees</h1>
+            <h1 className="text-2xl font-bold">{p("MyTrainees")}</h1>
 
-            <Button onClick={()=>router.push('')}>Add Trainee</Button>
+            <Button onClick={()=>router.push('')}>{t("AddTrainee")}</Button>
 
             <div>
                 {traineesState.length > 0 ? (
@@ -29,7 +32,7 @@ function Trainees({trainees}:TraineesProps) {
                         </div>
                     ))
                 ) : (
-                    <p>No trainees found.</p>
+                    <p>{t("NoTrainees")}</p>
                 )}
             </div>
         </div>

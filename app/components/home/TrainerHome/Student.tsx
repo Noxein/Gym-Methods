@@ -7,12 +7,14 @@ import TraineeHomeContext from "./TrainerHomeContext";
 import { useContext } from "react";
 import { Button } from "../../ui/Button";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 type Props = {
     info: TraineesAndTrainings
 }
 
 function Student({ info }: Props) {
+    const t = useTranslations("Home/TrainerHome")
 
     const lastCompletedTrainingIndex = info.plan?.findIndex(plan => plan.iscompleted === false) - 1 
     const lastTrainingDate = lastCompletedTrainingIndex !== -1 ? info.plan?.[lastCompletedTrainingIndex].date : null
@@ -33,13 +35,13 @@ function Student({ info }: Props) {
             <StudentAvatar info={{avatarurl: info.avatarurl}}/>
 
             <div className="flex flex-col mt-2">
-                <p>{info.username} {connectedTrainees.includes(info.traineeid) && <span className="text-gray-500 text-sm">user in training</span>}</p>
-                {lastTrainingDate && <p>Last training: {format(new Date(lastTrainingDate), "dd/MM/yyyy")}</p>}
+                <p>{info.username} {connectedTrainees.includes(info.traineeid) && <span className="text-gray-500 text-sm">{t("UserInTraining")}</span>}</p>
+                {lastTrainingDate && <p>{t("LastTraining", {date: format(new Date(lastTrainingDate), "dd/MM/yyyy")})}</p>}
 
-                <p className="text-gray-400">{info.name} - Day {lastCompletedTrainingIndex + 2}/{info.plan.length}</p>
+                <p className="text-gray-400">{t("DayProgress", {trainingName: info.name, current: lastCompletedTrainingIndex + 2, total: info.plan.length})}</p>
             </div>
 
-            {connectedTrainees.includes(info.traineeid) && <Button className="ml-auto h-12 self-center mr-2 px-4" onClick={connectToTraining}>POŁĄCZ</Button>}
+            {connectedTrainees.includes(info.traineeid) && <Button className="ml-auto h-12 self-center mr-2 px-4" onClick={connectToTraining}>{t("Connect")}</Button>}
         </div>
      );
 }

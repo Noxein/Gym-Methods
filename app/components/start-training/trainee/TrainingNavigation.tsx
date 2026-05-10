@@ -2,6 +2,7 @@
 import { LeftAngle } from "@/app/ui/icons/ExpandIcon";
 import { Button } from "../../ui/Button";
 import { Icon } from "../../Icon";
+import { useTranslations } from "next-intl";
 
 type TrainingNavigationTypes = {
     previousExercise: () => void,
@@ -12,6 +13,7 @@ type TrainingNavigationTypes = {
 }
 
 function TrainingNavigation({previousExercise, nextExercise, handleCloseTraining, currentExerciseIndex, totalExercises}: TrainingNavigationTypes) {
+    const t = useTranslations("Home/Start-Training/[TrainingName]")
     return (         
     <div className="flex gap-2 mt-2 fixed bottom-20 w-[calc(100vw-40px)]">
             <Button className={`${currentExerciseIndex===0 ? 'border-gray-700':null} w-16 h-16`} onClick={previousExercise}>
@@ -20,7 +22,7 @@ function TrainingNavigation({previousExercise, nextExercise, handleCloseTraining
                 </Icon>
             </Button>
 
-            <Button isPrimary className="flex-1 h-16" onClick={handleCloseTraining}>Zakończ trening</Button>
+            <Button isPrimary className="flex-1 h-16" onClick={handleCloseTraining}>{t("CloseTraining")}</Button>
 
             <Button className={`${currentExerciseIndex===totalExercises - 1 ? 'border-gray-700':null} w-16 h-16` } onClick={nextExercise}>
                 <Icon>

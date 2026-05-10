@@ -40,7 +40,7 @@ function AddTrainingBtn({ showAddTrainingModal, setShowAddTrainingModal, allTrai
                             {allTrainings.map(training => (
                                 <div key={training.id} className="flex items-center">
                                     <p>{training.name} - <span className="text-gray-400">({training.plan.length})</span></p>
-                                    <Button blue isPrimary className="ml-auto px-5" onClick={() => setSelectedTraining(training)}> Add </Button>
+                                    <Button blue isPrimary className="ml-auto px-5" onClick={() => setSelectedTraining(training)}>{u("Add")}</Button>
                                     
                                 </div>
                             ))}

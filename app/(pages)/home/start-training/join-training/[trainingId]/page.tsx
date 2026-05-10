@@ -7,8 +7,10 @@ import { TrainerJoinTrainingContextProvider } from "@/app/context/TrainerJoinTra
 import { getTraineeTrainingById } from "@/app/traineeActions";
 import { getTraineeIdByTrainingId, JoinTraining } from "@/app/trainerActions";
 import { auth } from "@/auth";
+import { getTranslations } from "next-intl/server";
 
 export default async function page({params}:{params: Promise<{[key:string]:string}>}) {
+    const t = await getTranslations("Errors")
 
     const trainingId = (await params).trainingId;
     const traineeID = await getTraineeIdByTrainingId(trainingId)
@@ -16,7 +18,7 @@ export default async function page({params}:{params: Promise<{[key:string]:strin
 
     const user = await auth()
 
-    if(traineeID.error || !traineeID.traineeId) return <div className="text-center mt-20 text-xl">Error fetching training data</div>
+    if(traineeID.error || !traineeID.traineeId) return <div className="text-center mt-20 text-xl">{t("Error fetching training data")}</div>
 
     return(
         <ConfirmModalProvider>

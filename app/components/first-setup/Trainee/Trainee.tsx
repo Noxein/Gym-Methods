@@ -10,12 +10,14 @@ import { Button } from "../../ui/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AccesCode from "../../ui/AccesCode";
+import { useTranslations } from "next-intl";
 
 type TraineeProps = {
     setCurrentStep: React.Dispatch<React.SetStateAction<FirstSetupFirstStep>>,
     jwt?: string
 }
 function Trainee({setCurrentStep,jwt}: TraineeProps) {
+    const t = useTranslations("FirstSetup")
 
     const ws = useRef<WebSocket | null>(null);
     const[stateOfWs,setStateOfWs] = useState<'idle'|'waitingForResponse'|'error'|'finish'>('idle');
@@ -116,7 +118,7 @@ function Trainee({setCurrentStep,jwt}: TraineeProps) {
         <CenterComponent className="justify-center items-center">
             <div className="text-white w-full px-5 flex flex-col gap-6">
                 { stateOfWs === 'idle' && <div>
-                    <h1 className="text-3xl font-medium mb-10 text-center">Podaj kod trenera</h1>
+                    <h1 className="text-3xl font-medium mb-10 text-center">{t("EnterTrainerCode")}</h1>
 
                     <div className="flex justify-between gap-4 relative">
                         <input className='opacity-0 absolute w-full h-12' onKeyDown={handleInputChange} autoFocus/>
@@ -132,13 +134,13 @@ function Trainee({setCurrentStep,jwt}: TraineeProps) {
                 </div>}
 
                 { stateOfWs === 'waitingForResponse' && <div>
-                    <h1 className="text-3xl font-medium mb-10 text-center">Czekam na odpoweiedź trenera... </h1>
+                    <h1 className="text-3xl font-medium mb-10 text-center">{t("WaitingForTrainerResponse")}</h1>
                 </div>}
                 
                 { stateOfWs === 'finish' && <div>
-                    <h1 className="text-3xl font-medium mb-10 text-center">Połączono z trenerem! </h1>
+                    <h1 className="text-3xl font-medium mb-10 text-center">{t("ConnectedToTrainer")}</h1>
 
-                    <p>Zaraz zostaniesz przeniesiony do strony głównej.</p>
+                    <p>{t("RedirectHomeSoon")}</p>
                 </div>}
 
 

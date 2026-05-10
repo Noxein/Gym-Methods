@@ -7,8 +7,10 @@ import { getTraineeTrainingById } from "@/app/traineeActions";
 import { getTraineeIdByTrainingId } from "@/app/trainerActions";
 import { TraineePlan } from "@/app/types";
 import { auth } from "@/auth";
+import { getTranslations } from "next-intl/server";
 
 export default async function page({params}:{params: Promise<{[key:string]:string}>}) {
+    const t = await getTranslations("Errors")
 
     const user = await auth()
 
@@ -18,11 +20,11 @@ export default async function page({params}:{params: Promise<{[key:string]:strin
 
     const allHandles = await getAllHandleTypes()
 
-    if(training?.error) return <div className="text-white">Nie można znaleźć tego treningu1</div>
+    if(training?.error) return <div className="text-white">{t("Training not found")}</div>
 
-    if(!training.response) return <div className="text-white">Nie można znaleźć tego treningu2</div>
+    if(!training.response) return <div className="text-white">{t("Training not found")}</div>
 
-    if(!traineeId) return <div className="text-white">Nie można znaleźć tego treningu3</div>
+    if(!traineeId) return <div className="text-white">{t("Training not found")}</div>
 
     return(
         <ConfirmModalProvider>

@@ -8,8 +8,11 @@ import AccesCode from "../../ui/AccesCode";
 import { SmallLoaderDiv } from "../../ui/SmallLoaderDiv";
 import { Button } from "../../ui/Button";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 function AddTraineeModal() {
+    const t = useTranslations("Home/Profile/My-Trainees")
+    const u = useTranslations("Utils")
 
     const ws = useRef<WebSocket | null>(null);
     const navigation = useRouter()
@@ -71,7 +74,7 @@ function AddTraineeModal() {
     return ( 
         <div onClick={e=>e.stopPropagation()} className="w-full mx-5">
             {processStep === 'generateKey' && <div>
-                    <h1 className="text-3xl font-medium mb-10 text-center">Twój kod trenera</h1>
+                    <h1 className="text-3xl font-medium mb-10 text-center">{t("YourTrainerCode")}</h1>
                     {loadingKey && <SmallLoaderDiv loading />}
                     <AccesCode trainerCode={key}/>
                 </div>}
@@ -79,11 +82,11 @@ function AddTraineeModal() {
             {processStep === 'acceptTrainee' && <AcceptTrainee traineeInfo={traineeInfo} handleAddTrainee={handleAddTrainee} />}
 
             {processStep === 'finish' && <div>
-                <h1 className="text-3xl font-medium mb-10 text-center">Podopieczny dodany pomyślnie!</h1>
+                <h1 className="text-3xl font-medium mb-10 text-center">{t("TraineeAddedSuccessfully")}</h1>
 
                 <div className="flex gap-4">
-                    <Button className="flex-1" isPrimary onClick={()=>navigation.push(`/home/profile/my-trainees/${traineeInfo.id}/create`)}>Dodaj trening</Button>
-                    <Button className="flex-1" isPrimary onClick={()=>navigation.push('/home')}>Strona główna</Button>
+                    <Button className="flex-1" isPrimary onClick={()=>navigation.push(`/home/profile/my-trainees/${traineeInfo.id}/create`)}>{u("AddTraining")}</Button>
+                    <Button className="flex-1" isPrimary onClick={()=>navigation.push('/home')}>{u("Homepage")}</Button>
                 </div>
 
             </div>}

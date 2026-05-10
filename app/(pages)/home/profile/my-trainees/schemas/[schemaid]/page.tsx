@@ -1,8 +1,10 @@
 import { AllExercisesInOneArray, getAllExercises, getAllHandleTypes, getSchemaData } from "@/app/actions";
 import SchemaEditor from "@/app/components/profile/my-trainees/schemas/schema creator/SchemaEditor";
 import { TrainingSchemaContextProvider } from "@/app/context/TrainingSchemaContext";
+import { getTranslations } from "next-intl/server";
 
 export default async function page({params}:{params: Promise<{[key:string]:string}>}) {
+    const t = await getTranslations("Errors")
 
     const schemaid = (await params).schemaid;
 
@@ -12,7 +14,7 @@ export default async function page({params}:{params: Promise<{[key:string]:strin
     const allExercisesInOneArray = await AllExercisesInOneArray()
 
     if(schema.error || !schema.schema) {
-        return <div className="text-white">Nie można znaleźć tego schematu.</div>
+        return <div className="text-white">{t("Schema not found")}</div>
     }
 
     return( 

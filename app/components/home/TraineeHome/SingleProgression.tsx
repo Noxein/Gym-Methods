@@ -1,4 +1,5 @@
 import { ProgressionType2 } from "@/app/types";
+import { useTranslations } from "next-intl";
 
 type SingleProgressionTypes = {
     progression: ProgressionType2[],
@@ -6,6 +7,7 @@ type SingleProgressionTypes = {
 }
 
 function SingleProgression({progression, goal}:SingleProgressionTypes) {
+    const t = useTranslations("Home/TraineeHome")
 
     const PrecentageIncreaseOrDecrease = () => {
         const weightDifference = progression[0].set.weight - progression[1].set.weight
@@ -44,11 +46,11 @@ function SingleProgression({progression, goal}:SingleProgressionTypes) {
                     <div className="flex flex-col flex-1 gap-2">
                         <div>{progression[0].exercisename}</div>
                         <div className="text-gray-400">
-                            Ostatnio: {progression[0].set.weight} kg x {progression[0].set.repeat}
+                            {t("Current")}: {progression[0].set.weight} kg x {progression[0].set.repeat}
                         </div>
 
                         <div className="text-gray-400">
-                            Poprzednio: {progression[1].set.weight} kg x {progression[1].set.repeat}
+                            {t("Previous")}: {progression[1].set.weight} kg x {progression[1].set.repeat}
                         </div>
                     </div>
 
@@ -61,7 +63,7 @@ function SingleProgression({progression, goal}:SingleProgressionTypes) {
 
                         <div className="flex flex-col text-right mt-auto">
                             <span className="text-xl">{goalProgressionPrecentage.toFixed(2)}%</span>
-                            <span className="text-gray-400">z celu</span>
+                            <span className="text-gray-400">{t("OfGoal")}</span>
                         </div>
                     </div>
                 </div>

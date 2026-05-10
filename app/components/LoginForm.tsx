@@ -33,6 +33,7 @@ export const LoginForm = () => {
   }
 
   const t = useTranslations("Login")
+  const u = useTranslations("Utils")
   const e = useTranslations("Errors")
 
   return (<>
@@ -42,7 +43,7 @@ export const LoginForm = () => {
       hasAccount={false}
       >
 
-        <Input labelName='Email' onChange={e=>setEmail(e.target.value)} value={email} disabled={loading}/>
+        <Input labelName={u("Email")} onChange={e=>setEmail(e.target.value)} value={email} disabled={loading}/>
         
         <InputGroup id='password' text={t("Password")} type={showPassword?'text':'password'} showPassword={showPassword} onChange={e=>setPassword(e.target.value)} setShowPassword={setShowPassword} disabled={loading}/>
 

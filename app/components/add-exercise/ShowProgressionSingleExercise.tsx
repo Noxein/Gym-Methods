@@ -1,12 +1,14 @@
 import { ExerciseDataContext } from '@/app/context/ExerciseDataContext'
 import { ActionTypes, AddExerciceReducerType, Progression, SeriesWithExercise, UserTrainingPlan } from '@/app/types'
 import React, { useContext } from 'react'
+import { useTranslations } from 'next-intl';
 
 type ShowProgressionSingleExerciseType = {
     state: AddExerciceReducerType,
     dispatch: React.Dispatch<ActionTypes>,
 }
 export const ShowProgressionSingleExercise = ({state,dispatch}:ShowProgressionSingleExerciseType) => {
+    const t = useTranslations("Utils")
     const { exerciseData, progressions } = useContext(ExerciseDataContext)!
 
     const data = progressions[exerciseData.name]
@@ -21,14 +23,14 @@ export const ShowProgressionSingleExercise = ({state,dispatch}:ShowProgressionSi
         
   return (
     <div className='text-white text-center mt-6'>
-        <p>Progresja</p>
+        <p>{t("Progression")}</p>
 
         {data && 
         <div className='flex flex-col gap-2'> 
             {data.series.map((seria,index)=>(
                 <div className='flex bg-darkLight py-2 rounded-xl' onClick={()=>handleEditInputs(seria)} key={index}>
                     <div className='flex-1'>{seria.weightGoal} KG</div>
-                    <div className='flex-1'>{seria.repetitions} {seria.repetitions>4?'Serii':seria.repetitions>1?"Serie":seria.repetitions===0?"Serii":"Seria"}</div>
+                    <div className='flex-1'>{t("RepetitionsCount", {count: seria.repetitions})}</div>
                 </div>
             ))}
         </div>

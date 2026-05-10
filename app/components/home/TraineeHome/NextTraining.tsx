@@ -3,12 +3,14 @@ import { TraineePlan } from "@/app/types";
 import { addDays, format, isSameDay, subDays } from "date-fns";
 import { useState } from "react";
 import TodaysTraining from "./TodaysTraining";
+import { useTranslations } from "next-intl";
 
 type NextTrainingProps = {
     plan: TraineePlan,
 }
 
 function NextTraining({ plan }: NextTrainingProps) {
+    const t = useTranslations("Home/TraineeHome")
 
     const today = new Date()
 
@@ -43,16 +45,16 @@ function NextTraining({ plan }: NextTrainingProps) {
             </div>
             {isSelectedDayToday && todaysTraining ? <TodaysTraining training={plan} currentDay={plan.plan.findIndex(x=>x.iscompleted===false)!} planLength={plan.plan.length}/> :
             <div className="mt-5 text-gray-200">
-                Dnia {format(selectedDay, "dd/MM/yyyy")}
+                {t("OnDate", {date: format(selectedDay, "dd/MM/yyyy")})}
                 {selectedDayPlan ?
                 <div>
-                    Masz trening {selectedDayPlan?.name} - Dzień {plan.plan.indexOf(selectedDayPlan)+1} / {plan.plan.length}
+                    {t("YouHaveTraining", {name: selectedDayPlan?.name, current: plan.plan.indexOf(selectedDayPlan) + 1, total: plan.plan.length})}
                 </div>
                 
                 : 
-                <div>nie masz zaplanowanego treningu</div>
+                <div>{t("NoTrainingScheduled")}</div>
                 }
-                {selectedDayPlan && <p className="text-gray-400">Czas {timeInHoursWithPartial}h - {timeInHoursWithPartial+0.5}h</p>}
+                {selectedDayPlan && <p className="text-gray-400">{t("TimeRange", {start: timeInHoursWithPartial, end: timeInHoursWithPartial + 0.5})}</p>}
             </div>}
         </div>
         );

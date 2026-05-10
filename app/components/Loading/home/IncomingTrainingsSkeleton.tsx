@@ -1,7 +1,10 @@
+import { useTranslations } from "next-intl";
+
 export const IncomingTrainingsSkeleton = () => {
+  const t = useTranslations("Home")
   return (
     <div className='flex flex-col px-5 gap-4 mt-8'>
-      <h2 className='text-center text-2xl text-marmur'>Najbliższe treningi</h2>
+      <h2 className='text-center text-2xl text-marmur'>{t("ClosestTrainings")}</h2>
       <Training />
       <Training />
       <div className={`flex justify-between px-5 bg-green text-white py-2 rounded-lg items-center min-h-[49px] text-opacity-0 gradient-background`} >

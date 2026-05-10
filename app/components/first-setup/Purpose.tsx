@@ -24,10 +24,10 @@ function Puropse({setCurrentStep,purpose,setPurpose}:PurposeProps) {
         <CenterComponent>
             <div className="text-white mx-5 mb-20">
                 
-                    <h1 className="text-3xl font-medium mb-10 text-center">W jakim celu używasz aplikacji?</h1>
+                    <h1 className="text-3xl font-medium mb-10 text-center">{t("PurposeQuestion")}</h1>
 
                     <Select 
-                        labelName={'Typ użytkownika'}
+                        labelName={t("UserType")}
                         valuesToLoop={purposeOptions}
                         name='advancmentlevel'
                         onChange={handlePurposeChange}

@@ -18,13 +18,15 @@ function CloseTrainingModal({flip,handleCloseTraining,loading,error}:CloseTraini
     } = useContext(LongPlanContext)!
 
     const e = useTranslations('Errors')
+    const u = useTranslations('Utils')
+    const t = useTranslations('Home/Start-Training/[TrainingName]')
 
     return ( <div className="flex flex-col gap-2 w-full mx-5 text-white" onClick={e=>e.stopPropagation()}>
-        <p className="text-center text-2xl">Czy napewno chcesz zakończyć trening: {planData.subplans[planData.currentplanindex].name}?</p>
+        <p className="text-center text-2xl">{t("AreYouSureNamed", {name: planData.subplans[planData.currentplanindex].name})}</p>
         <div className="flex gap-2">
             {error && <ErrorDiv error={e(error)}/>}
-            <Button className="flex-1" onClick={flip} disabled={loading}>Anuluj</Button>
-            <Button className="flex-1" isPrimary onClick={()=>handleCloseTraining(planData)} disabled={loading}>Zakończ</Button>
+            <Button className="flex-1" onClick={flip} disabled={loading}>{u("Cancel")}</Button>
+            <Button className="flex-1" isPrimary onClick={()=>handleCloseTraining(planData)} disabled={loading}>{t("CloseTraining")}</Button>
         </div>
     </div> );
 }

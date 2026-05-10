@@ -42,6 +42,12 @@
         "Date": "Data",
         "Exercises": "Ćwiczenia",
         "Day": "Dzień",
+        "Email": "Email",
+        "Language": "Język",
+        "Homepage": "Strona główna",
+        "Unit": "Jednostka",
+        "Progression": "Progresja",
+        "RepetitionsCount": "{count, plural, one {# powtórzenie} few {# powtórzenia} many {# powtórzeń} other {# powtórzenia}}",
         "addTraining": "Dodaj trening",
         "addNewTraining": "Dodaj nowy trening",
         "close": "Zamknij"
@@ -75,7 +81,15 @@
         "ExercisesYouWantToDo2/2": "muszą być w Twoim planie:",
         "ChooseLanguage": "Wybierz język",
         "Change Image": "Zmień obraz",
-        "Upload Image": "Prześlij obraz"
+        "Upload Image": "Prześlij obraz",
+        "PurposeQuestion": "W jakim celu używasz aplikacji?",
+        "UserType": "Typ użytkownika",
+        "WhatNext": "Co dalej",
+        "AddTrainee": "Dodaj podopiecznego",
+        "EnterTrainerCode": "Podaj kod trenera",
+        "WaitingForTrainerResponse": "Czekam na odpowiedź trenera...",
+        "ConnectedToTrainer": "Połączono z trenerem!",
+        "RedirectHomeSoon": "Zaraz zostaniesz przeniesiony do strony głównej."
     },
     "Home": {
         "ThatDay" : "Tego dnia",
@@ -207,17 +221,29 @@
         "CloneTraining": "Skopiuj trening",
         "WhichTrainingToClone": "Który trening skopiować",
         "AreYouSureYouWantToCloneTraining": "Czy napewno chcesz skopiować trening",
-        "IncreaseWeight": "Zwiększ ciężar o (%)"
+        "IncreaseWeight": "Zwiększ ciężar o (%)",
+        "IncreaseWeightForExercises": "Zwiększ masę w ćwiczeniach",
+        "SelectExercisesToIncrease": "Zaznacz które ćwiczenia zwiększyć:",
+        "IncreaseWeightAction": "Zwiększ ciężar",
+        "RevertAllChanges": "Cofnij wszystkie zmiany",
+        "RevertIncreaseChangesConfirm": "Czy na pewno chcesz cofnąć wszystkie zmiany dotyczące zwiększania masy ćwiczeń?"
     },
     "Home/Profile/My-Trainees":{
         "SearchForTrainee": "Szukaj podopiecznego",
         "NoTrainees": "Brak podopiecznych.",
         "ManageTrainings": "Zarządzaj treningami",
         "CreateNewTraining": "Stwórz nowy trening",
-        "TrainingHistory": "Historia treningów"
+        "TrainingHistory": "Historia treningów",
+        "YourTrainerCode": "Twój kod trenera",
+        "TraineeAddedSuccessfully": "Podopieczny dodany pomyślnie!",
+        "AcceptTraineeRequest": "Zaakceptuj prośbę o dołączenie od podopiecznego",
+        "Accept": "Akceptuj",
+        "AddTrainee": "Dodaj podopiecznego"
     },
     "Home/Profile/My-Trainees/Schemas":{
-        "AddNewSchema": "Stwórz nowy schemat treningowy"
+        "AddNewSchema": "Stwórz nowy schemat treningowy",
+        "DeleteSchemas": "Usuń schematy",
+        "DeleteSelectedSchemasConfirm": "Czy na pewno chcesz usunąć wybrane schematy?"
     },
     "Home/Profile/My-Trainees/Schemas/Create":{
         "PlanName": "Nazwa planu",
@@ -249,14 +275,41 @@
     "Home/Start-Training": {
         "ContinueTraining": "Kontynuuj trening",
         "StartNewTraining":"Rozpocznij nowy trening",
-        "LatestTrainings":"Ostatnie treningi"
+        "LatestTrainings":"Ostatnie treningi",
+        "BasicTrainings": "Treningi podstawowe",
+        "AdvancedTrainings": "Treningi zaawansowane",
+        "NoBasicTrainings": "Brak dostępnych treningów podstawowych. Utwórz nowy trening, aby rozpocząć!"
     },
     "Home/Start-Training/[TrainingName]": {
         "AddSeries": "Dodaj serie",
         "CloseTraining": "Zakończ trening",
         "SelectExercise": "Wybierz ćwiczenie",
         "DiffrentExercise": "Inne ćwiczenie",
-        "AreYouSure": "Czy napewno chcesz zakończyć trening?"
+        "AreYouSure": "Czy napewno chcesz zakończyć trening?",
+        "CloseExercise": "Zakończ ćwiczenie",
+        "AreYouSureNamed": "Czy na pewno chcesz zakończyć trening: {name}?"
+    },
+    "Home/TrainerHome": {
+        "PlanTraining": "Zaplanuj trening",
+        "MyStudents": "Moi podopieczni",
+        "UserInTraining": "użytkownik w treningu",
+        "LastTraining": "Ostatni trening: {date}",
+        "DayProgress": "{trainingName} - Dzień {current} / {total}",
+        "Connect": "Połącz"
+    },
+    "Home/TraineeHome": {
+        "TodayTraining": "Dzisiejszy trening",
+        "DayProgress": "{trainingName} - Dzień {current} / {total}",
+        "TimeRange": "Czas {start}h - {end}h",
+        "StartTraining": "Rozpocznij trening",
+        "OnDate": "Dnia {date}",
+        "YouHaveTraining": "Masz trening {name} - Dzień {current} / {total}",
+        "NoTrainingScheduled": "Nie masz zaplanowanego treningu",
+        "Current": "Ostatnio",
+        "Previous": "Poprzednio",
+        "OfGoal": "z celu",
+        "Progressions": "Progresje",
+        "NotEnoughData": "Za mało danych"
     },
     "DefaultExercises": {
         "Wielostawowe": "Wielostawowe",
@@ -439,14 +492,20 @@
         "Unknown exercise in favourtie exercises": "Nieznane ćwiczenie w lubionych ćwiczeniach",
         "Unknown exercise in not favourtie exercises": "Nieznane ćwiczenie w nie lubianych ćwiczeniach",
         "Training not found": "Nie znaleziono treningu",
-        "Exercise dont have an id": "Ćwiczenie nie ma id",
-        "Name cant be empty": "Nazwa nie może być pusta",
-        "There cant be any empty trainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie",
-        "Failed to upload avatar": "Nie udało się przesłać avatara",
-        "SchemaNameCannotBeEmpty": "Nazwa schematu nie może być pusta",
-        "ThereCantBeAnyEmptyTrainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie",
-        "AllTrainingsMustHaveAName": "Każdy trening musi mieć nazwę",
-        "SchemasNotFound": "Brak szablonów treningowych. Stwórz nowy plan treningowy, a następnie zapisz go jako szablon, aby móc go przypisać swoim podopiecznym!"
+         "Exercise dont have an id": "Ćwiczenie nie ma id",
+         "Name cant be empty": "Nazwa nie może być pusta",
+         "There cant be any empty trainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie",
+         "Failed to upload avatar": "Nie udało się przesłać avatara",
+         "SchemaNameCannotBeEmpty": "Nazwa schematu nie może być pusta",
+         "ThereCantBeAnyEmptyTrainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie",
+         "AllTrainingsMustHaveAName": "Każdy trening musi mieć nazwę",
+         "SchemasNotFound": "Brak szablonów treningowych. Stwórz nowy plan treningowy, a następnie zapisz go jako szablon, aby móc go przypisać swoim podopiecznym!",
+         "Plan must have a name": "Plan musi mieć nazwę",
+         "Plan must have at least one sub-plan": "Plan musi mieć przynajmniej jeden podplan",
+         "Trainee data not found": "Nie można znaleźć danych podopiecznego",
+         "Schema not found": "Nie można znaleźć tego schematu",
+         "Error fetching training data": "Błąd podczas pobierania danych treningu",
+         "Page not found": "Nie znaleziono strony"
     },
     "Metadata": {
         "Profile": "Profil",

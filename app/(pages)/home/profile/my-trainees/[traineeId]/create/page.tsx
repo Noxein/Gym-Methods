@@ -3,9 +3,10 @@ import CreateTraining from "@/app/components/profile/my-trainees/create/CreateTr
 import { ConfirmModalProvider } from "@/app/context/ConfirmModalContext";
 import { TrainingContextProvider } from "@/app/context/CreateTrainingContext";
 import { Locale } from "@/app/i18n/config";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export default async function page({params}:{params: Promise<{[key:string]:string}>}) {
+    const t = await getTranslations("Errors")
 
     const traineeId = (await params).traineeId;
     const traineeData = await getTraineeData(traineeId)
@@ -15,7 +16,7 @@ export default async function page({params}:{params: Promise<{[key:string]:strin
     const { ExercisesThatRequireTimeMesure, ExercisesThatRequireHandle } = await userExercisesThatRequireHandlesOrTimeMesure()
     const locale = await getLocale() as Locale
 
-    if(!traineeData) return <div className="text-white">Nie można znaleźć danych podopiecznego</div>
+    if(!traineeData) return <div className="text-white">{t("Trainee data not found")}</div>
 
     return (
         <TrainingContextProvider locale={locale} userData={traineeData} allHandles={allHandleTypes} allExercisesInOneArray={allExercisesInOneArray} allExercises={allExercises} exercisesThatRequireTimeMesure={ExercisesThatRequireTimeMesure} exercisesThatRequireHandle={ExercisesThatRequireHandle}>

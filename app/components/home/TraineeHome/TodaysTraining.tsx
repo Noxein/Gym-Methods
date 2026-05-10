@@ -2,6 +2,7 @@
 import { TraineePlan } from "@/app/types";
 import { Button } from "../../ui/Button";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 type Props = {
     training: TraineePlan
@@ -10,6 +11,7 @@ type Props = {
 }
 
 function TodaysTraining({ training, currentDay, planLength }: Props) {
+    const t = useTranslations("Home/TraineeHome")
         
     const minTime2 = training.plan[currentDay].exercises.reduce((min, exercise) =>{
         return min + exercise.sets.length * 180
@@ -26,9 +28,9 @@ function TodaysTraining({ training, currentDay, planLength }: Props) {
     return (                 
         <div key={training.id}>
             <div className="text-lg">
-                <p>{training.plan.find(x => x.iscompleted === false)!.name} - Dzień {currentDay+1} / {planLength}</p>
-                <p className="text-gray-400">Czas {timeInHoursWithPartial}h - {timeInHoursWithPartial+0.5}h</p>
-                <Button isPrimary className="w-full mt-5" onClick={handleStart}>ZACZNIJ TRENING</Button>
+                <p>{t("DayProgress", {trainingName: training.plan.find(x => x.iscompleted === false)!.name, current: currentDay + 1, total: planLength})}</p>
+                <p className="text-gray-400">{t("TimeRange", {start: timeInHoursWithPartial, end: timeInHoursWithPartial + 0.5})}</p>
+                <Button isPrimary className="w-full mt-5" onClick={handleStart}>{t("StartTraining")}</Button>
             </div>
         </div> );
 }

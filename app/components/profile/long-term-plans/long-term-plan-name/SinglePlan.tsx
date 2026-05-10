@@ -65,7 +65,7 @@ function SinglePlan({plan, planIndex, allExercisesInOneArray}:SinglePlanType) {
                 </button>
             <div className="flex justify-between">
 
-                <Input labelName="Nazwa" value={plan.name} onChange={e=>setPlanName(e.target.value)}/>
+                <Input labelName={u("Name")} value={plan.name} onChange={e=>setPlanName(e.target.value)}/>
 
             </div>
 
