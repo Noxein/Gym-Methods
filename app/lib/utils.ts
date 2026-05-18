@@ -306,7 +306,7 @@ export const localStorageStringForLongTermPlan = (planName: string) => {
     return `long-term-plan-save-${planName}`
 }
 
-export const WSString = "ws://localhost:3004"
+export const WSString = process.env.NEXT_PUBLIC_WSSERVER_URL
 
 export const MetaDataTranslations = async () => {
   const locale = await getLocale()

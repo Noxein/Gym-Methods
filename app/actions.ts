@@ -17,7 +17,6 @@ import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
 import { v4 } from "uuid";
 import { cookies } from 'next/headers'
 import cloudinary from "cloudinary";
-import { useSession } from "next-auth/react";
 
 cloudinary.v2.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
