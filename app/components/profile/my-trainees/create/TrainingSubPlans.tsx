@@ -76,9 +76,11 @@ function TrainingSubPlans() {
            ))}
            </div>
 
+            <AddPlanButton />
+
            {hasPlans ? <div className="pointer-events-none h-[24vh]" aria-hidden="true" /> : null}
 
-           <AddPlanButton />
+           
        </div>
      );
 }
