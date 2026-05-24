@@ -11,7 +11,7 @@ import { useContext, useState } from "react";
 import { v4 } from "uuid";
 import { date } from "zod";
 
-function ImportPlan() {
+function ImportPlan({handleSettingsSave}: {handleSettingsSave: () => void}) {
     const[showImport,setShowImport] = useState(false)
     const[schemas,setSchemas] = useState<TrainerPlanSchema[]>([])
     const[loaded,setLoaded] = useState(false);
@@ -62,8 +62,9 @@ function ImportPlan() {
 
     return ( 
         <div>
-            <div className="mb-6 mx-5 mt-5">
-                <Button className="w-full" blue onClick={handleClickImport} disabled={loading}>{t("importTemplate")}</Button>
+            <div className="mb-6 mt-5 flex gap-4">
+                <Button className="flex-1" blue onClick={handleClickImport} disabled={loading}>{t("importTemplate")}</Button>
+                <Button className="flex-1" blue isPrimary onClick={handleSettingsSave}>Save</Button>
             </div>
             {showImport && (
                 <BlurBackgroundModal onClick={() => setShowImport(false)} className="z-50">            

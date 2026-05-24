@@ -1,16 +1,17 @@
 'use client'
 import CreateTrainingContext from "@/app/context/CreateTrainingContext";
+import { cn } from "@/app/lib/cn";
 import { Trainee } from "@/app/types";
-import { useContext } from "react";
+import { DetailedHTMLProps, HTMLAttributes, useContext } from "react";
 
-type TraineeInfoProps = {
+interface TraineeInfoProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     info?: Trainee,
     children?: React.ReactNode
 }
-function TraineeInfo({ info,children }: TraineeInfoProps) {
+function TraineeInfo({ info,children,className, ...props }: TraineeInfoProps) {
     const trainee = info ? info : useContext(CreateTrainingContext)!.userData;
     return ( 
-        <div className=" p-4 text-white  bg-darkLight rounded-lg mx-5 mt-5">
+        <div className={cn(" text-white  ", className)} {...props}>
             <div className="flex items-center">
                 <img src={trainee.avatarurl} alt={trainee.username} className="w-16 h-16 rounded-lg" />
                 <p className="ml-4 text-xl">{trainee.username}</p>

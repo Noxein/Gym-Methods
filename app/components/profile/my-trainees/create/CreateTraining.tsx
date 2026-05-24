@@ -4,6 +4,7 @@ import ImportPlan from "./ImportPlan";
 import TrainingModalsHolder from "./TrainingModalsHolder";
 import Asymetry from "./Asymetry";
 import ActionButtons from "./ActionButtons";
+import Settings from "./Settings";
 
 type CreateTrainingProps = {
     
@@ -11,11 +12,10 @@ type CreateTrainingProps = {
 function CreateTraining({  }: CreateTrainingProps) {
     return ( 
         <div>
-            <TraineeInfo>
-                <Asymetry />
-            </TraineeInfo>
-
-            <ImportPlan />
+            <div className="flex bg-darkLight rounded-lg mx-5 mt-5 p-5">
+                <TraineeInfo className="flex-1"/>
+                <Settings />
+            </div>
 
             <Training />
 
