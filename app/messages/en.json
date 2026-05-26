@@ -537,6 +537,7 @@
         "Repeats": "Repeats",
         "Weight": "Weight",
         "FavouriteExercies": "Favourtie exercises",
-        "NotEnoughtData": "Not enought data"
+        "NotEnoughtData": "Not enough data",
+        "AddExerciseLink": "Add exercise"
     }
 }
