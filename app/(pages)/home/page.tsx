@@ -20,6 +20,8 @@ export default async function page(){
       const trainercurrentaccounttype = userData?.user?.trainercurrentaccounttype
       const name = userData?.user?.username!
 
+      console.log('User purpose:', purpose,trainercurrentaccounttype)
+
     if(!purpose || purpose === 'Casual' || trainercurrentaccounttype === 'Casual') return( 
       <div className="flex flex-col items-center w-full overflow-x-hidden">
             <CasualUserHome useremail={email}/>

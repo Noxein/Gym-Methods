@@ -40,7 +40,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       if(trigger === 'update' && token.sub){
-        console.log('Updating token for user:', token.sub)
         token.trainercurrentaccounttype = session.purpose
         console.log(token)
       }

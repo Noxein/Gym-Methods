@@ -22,5 +22,5 @@ export default async function page() {
 
     if(purpose === 'Podopieczny trenera') return <TraineeProfile email={email}/>
 
-    return <TrainerProfile email={email} purpose={purpose}/>   
+    return <TrainerProfile email={email} purpose={purpose} trainercurrentaccounttype={trainercurrentaccounttype}/>   
 }

@@ -10,9 +10,10 @@ interface button extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTML
   text: string,
   children: React.ReactNode,
   purpose: UserPurposeType
+  trainercurrentaccounttype?: string | null
 }
 
-function SwitchProfileButton({text, children,purpose, ...rest}:button) {
+function SwitchProfileButton({text, children,purpose, trainercurrentaccounttype, ...rest}:button) {
     const u = useTranslations("Utils")
 
     const router = useRouter()
@@ -22,7 +23,7 @@ function SwitchProfileButton({text, children,purpose, ...rest}:button) {
     const handleSwitchAccount = async () => {
         await switchAccount()
 
-        const newType = purpose === 'Trener' ? 'Casual' : 'Trener'
+        const newType:UserPurposeType = trainercurrentaccounttype === 'Trener' ? 'Casual' : 'Trener'
         await update({purpose: newType})
 
         router.push('/home')
