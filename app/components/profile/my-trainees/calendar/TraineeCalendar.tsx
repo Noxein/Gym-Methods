@@ -10,7 +10,10 @@ type TraineeCalendarProps = {
 function TraineeCalendar({ traineeData }: TraineeCalendarProps) {
     return ( 
         <div className="mb-44">
-            <TraineeInfo info={traineeData}/>
+            <div className='mx-5 mt-5'>
+                <TraineeInfo info={traineeData}/>
+
+            </div>
 
             <Schedule />
         </div>

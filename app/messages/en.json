@@ -295,7 +295,9 @@
         "UserInTraining": "user in training",
         "LastTraining": "Last training: {date}",
         "DayProgress": "{trainingName} - Day {current} / {total}",
-        "Connect": "Connect"
+        "Connect": "Connect",
+        "NextTraining": "Next training: {date}",
+        "SkippedTrainings": "{count, plural, one {Skipped # training} other {Skipped # trainings}}"
     },
     "Home/TraineeHome": {
         "TodayTraining": "Today's training",

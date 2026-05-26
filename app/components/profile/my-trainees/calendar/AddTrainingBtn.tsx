@@ -36,7 +36,7 @@ function AddTrainingBtn({ showAddTrainingModal, setShowAddTrainingModal, allTrai
                         {selectedTraining ? <>
                         <SelectDatesForTrainingModal training={selectedTraining}/>
                         </> : <><h2 className="text-xl font-bold mb-4">{u('addNewTraining')}</h2>
-                        <div>
+                        <div className="flex flex-col gap-4">
                             {allTrainings.map(training => (
                                 <div key={training.id} className="flex items-center">
                                     <p>{training.name} - <span className="text-gray-400">({training.plan.length})</span></p>

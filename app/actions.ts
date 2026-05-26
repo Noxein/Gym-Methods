@@ -1109,15 +1109,17 @@ export const userID = async () => {
     return user?.user?.id
 }
 
-export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:string) => {
-    const userid = await userID()
+const validateHistoryFilters = (from?:Date,to?:Date,exerciseName?:string) => {
     if( (from && Object.prototype.toString.call(new Date(from)) !== '[object Date]') || (to && Object.prototype.toString.call(new Date(to)) !== '[object Date]')){
         return {error: 'Wrong date format', data : '0' }
     }
     if(exerciseName && typeof exerciseName !== 'string') {
         return {error: 'Wrong date format', data : '0' }
     }
+    return null
+}
 
+const getFormattedHistoryDates = (from?:Date,to?:Date) => {
     let toFormatted = ''
     let fromFormatted = ''
 
@@ -1127,6 +1129,15 @@ export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:
     if(from){
         fromFormatted = format(from,'yyyy-MM-dd kk:mm:ss')
     }
+
+    return { fromFormatted, toFormatted }
+}
+
+const fetchExercisesCountByUserId = async (userid: string, from?:Date,to?:Date,exerciseName?:string) => {
+    const validationError = validateHistoryFilters(from,to,exerciseName)
+    if(validationError) return validationError
+
+    const { fromFormatted, toFormatted } = getFormattedHistoryDates(from,to)
 
     try{
         if(from && to && exerciseName){
@@ -1185,27 +1196,18 @@ export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:
         return { error: 'Something went wrong', data: '0' }
     }
 }
-export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
-    const userid = await userID()
 
+const fetchExercisesByUserId = async (userid: string, from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
     if(!page) page = 0
     if(!limit) limit = 20
-    let toFormatted = ''
-    let fromFormatted = ''
 
-    if(to){
-        toFormatted = format(addDays(to,1),'yyyy-MM-dd kk:mm:ss')
-    }
-    if(from){
-        fromFormatted = format(from,'yyyy-MM-dd kk:mm:ss')
-    }
-
-    if( (from && Object.prototype.toString.call(new Date(from)) !== '[object Date]') || (to && Object.prototype.toString.call(new Date(to)) !== '[object Date]')){
+    const validationError = validateHistoryFilters(from,to,exerciseName)
+    if(validationError){
         return { error: 'Wrong date format' , data : []}
     }
-    if(exerciseName && typeof exerciseName !== 'string') {
-        return { error: 'Exercise name has to be text', data : []}
-    }
+
+    const { fromFormatted, toFormatted } = getFormattedHistoryDates(from,to)
+
     try{
         //TODO MAKE SEPARATE FUNCTION FOR FETCHING COUNT
         if(from && to && exerciseName){
@@ -1262,6 +1264,46 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
         console.log('Error occured fetchUserExercises func actions.ts',e)
         return { error: 'Something went wrong' }
     }
+}
+
+const trainerCanAccessTraineeHistory = async (traineeId: string) => {
+    const userid = await userID()
+
+    const trainee = await sql`
+        SELECT traineeid FROM trainertrainee WHERE trainerid = ${userid} AND traineeid = ${traineeId}
+    `
+
+    if(trainee.rows.length === 0) return { error: 'Something went wrong', trainerId: null }
+
+    return { error: '', trainerId: userid }
+}
+
+export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:string) => {
+    const userid = await userID()
+    return fetchExercisesCountByUserId(userid,from,to,exerciseName)
+}
+
+export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
+    const userid = await userID()
+    return fetchExercisesByUserId(userid,from,to,exerciseName,page,limit)
+}
+
+export const fetchTraineeExercisesCount = async (traineeId: string, from?:Date,to?:Date,exerciseName?:string) => {
+    if(typeof traineeId !== 'string') return { error: 'Something went wrong', data: '0' }
+
+    const access = await trainerCanAccessTraineeHistory(traineeId)
+    if(access.error) return { error: access.error, data: '0' }
+
+    return fetchExercisesCountByUserId(traineeId,from,to,exerciseName)
+}
+
+export const fetchTraineeExercises = async (traineeId: string, from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
+    if(typeof traineeId !== 'string') return { error: 'Something went wrong', data: [] }
+
+    const access = await trainerCanAccessTraineeHistory(traineeId)
+    if(access.error) return { error: access.error, data: [] }
+
+    return fetchExercisesByUserId(traineeId,from,to,exerciseName,page,limit)
 }
 
 export const getAccountSettings = async () => {

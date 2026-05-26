@@ -7,13 +7,14 @@ import { exercisesArr } from '@/app/lib/exercise-list'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 
 type DisplayUserExercisesTypes = {
+    loading: boolean,
     fetchedExercises: HistoryExercise[],
     manyExercises:boolean,
     handleSearch: () => void,
     dataLength: number,
     totalItems: number,
 }
-export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
+export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
 
     const t = useTranslations("Home/Profile/Search")
     
@@ -22,7 +23,7 @@ export const DisplayUserExercises = ({fetchedExercises,manyExercises,handleSearc
          <InfiniteScroll
          dataLength={dataLength}
          hasMore={!(totalItems===dataLength)}
-         loader={<SmallLoaderDiv loading />} 
+         loader={<SmallLoaderDiv loading={loading} />} 
          next={()=>handleSearch()}
          endMessage={
             fetchedExercises.length === 0 ? <div className='w-screen h-screen fixed top-0 left-0 flex items-center justify-center'>
