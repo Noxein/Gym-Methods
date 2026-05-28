@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import cloudinary from "cloudinary";
-import { blob } from "stream/consumers";
 import { updateAvatar } from "@/app/actions";
+import { auth } from "@/auth";
 
 
 cloudinary.v2.config({
@@ -11,6 +11,11 @@ cloudinary.v2.config({
 })
 
 export async function POST(request: Request) {
+    const session = await auth()
+    if(!session?.user?.id) {
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
     try{
         const formData = await request.formData();
         const file = formData.get('string') as string; // base64 string
@@ -29,11 +34,16 @@ export async function POST(request: Request) {
             const publicID = result.public_id;
             const secureUrl = result.secure_url;
             
-            await updateAvatar(secureUrl, publicID);
+            const dbResult = await updateAvatar(secureUrl, publicID);
+
+            if(dbResult?.error) {
+                await cloudinary.v2.uploader.destroy(result.public_id);
+                return NextResponse.json({ success: false, message: "Something went wrong" }, { status: 500 });
+            }
 
             return NextResponse.json({ success: true, message: "Image uploaded successfully" }, { status: 200 });
         });
-        return NextResponse.json({ success: true, data: uploadResult });
+        return uploadResult
     }catch(err){
         console.log(err)
             return NextResponse.json({ success: false, message: "Something went wrong" }, { status: 500 });

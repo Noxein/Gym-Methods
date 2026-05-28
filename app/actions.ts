@@ -56,9 +56,10 @@ export const handleSaveTrainerSetup = async () => {
     const userid = await userID()
 
     try{
-        await sql`UPDATE gymusers SET purpose = 'Trener', setupcompleted = true WHERE id = ${userid}`
+        const result  = await sql`UPDATE gymusers SET purpose = 'Trener', setupcompleted = true WHERE id = ${userid}`
+        console.log(result)
     }catch(e){
-        
+        console.log(e)
     }
 }
 export const LoginNoFormData = async (email:string,password:string) => {
@@ -278,14 +279,20 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     //     `
     //     console.log(returnedData)
     // }
-    exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
+    const results = await Promise.all(exercises.filter(exercise=>exercise.sets.length !== 0).map(async (exercise)=>{
         if(!exercise.exerciseId) return { error: `Exercise dont have an id`}
 
         const progression = trainingGoalsExercises?.find(x=>x.exerciseid === exercise.exerciseId)
 
         const data = await AddExerciseAction(false,exercise.exerciseName,exercise.sets,true,id,exercise.handle,false,exercise.date,trainingPlanId,progression)
         if(data?.errors) return { error : 'Something went wrong'}
-    })
+        return { success: true }
+    }))
+
+    const failed = results.find(result => result.error);
+    if (failed) {
+        return failed;
+    }
 
     revalidatePath('/home')
 }
@@ -1532,7 +1539,7 @@ export const Last30DaysExercises = async () => {
             }
 
             totalKGThisMonth = totalKGThisMonth + totalKGThisSet
-            totalSeriesThisMonth = totalKGThisMonth + totalSeriesThisSet
+            totalSeriesThisMonth = totalSeriesThisMonth + totalSeriesThisSet
 
             const formattedDate = format(set.date,'dd,MM')
 
@@ -1716,7 +1723,7 @@ export const GetProgressionsAndDeclines = async () => {
         for(const [key, value] of Object.entries(progressions)){
             if(value.length < 2) delete progressions[key]
             value.sort((a,b)=>{
-                if(a.date.getDate() > b.date.getDate()) return -1
+                if(a.date.getTime() > b.date.getTime()) return -1
                 return 1
             })
         }

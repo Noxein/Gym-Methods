@@ -22,7 +22,7 @@ export const getTraineeTrainingById = async (trainingId: string) => {
 
     try {
         const response = await sql`
-            SELECT * FROM trainertraineeplans WHERE traineeid = ${userid} OR trainerid = ${userid} AND id = ${trainingId} 
+            SELECT * FROM trainertraineeplans WHERE (traineeid = ${userid} OR trainerid = ${userid}) AND id = ${trainingId} 
         `
 
         if(response.rows.length === 0) throw new Error("Nie można znaleźć treningu o podanym ID")
