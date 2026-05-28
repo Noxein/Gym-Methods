@@ -39,9 +39,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
 
-      if(trigger === 'update' && token.sub){
-        token.trainercurrentaccounttype = session.purpose
-        console.log(token)
+      if (trigger === 'update' && token.sub) {
+        const data = await getTempo(token.sub)
+        console.log('Updating session for user:', token.sub, data)
+        if (data) {
+          token.setupcompleted = data.setupcompleted
+          token.purpose = data.purpose
+          token.trainercurrentaccounttype = data.trainercurrentaccounttype
+          token.username = data.username
+        }
       }
 
       return token

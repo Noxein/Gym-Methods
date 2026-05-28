@@ -167,8 +167,8 @@ export const getHomeScreenData = async () => {
 
             if(!training) return
             
-            if(training?.lastedited.getDate() < new Date().getDate()) return
-            if(training?.lastedited.getDate() > row.lastedited.getDate()){
+            if(training?.lastedited.getTime() < new Date().getTime()) return
+            if(training?.lastedited.getTime() > row.lastedited.getTime()){
                 oneNewestTrainingForEachTrainee.set(row.traineeid, row as TraineesAndTrainings) 
             }
 

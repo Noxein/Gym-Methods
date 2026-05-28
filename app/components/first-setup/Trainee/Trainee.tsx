@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AccesCode from "../../ui/AccesCode";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 
 type TraineeProps = {
     setCurrentStep: React.Dispatch<React.SetStateAction<FirstSetupFirstStep>>,
@@ -22,11 +23,13 @@ function Trainee({setCurrentStep,jwt}: TraineeProps) {
     const ws = useRef<WebSocket | null>(null);
     const[stateOfWs,setStateOfWs] = useState<'idle'|'waitingForResponse'|'error'|'finish'>('idle');
     const navigation = useRouter()
+    const { update } = useSession()
 
     const handleTraineeSave = async() => {
         // update db with trainee info
 
         await updateTraineeInfo()
+        await update({ refresh: true })
         navigation.push('/home');
     }
 
