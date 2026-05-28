@@ -6,16 +6,18 @@ import { LatestTrainingSkeleton } from "../../Loading/home/start-training/Latest
 import { LastTrainings } from "./LastTrainings";
 import { BigTrainingData, BigTrainingStarter } from "@/app/types";
 import H2 from "../../ui/H2";
+import { useTranslations } from "next-intl";
 
 type AdvancedTrainingsProps = {
     LongTermTrainingList: BigTrainingData[],
     trainingList: BigTrainingStarter[] | undefined
 }
 function AdvancedTrainings({LongTermTrainingList, trainingList}: AdvancedTrainingsProps) {
+    const t = useTranslations("Home/Start-Training")
     return (
     <div>
 
-        <H2 text="Treningi Zaawansowane" />
+        <H2 text={t("AdvancedTrainings")} />
         <div className="bg-darkLight mx-5 shadow-sm shadow-black rounded-lg p-5 mb-10">
             <AddTrainingLink  LongTermTrainingList={LongTermTrainingList}/>
 

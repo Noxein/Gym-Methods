@@ -3,6 +3,7 @@ import { Icon } from '../Icon'
 import { SwapIcon } from '@/app/ui/icons/ExpandIcon'
 import { ProgessionsDeclinesType } from '@/app/types';
 import { format } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 type Progressions2Types = {
     setSwtich: React.Dispatch<React.SetStateAction<boolean>>,
@@ -16,13 +17,14 @@ type Progressions2Types = {
         }
 }
 export const Progressions2 = ({setSwtich,bestExercise,worstExercise}:Progressions2Types) => {
+    const t = useTranslations("Home/TraineeHome")
     const[showIncrease,setShowIncrease] = useState(false)
     const[showDecrease,setShowDecrease] = useState(false)
     const[selectedExercise,setSelectedExercise] = useState<'best'|'worst'|'both'>('both')
   return (
     <div className='mx-5 mt-5 px-2'>
         <div className='flex justify-center' onClick={()=>setSwtich(x=>!x)}>
-        <h2 className='text-white text-center mb-2 text-xl'>Progresje</h2>
+        <h2 className='text-white text-center mb-2 text-xl'>{t("Progressions")}</h2>
         <Icon>
             <SwapIcon fill='#3C9F65'/>
         </Icon>
@@ -47,7 +49,7 @@ export const Progressions2 = ({setSwtich,bestExercise,worstExercise}:Progression
                     </div>
                 </div>}
 
-            </div>:<div className='p-2 rounded-lg bg-red text-center flex flex-col content-between justify-between gap-2 flex-1'>Za mało danych</div>}
+            </div>:<div className='p-2 rounded-lg bg-red text-center flex flex-col content-between justify-between gap-2 flex-1'>{t("NotEnoughData")}</div>}
             {bestExercise && bestExercise.exercise && bestExercise.exercise.length > 0 ? <div className={` ${selectedExercise === 'both' ? 'w-1/2' : selectedExercise === 'best'? 'w-3/4': 'w-1/4'} duration-200 p-2 rounded-lg bg-green text-center flex flex-col justify-between gap-2`} onClick={()=>{setShowDecrease(false);setShowIncrease(true);setSelectedExercise('best')}}>
                 <p>{bestExercise?.exercise[0].exercisename}</p>
 
@@ -67,7 +69,7 @@ export const Progressions2 = ({setSwtich,bestExercise,worstExercise}:Progression
                     </div>
                 </div>}
             </div>:
-            <div className='p-2 rounded-lg bg-green text-center flex flex-col content-between justify-between gap-2 flex-1'>Za mało danych</div>}
+            <div className='p-2 rounded-lg bg-green text-center flex flex-col content-between justify-between gap-2 flex-1'>{t("NotEnoughData")}</div>}
         </div>
     </div>
   )

@@ -5,6 +5,7 @@ import { Button } from '../../ui/Button'
 import { Icon } from '../../Icon'
 import { CheckIcon } from '@/app/ui/icons/ExpandIcon'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
+import { useTranslations } from 'next-intl'
 
 type PlanProgressModalType = {
     currentExercise: string,
@@ -15,6 +16,8 @@ type PlanProgressModalType = {
     setInputs: React.Dispatch<React.SetStateAction<SeriesWithExercise>>,
 }
 export const PlanProgressModal = ({currentExercise,trainingPlan,setLocalStorageTrainingData,localStorageTrainingData,inputs,setInputs}:PlanProgressModalType) => {
+    const u = useTranslations("Utils")
+    const t = useTranslations("Home/Profile/Set-Progression")
     const data = trainingPlan.exercises.find(x=>x.exercisename === currentExercise)
     const modalsContext = useContext(ModalContexts)
     
@@ -38,9 +41,9 @@ export const PlanProgressModal = ({currentExercise,trainingPlan,setLocalStorageT
         <div className='text-white w-full mx-5 mt-5 overflow-y-auto'>
             <p className='mb-12 text-xl text-center'>{currentExercise}</p>
             <div className='flex my-4 mx-2'>
-                <p className='flex-1'>Ciężar</p>
-                <p className='flex-1'>Powtórzenia</p>
-                <p className='flex-1'>Przyrost</p>
+                <p className='flex-1'>{u("Weight")}</p>
+                <p className='flex-1'>{t("Repetitions")}</p>
+                <p className='flex-1'>{t("Increase")}</p>
             </div>
             <div className='flex flex-col gap-2'>
                 {data && data.series?.map((seria,index)=>(
@@ -58,7 +61,7 @@ export const PlanProgressModal = ({currentExercise,trainingPlan,setLocalStorageT
                 ))}
             </div>
             <Button onClick={handleCloseModal} className='w-full mt-2'>
-                Zamknij
+                {u("Close")}
             </Button>
         </div>
     </div>

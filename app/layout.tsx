@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Suspense } from "react";
 import { BodyColorProvider } from "./components/BodyColorProvider";
-import { LocaleDataProvider } from "./context/LocaleDataProvider";
-import { getLocale, getMessages } from "next-intl/server";
+import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
-import { SelectLanguage } from "./components/SelectLanguage";
-import { Main } from "./Main";
+import { getUserLocale } from "./i18n/locale";
+import { LocaleProvider } from "./context/LocaleContext";
+import { SessionProvider } from "next-auth/react";
+import Loading from "./loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,25 +25,23 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
+  const locale = await getUserLocale()
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      
-        <body className={`${inter.className} flex flex-col min-h-screen`}>
-          <NextIntlClientProvider messages={messages}>
-            <LocaleDataProvider>
-                {/* {showSelectLang ? <SelectLanguage /> : children }
-                {children} */}
-                <Main>
-                  {children}
-                </Main>
+    <html lang={locale}> 
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
+        <SessionProvider>
+          <NextIntlClientProvider messages={messages} locale={locale}>
+            <LocaleProvider lang={locale}>
+              <Suspense fallback={<Loading />}>
+                {children}
+              </Suspense>
               <BodyColorProvider />
-            </LocaleDataProvider>
+            </LocaleProvider>
           </NextIntlClientProvider>
-        </body>
-    
+        </SessionProvider>
+      </body>
     </html>
   );
 }

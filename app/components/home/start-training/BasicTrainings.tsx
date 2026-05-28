@@ -5,12 +5,14 @@ import { Icon } from "../../Icon";
 import { StartWorkoutIcon } from "@/app/ui/icons/ExpandIcon";
 import H2 from "../../ui/H2";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 type BasicTrainingsProps = {
     basicPlans: UserTrainingPlan[]
 }
 
 function BasicTrainings({ basicPlans }: BasicTrainingsProps) {
+    const t = useTranslations("Home/Start-Training")
 
     const navigator = useRouter()
 
@@ -20,11 +22,11 @@ function BasicTrainings({ basicPlans }: BasicTrainingsProps) {
     }
     return ( 
     <div>
-        <H2 text="Treningi Podstawowe" />
+        <H2 text={t("BasicTrainings")} />
 
         <div className="bg-darkLight mx-5 shadow-sm shadow-black rounded-lg p-5 mb-10">
             {basicPlans.length === 0 ? (
-                <p className="text-center">Brak dostępnych treningów podstawowych. Utwórz nowy trening, aby rozpocząć!</p>
+                <p className="text-center">{t("NoBasicTrainings")}</p>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {basicPlans.map((plan) => (

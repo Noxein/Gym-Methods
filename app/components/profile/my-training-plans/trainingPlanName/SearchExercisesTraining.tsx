@@ -1,6 +1,6 @@
 import { LocalStorageTraining, TrainingExerciseType, UserExercise } from '@/app/types'
 import { AddExercise } from './AddSingleExercise'
-import { LangContext } from '@/app/context/LocaleProvider'
+import  LocaleContext  from '@/app/context/LocaleContext'
 import { useContext } from 'react'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
@@ -18,7 +18,7 @@ type SearchExercisesTypes = {
 export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPlanExercises,localStorageTrainingData,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:SearchExercisesTypes) => {
     let filtered:(string | UserExercise)[] = []
 
-      const context = useContext(LangContext)
+      const context = useContext(LocaleContext)
     
       const d = useTranslations('DefaultExercises')
     

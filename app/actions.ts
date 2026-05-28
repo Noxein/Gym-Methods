@@ -3,7 +3,7 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsData, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, Trainee, TrainerPlanSchema, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/Casual/Goal";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -16,6 +16,13 @@ import { Begginer1_3FBW_FirstVariation, Begginer1_3FBW_SecondVariation, Beginner
 import { DefaultHandleExercises, DefaultTimeMesureExercies } from "./lib/data";
 import { v4 } from "uuid";
 import { cookies } from 'next/headers'
+import cloudinary from "cloudinary";
+
+cloudinary.v2.config({
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 export const setCookie = async (name:string,value:string) => {
     const cookieStore = await cookies()
@@ -38,9 +45,7 @@ export const updateTraineeInfo = async () => {
 
         if(isUserConnectedToTrainer.rows.length === 0) throw new Error("User is not connected to a trainer")
 
-        await sql`UPDATE gymusers SET purpose = 'trainee', setupcompleted = true WHERE id = ${userid}`
-
-
+        await sql`UPDATE gymusers SET purpose = 'Podopieczny trenera', setupcompleted = true WHERE id = ${userid}`
         return
     }catch(e){
         
@@ -51,7 +56,7 @@ export const handleSaveTrainerSetup = async () => {
     const userid = await userID()
 
     try{
-        await sql`UPDATE gymusers SET purpose = 'trainer', setupcompleted = true WHERE id = ${userid}`
+        await sql`UPDATE gymusers SET purpose = 'Trener', setupcompleted = true WHERE id = ${userid}`
     }catch(e){
         
     }
@@ -316,11 +321,16 @@ export const FistStepDataValidation = async (data:dataType) => {
 
 export const SecondStepDataValidation = async (exercises:string[]) => {
     let error = false
+    console.log(exercises)
     if(!Array.isArray(exercises)){
+        console.log('Wrong exercises data')
         error = true
     }
     exercises.map(exercise=>{
-        if(!exercisesArr.includes(exercise)) error = true
+        if(!exercisesArr.includes(exercise)){
+            console.log('Wrong exercise:',exercise, typeof exercise)
+             error = true         
+        }
     })
     if(error){
         return { error: 'Wrong exercises chosen'}
@@ -343,7 +353,7 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
     try{
         await sql`
             UPDATE gymusers
-            SET goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
+            SET purpose = 'Casual', goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
             WHERE id = ${userid};
         `
         await createTrainingPlans(favourtiteExercises,deleteExercises,Number(data.daysexercising))
@@ -1099,15 +1109,17 @@ export const userID = async () => {
     return user?.user?.id
 }
 
-export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:string) => {
-    const userid = await userID()
+const validateHistoryFilters = (from?:Date,to?:Date,exerciseName?:string) => {
     if( (from && Object.prototype.toString.call(new Date(from)) !== '[object Date]') || (to && Object.prototype.toString.call(new Date(to)) !== '[object Date]')){
         return {error: 'Wrong date format', data : '0' }
     }
     if(exerciseName && typeof exerciseName !== 'string') {
         return {error: 'Wrong date format', data : '0' }
     }
+    return null
+}
 
+const getFormattedHistoryDates = (from?:Date,to?:Date) => {
     let toFormatted = ''
     let fromFormatted = ''
 
@@ -1117,6 +1129,15 @@ export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:
     if(from){
         fromFormatted = format(from,'yyyy-MM-dd kk:mm:ss')
     }
+
+    return { fromFormatted, toFormatted }
+}
+
+const fetchExercisesCountByUserId = async (userid: string, from?:Date,to?:Date,exerciseName?:string) => {
+    const validationError = validateHistoryFilters(from,to,exerciseName)
+    if(validationError) return validationError
+
+    const { fromFormatted, toFormatted } = getFormattedHistoryDates(from,to)
 
     try{
         if(from && to && exerciseName){
@@ -1175,27 +1196,18 @@ export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:
         return { error: 'Something went wrong', data: '0' }
     }
 }
-export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
-    const userid = await userID()
 
+const fetchExercisesByUserId = async (userid: string, from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
     if(!page) page = 0
     if(!limit) limit = 20
-    let toFormatted = ''
-    let fromFormatted = ''
 
-    if(to){
-        toFormatted = format(addDays(to,1),'yyyy-MM-dd kk:mm:ss')
-    }
-    if(from){
-        fromFormatted = format(from,'yyyy-MM-dd kk:mm:ss')
-    }
-
-    if( (from && Object.prototype.toString.call(new Date(from)) !== '[object Date]') || (to && Object.prototype.toString.call(new Date(to)) !== '[object Date]')){
+    const validationError = validateHistoryFilters(from,to,exerciseName)
+    if(validationError){
         return { error: 'Wrong date format' , data : []}
     }
-    if(exerciseName && typeof exerciseName !== 'string') {
-        return { error: 'Exercise name has to be text', data : []}
-    }
+
+    const { fromFormatted, toFormatted } = getFormattedHistoryDates(from,to)
+
     try{
         //TODO MAKE SEPARATE FUNCTION FOR FETCHING COUNT
         if(from && to && exerciseName){
@@ -1252,6 +1264,46 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
         console.log('Error occured fetchUserExercises func actions.ts',e)
         return { error: 'Something went wrong' }
     }
+}
+
+const trainerCanAccessTraineeHistory = async (traineeId: string) => {
+    const userid = await userID()
+
+    const trainee = await sql`
+        SELECT traineeid FROM trainertrainee WHERE trainerid = ${userid} AND traineeid = ${traineeId}
+    `
+
+    if(trainee.rows.length === 0) return { error: 'Something went wrong', trainerId: null }
+
+    return { error: '', trainerId: userid }
+}
+
+export const fetchUserExercisesCount = async (from?:Date,to?:Date,exerciseName?:string) => {
+    const userid = await userID()
+    return fetchExercisesCountByUserId(userid,from,to,exerciseName)
+}
+
+export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
+    const userid = await userID()
+    return fetchExercisesByUserId(userid,from,to,exerciseName,page,limit)
+}
+
+export const fetchTraineeExercisesCount = async (traineeId: string, from?:Date,to?:Date,exerciseName?:string) => {
+    if(typeof traineeId !== 'string') return { error: 'Something went wrong', data: '0' }
+
+    const access = await trainerCanAccessTraineeHistory(traineeId)
+    if(access.error) return { error: access.error, data: '0' }
+
+    return fetchExercisesCountByUserId(traineeId,from,to,exerciseName)
+}
+
+export const fetchTraineeExercises = async (traineeId: string, from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
+    if(typeof traineeId !== 'string') return { error: 'Something went wrong', data: [] }
+
+    const access = await trainerCanAccessTraineeHistory(traineeId)
+    if(access.error) return { error: access.error, data: [] }
+
+    return fetchExercisesByUserId(traineeId,from,to,exerciseName,page,limit)
 }
 
 export const getAccountSettings = async () => {
@@ -1625,83 +1677,55 @@ export const getUserExerciseProgression = async (exerciseid: string) => {
 export const GetProgressionsAndDeclines = async () => {
     const userid = await userID()
 
-    const date = format(subDays(new Date(),30),'yyyy-MM-dd kk:mm:ss')
+    const date = format(subDays(new Date(),30),'yyyy-MM-dd kk:mm:ss') // last month exercises
+
     try{
-        const fetcher = await sql`
+        const result = await sql`
             SELECT id, exerciseid, exercisename, date, sets FROM gymexercises WHERE userid = ${userid} AND date >= ${date} ORDER BY date DESC
         `
-        const allExercises = fetcher.rows as ProgessionsDeclinesType[]
 
-        let obj = {} as {[key:string]: ProgessionsDeclinesType[]}
-        let ptrObj = {} as {[key:string]: ProgessionsDeclinesType[]} // here [0] will be odlest exercise and [1] will be newest
- 
-        for(let i = 0; i < allExercises.length; i++){
-            //////////////////////////////////////////
-            /////HERE WE DO MY IDEA OBJECT////////////
-            //////////////////////////////////////////
-            if(obj[allExercises[i].exerciseid] && obj[allExercises[i].exerciseid].length < 2){
-                obj[allExercises[i].exerciseid].push(allExercises[i])
+        const goals: { [key: string]: string } = {
+            'Wznosy bokiem': '100'
+        } // todo add and fetch goals for execises
+        
+        const allExercises = result.rows as ProgessionsDeclinesType[]
+
+        let progressions = {} as {[key:string]: {exerciseid: string, exercisename: string, set: Series, date: Date}[]}
+
+        for(let i = 0 ; i < allExercises.length ; i++){
+            const exercise = allExercises[i]
+
+            if(progressions[exercise.exerciseid]?.length === 2) continue
+
+            if(!progressions[exercise.exerciseid]){
+                progressions[exercise.exerciseid] = []
             }
-            if(!obj[allExercises[i].exerciseid]){
-                obj[allExercises[i].exerciseid] = [allExercises[i]]
-            }
-            //////////////////////////////////////////
-            //////HERE IS PIOTR IDEA OBJ//////////////
-            //////////////////////////////////////////
-            if(!ptrObj[allExercises[i].exerciseid]){
-                ptrObj[allExercises[i].exerciseid] = [allExercises[i]]
-            }
-            if(ptrObj[allExercises[i].exerciseid] && obj[allExercises[i].exerciseid].length === 1){
-                if(ptrObj[allExercises[i].exerciseid][0].date.getDate() < allExercises[i].date.getDate()){
-                    ptrObj[allExercises[i].exerciseid].push(allExercises[i])
-                }else{
-                    ptrObj[allExercises[i].exerciseid][1] = ptrObj[allExercises[i].exerciseid][0]
-                    ptrObj[allExercises[i].exerciseid][0] = allExercises[i]
-                }
-            }
-            if(ptrObj[allExercises[i].exerciseid] && obj[allExercises[i].exerciseid].length === 2){
-                if(ptrObj[allExercises[i].exerciseid][0].date.getDate() > allExercises[i].date.getDate()){
-                    ptrObj[allExercises[i].exerciseid][0] = allExercises[i]
-                }
-                if(ptrObj[allExercises[i].exerciseid][1].date.getDate() < allExercises[i].date.getDate()){
-                    ptrObj[allExercises[i].exerciseid][1] = allExercises[i]
-                }
-            }
-            ///////////////////////////////////////////
-            ///////////////////////////////////////////
+            let bestWeightSet = exercise.sets.sort((a,b)=>{
+                if(a.weight > b.weight) return -1
+                return 1
+            })
+
+            progressions[exercise.exerciseid].push({
+                exerciseid: exercise.exerciseid,
+                exercisename: exercise.exercisename,
+                set: bestWeightSet[0],
+                date: exercise.date
+            })
         }
-        for (const property in obj) {
-            if(obj[property].length < 2) delete obj[property]
-        }
-        for (const property in ptrObj) {
-            if(ptrObj[property].length < 2) delete ptrObj[property]
+        
+        for(const [key, value] of Object.entries(progressions)){
+            if(value.length < 2) delete progressions[key]
+            value.sort((a,b)=>{
+                if(a.date.getDate() > b.date.getDate()) return -1
+                return 1
+            })
         }
 
-        let worstExercise = {} as {exercise: ProgessionsDeclinesType[], score: number}
-        let bestExercise = {} as {exercise: ProgessionsDeclinesType[], score: number}
+        // const compare = compareBetterSeries(obj[property][1].sets,obj[property][0].sets)
 
-        for (const property in ptrObj) {
-            const compare = compareBetterSeries(ptrObj[property][1].sets,ptrObj[property][0].sets)
-            if(compare.value === 'equal') continue
-
-            if(!bestExercise.score && compare.score > 0){
-                bestExercise = { exercise: ptrObj[property], score: compare.score}
-            } 
-            if(!worstExercise.score && compare.score < 0){
-                worstExercise = { exercise: ptrObj[property], score: compare.score}
-            } 
-
-            if(compare.score > 0 && compare.score > bestExercise.score) {
-                bestExercise = { exercise: ptrObj[property], score: compare.score}
-            }
-            if(compare.score < 0 && compare.score < worstExercise.score) {
-                worstExercise = { exercise: ptrObj[property], score: compare.score}
-            }
-        }
-
-        return {obj, bestExercise, worstExercise}
+        return { goals, progressions, error: '' }
     }catch{
-        return undefined
+        return { goals: {}, progressions: {}, error: 'Something went wrong' }
     }
 }
 
@@ -1942,5 +1966,125 @@ export const getUserLongTrainigs = async () => {
 
     }catch(e){
         return []
+    }
+}
+
+export const updateAvatar = async (secureUrl: string, publicId: string) => {
+    const userid = await userID()
+
+    try{
+        const hasAvatar = await sql`
+            SELECT avatarpublicid FROM gymusers WHERE id = ${userid} AND avatarpublicid IS NOT NULL
+        `
+        if(hasAvatar.rows.length > 0){
+            // delete old avatar from cloudinary
+            cloudinary.v2.api.delete_resources([hasAvatar.rows[0].avatarpublicid], function(error,result) {
+                if(error) {
+                    throw new Error('Error occured while deleting image from cloudinary: ' + error);
+                }
+            })
+        }
+        await sql`
+            UPDATE gymusers SET avatarurl = ${secureUrl}, avatarpublicid = ${publicId} WHERE id = ${userid}
+        `
+    }catch(e){
+        console.log(e)
+        return {error: 'Something went wrong'}
+    }
+}
+
+export const getTrainees = async () => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`
+            SELECT gymusers.username, gymusers.avatarurl, gymusers.id FROM trainertrainee INNER JOIN gymusers ON trainertrainee.traineeid = gymusers.id WHERE trainertrainee.trainerid = ${userid}
+        `
+        console.log(result.rows)
+        return result.rows as Trainee[]
+    }catch(e){
+        console.log(e)
+        return []
+    }
+}
+
+export const getTraineeData = async (traineeId: string) => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`
+            SELECT gymusers.username, gymusers.avatarurl, gymusers.id FROM trainertrainee INNER JOIN gymusers ON trainertrainee.traineeid = gymusers.id WHERE trainertrainee.trainerid = ${userid} AND trainertrainee.traineeid = ${traineeId}
+        `
+        return result.rows[0] as Trainee
+    }catch(e){
+        console.log(e)
+        return null
+    }
+}
+
+export const switchAccount = async () => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`
+           SELECT purpose,trainercurrentaccounttype FROM gymusers WHERE id = ${userid} AND purpose = 'Trener'
+        `
+        if(result.rows.length === 0){
+            console.log('User is not trainer',result.rows)
+            return {error: 'Something went wrong'}
+        }
+        const currentType = result.rows[0].trainercurrentaccounttype
+        const newType = currentType === 'Trener' ? 'Casual' : 'Trener'
+        await sql`
+            UPDATE gymusers SET trainercurrentaccounttype = ${newType} WHERE id = ${userid}
+        `
+        // update session to new account type
+
+    }catch(e){
+        console.log(e)
+        return {error: 'Something went wrong'}
+    }finally{
+        revalidatePath('/home')
+    }
+}
+
+export const getTrainerSchemas = async () => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`
+            SELECT * FROM trainerplanschemas WHERE trainerid = ${userid}
+        `
+        return {
+            schemas: result.rows as TrainerPlanSchema[],
+            error: ''
+        }
+    }catch(e){
+        console.log(e)
+        return {
+            schemas: [],
+            error: 'Something went wrong'
+        }
+    }
+}
+
+export const getSchemaData = async (schemaId: string) => {
+    const userid = await userID()
+
+    try{
+        const result = await sql`
+            SELECT * FROM trainerplanschemas WHERE trainerid = ${userid} AND id = ${schemaId}
+        `
+        return {
+            schema: result.rows[0] as TrainerPlanSchema,
+            error: result.rows.length > 0 ? '' : 'Schema not found'
+        }
+
+    }catch(e){
+        console.log(e)
+        return {
+            schema: null,
+            error: 'Something went wrong'
+        }
     }
 }

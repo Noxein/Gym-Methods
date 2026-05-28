@@ -40,6 +40,7 @@ export const RegisterForm = () => {
   }
 
   const t = useTranslations("Register")
+  const u = useTranslations("Utils")
   const e = useTranslations("Errors")
 
   return (<>
@@ -49,7 +50,7 @@ export const RegisterForm = () => {
     >
       <h2 className={`self-center text-3xl pb-6 text-white`}>{t("Register")}</h2>
 
-      <InputGroup id='email' text='Email' type='email' onChange={e=>setEmail(e.target.value)} value={email} disabled={loading}/>
+      <InputGroup id='email' text={u("Email")} type='email' onChange={e=>setEmail(e.target.value)} value={email} disabled={loading}/>
       <ErrorDiv error={errors.email} className='text-lg -mt-3'/>
 
       <InputGroup id='username' text={t("Username")} type='text' onChange={e=>setUserName(e.target.value)} value={userName} disabled={loading}/>

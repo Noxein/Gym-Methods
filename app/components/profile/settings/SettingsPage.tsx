@@ -15,7 +15,7 @@ import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 import { useTranslations } from 'next-intl'
 import { getUserLocale, setUserLocale } from '@/app/i18n/locale'
 import { Locale } from '@/app/i18n/config'
-import { LangContext } from '@/app/context/LocaleProvider'
+import  LocaleContext  from '@/app/context/LocaleContext'
 
 type SettingsPageTypes = {
     settings: UserSettings
@@ -101,7 +101,7 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
     const l = useTranslations("Languages")
     const e = useTranslations("Errors")
     
-    const userLocale = useContext(LangContext)
+    const userLocale = useContext(LocaleContext)
 
     const handleChangeLocale = (locale: Locale) => {
         localStorage.setItem('lang',locale)

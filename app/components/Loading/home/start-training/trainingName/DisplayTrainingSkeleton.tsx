@@ -1,7 +1,10 @@
+import { useTranslations } from "next-intl";
+
 type DisplayTrainingSkeletonTypes = {
     isTraining: boolean
 }
 export const DisplayTrainingSkeleton = ({isTraining}:DisplayTrainingSkeletonTypes) => {
+  const t = useTranslations("Home/Start-Training/[TrainingName]")
   return (
     <div className='px-4 pt-4'>
         <div className='flex justify-center w-full'>
@@ -21,7 +24,7 @@ export const DisplayTrainingSkeleton = ({isTraining}:DisplayTrainingSkeletonType
 
         <DisplayCurrentSeries />
 
-        {!isTraining && <div  className={`bottom-0 left-0 fixed mb-20 py-6 w-full text-xl gradient-background text-white border-2 rounded-md`}>Zakończ ćwiczenie</div>}
+        {!isTraining && <div  className={`bottom-0 left-0 fixed mb-20 py-6 w-full text-xl gradient-background text-white border-2 rounded-md`}>{t("CloseExercise")}</div>}
     </div>
   )
 }

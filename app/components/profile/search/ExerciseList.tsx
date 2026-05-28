@@ -8,7 +8,7 @@ import { SelectedExerciseContext } from './SelectedExerciseContext'
 import { Button } from '../../ui/Button'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
-import { LangContext } from '@/app/context/LocaleProvider'
+import  LocaleContext  from '@/app/context/LocaleContext'
 
 type ExerciseListTypes = {
     exerciseList: (string | UserExercise)[],
@@ -69,7 +69,7 @@ type SearchExercisesTypes = {
 
 export const SearchExercises = ({allExercisesInOneArray,searchTerm}:SearchExercisesTypes) => {
 
-    const context = useContext(LangContext)
+    const context = useContext(LocaleContext)
     let filtered:(string | UserExercise)[] = []
   
     const d = useTranslations('DefaultExercises')

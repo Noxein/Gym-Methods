@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react'
 import { exerciseList } from '@/app/lib/exercise-list'
-import { SecondStepDataValidation } from '@/app/actions'
+import { FirstSetupFinish, SecondStepDataValidation } from '@/app/actions'
 import { dataType } from './Goal'
 import { Button } from '@/app/components/ui/Button'
 import { ErrorDiv } from '@/app/components/ui/ErrorDiv'
@@ -28,7 +28,8 @@ export const ExercisesSelector = ({setCurrentStep,favouriteExercises,setExercise
         const validData = await SecondStepDataValidation(favouriteExercises)
         if(validData && validData.error) return setError(e(validData.error))
 
-        setCurrentStep('not-fav-exercises')
+        const result = await FirstSetupFinish(data,favouriteExercises,exercisesToDelete)
+        if(result && result.error) return setError(e(result.error))
     }
 
     const t = useTranslations("FirstSetup")

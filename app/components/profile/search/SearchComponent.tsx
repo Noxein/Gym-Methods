@@ -6,7 +6,7 @@ import { SelectedExerciseContext } from './SelectedExerciseContext'
 import { Icon } from '../../Icon'
 import { ExpandIcon2, MagnyfingGlass } from '@/app/ui/icons/ExpandIcon'
 import { DisplayUserExercises } from './DisplayUserExercises'
-import { fetchUserExercises, fetchUserExercisesCount } from '@/app/actions'
+import { fetchTraineeExercises, fetchTraineeExercisesCount, fetchUserExercises, fetchUserExercisesCount } from '@/app/actions'
 import { format } from 'date-fns'
 import { Input } from '../../ui/Input'
 import { Button } from '../../ui/Button'
@@ -19,9 +19,11 @@ import { exercisesArr } from '@/app/lib/exercise-list'
 type SearchComponentTypes = {
     exerciseList: (string | UserExercise)[],
     exercises: ExerciseTypes,
+    traineeId?: string,
+    children?: React.ReactNode
 }
 
-export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) => {
+export const SearchComponent = ({exerciseList,exercises,traineeId,children}:SearchComponentTypes) => {
     const [showSearch,setShowSearch] = useState(false)
     const [from,setFrom] = useState<Date>()
     const [to,setTo] = useState<Date>()
@@ -41,6 +43,16 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
     const handleShowExerciseList = () => {
         setShowExerciseList && setShowExerciseList(true)
     }
+    const fetchExercises = async (page: number) => {
+        if(traineeId) return fetchTraineeExercises(traineeId,from,to,selectedExercise,page)
+        return fetchUserExercises(from,to,selectedExercise,page)
+    }
+
+    const handleSearchCount = async () => {
+        if(traineeId) return fetchTraineeExercisesCount(traineeId,from,to,selectedExercise)
+        return fetchUserExercisesCount(from,to,selectedExercise)
+    }
+
     const handleSearch = async (reset:boolean) => {
         setShowSearch(false)
         if(reset){
@@ -48,7 +60,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
             setCurrentPage(1)
             setFetchedExercises([])
             setTotalItems(0)
-            const result = await fetchUserExercises(from!,to!,selectedExercise,0)
+            const result = await fetchExercises(0)
             if(result.error){
                 setError(e(result.error))
                 setLoading(false)
@@ -64,7 +76,7 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
             setFetchedExercises(SortItems(result.data!))
             setCurrentPage(1)
         }else{
-            const result = await fetchUserExercises(from!,to!,selectedExercise,currentPage-1)
+            const result = await fetchExercises(currentPage-1)
             if(result.error){
                 setError(e(result.error))
                 return setLoading(false)
@@ -73,15 +85,10 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
             setFetchedExercises(x=>[...x,...sortedItems])
             setCurrentPage(page=>page+1)
         }
-
+        console.log('loading false')
         setLoading(false)
     }
-    const handleSearchCount = async () => {
-        const count = await fetchUserExercisesCount(from!,to!,selectedExercise)
-        if(count.error) return { error : count.error }
-        return count.data
-        //setTotalItems(Number(count.data))
-    }
+
     const toggleSearchBar = () => {
         setShowSearch(!showSearch)
     }
@@ -195,9 +202,11 @@ export const SearchComponent = ({exerciseList,exercises}:SearchComponentTypes) =
             </div>
         </div>
 
+        {children ? <div className={`mx-5 ${showSearch ? 'mt-52' : 'mt-28'} mb-4`}>{children}</div> : null}
+
         <SmallLoaderDiv loading={loading} sClassParent='h-screen flex items-center mb-20'/>
        
-        {!loading && <DisplayUserExercises fetchedExercises={fetchedExercises} manyExercises={selectedExercise===''} handleSearch={()=>handleSearch(false)} dataLength={getDataLenght()} totalItems={totalItems}/>}
+        {!loading && <DisplayUserExercises loading={loading} fetchedExercises={fetchedExercises} manyExercises={selectedExercise===''} handleSearch={()=>handleSearch(false)} dataLength={getDataLenght()} totalItems={totalItems}/>}
         
     </div>
     {showExerciseList && 

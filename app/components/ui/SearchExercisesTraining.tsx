@@ -1,5 +1,5 @@
 import { UserExercise } from '@/app/types'
-import { LangContext } from '@/app/context/LocaleProvider'
+import  LocaleContext  from '@/app/context/LocaleContext'
 import { useContext } from 'react'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
@@ -10,12 +10,12 @@ import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 type SearchExercisesTypes = { 
     allExercisesInOneArray: (string | UserExercise)[],
     searchTerm: string,
-    handleSelect: (name:string) => void;
+    handleSelect: (id:string, name?:string) => void;
 }
 export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,handleSelect}:SearchExercisesTypes) => {
     let filtered:(string | UserExercise)[] = []
 
-      const context = useContext(LangContext)
+      const context = useContext(LocaleContext)
     
       const d = useTranslations('DefaultExercises')
     
@@ -48,7 +48,7 @@ export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,handl
 
 type FilteredExercisesTypes = {
     allExercisesInOneArray: (string | UserExercise)[],
-    handleSelect: (name:string) => void,
+    handleSelect: (id:string, name?:string) => void,
 }
 export const FilteredExercises = ({allExercisesInOneArray,handleSelect}:FilteredExercisesTypes) => {
     const d = useTranslations("DefaultExercises")
@@ -89,7 +89,7 @@ type AddExerciseType = {
     mLeft:string,
     isFirst:boolean,
     id:string,
-    handleSelect: (name:string) => void
+    handleSelect: (id:string, name?:string) => void
 }
 export const AddExercise = ({text,mLeft,isFirst,id,handleSelect}:AddExerciseType) => {
 
@@ -97,7 +97,7 @@ export const AddExercise = ({text,mLeft,isFirst,id,handleSelect}:AddExerciseType
     const newName = exercisesArr.includes(text) ? d(nameTrimmer(text)) : text
     return(
         <button className={`text-left ${mLeft} bg-borderInteractive text-marmur py-[2px] pl-[2px] rounded flex items-center justify-between ${isFirst?'mt-2':null}`} 
-        onClick={()=>handleSelect(text)}
+        onClick={()=>handleSelect(id, text)}
         >
             <span className={`flex-1 bg-dark rounded-md pl-4 py-3 flex flex-col`}>
                 {newName}

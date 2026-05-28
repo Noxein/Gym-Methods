@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AddExercise } from './SearchExercisesTraining'
-import { ExpandIcon } from '@/app/ui/icons/ExpandIcon'
+import { ExpandIcon, ExpandIcon2 } from '@/app/ui/icons/ExpandIcon'
 import { Icon } from '@/app/components/Icon'
 import { useTranslations } from 'next-intl'
 
@@ -99,8 +99,10 @@ const ExpandBtn = ({text,isExpanded,mLeft,...rest}:ExpandBtn) => {
 
     return (
         text && 
+        
         <button {...rest} className={`text-left ${mLeft} bg-borderInteractive text-marmur rounded-lg flex pl-[2px] py-[2px] items-center`}>
             <span className={`flex-1 rounded-lg bg-dark py-3 pl-4`}>{text}</span>            
+            <ExpandIcon2 fill='#D9D9D9' expanded={isExpanded} />
         </button>
     )
 }

@@ -16,12 +16,13 @@ type ProgressionsTypes = {
 }
 
 export const Progressions = ({data,setSwtich}:ProgressionsTypes) => {
+  const t = useTranslations("Home/TraineeHome")
   const[showModal,setShowModal] = useState(false)
   const[selectedExerciseId,setSelectedExerciseId] = useState('')
   return (
     <div className='mx-5 mt-5 px-2'>
       <div className='flex justify-center' onClick={()=>setSwtich(x=>!x)}>
-        <h2 className='text-white text-center mb-2 text-xl'>Progresje</h2>
+        <h2 className='text-white text-center mb-2 text-xl'>{t("Progressions")}</h2>
         <Icon >
           <SwapIcon fill='#3C9F65'/>
         </Icon>

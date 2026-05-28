@@ -1,3 +1,4 @@
+'use client'
 import React, { useRef, useState } from 'react'
 import { Select } from './ui/SelectField'
 import { locales } from '@/i18n'
@@ -17,7 +18,7 @@ export const SelectLanguage = ({setShowSelectLang}:{setShowSelectLang:React.Disp
   return (
     <div className='w-screen h-screen flex justify-center items-center'>
         <div className='mx-5 w-96 '>
-            <Select labelName='Language' valuesToLoop={locales} onChange={e=>locale.current = e.target.value as Locale}/>
+            <Select labelName={t("Language")} valuesToLoop={locales} onChange={e=>locale.current = e.target.value as Locale}/>
             <Button className='w-full mt-4' onClick={handleSave}>{t('Save')}</Button>
         </div>
     </div>

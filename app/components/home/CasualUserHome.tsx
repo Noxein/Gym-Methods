@@ -1,7 +1,5 @@
 import { Suspense } from 'react'
-import { AddExerciseButton } from './AddExerciseButton'
 import { IncomingTrainings } from './IncomingTrainings'
-import { LatestTrainings } from './LatestTrainings'
 import { IncomingTrainingsSkeleton } from '../Loading/home/IncomingTrainingsSkeleton'
 import { LatestTrainingsSkeleton } from '../Loading/home/LatestTrainingsSkeleton'
 import { WidgetDataProvider } from './WidgetDataProvider'
@@ -9,6 +7,7 @@ import { HomeWidgetSeleton } from '../Loading/home/HomeWidgetSeleton'
 import { LastTrainings } from './start-training/LastTrainings'
 import { getStartedTrainingsList } from '@/app/actions'
 import { LatestTrainingsHeader } from './LatestTrainingsHeader'
+import ExerciseProgressionWidget from './TraineeHome/ExerciseProgressionWidget'
 
 type HomeTypes = {
   useremail?: string | null
@@ -17,9 +16,9 @@ type HomeTypes = {
 export const CasualUserHome = async ({useremail}:HomeTypes) => {
   const trainingList = await getStartedTrainingsList()
   return (
-    <div className='mb-20'>
+    <div className='mb-20 w-full'>
       <Suspense fallback={<HomeWidgetSeleton />}>
-        <WidgetDataProvider />
+        <ExerciseProgressionWidget />
       </Suspense>
       
       <Suspense fallback={<IncomingTrainingsSkeleton />}>
@@ -33,10 +32,6 @@ export const CasualUserHome = async ({useremail}:HomeTypes) => {
 
       </div>
       </Suspense>
-        
-      {/* <AddExerciseButton /> */}
-
-      {/* <OpenTrainingRemainder useremail={useremail}/> */}
     </div>
   )
 }

@@ -37,7 +37,7 @@ export const DefaultExercisesMap = ({item,clickHandler,objectName,currentLevel=0
             <ExpandBtn text={d(objectName!)} isExpanded={showChildren} 
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}/>
 
-        {showChildren && <div className='flex flex-col gap-2 font-normal'>
+        {showChildren && <div className='flex flex-col font-normal'>
                 {item.map((x,index)=>(       
                         <LinkToExercise isFirst={index===0} mLeft='12' key={x} text={x} translatedText={d(nameTrimmer(x))} clickHandler={()=>clickHandler(x)} childrenIcons={childrenIcons} favouriteExercises={favouriteExercises} exercisesToDelete={exercisesToDelete} isFav={isFav}/>
                     ))}
@@ -126,7 +126,7 @@ const LinkToExercise = ({clickHandler,childrenIcons,text,translatedText,mLeft,is
 
     let color = favouriteExercises && favouriteExercises.includes(text) ? 'green' : exercisesToDelete && exercisesToDelete.includes(text) ? 'red' : 'borderInteractive';
     return(
-        <div className={`relative text-left ml-${mLeft}  border-${color} bg-${color} text-marmur  border-[2px] rounded flex justify-between ${isFirst?'mt-2':null}`}  onClick={()=>clickHandler(text)}>
+        <div className={`relative text-left ml-${mLeft}  border-${color} bg-${color} text-marmur  border-[2px] rounded flex justify-between mt-2`}  onClick={()=>clickHandler(text)}>
             <span className={`flex-1 bg-dark rounded-md pl-4 py-2 flex flex-col text-lg `}>
                 {translatedText}
             </span>

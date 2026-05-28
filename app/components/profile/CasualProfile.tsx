@@ -3,12 +3,18 @@ import { useTranslations } from 'next-intl'
 import { LinkBtn, UserEmail } from './LinkBtn'
 import { SignOutBtn } from './SignOutBtn'
 import { BookIcon, CalendarIcon, ExerciseIcon, HandleIcon, LockIcon, LogoutIcon, PieChartIcon, SettingsIcon, SummaryIcon, TimerIcon } from '@/app/ui/icons/ExpandIcon'
+import { UserPurposeType } from '@/app/types'
+import { Icon } from '../Icon'
+import { ButtonHTMLAttributes, DetailedHTMLProps } from 'react'
+import SwitchProfileButton from './SwitchProfileButton'
 
 type ProfileTypes = {
-  email: string
+  email: string,
+  trainercurrentaccounttype?: string | null
+  purpose: UserPurposeType
 }
 
-export const Profile = ({email}:ProfileTypes) => { 
+export const CasualProfile = ({email, trainercurrentaccounttype, purpose}:ProfileTypes) => { 
   const width = '30px'
   const height = '30px'
 
@@ -20,6 +26,11 @@ export const Profile = ({email}:ProfileTypes) => {
     <div className='flex flex-col gap-2'>
       <UserEmail email={email}/>
       <div className='mx-5 flex flex-col gap-4 min-h-[calc(100dvh-100px)]'>
+        {trainercurrentaccounttype === 'Casual' && (
+        <SwitchProfileButton text={t("TrainerAccount")} purpose={purpose}>
+          <ExerciseIcon width={width} height={height} fill='#fff'/>
+        </SwitchProfileButton>
+        )}
           <LinkBtn href='/home/profile/set-tempo' text={t("SetTempo")}>
             <TimerIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
