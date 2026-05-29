@@ -6,6 +6,7 @@ import { Point, Area } from "react-easy-crop";
 import { getCroppedImg } from '@/app/lib/utils';
 import { PictureIcon } from '@/app/ui/icons/ExpandIcon';
 import { useTranslations } from 'next-intl';
+import { ErrorDiv } from '../ui/ErrorDiv';
 
 type AvatarSelectorProps = {
     setCurrentStep: React.Dispatch<React.SetStateAction<'language' | 'setavatar' | 'purpose' | 'final'>>
@@ -111,7 +112,8 @@ function AvatarSelector({ setCurrentStep }: AvatarSelectorProps) {
         />}
         </div>
 
-       
+        <ErrorDiv error={error} />
+        
         <Navigator 
             prev={handlePrev}
             next={handleDoneCrop}
