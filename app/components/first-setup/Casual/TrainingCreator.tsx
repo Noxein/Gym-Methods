@@ -7,6 +7,7 @@ import { ErrorDiv } from '@/app/components/ui/ErrorDiv'
 import { SmallLoaderDiv } from '@/app/components/ui/SmallLoaderDiv'
 import { useTranslations } from 'next-intl'
 import { FirstSetupSelectedSteps } from '@/app/types'
+import { useSession } from 'next-auth/react'
 
 type StepTwoOutOfThree = {
     setCurrentStep:React.Dispatch<React.SetStateAction<FirstSetupSelectedSteps>>,
@@ -19,6 +20,7 @@ export const TrainingCreator = ({setCurrentStep,exercisesToDelete,setExercisesTo
     const[error,setError] = useState('')
     const[loading,setLoading] = useState(false)
     const router = useRouter()
+    const { update } = useSession()
     
     const redirectToCreateTraining = async () => {
         if(loading) return
@@ -29,6 +31,7 @@ export const TrainingCreator = ({setCurrentStep,exercisesToDelete,setExercisesTo
             setLoading(false)
             return setError(e('Something Went Wrong'))
         } 
+        await update({ refresh: true })
         setLoading(false)
         router.push('/home/profile/my-training-plans?showAddModal=true')
     }

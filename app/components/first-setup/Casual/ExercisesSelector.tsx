@@ -11,6 +11,7 @@ import { Mapper } from './Mapper'
 import { DefaultExercisesMap } from '../../ui/DefaultExercisesMap'
 import { Icon } from '../../Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
+import { useSession } from 'next-auth/react'
 
 type StepTwoOutOfThree = {
     setCurrentStep:React.Dispatch<React.SetStateAction<FirstSetupSelectedSteps>>,
@@ -23,6 +24,7 @@ type StepTwoOutOfThree = {
 
 export const ExercisesSelector = ({setCurrentStep,favouriteExercises,setExercises,exercisesToDelete,data,isFav}:StepTwoOutOfThree) => {
     const[error,setError] = useState('')
+    const { update } = useSession()
 
     const ValidateData = async () => {
         const validData = await SecondStepDataValidation(favouriteExercises)
@@ -30,6 +32,7 @@ export const ExercisesSelector = ({setCurrentStep,favouriteExercises,setExercise
 
         const result = await FirstSetupFinish(data,favouriteExercises,exercisesToDelete)
         if(result && result.error) return setError(e(result.error))
+        await update({ refresh: true })
     }
 
     const t = useTranslations("FirstSetup")

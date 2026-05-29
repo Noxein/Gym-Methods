@@ -14,7 +14,7 @@ export default auth(async(req) =>{
         return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl))
     }
     
-    if (req.nextUrl.pathname.startsWith("/api")) {
+    if (req.nextUrl.pathname.startsWith("/api/auth")) {
         return NextResponse.next();
     }
 

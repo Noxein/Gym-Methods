@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { handleSaveTrainerSetup } from "@/app/actions";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
 
 type TrainerProps = {
     setCurrentStep: React.Dispatch<React.SetStateAction<FirstSetupFirstStep>>
@@ -15,6 +16,8 @@ function Trainer({setCurrentStep}: TrainerProps) {
     const u = useTranslations("Utils")
 
     const[loading,setLoading] = useState(false)
+    const navigator = useRouter()
+    const { update } = useSession();
 
     const handleBack = () => {
         setCurrentStep('purpose');
@@ -24,12 +27,14 @@ function Trainer({setCurrentStep}: TrainerProps) {
         // Finalize setup for trainer
         setLoading(true)
         await handleSaveTrainerSetup();
+        await update({ refresh: true })
     }
 
     const handleGoHome = async() => {
         setLoading(true)
         await handleFinish();
         navigator.push('/home');
+        setLoading(false)
     }
 
     const handleGoAddTrainee = async() => {
@@ -37,7 +42,7 @@ function Trainer({setCurrentStep}: TrainerProps) {
         await handleFinish();
         navigator.push('/home/profile/my-trainees?shouldOpen=true');
     }
-    const navigator = useRouter()
+    
     return ( 
         <CenterComponent>
             <div className="text-white w-full px-5 flex flex-col gap-6">
