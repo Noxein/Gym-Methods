@@ -35,7 +35,7 @@ function Trainer({setCurrentStep}: TrainerProps) {
     const handleGoAddTrainee = async() => {
         setLoading(true)
         await handleFinish();
-        navigator.push('/home/my-trainees/add-trainee');
+        navigator.push('/home/profile/my-trainees?shouldOpen=true');
     }
     const navigator = useRouter()
     return ( 

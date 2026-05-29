@@ -5,9 +5,13 @@ import { ButtonWithIcon } from "../../ui/ButtonWithIcon";
 import { useState } from "react";
 import { BlurBackgroundModal } from "../../BlurBackgroundModal";
 import AddTraineeModal from "./AddTraineeModal";
+import { useSearchParams } from "next/navigation";
 
 function AddTrainee() {
-    const[showModal,setShowModal] = useState(false);
+
+    const params = useSearchParams();
+    const shouldOpen = params.get("shouldOpen") === "true";
+    const[showModal,setShowModal] = useState(shouldOpen);
     return ( 
         <>
             <ButtonWithIcon 
