@@ -163,6 +163,7 @@ export type GymExercisesDbResult = {
 
 export type ExerciseType = {
     id: string,
+    exerciseid?: string,
     exercisename: string,
     date?: Date,
     sets: Series[],

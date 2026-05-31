@@ -1,10 +1,12 @@
 import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, nameTrimmer, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
-import { ExerciseType, ExerciseTypeWithHandle, HistoryExercise, Series } from '@/app/types'
+import { ExerciseType, ExerciseTypeWithHandle, HistoryExercise, Series, TempoType } from '@/app/types'
 import { format } from 'date-fns'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useTranslations } from 'next-intl'
 import { exercisesArr } from '@/app/lib/exercise-list'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
+import { ExerciseTempo } from '../../ui/ExerciseTempo'
 
 type DisplayUserExercisesTypes = {
     loading: boolean,
@@ -15,6 +17,7 @@ type DisplayUserExercisesTypes = {
     totalItems: number,
 }
 export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
+    const tempos = useExerciseTempos()
 
     const t = useTranslations("Home/Profile/Search")
     
@@ -38,7 +41,7 @@ export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,han
           style={{overflow:''}}
          >
             {fetchedExercises.map((exercise,index)=>(
-                <SingleExercise exercise={exercise} key={index}/>
+                <SingleExercise exercise={exercise} tempos={tempos} key={index}/>
             ))}
         </InfiniteScroll>
     </div>
@@ -47,8 +50,9 @@ export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,han
 
 type SingleExerciseTypes = {
     exercise: HistoryExercise,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
-const SingleExercise = ({exercise}:SingleExerciseTypes) => {
+const SingleExercise = ({exercise,tempos}:SingleExerciseTypes) => {
     const u = useTranslations("Utils")
     const weeIndex = format(exercise.exercises[0].date!,'i') 
     const monthIndex = format(exercise.exercises[0].date!,'L')
@@ -62,7 +66,7 @@ const SingleExercise = ({exercise}:SingleExerciseTypes) => {
             </div>
             <div className='flex flex-col my-1'>
                 {exercise.exercises.map(exercise=>(
-                    <ExercisesMap exercise={exercise} key={exercise.id}/>
+                    <ExercisesMap exercise={exercise} tempos={tempos} key={exercise.id}/>
                 ))}
             </div>
         </div>
@@ -71,9 +75,10 @@ const SingleExercise = ({exercise}:SingleExerciseTypes) => {
 
 type ExercisesMapType = {
     exercise: ExerciseTypeWithHandle,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
 
-const ExercisesMap = ({exercise}:ExercisesMapType) => {
+const ExercisesMap = ({exercise,tempos}:ExercisesMapType) => {
 
     const d = useTranslations("DefaultExercises")
     const formattedName = exercisesArr.includes(exercise.exercisename) ? d(nameTrimmer(exercise.exercisename)) : exercise.exercisename
@@ -81,8 +86,11 @@ const ExercisesMap = ({exercise}:ExercisesMapType) => {
     return (
         <div className='bg-darkLight my-1 rounded-lg'>
             <div className={`text-marmur flex justify-between px-2 font-bold`}> 
-                <span className='mt-2 ml-2 text-l pb-2'>
-                    {formattedName} {exercise.handlename && "- " + exercise.handlename + " handle"}
+                <span className='mt-2 ml-2 text-l pb-2 flex flex-col'>
+                    <span>
+                        {formattedName} {exercise.handlename && "- " + exercise.handlename + " handle"}
+                    </span>
+                    <ExerciseTempo tempo={tempos[exercise.exerciseid || '']?.tempo} className='mt-1'/>
                 </span>
             </div>
 

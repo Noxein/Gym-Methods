@@ -4,6 +4,8 @@ import SeriesDisplayer from "./SeriesDisplayer";
 import { BigTrainingStarter } from "@/app/types";
 import { LongPlanContext } from "@/app/context/LongPlanContext";
 import { useRouter } from "next/router";
+import { useExerciseTempos } from "@/app/lib/useExerciseTempos";
+import { ExerciseTempo } from "../../ui/ExerciseTempo";
 
 type MediaMoverContextConsumerTypes = {
     currentPlanName: string,
@@ -16,6 +18,7 @@ type MediaMoverContextConsumerTypes = {
 }
 
 function MediaMoverContextConsumer({currentExerciseIndex,currentPlanName,planData,allHandles}:MediaMoverContextConsumerTypes) {
+    const tempos = useExerciseTempos()
     const {
         setCurrentExerciseIndex
     } = useContext(LongPlanContext)!
@@ -37,16 +40,17 @@ function MediaMoverContextConsumer({currentExerciseIndex,currentPlanName,planDat
     }
 
     const touchMoveEvent = (e:React.TouchEvent<HTMLDivElement>) => {
-        e.preventDefault
+        e.preventDefault()
         touchMove(e)
     }
     return (     
-    <div className="flex overflow-hidden touch-none" onTouchMove={touchMoveEvent} onTouchEnd={media}>
+    <div className="flex overflow-hidden touch-none z-50" onTouchMove={touchMoveEvent} onTouchEnd={media}>
         {planData.subplans[planData.currentplanindex].exercises.map(exercise=>            
             <div className="relative duration-75 w-[94vw]" key={exercise.exerciseid} style={{ transform: `translateX(-${currentExerciseIndex * totalwidth - (current - start)}px)`}}>
                 <div className={`bg-darkLight rounded-lg px-5 h-[calc(50vh)] w-[94vw] mt-2 overflow-scroll elementWidth`}>
                     <div className="text-center text-white text-2xl font-semibold sticky top-0  z-30">
                         <p className="bg-darkLight pt-5">{currentPlanName} - {exercise.exercisename}</p>
+                        <ExerciseTempo tempo={tempos[exercise.exerciseid]?.tempo} className="justify-center bg-darkLight pb-2"/>
                         <div className="h-5 w-full bg-gradient-to-b from-darkLight to-transparent">
 
                         </div>

@@ -1,14 +1,17 @@
 import { useContext } from 'react'
 import { SelectedExerciseContext } from './SelectedExerciseContext'
+import { TempoType } from '@/app/types'
+import { ExerciseTempo } from '../../ui/ExerciseTempo'
 
 type SelectExerciseType = {
     text: string,
     translatedText: string,
     mLeft: string,
     isFirst: boolean,
+    tempo?: TempoType,
 }
 
-export const SelectExercise = ({text,translatedText,mLeft,isFirst}:SelectExerciseType) => {
+export const SelectExercise = ({text,translatedText,mLeft,isFirst,tempo}:SelectExerciseType) => {
     const searchExercise = useContext(SelectedExerciseContext)
     const setSelectedExercise = searchExercise?.setExercise
     const setShowExerciseList = searchExercise?.setShowExerciseList
@@ -21,6 +24,7 @@ export const SelectExercise = ({text,translatedText,mLeft,isFirst}:SelectExercis
     <button onClick={handleClick} className={`relative text-left ml-${mLeft} bg-dark text-marmur border-borderInteractive border-2 py-1 rounded flex justify-between ${isFirst?'mt-2':null}`}>
         <span className={`flex-1 bg-dark rounded-md pl-4 py-2 flex flex-col`}>
             {translatedText}
+            <ExerciseTempo tempo={tempo} className='mt-1'/>
         </span>
     </button>
 )

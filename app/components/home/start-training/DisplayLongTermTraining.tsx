@@ -79,7 +79,7 @@ function DisplayLongTermTraining({allHandles}:DisplayLongTermTrainingTypes) {
 
         <MediaMover allHandles={allHandles}/>
 
-        <div className="">
+        <div className="z-10">
             <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory}/>
             {showHistory && <PreviousExercise exerciseid={currentExerciseId} historyCache={historyCache} setHistoryCache={setHistoryCache}/>}
         </div>

@@ -1,4 +1,4 @@
-import { ExerciseTypes, UserExercise } from '@/app/types'
+import { ExerciseTypes, TempoType, UserExercise } from '@/app/types'
 import { useContext, useState } from 'react'
 import { ListExercises } from './ListExercises'
 import { SelectExercise } from './SelectExercise'
@@ -13,9 +13,10 @@ import  LocaleContext  from '@/app/context/LocaleContext'
 type ExerciseListTypes = {
     exerciseList: (string | UserExercise)[],
     exercises: ExerciseTypes,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
 
-export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
+export const ExerciseList = ({exerciseList,exercises,tempos}:ExerciseListTypes) => {
     const [searchField,setSearchField] = useState('')
 
     const searchExercise = useContext(SelectedExerciseContext)
@@ -52,10 +53,10 @@ export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
                 {
                     searchField
                     ?
-                    <SearchExercises allExercisesInOneArray={exerciseList} searchTerm={searchField}/>
+                    <SearchExercises allExercisesInOneArray={exerciseList} searchTerm={searchField} tempos={tempos}/>
                     :
                     <div className='mb-20'>
-                        <ListExercises item={exercises}/>
+                        <ListExercises item={exercises} tempos={tempos}/>
                     </div>
                 }
         </div>
@@ -64,10 +65,11 @@ export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
 
 type SearchExercisesTypes = {
     allExercisesInOneArray: (string | UserExercise)[],
-    searchTerm: string
+    searchTerm: string,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
 
-export const SearchExercises = ({allExercisesInOneArray,searchTerm}:SearchExercisesTypes) => {
+export const SearchExercises = ({allExercisesInOneArray,searchTerm,tempos}:SearchExercisesTypes) => {
 
     const context = useContext(LocaleContext)
     let filtered:(string | UserExercise)[] = []
@@ -94,15 +96,16 @@ export const SearchExercises = ({allExercisesInOneArray,searchTerm}:SearchExerci
       })
     }
   return (
-    <FilteredExercises allExercisesInOneArray={filtered} />
+    <FilteredExercises allExercisesInOneArray={filtered} tempos={tempos}/>
   )
 }
 
 type FilteredExercisesTypes = {
     allExercisesInOneArray: (string | UserExercise)[],
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
 
-export const FilteredExercises = ({allExercisesInOneArray}:FilteredExercisesTypes) => {
+export const FilteredExercises = ({allExercisesInOneArray,tempos}:FilteredExercisesTypes) => {
 
     const d = useTranslations('DefaultExercises')
 
@@ -111,12 +114,12 @@ export const FilteredExercises = ({allExercisesInOneArray}:FilteredExercisesType
             {allExercisesInOneArray.map((x,i)=>{
                 if(typeof x === 'object'){
                     return (
-                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x.exercisename} translatedText={x.exercisename} key={i}/>
+                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x.exercisename} translatedText={x.exercisename} key={i} tempo={tempos[x.id]?.tempo}/>
                     )
                 }
                 if(typeof x === 'string'){
                     return (
-                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x} translatedText={d(nameTrimmer(x))} key={i}/>
+                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x} translatedText={d(nameTrimmer(x))} key={i} tempo={tempos[x]?.tempo}/>
                     )
                 }
             })}

@@ -16,6 +16,8 @@ import { ShowProgression } from './ShowProgression'
 import { Timer } from '../../add-exercise/Timer'
 import { TimerContext } from '@/app/context/TimerContext'
 import { ButtonToAddSeries } from './ButtonToAddSeries'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
+import { ExerciseTempo } from '../../ui/ExerciseTempo'
 
 type AddExerciseUsingStateType = {
     name:string,
@@ -42,6 +44,7 @@ type AddExerciseUsingStateType = {
 export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLoading = false,exerciseid,requiresHandle,trainingState,allHandles,localStorageTrainingData,setLocalStorageTrainingData,useremail,setProgressedIndexes,inputs,setInputs,trainingPlan,goal}:AddExerciseUsingStateType) => {
     const[showHistory,setShowHistory] = useState(false)
     const[historyCache,setHistoryCache] = useState<{[key:string]:ExerciseType | null}>()
+    const tempos = useExerciseTempos()
     
     useEffect(()=>{
         setInputs(initializeInputsState(exerciseid,requiresHandle,showTimeMesure,useremail))
@@ -59,6 +62,7 @@ export const AddExerciseUsingState = ({name,showTimeMesure,isTraining=false,isLo
         <h1 className={`text-marmur text-xl text-center font-medium`}> 
             {formattedName} 
         </h1>
+        <ExerciseTempo tempo={tempos[exerciseid]?.tempo} className='justify-center mt-1'/>
 
         <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2 z-10`} >
 

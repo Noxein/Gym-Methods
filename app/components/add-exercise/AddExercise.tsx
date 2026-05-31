@@ -22,6 +22,8 @@ import { ExerciseDataContext } from '@/app/context/ExerciseDataContext'
 import { AddExerciceReducer } from '@/app/lib/reducers'
 import { LoaderFullScreen } from '../Loading/LoaderFullScreen'
 import SwapExerciseButton from './SwapButton'
+import { ExerciseTempo } from '../ui/ExerciseTempo'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
 
 type AddExerciseType = {
     isTraining?: boolean,
@@ -68,6 +70,7 @@ const updateInputsInMemory = (state:AddExerciceReducerType,exerciseName: string,
 export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType) => {
 
     const { exerciseData, progressions, newExerciseName, twoRecentExercises, firstLoad, loading, setLoading, finishOneExercise } = useContext(ExerciseDataContext)!
+    const tempos = useExerciseTempos()
 
     const[state,dispatch] = useReducer(AddExerciceReducer,initalData(exerciseData.name))
     const[error,setError] = useState<string>('')
@@ -167,8 +170,9 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
     <div className={`px-4 flex flex-col pt-4 ${isTraining?'':'mb-24 min-h-[calc(100dvh-100px)]'}`}>
         <div className='relative'>
             <h1 className={`text-marmur text-xl text-center font-medium`}>{loading? '...' : exerciseName}</h1>
+        <ExerciseTempo tempo={tempos[exerciseData.exerciseid]?.tempo} className='justify-center mt-1'/>
 
-            {twoRecentExercises.length > 1 && <SwapExerciseButton dispatch={dispatch} state={state}/>}
+        {twoRecentExercises.length > 1 && <SwapExerciseButton dispatch={dispatch} state={state}/>}
 
         </div>
         <div className={`flex flex-col sticky top-0 pt-2 mt-2 bg-dark pb-2 z-10`}>

@@ -1219,52 +1219,52 @@ const fetchExercisesByUserId = async (userid: string, from?:Date,to?:Date,exerci
         //TODO MAKE SEPARATE FUNCTION FOR FETCHING COUNT
         if(from && to && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
 
         if(from && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date >= ${fromFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date >= ${fromFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
 
         if(to && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
         if(to && from){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
         if(to){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
 
         if(from){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
 
         if(exerciseName){
             const exercises = await sql`
-            SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+            SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
         const exercises = await sql`
-            SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+            SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
         `
         return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
     }catch(e){

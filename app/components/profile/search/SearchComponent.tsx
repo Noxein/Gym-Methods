@@ -15,6 +15,7 @@ import { ErrorDiv } from '../../ui/ErrorDiv'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
 import { exercisesArr } from '@/app/lib/exercise-list'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
 
 type SearchComponentTypes = {
     exerciseList: (string | UserExercise)[],
@@ -39,6 +40,7 @@ export const SearchComponent = ({exerciseList,exercises,traineeId,children}:Sear
 
     const[loading,setLoading] = useState(true)
     const[error,setError] = useState('')
+    const tempos = useExerciseTempos()
 
     const handleShowExerciseList = () => {
         setShowExerciseList && setShowExerciseList(true)
@@ -210,7 +212,7 @@ export const SearchComponent = ({exerciseList,exercises,traineeId,children}:Sear
         
     </div>
     {showExerciseList && 
-        <ExerciseList exerciseList={exerciseList} exercises={exercises}/>
+        <ExerciseList exerciseList={exerciseList} exercises={exercises} tempos={tempos}/>
     }
 </>
   )

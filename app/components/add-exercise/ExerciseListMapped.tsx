@@ -8,6 +8,7 @@ import { LinkToExercise } from './LinkToExercise'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
 import { exercisesArr } from '@/app/lib/exercise-list'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
 
 type ExerciseListMappedTypes = {
   exercises:ExerciseTypes,
@@ -16,6 +17,7 @@ type ExerciseListMappedTypes = {
 export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseListMappedTypes) => {
   const[searchField,setSearchField] = useState('')
   const[lastExercises,setLastExercises] = useState<string[]>([])
+  const tempos = useExerciseTempos()
   useEffect(()=>{
     const lastExercisesA = localStorage.getItem('twoRecentExercises')
     if(!lastExercisesA) return
@@ -43,19 +45,18 @@ export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseLi
           {
           searchField
           ?
-          <SearchExercises allExercisesInOneArray={allExercisesInOneArray} searchTerm={searchField}/>
+          <SearchExercises allExercisesInOneArray={allExercisesInOneArray} searchTerm={searchField} tempos={tempos}/>
           :
-          <ListExercises item={exercises}/>
+          <ListExercises item={exercises} tempos={tempos}/>
           }
           <div className='mt-20 flex flex-col gap-3 text-white text-center text-xl'>
             {t('LatestExercises')}
             {lastExercises.map((exercise,index)=>{
               const text = exercisesArr.includes(exercise) ? d(nameTrimmer(exercise)) : exercise
-              return <LinkToExercise isFirst={index===0} mLeft={'0'} key={index} text={text} leadTo={exercise}/>
+              return <LinkToExercise isFirst={index===0} mLeft={'0'} key={index} text={text} leadTo={exercise} tempo={tempos[exercise]?.tempo}/>
             })}
           </div>
       </div>
     </div>
   )
 }
-

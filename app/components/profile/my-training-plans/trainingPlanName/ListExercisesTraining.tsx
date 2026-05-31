@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AddExercise } from './AddSingleExercise'
-import { LocalStorageTraining, TrainingExerciseType } from '@/app/types'
+import { LocalStorageTraining, TempoType, TrainingExerciseType } from '@/app/types'
 import { ExpandIcon } from '@/app/ui/icons/ExpandIcon'
 import { Icon } from '@/app/components/Icon'
 import { useTranslations } from 'next-intl'
@@ -15,9 +15,10 @@ type ListExercisesTrainingTypes = {
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
     localStorageTrainingData?: LocalStorageTraining,
-    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
+    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
-export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=true,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData}:ListExercisesTrainingTypes) => {
+export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=true,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData,tempos}:ListExercisesTrainingTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `ml-${currentLevel*2}`
     
@@ -47,6 +48,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
                     setShowAddExercise={setShowAddExercise}
                     localStorageTrainingData={localStorageTrainingData}
                     setLocalStorageTrainingData={setLocalStorageTrainingData}
+                    tempo={tempos[x.id]?.tempo}
                 />
             ))}
     </div>)
@@ -71,6 +73,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
                                 setShowAddExercise={setShowAddExercise}
                                 localStorageTrainingData={localStorageTrainingData}
                                 setLocalStorageTrainingData={setLocalStorageTrainingData}
+                                tempo={tempos[x]?.tempo}
                             />
                     ))}
                 </div>}
@@ -104,6 +107,7 @@ export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=tru
                         setShowAddExercise={setShowAddExercise}
                         localStorageTrainingData={localStorageTrainingData}
                         setLocalStorageTrainingData={setLocalStorageTrainingData}
+                        tempos={tempos}
                     />
                 ))}
         

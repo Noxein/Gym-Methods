@@ -3,6 +3,7 @@ import { AddExercise } from './SearchExercisesTraining'
 import { ExpandIcon, ExpandIcon2 } from '@/app/ui/icons/ExpandIcon'
 import { Icon } from '@/app/components/Icon'
 import { useTranslations } from 'next-intl'
+import { TempoType } from '@/app/types'
 
 type ListExercisesTrainingTypes = {
     item:any,
@@ -10,8 +11,9 @@ type ListExercisesTrainingTypes = {
     objectName?:string,
     currentLevel?:number,
     isLast?:boolean,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
-export const ListExercisesTraining = ({item,handleSelect,objectName,currentLevel=0,isLast=true}:ListExercisesTrainingTypes) => {
+export const ListExercisesTraining = ({item,handleSelect,objectName,currentLevel=0,isLast=true,tempos}:ListExercisesTrainingTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `ml-${currentLevel*2}`
 
@@ -35,6 +37,7 @@ export const ListExercisesTraining = ({item,handleSelect,objectName,currentLevel
                     text={x.exercisename} 
                     key={x.id}
                     handleSelect={handleSelect}
+                    tempo={tempos[x.id]?.tempo}
                 />
             ))}
     </div>)
@@ -54,6 +57,7 @@ export const ListExercisesTraining = ({item,handleSelect,objectName,currentLevel
                                 text={x} 
                                 key={x}
                                 handleSelect={handleSelect}
+                                tempo={tempos[x]?.tempo}
                             />
                     ))}
                 </div>}
@@ -82,6 +86,7 @@ export const ListExercisesTraining = ({item,handleSelect,objectName,currentLevel
                         currentLevel={currentLevel+1} 
                         isLast={index+1===Object.keys(item).length} 
                         handleSelect={handleSelect}
+                        tempos={tempos}
                     />
                 ))}
         

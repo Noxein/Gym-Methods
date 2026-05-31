@@ -1,10 +1,11 @@
 import { Icon } from '@/app/components/Icon';
 import { exercisesArr } from '@/app/lib/exercise-list';
 import { localStorageSetter, nameTrimmer } from '@/app/lib/utils';
-import { LocalStorageTraining, TrainingExerciseType } from '@/app/types'
+import { LocalStorageTraining, TempoType, TrainingExerciseType } from '@/app/types'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon';
 import { useTranslations } from 'next-intl';
 import { v4 as uuidv4 } from 'uuid';
+import { ExerciseTempo } from '@/app/components/ui/ExerciseTempo';
 
 type AddExerciseType = {
     text:string,
@@ -17,9 +18,10 @@ type AddExerciseType = {
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
     localStorageTrainingData?: LocalStorageTraining,
-    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
+    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
+    tempo?: TempoType,
 }
-export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData}:AddExerciseType) => {
+export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingInProgressPage=false,setCurrentExercise,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData,tempo}:AddExerciseType) => {
     const addExercise = () => {
         if(isTrainingInProgressPage && localStorageTrainingData){
             setCurrentExercise && setCurrentExercise(x=>x)
@@ -63,6 +65,7 @@ export const AddExercise = ({text,mLeft,isFirst,id,setPlanExercises,isTrainingIn
         >
             <span className={`flex-1 bg-dark rounded-md pl-4 py-3 flex flex-col`}>
                 {newName}
+                <ExerciseTempo tempo={tempo} className='mt-1'/>
             </span>
             <Icon className='px-2'>
                 <PlusIcon width='20px' fill='#fff'/>

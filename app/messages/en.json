@@ -50,7 +50,14 @@
         "RepetitionsCount": "{count, plural, one {# repetition} other {# repetitions}}",
         "addTraining": "Add training",
         "addNewTraining": "Add new training",
-        "close": "Close"
+        "close": "Close",
+        "Tempo": "Tempo",
+        "TempoInfoAria": "Open tempo info",
+        "TempoInfoTitle": "Tempo details",
+        "TempoInfoDescription": "This exercise uses the following tempo:",
+        "TempoInfoOrder": "The numbers are shown in this order:",
+        "TempoInfoValues": "up - hold at top - down - hold at bottom",
+        "TempoInfoUnit": "Each number represents seconds."
     },
     "Login": {
         "Login": "Login",

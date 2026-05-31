@@ -50,7 +50,14 @@
         "RepetitionsCount": "{count, plural, one {# powtórzenie} few {# powtórzenia} many {# powtórzeń} other {# powtórzenia}}",
         "addTraining": "Dodaj trening",
         "addNewTraining": "Dodaj nowy trening",
-        "close": "Zamknij"
+        "close": "Zamknij",
+        "Tempo": "Tempo",
+        "TempoInfoAria": "Otwórz informacje o tempie",
+        "TempoInfoTitle": "Szczegóły tempa",
+        "TempoInfoDescription": "To ćwiczenie używa następującego tempa:",
+        "TempoInfoOrder": "Liczby są pokazane w tej kolejności:",
+        "TempoInfoValues": "góra - zatrzymanie u góry - dół - zatrzymanie na dole",
+        "TempoInfoUnit": "Każda liczba oznacza sekundy."
     },
     "Login": {
         "Login": "Zaloguj",

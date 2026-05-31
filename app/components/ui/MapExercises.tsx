@@ -5,6 +5,7 @@ import { ListExercisesTraining } from './ListExercisesTraining'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
 
 type MapExercisesTypes = {
     exercisesObject:ExerciseTypes,
@@ -15,6 +16,7 @@ type MapExercisesTypes = {
 
 export const MapExercises = ({exercisesObject,allExercisesInOneArray,handleClose,handleSelect}:MapExercisesTypes) => {
     const[searchField,setSearchField] = useState('')
+    const tempos = useExerciseTempos()
     
     const u = useTranslations("Utils")
     return (
@@ -36,11 +38,13 @@ export const MapExercises = ({exercisesObject,allExercisesInOneArray,handleClose
                     allExercisesInOneArray={allExercisesInOneArray} 
                     searchTerm={searchField}
                     handleSelect={handleSelect}
+                    tempos={tempos}
                     />
                 :
                 <ListExercisesTraining 
                     item={exercisesObject}
                     handleSelect={handleSelect}
+                    tempos={tempos}
                     />
                 }
             </div>
