@@ -150,7 +150,8 @@
         "TrainerAccount": "Konto trenera",
         "CasualAccount": "Konto treningowe",
         "MyTrainees": "Moi podopieczni",
-        "TrainingSchemas": "Schematy treningowe"
+        "TrainingSchemas": "Schematy treningowe",
+        "ShowTempo": "Pokazuj tempo ćwiczeń"
     },
     "Home/Profile/Change-Password" : {
         "ChangePassword": "Zmień hasło",

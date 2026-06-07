@@ -1,7 +1,7 @@
 import NextAuth, { DefaultSession } from "next-auth"
 import authConfig from '@/auth.config'
 import { getTempo } from "./app/lib/sql"
-import { UserPurposeType } from "./app/types"
+import { Settings, UserPurposeType } from "./app/types"
  
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
@@ -20,7 +20,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.setupcompleted = user.setupcompleted
         token.purpose = user.purpose
         token.trainercurrentaccounttype = user.trainercurrentaccounttype
-        token.username = user.username
+        token.username = user.username,
+        token.settings = user.settings
       }
 
       if (
@@ -28,7 +29,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         (token.setupcompleted === undefined ||
           token.purpose === undefined ||
           token.trainercurrentaccounttype === undefined ||
-          token.username === undefined)
+          token.username === undefined ||
+          token.settings === undefined)
       ) {
         const data = await getTempo(token.sub)
         if (data) {
@@ -36,6 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.purpose = data.purpose
           token.trainercurrentaccounttype = data.trainercurrentaccounttype
           token.username = data.username
+          token.settings = data.settings
         }
       }
 
@@ -47,6 +50,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.purpose = data.purpose
           token.trainercurrentaccounttype = data.trainercurrentaccounttype
           token.username = data.username
+          token.settings = data.settings
         }
       }
 
@@ -58,6 +62,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.purpose = token.purpose as UserPurposeType
       session.user.trainercurrentaccounttype = token.trainercurrentaccounttype as string | null
       session.user.username = token.username as string
+      session.user.settings = token.settings as Settings
       return {...session}
     },
   }
@@ -72,6 +77,7 @@ declare module "next-auth" {
       purpose?: UserPurposeType;
       trainercurrentaccounttype?: string | null;
       username: string;
+      settings?: Settings;
     } & DefaultSession["user"]
   }
 
@@ -82,6 +88,7 @@ declare module "next-auth" {
     purpose?: UserPurposeType;
     trainercurrentaccounttype?: string | null;
     username: string;
+    settings?: Settings;
   }
 }
 
@@ -91,5 +98,6 @@ declare module "@auth/core/jwt" {
     purpose?: UserPurposeType;
     trainercurrentaccounttype?: string | null;
     username?: string;
-  }
+    settings?: Settings;
+}
 }

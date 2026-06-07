@@ -150,7 +150,8 @@
         "TrainerAccount": "Trainer account",
         "CasualAccount": "Casual account",
         "MyTrainees": "My trainees",
-        "TrainingSchemas": "Training schemas"
+        "TrainingSchemas": "Training schemas",
+        "ShowTempo": "Show exercise tempo"
     },
     "Home/Profile/Change-Password" : {
         "ChangePassword": "Change password",

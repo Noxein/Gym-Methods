@@ -3,6 +3,7 @@ import { ArrayOfAllExercises, getAllHandleTypes, getUserExerciseIdUsingName, get
 import { AddExerciseStateProvider } from '@/app/components/add-exercise/AddExerciseStateProvider'
 import { exercisesArr } from '@/app/lib/exercise-list'
 import { MetaDataTranslations } from '@/app/lib/utils'
+import { auth } from '@/auth'
 
 export async function generateMetadata() {
   const t = await MetaDataTranslations()
@@ -16,6 +17,7 @@ export async function generateMetadata() {
 
 export default async function page(props:{params: Promise<{exercisename:string}>}) {
   const params = await props.params;
+
   let shouldContinue = false
 
   const exerciseName = decodeURIComponent(params.exercisename)

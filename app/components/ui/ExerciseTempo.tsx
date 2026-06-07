@@ -7,6 +7,7 @@ import { TempoType } from "@/app/types";
 import { CrossIcon } from "@/app/ui/icons/ExpandIcon";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { createPortal } from "react-dom";
 
 type ExerciseTempoTypes = {
@@ -16,6 +17,7 @@ type ExerciseTempoTypes = {
 
 export const ExerciseTempo = ({tempo, className = ''}: ExerciseTempoTypes) => {
     const u = useTranslations("Utils")
+    const { data } = useSession()
     const [showModal, setShowModal] = useState(false)
     const [mounted, setMounted] = useState(false)
 
@@ -27,7 +29,7 @@ export const ExerciseTempo = ({tempo, className = ''}: ExerciseTempoTypes) => {
         }
     }, [])
 
-    if(!tempo) return null
+    if(!tempo || data?.user?.settings?.showtempo !== true) return null
 
     const handleOpenModal = () => {
         HideShowHTMLScrollbar('hide')

@@ -3,7 +3,7 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsData, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, Trainee, TrainerPlanSchema, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsData, SetsDataStarter, Settings, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, Trainee, TrainerPlanSchema, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/Casual/Goal";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -1318,7 +1318,7 @@ export const getAccountSettings = async () => {
 
     try{
         const setting = await sql`
-            SELECT showtempo, goal, advancmentlevel, daysexercising, favouriteexercises, notfavouriteexercises FROM gymusers WHERE id = ${userid}
+            SELECT showtempo, goal, advancmentlevel, daysexercising, favouriteexercises, notfavouriteexercises, settings FROM gymusers WHERE id = ${userid}
         `
         return setting.rows[0] as UserSettings
     }catch(e){
@@ -1372,6 +1372,25 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
             error: 'Something went wrong'
         }
     }finally{
+        revalidatePath('/home/profile/settings')
+    }
+}
+
+export const updateShowTempoSetting = async (showtempo: Settings['showtempo']) => {
+    const userid = await userID()
+
+    if(typeof showtempo !== 'boolean') return { error: 'Something went wrong' }
+
+    try{
+        await sql`
+            UPDATE gymusers SET settings = ${JSON.stringify( { showtempo } )}::jsonb WHERE id = ${userid}
+        `
+    }catch(e){
+        console.log('Error occured updateShowTempoSetting func actions.ts',e)
+        return { error: 'Something went wrong' }
+    }finally{
+        revalidatePath('/home')
+        revalidatePath('/home/profile')
         revalidatePath('/home/profile/settings')
     }
 }

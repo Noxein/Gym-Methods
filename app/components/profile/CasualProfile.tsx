@@ -31,7 +31,7 @@ export const CasualProfile = ({email, trainercurrentaccounttype, purpose}:Profil
           <ExerciseIcon width={width} height={height} fill='#fff'/>
         </SwitchProfileButton>
         )}
-          <LinkBtn href='/home/profile/set-tempo' text={t("SetTempo")}>
+          <LinkBtn href='/home/profile/set-tempo'text={t("SetTempo")}>
             <TimerIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/search' text={t("ExerciseHistory")}>

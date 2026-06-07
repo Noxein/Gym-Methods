@@ -17,7 +17,7 @@ function TraineeProfile({ email }: ProfileTypes) {
               <UserEmail email={email}/>
               <div className='mx-5 flex flex-col gap-4 min-h-[calc(100dvh-100px)]'>
 
-                  <LinkBtn href='/home/profile/search' text={t("ExerciseHistory")}>
+                  <LinkBtn href='/home/profile/search'text={t("ExerciseHistory")}>
                     <CalendarIcon width={width} height={height} fill='#fff'/>
                   </LinkBtn>
 

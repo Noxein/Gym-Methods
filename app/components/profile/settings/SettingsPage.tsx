@@ -17,6 +17,8 @@ import { getUserLocale, setUserLocale } from '@/app/i18n/locale'
 import { Locale } from '@/app/i18n/config'
 import  LocaleContext  from '@/app/context/LocaleContext'
 
+import { ShowTempoSwitch } from '../ShowTempoSwitch'
+
 type SettingsPageTypes = {
     settings: UserSettings
 }
@@ -112,6 +114,8 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         <h1 className='text-xl text-center text-white font-semibold'>{t("Settings")}</h1>
 
             <div className='flex flex-col gap-4 mb-20'>
+
+                <ShowTempoSwitch />
 
                 <Select labelName={t("TrainingWeekly")} valuesToLoop={daysexercising} onChange={e=>handleDaysExercisingChange(e.target.value as daysexercisingType)} defaultValue={userSettings.daysexercising} disabled={loading}/>
     
