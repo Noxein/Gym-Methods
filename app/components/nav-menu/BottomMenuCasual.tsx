@@ -1,8 +1,9 @@
 'use client'
 import { HomeIcon, PlusIcon, ProfileIcon, StartWorkoutIcon } from '@/app/ui/icons/ExpandIcon'
 import Link from 'next/link'
+import { MenuBtn } from './MenuBtn'
 
-export const BottomMenu = () => {
+export const BottomMenuCasual = () => {
   return (
     <nav className={`flex fixed bottom-0 z-40 max-w-mobile w-full mx-auto bg-menubar py-6 border-t-white `}>
         <MenuBtn hrefTo={'/home'}>
@@ -24,10 +25,3 @@ export const BottomMenu = () => {
   )
 }
 
-const MenuBtn = ({hrefTo,children}:{hrefTo:string,children:React.ReactNode}) => {
-    return(
-        <Link href={hrefTo} className='flex-1 flex justify-center'>
-            {children}
-        </Link>
-    )
-}

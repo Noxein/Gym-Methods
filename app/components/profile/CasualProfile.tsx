@@ -27,7 +27,7 @@ export const CasualProfile = ({username, trainercurrentaccounttype, purpose}:Pro
       <UserEmail username={username}/>
       <div className='mx-5 flex flex-col gap-4 min-h-[calc(100dvh-100px)]'>
         {trainercurrentaccounttype === 'Casual' && (
-        <SwitchProfileButton text={t("TrainerAccount")} purpose={purpose}>
+        <SwitchProfileButton text={t("TrainerAccount")} purpose={purpose} trainercurrentaccounttype={trainercurrentaccounttype}>
           <ExerciseIcon width={width} height={height} fill='#fff'/>
         </SwitchProfileButton>
         )}

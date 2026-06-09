@@ -1,5 +1,4 @@
 'use client'
-import { useTranslations } from "next-intl";
 import { Icon } from "../Icon";
 import { switchAccount } from "@/app/actions";
 import { useSession } from "next-auth/react";
@@ -13,20 +12,21 @@ interface button extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTML
   trainercurrentaccounttype?: string | null
 }
 
-function SwitchProfileButton({text, children,purpose, trainercurrentaccounttype, ...rest}:button) {
-    const u = useTranslations("Utils")
-
+function SwitchProfileButton({text, children, ...rest}:button) {
     const router = useRouter()
 
     const { update } = useSession();
 
     const handleSwitchAccount = async () => {
-        await switchAccount()
+        const result = await switchAccount()
+        if (result?.error) {
+          console.error(result.error)
+          return
+        }
 
-        const newType:UserPurposeType = trainercurrentaccounttype === 'Trener' ? 'Casual' : 'Trener'
-        await update({purpose: newType})
-
-        router.push('/home')
+        await update({withArgs: true})
+        router.replace('/home')
+        router.refresh()
     }
   return(
         <button {...rest} className={`w-full bg-borderInteractive text-marmur border-borderInteractive border-2 text-center rounded-lg text-xl flex relative`} onClick={handleSwitchAccount}>

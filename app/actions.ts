@@ -2061,6 +2061,7 @@ export const switchAccount = async () => {
         }
         const currentType = result.rows[0].trainercurrentaccounttype
         const newType = currentType === 'Trener' ? 'Casual' : 'Trener'
+        console.log(newType,'server')
         await sql`
             UPDATE gymusers SET trainercurrentaccounttype = ${newType} WHERE id = ${userid}
         `
@@ -2070,7 +2071,8 @@ export const switchAccount = async () => {
         console.log(e)
         return {error: 'Something went wrong'}
     }finally{
-        revalidatePath('/home')
+        revalidatePath('/home', 'layout')
+        revalidatePath('/home/profile')
     }
 }
 
