@@ -1,27 +1,28 @@
 import React from 'react'
 import { PieChart } from './PieChart'
-import { AllExercisesInOneArray, getAllExercises, getSummaryData, userExercisesThatRequireHandlesOrTimeMesure } from '@/app/actions'
-import { ErrorDiv } from '../../ui/ErrorDiv'
+import { getSummaryPageData, getTraineeSummaryPageData } from '@/app/actions'
 import { Charts } from './Charts'
 import { SummaryContextProvider } from '@/app/context/SummaryContext'
 import NotEnoughData from './NotEnoughData'
 
-export const Summary = async () => {
+type SummaryProps = {
+    traineeId?: string
+}
 
-    const data = await getSummaryData()
-    const timeOrHandleExercises = await userExercisesThatRequireHandlesOrTimeMesure()
-    const allExercisesInOneArray = await AllExercisesInOneArray()
-    const allExercisesObject = await getAllExercises()
-    if(!data){
+export const Summary = async ({ traineeId }: SummaryProps) => {
+
+    const pageData = traineeId ? await getTraineeSummaryPageData(traineeId) : await getSummaryPageData()
+
+    if(!pageData || !pageData.summaryData || pageData.basicSummaryData.error){
         return (
             <NotEnoughData />
         )
     }
   return (
     <div className='mx-5 flex flex-col mb-24'>
-      <SummaryContextProvider>
-        <PieChart data={data.piechart}/>
-        <Charts allExercisesInOneArray={allExercisesInOneArray} timeOrHandleExercises={timeOrHandleExercises} allExercisesObject={allExercisesObject}/>
+      <SummaryContextProvider initialData={pageData.basicSummaryData.data}>
+        <PieChart data={pageData.summaryData.piechart} showAddExerciseLink={!traineeId}/>
+        <Charts allExercisesInOneArray={pageData.allExercisesInOneArray} timeOrHandleExercises={pageData.timeOrHandleExercises} allExercisesObject={pageData.allExercisesObject}/>
       </SummaryContextProvider>
     </div>
   )

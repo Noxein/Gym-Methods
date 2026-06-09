@@ -246,7 +246,8 @@
         "TraineeAddedSuccessfully": "Podopieczny dodany pomyślnie!",
         "AcceptTraineeRequest": "Zaakceptuj prośbę o dołączenie od podopiecznego",
         "Accept": "Akceptuj",
-        "AddTrainee": "Dodaj podopiecznego"
+        "AddTrainee": "Dodaj podopiecznego",
+        "TrainingSummary": "Podsumowanie treningów"
     },
     "Home/Profile/My-Trainees/Schemas":{
         "AddNewSchema": "Stwórz nowy schemat treningowy",

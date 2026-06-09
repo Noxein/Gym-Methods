@@ -246,7 +246,8 @@
         "TraineeAddedSuccessfully": "Trainee added successfully!",
         "AcceptTraineeRequest": "Accept the trainee's join request",
         "Accept": "Accept",
-        "AddTrainee": "Add trainee"
+        "AddTrainee": "Add trainee",
+        "TrainingSummary": "Training summary"
     },
     "Home/Profile/My-Trainees/Schemas":{
         "AddNewSchema": "Create new training template",

@@ -6,7 +6,7 @@ interface CenterComponentProps extends React.DetailedHTMLProps<React.HTMLAttribu
 
 export const CenterComponent = ({children,className,...rest}:CenterComponentProps) => {
   return (
-    <div className={cn('w-screen h-screen flex justify-center flex-col',className)} {...rest}>
+    <div className={cn('w-full max-w-mobile h-screen flex justify-center flex-col',className)} {...rest}>
         {children}
     </div>
   )

@@ -378,8 +378,7 @@ export const logout = async () => {
     await signOut({redirect:true,redirectTo:'/login'})
 }
 
-export const getUserExercises = async () => {
-    const userid = await userID()
+const getUserExercisesByUserId = async (userid: string) => {
     let AllExercises = []
     try{
         const exercises = await sql`
@@ -391,6 +390,87 @@ export const getUserExercises = async () => {
         return []
     }
     return AllExercises as UserExercise[]
+}
+
+const getAllExercisesByUserId = async (userid: string) => {
+    try{
+        const userExercises = await getUserExercisesByUserId(userid)
+
+        return {...exerciseList,userExercises}
+    }catch(e){
+        return exerciseList as ExerciseTypes
+    }
+}
+
+const getAllExercisesInOneArrayByUserId = async (userid: string) => {
+    const userExercises = await getUserExercisesByUserId(userid)
+
+    return [...exercisesArr,...userExercises]
+}
+
+const getExercisesThatRequireHandlesOrTimeMesureByUserId = async (userid: string) => {
+    const ExercisesThatRequireTimeMesure:ExercisesThatRequireTimeMesureOrHandle[] = [...DefaultTimeMesureExercies]
+    const ExercisesThatRequireHandle:    ExercisesThatRequireTimeMesureOrHandle[] = [...DefaultHandleExercises]
+
+    try{
+        const userExercisesThatRequireTimeMesure = await sql`
+            SELECT id,exercisename,timemesure,useshandle FROM gymusersexercises WHERE userid = ${userid} AND (timemesure = true OR useshandle = true)
+        `
+
+        const userExercisesThatRequireEitherTimeMesureOrHandle = userExercisesThatRequireTimeMesure.rows as {id:string,exercisename:string,timemesure:boolean,useshandle:boolean}[]
+
+        userExercisesThatRequireEitherTimeMesureOrHandle.map(x=>{
+            if(x.timemesure) ExercisesThatRequireTimeMesure.push({id: x.id,exercisename:x.exercisename})
+            if(x.useshandle) ExercisesThatRequireHandle.push({id: x.id,exercisename:x.exercisename})
+        })
+        return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
+    }catch(e){
+        console.log(e,'Error occured actions.ts file function userExercisesThatRequireHandlesOrTimeMesure')
+        return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
+    }
+}
+
+const getSummaryDataByUserId = async (userid: string) => {
+    try{
+        const query = await sql`
+            SELECT * FROM gymexercises WHERE userid = ${userid}
+        `
+        const data = query.rows as GymExercise[]
+        const favourtieExercises = [] as { exercisename: string, number: number}[]
+
+        for(let i = 0; i < data.length; i++){
+            const index = favourtieExercises.findIndex(val=>val.exercisename === data[i].exercisename)
+            if( index >= 0){
+                favourtieExercises[index].number = favourtieExercises[index].number + 1
+            }else{
+                favourtieExercises.push({exercisename: data[i].exercisename,number: 1})
+            }
+        }
+
+        return {piechart: favourtieExercises.sort((a,b)=>{
+            if(a.number < b.number) return 1
+            return -1
+        }).slice(0,5)}
+    }catch{
+
+    }
+}
+
+const getBasicSummaryDataByUserId = async (userid: string) => {
+    try{
+        const data = await sql`
+            SELECT sets, exercisename, date FROM gymexercises WHERE userid = ${userid}
+        `
+        const parsedData = data.rows as SummaryDataFetched[]
+        return {data: parsedData, error: ''}
+    }catch{
+        return {data: [], error: 'Something went wrong'}
+    }
+}
+
+export const getUserExercises = async () => {
+    const userid = await userID()
+    return getUserExercisesByUserId(userid)
 }
 
 export const AddNewUserExercise = async (exercisename:string,timeExercise:boolean,usesHandle:boolean) => {
@@ -521,13 +601,8 @@ export const EditUserExercise = async (exerciseid:string,newname:string,timeExer
 }
 
 export const getAllExercises = async () => {
-    try{
-        const userExercises = await getUserExercises()
-
-        return {...exerciseList,userExercises}
-    }catch(e){
-        return exerciseList as ExerciseTypes
-    }
+    const userid = await userID()
+    return getAllExercisesByUserId(userid)
 }
 
 const checkTempoErrors = (tempos:TempoType) => {
@@ -607,9 +682,8 @@ export const DeleteTempoFromDb = async (exerciceid:string) => {
 }
 
 export const AllExercisesInOneArray = async () => {
-    const userExercises = await getUserExercises()
-
-    return [...exercisesArr,...userExercises]
+    const userid = await userID()
+    return getAllExercisesInOneArrayByUserId(userid)
 }
 
 export const ArrayOfAllExercises = async () => {
@@ -624,26 +698,7 @@ export const ArrayOfAllExercises = async () => {
 
 export const userExercisesThatRequireHandlesOrTimeMesure = async () => {
     const userid = await userID()
-
-    const ExercisesThatRequireTimeMesure:ExercisesThatRequireTimeMesureOrHandle[] = [...DefaultTimeMesureExercies]
-    const ExercisesThatRequireHandle:    ExercisesThatRequireTimeMesureOrHandle[] = [...DefaultHandleExercises]
-
-    try{
-        const userExercisesThatRequireTimeMesure = await sql`
-            SELECT id,exercisename,timemesure,useshandle FROM gymusersexercises WHERE userid = ${userid} AND (timemesure = true OR useshandle = true)
-        `
-
-        const userExercisesThatRequireEitherTimeMesureOrHandle = userExercisesThatRequireTimeMesure.rows as {id:string,exercisename:string,timemesure:boolean,useshandle:boolean}[]
-
-        userExercisesThatRequireEitherTimeMesureOrHandle.map(x=>{
-            if(x.timemesure) ExercisesThatRequireTimeMesure.push({id: x.id,exercisename:x.exercisename})
-            if(x.useshandle) ExercisesThatRequireHandle.push({id: x.id,exercisename:x.exercisename})
-        })
-        return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
-    }catch(e){
-        console.log(e,'Error occured actions.ts file function userExercisesThatRequireHandlesOrTimeMesure')
-        return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
-    }
+    return getExercisesThatRequireHandlesOrTimeMesureByUserId(userid)
 }
 
 export const getUserHandles = async () => {
@@ -1586,43 +1641,38 @@ export const Last30DaysExercises = async () => {
 
 export const getSummaryData = async () => {
     const userid = await userID()
-
-    try{
-        const query = await sql`
-            SELECT * FROM gymexercises WHERE userid = ${userid}
-        `
-        const data = query.rows as GymExercise[]
-        const favourtieExercises = [] as { exercisename: string, number: number}[]
-
-        for(let i = 0; i < data.length; i++){
-            const index = favourtieExercises.findIndex(val=>val.exercisename === data[i].exercisename)
-            if( index >= 0){
-                favourtieExercises[index].number = favourtieExercises[index].number + 1
-            }else{
-                favourtieExercises.push({exercisename: data[i].exercisename,number: 1})
-            }
-        }
-
-        return {piechart: favourtieExercises.sort((a,b)=>{
-            if(a.number < b.number) return 1
-            return -1
-        }).slice(0,5)}
-    }catch{
-
-    }
+    return getSummaryDataByUserId(userid)
 }
 
 export const getBasicSummaryData = async () => {
     const userid = await userID()
+    return getBasicSummaryDataByUserId(userid)
+}
 
-    try{
-        const data = await sql`
-            SELECT sets, exercisename, date FROM gymexercises WHERE userid = ${userid}
-        `
-        const parsedData = data.rows as SummaryDataFetched[]
-        return {data: parsedData, error: ''}
-    }catch{
-        return {data: [], error: 'Something went wrong'}
+export const getSummaryPageData = async () => {
+    const userid = await userID()
+
+    return {
+        summaryData: await getSummaryDataByUserId(userid),
+        basicSummaryData: await getBasicSummaryDataByUserId(userid),
+        timeOrHandleExercises: await getExercisesThatRequireHandlesOrTimeMesureByUserId(userid),
+        allExercisesInOneArray: await getAllExercisesInOneArrayByUserId(userid),
+        allExercisesObject: await getAllExercisesByUserId(userid)
+    }
+}
+
+export const getTraineeSummaryPageData = async (traineeId: string) => {
+    if(typeof traineeId !== 'string') return null
+
+    const access = await trainerCanAccessTraineeHistory(traineeId)
+    if(access.error) return null
+
+    return {
+        summaryData: await getSummaryDataByUserId(traineeId),
+        basicSummaryData: await getBasicSummaryDataByUserId(traineeId),
+        timeOrHandleExercises: await getExercisesThatRequireHandlesOrTimeMesureByUserId(traineeId),
+        allExercisesInOneArray: await getAllExercisesInOneArrayByUserId(traineeId),
+        allExercisesObject: await getAllExercisesByUserId(traineeId)
     }
 }
 

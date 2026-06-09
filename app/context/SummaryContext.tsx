@@ -2,7 +2,6 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { ArcherContainerRef } from "react-archer";
 import { BasicSummaryDataType, ExerciseSummaryType, Span, Status, SummaryDataFetched } from "../types";
-import { getBasicSummaryData } from "../actions";
 import { format, isSameDay, subDays } from "date-fns";
 
 export const SummaryContext = createContext<SummaryContextType|null>(null)
@@ -24,11 +23,11 @@ type SummaryContextType = {
     span: Span,
 }
 
-export const SummaryContextProvider = ({children}:{children: React.ReactNode}) => {
+export const SummaryContextProvider = ({children,initialData}:{children: React.ReactNode, initialData: SummaryDataFetched[]}) => {
     const[selectedExercise,setSelectedExercise] = useState('Wyciskanie hantli na ławce płaskiej')
     const archRefs = useRef<ArcherContainerRef | null>(null)
     const[span,setSpan] = useState<Span>('year')
-    const[data,setData] = useState<SummaryDataFetched[]>([])
+    const[data,setData] = useState<SummaryDataFetched[]>(initialData)
     const[basicData,setBasicData] = useState<BasicSummaryDataType>({repeats:[],weight:[]})
     const[exerciseData,setExerciseData] = useState<ExerciseSummaryType>({data:[]})
     const[status,setStatus] = useState<Status>('loading')
@@ -91,20 +90,11 @@ export const SummaryContextProvider = ({children}:{children: React.ReactNode}) =
         //     archRefs.current?.refreshScreen();
         // },[selectedExercise])
         
-    const getData = async () => {
-        const data = await getBasicSummaryData()
-        if(data.error){
-            setStatus('error')
-            return setError(data.error)
-        }
-        setData(data.data)
-        setStatus('idle')
-        changeSpan(span,data.data,selectedExercise)
-    }
-
     useEffect(()=>{
-        getData()
-    },[])
+        setData(initialData)
+        setStatus('idle')
+        changeSpan(span,initialData,selectedExercise)
+    },[initialData])
 
     const changeExercise = (exerciseName:string) => {
         setShowSelectExercise(false)

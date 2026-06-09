@@ -9,8 +9,9 @@ import { PieChart as PC } from 'react-minimal-pie-chart';
 
 type PieChartTypes = {
     data: { exercisename: string, number: number}[]
+    showAddExerciseLink?: boolean
 }
-export const PieChart = ({data}:PieChartTypes) => {
+export const PieChart = ({data,showAddExerciseLink = true}:PieChartTypes) => {
     const t = useTranslations('Summary')
 
     if(!data || data.length === 0) {
@@ -18,9 +19,11 @@ export const PieChart = ({data}:PieChartTypes) => {
             <div className='text-center mt-6 text-white mb-10'>
                 <h1 className='text-2xl'>{t('FavouriteExercies')}</h1>
                 <p className='mt-4 text-notSelected'>{t('NotEnoughtData')}</p>
-                <Link href='/home/add-exercise' className='inline-block mt-3 text-green hover:underline'>
-                    {t('AddExerciseLink')}
-                </Link>
+                {showAddExerciseLink && (
+                    <Link href='/home/add-exercise' className='inline-block mt-3 text-green hover:underline'>
+                        {t('AddExerciseLink')}
+                    </Link>
+                )}
             </div>
         )
     }
