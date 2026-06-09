@@ -30,13 +30,13 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}> 
-      <body className={`${inter.className} flex flex-col min-h-screen`}>
+      <body className={`${inter.className} flex flex-col min-h-screen max-w-mobile w-full mx-auto`}>
         <SessionProvider>
           <NextIntlClientProvider messages={messages} locale={locale}>
             <LocaleProvider lang={locale}>
-              <Suspense fallback={<Loading />}>
+              
                 {children}
-              </Suspense>
+              
               <BodyColorProvider />
             </LocaleProvider>
           </NextIntlClientProvider>

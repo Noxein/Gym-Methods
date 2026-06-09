@@ -11,9 +11,8 @@ type ListExercisesTypes = {
     objectName?:string,
     currentLevel?:number,
     isLast?:boolean,
-    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
-export const ListExercises = ({item,objectName,currentLevel=0,isLast=true,tempos}:ListExercisesTypes) => {
+export const ListExercises = ({item,objectName,currentLevel=0,isLast=true}:ListExercisesTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `${currentLevel*3}`
     
@@ -26,7 +25,7 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true,tempos
                 onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}
                 />
             {showChildren && item.map((x:{exercisename:string,id:string},index:number)=>(
-            <SelectExercise isFirst={index===0} mLeft={'6'} key={x.id} text={x.exercisename} translatedText={x.exercisename} tempo={tempos[x.id]?.tempo}/>
+            <SelectExercise isFirst={index===0} mLeft={'6'} key={x.id} text={x.exercisename} translatedText={x.exercisename} />
         ))}
     </div>)
     }
@@ -37,7 +36,7 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true,tempos
 
         {showChildren && <div className='flex flex-col gap-2 font-normal'>
                 {item.map((x,index)=>(       
-                        <SelectExercise isFirst={index===0} mLeft='12' key={x} text={x} translatedText={d(nameTrimmer(x))} tempo={tempos[x]?.tempo}/>
+                        <SelectExercise isFirst={index===0} mLeft='12' key={x} text={x} translatedText={d(nameTrimmer(x))} />
                     ))}
             </div>}
 
@@ -53,7 +52,7 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true,tempos
 
 
             {showChildren && Object.keys(item).map((key,index)=>(
-                 <ListExercises item={item[key]} objectName={Object.keys(item)[index]} key={key} currentLevel={currentLevel+1} isLast={index+1===Object.keys(item).length} tempos={tempos}/>
+                 <ListExercises item={item[key]} objectName={Object.keys(item)[index]} key={key} currentLevel={currentLevel+1} isLast={index+1===Object.keys(item).length}/>
             ))}
             
             </div>)

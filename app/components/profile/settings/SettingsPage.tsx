@@ -146,7 +146,7 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
             </Icon>
         </button>
 
-        <button className='bg-borderInteractive p-[2px] flex items-center rounded-lg mb-40' onClick={handleShowNotFavModal} disabled={loading}>
+        <button className='bg-borderInteractive p-[2px] flex items-center rounded-lg ' onClick={handleShowNotFavModal} disabled={loading}>
             <span className='bg-dark flex-1 rounded-lg py-3 text-white'>
                 {t("ChangeNotLikedExercise")}
             </span>
@@ -156,7 +156,8 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
         </button>
 
         <SmallLoaderDiv loading={loading}/>
-        <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
+
+        <div className='text-white mb-24 w-full max-w-mobile flex right-5 left-5 gap-4'>
 
             <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>{u("Cancel")}</Button>
             <Button className='flex-1' onClick={handleSave} isPrimary disabled={loading}>{u("SaveChanges")}</Button>

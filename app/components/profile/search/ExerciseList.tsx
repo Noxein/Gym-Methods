@@ -37,6 +37,7 @@ export const ExerciseList = ({exerciseList,exercises,tempos}:ExerciseListTypes) 
 
   return (
         <div className='fixed min-h-screen left-0 top-0 w-screen z-20 backdrop-blur-sm flex flex-col overflow-auto bottom-20 px-5 bg-dark bg-opacity-50'>
+            <div className="max-w-mobile w-mobile mx-auto">
                 <div className='flex items-center my-5'>
                     <button className='flex justify-center px-2' onClick={hideList}>
                         <Icon className='flex justify-center items-center'>
@@ -46,19 +47,20 @@ export const ExerciseList = ({exerciseList,exercises,tempos}:ExerciseListTypes) 
                     <input type="text" placeholder={u("Search")} value={searchField} id={u("Search")} onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/>
                 </div>
 
-                <Button className='mb-4 text-white bg-dark border-2 border-borderInteractive' onClick={slectAllExercises}>
+                <Button className='mb-4 text-white bg-dark border-2 border-borderInteractive w-full' onClick={slectAllExercises}>
                     {t("AllExercises")}
                 </Button>
                
                 {
                     searchField
                     ?
-                    <SearchExercises allExercisesInOneArray={exerciseList} searchTerm={searchField} tempos={tempos}/>
+                    <SearchExercises allExercisesInOneArray={exerciseList} searchTerm={searchField}/>
                     :
                     <div className='mb-20'>
-                        <ListExercises item={exercises} tempos={tempos}/>
+                        <ListExercises item={exercises}/>
                     </div>
                 }
+                </div>
         </div>
   )
 }
@@ -66,10 +68,9 @@ export const ExerciseList = ({exerciseList,exercises,tempos}:ExerciseListTypes) 
 type SearchExercisesTypes = {
     allExercisesInOneArray: (string | UserExercise)[],
     searchTerm: string,
-    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
 
-export const SearchExercises = ({allExercisesInOneArray,searchTerm,tempos}:SearchExercisesTypes) => {
+export const SearchExercises = ({allExercisesInOneArray,searchTerm}:SearchExercisesTypes) => {
 
     const context = useContext(LocaleContext)
     let filtered:(string | UserExercise)[] = []
@@ -96,16 +97,15 @@ export const SearchExercises = ({allExercisesInOneArray,searchTerm,tempos}:Searc
       })
     }
   return (
-    <FilteredExercises allExercisesInOneArray={filtered} tempos={tempos}/>
+    <FilteredExercises allExercisesInOneArray={filtered} />
   )
 }
 
 type FilteredExercisesTypes = {
     allExercisesInOneArray: (string | UserExercise)[],
-    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
 
-export const FilteredExercises = ({allExercisesInOneArray,tempos}:FilteredExercisesTypes) => {
+export const FilteredExercises = ({allExercisesInOneArray}:FilteredExercisesTypes) => {
 
     const d = useTranslations('DefaultExercises')
 
@@ -114,12 +114,12 @@ export const FilteredExercises = ({allExercisesInOneArray,tempos}:FilteredExerci
             {allExercisesInOneArray.map((x,i)=>{
                 if(typeof x === 'object'){
                     return (
-                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x.exercisename} translatedText={x.exercisename} key={i} tempo={tempos[x.id]?.tempo}/>
+                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x.exercisename} translatedText={x.exercisename} key={i} />
                     )
                 }
                 if(typeof x === 'string'){
                     return (
-                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x} translatedText={d(nameTrimmer(x))} key={i} tempo={tempos[x]?.tempo}/>
+                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x} translatedText={d(nameTrimmer(x))} key={i} />
                     )
                 }
             })}

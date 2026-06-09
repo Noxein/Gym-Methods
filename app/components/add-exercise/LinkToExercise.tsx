@@ -17,7 +17,6 @@ export const LinkToExercise = ({text,mLeft,isFirst,leadTo,tempo}:LinkToExerciseT
         <Link className={`relative text-left ml-${mLeft} bg-borderInteractive text-marmur border-borderInteractive border-[2px] rounded flex justify-between ${isFirst?'mt-2':null}`} href={`/home/add-exercise/${leadTo.trim()}`}>
             <span className={`flex-1 bg-dark rounded-md pl-4 py-2 flex flex-col text-lg`}>
                 {text}
-                <ExerciseTempo tempo={tempo} className="mt-1"/>
             </span>
             <Icon className="flex items-center px-1">
                 <PlusIcon fill="#fff"/>

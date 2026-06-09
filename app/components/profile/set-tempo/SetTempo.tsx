@@ -6,6 +6,8 @@ import { EditTempo } from './EditTempo'
 import { ExerciseTypes, SelectedExerciseWithTempo, UserExercise, UserExerciseTempoReturnType } from '@/app/types'
 import { DeleteTempo } from './DeleteTempo'
 import { useTranslations } from 'next-intl'
+import { Input } from '../../ui/Input'
+import { ShowTempoSwitch } from '../ShowTempoSwitch'
 
 type SetTempoType = {
   exercises:ExerciseTypes,
@@ -21,11 +23,16 @@ export const SetTempo = ({exercises,tempos,allExercisesInOneArray}:SetTempoType)
   const u = useTranslations("Utils")
 
   return (<div className='mx-5 mt-10'>
-      <input type="text"
+    <ShowTempoSwitch />
+
+    <Input 
+      labelName=''
+      value={searchField}
       placeholder={u("Search")}
       onChange={e=>setSearchField(e.target.value)}
-      className={`pl-2 w-full text-xl bg-dark border-marmur border-2 rounded-md py-2 text-marmur`}
+      className={`pl-2 w-full text-xl mt-5`}
       />
+      
 
       {searchField ? 
       <SearchList 

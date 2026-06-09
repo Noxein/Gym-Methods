@@ -161,7 +161,7 @@ export const SearchComponent = ({exerciseList,exercises,traineeId,children}:Sear
   return (
 <>
     <div className='text-white'>
-        <div className={`fixed z-20 left-0 pt-5 w-full ${showSearch?'top-0':'-top-[200px]'} transition-all bg-dark`}>
+        <div className={`fixed z-20 pt-5 max-w-mobile w-full mx-auto ${showSearch?'top-0':'-top-[200px]'} transition-all bg-dark`}>
             <div className='flex flex-col gap-4'>
                 <div className='flex gap-4 mx-5 relative'>
                     <Input labelName={t("From")} type='date' onChange={e=>handleDateChange(e.target.value,setFrom)} disabled={loading}/>
@@ -176,7 +176,7 @@ export const SearchComponent = ({exerciseList,exercises,traineeId,children}:Sear
                     <Button onClick={()=>handleSearch(true)}>{u("Search")}</Button>
                 </div>
             </div>
-            <div className={`w-full flex flex-col px-5 bg-darkLight mt-2 text-white border-green border-b-2 pt-2` }>
+            <div className={`w-full flex flex-col px-5 bg-darkLight mt-2 text-white pt-2` }>
                 <div className='w-full flex justify-between gap-10  '>
                     <button onClick={toggleSearchBar} className='flex-1'>
                         <Icon className='flex items-center'>

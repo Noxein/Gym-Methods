@@ -26,7 +26,7 @@ function DeleteTrainingModal() {
     const t = useTranslations("Home/Profile/Long-Term-Plans")
 
     return ( 
-    <div onClick={e=>e.stopPropagation()} className="text-white mx-5 w-full text-center text-xl">
+    <div onClick={e=>e.stopPropagation()} className="text-white mx-5 w-mobile max-w-mobile text-center text-xl">
 
         <p>{t("AreYouSureYouWannaDelete")} {exerciseName}?</p>
 

@@ -31,7 +31,7 @@ function CloneTrainingModal() {
     }
 
     return (
-        <div onClick={e=>e.stopPropagation()} className="w-full mx-5 text-white">
+        <div onClick={e=>e.stopPropagation()} className="w-mobile max-w-mobile mx-5 text-white">
             <p className="text-center text-2xl mb-2">{t("WhichTrainingToClone")}</p>
             <div className="flex flex-col gap-2">
                 {userTrainings.current.map(training => (

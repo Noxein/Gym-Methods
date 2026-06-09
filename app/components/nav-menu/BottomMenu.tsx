@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export const BottomMenu = () => {
   return (
-    <nav className={`flex fixed bottom-0 z-40 w-screen bg-[#131C22] py-6 border-t-white border-t-2`}>
+    <nav className={`flex fixed bottom-0 z-40 max-w-mobile w-full mx-auto bg-menubar py-6 border-t-white `}>
         <MenuBtn hrefTo={'/home'}>
             <HomeIcon />
         </MenuBtn>

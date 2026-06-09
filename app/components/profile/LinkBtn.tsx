@@ -36,11 +36,11 @@ export const LinkBtn = ({href,text,sClass,isNewFeature,children}:LinkBtnTypes) =
       </Link>
     )
 }
-export const UserEmail = ({email}:{email:string}) => {
+export const UserEmail = ({username}:{username:string}) => {
 
     return(
-        <h1 className={`mx-auto bg-dark text-marmur w-full text-center py-4 text-xl mb-4 border-b-2 border-marmur`}>
-            <div>{email}</div>
+        <h1 className={`mx-auto bg-menubar text-marmur w-full text-center py-4 text-xl mb-4 border-marmur`}>
+            <div>{username}</div>
         </h1>
     )
 }

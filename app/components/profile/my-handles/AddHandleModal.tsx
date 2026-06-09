@@ -33,7 +33,7 @@ export const AddHanleModal = ({hideModal}:DeleteHandleModal) => {
     const e = useTranslations("Errors")
     
   return (
-    <div className='flex flex-col gap-4 text-center text-xl w-full mx-5'>
+    <div className='flex flex-col gap-4 text-center text-xl w-mobile max-w-mobile mx-5'>
         <Input labelName={t("HandleName")} value={name} onChange={e=>setName(e.target.value)} required/>
         {loading && <SmallLoaderDiv loading={loading} />}
         <ErrorDiv error={error}/>

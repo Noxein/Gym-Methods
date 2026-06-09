@@ -74,7 +74,7 @@ function ImportTrainingModal({UserTrainings,allExercisesInOneArray}:ImportTraini
 
     return ( 
     <div className="fixed w-[calc(100vw-40px)] backdrop-blur-sm min-h-screen top-0 left-0 ml-5 z-40 flex overflow-auto bottom-20">
-        <div className=" text-white w-full bg-dark px-2 rounded-lg py-5 overflow-y-scroll" onClick={e=>e.stopPropagation()}>
+        <div className=" text-white mx-auto w-mobile max-w-mobile bg-dark px-2 rounded-lg py-5 overflow-y-scroll" onClick={e=>e.stopPropagation()}>
             <div>
                 <p className="text-center text-xl my-2">{t("TrainingsFromThisPlan")}</p>
 

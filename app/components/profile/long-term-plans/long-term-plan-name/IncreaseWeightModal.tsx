@@ -89,7 +89,7 @@ function IncreaseWeightModal({setShowIncreaseWeightModal}: {setShowIncreaseWeigh
     }
 
     return ( 
-    <div onClick={e=>e.stopPropagation()} className="bg-dark-700 p-5 text-white rounded-lg max-w-md w-full flex-col flex">
+    <div onClick={e=>e.stopPropagation()} className="bg-dark-700 p-5 text-white rounded-lg w-mobile max-w-mobile flex-col flex">
         <p className="mb-10 text-xl font-semibold text-center">{t("IncreaseWeightForExercises")}</p>
 
         <div className="flex gap-2">

@@ -44,7 +44,7 @@ export const EditModal = ({selectedExercise,setShowEditModal}:EditModal) => {
 
   return (
     <BlurBackgroundModal>
-        <div  className={`text-white px-5 py-6 rounded-md text-xl flex flex-col gap-4 w-full`}>
+        <div  className={`text-white px-5 py-6 rounded-md text-xl flex flex-col gap-4 w-full max-w-mobile w-mobile mx-auto ${loading ? 'pointer-events-none':'pointer-events-auto'}`}>
             <Input labelName={t("ExerciseName")} value={newName} onChange={e=>setNewName(e.target.value)} disabled={loading}/>
 
             <CheckBox labelText={t("IsTimingExercise")} onChange={e=>setTimeExercise(e.target.checked)} checked={timeExercise} disabled={loading}/>

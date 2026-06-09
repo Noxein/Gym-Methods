@@ -11,7 +11,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      maxWidth:{
+        "mobile": "800px"
+      },
+      width:{
+        "mobile": "800px"
+      },
       colors:{
+        menubar: '#131C22',
         green: '#3C9F65', //3C9F65 
         'green-200': '#12301f',
         'green-700': '#2bb358',

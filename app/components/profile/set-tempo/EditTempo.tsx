@@ -45,7 +45,7 @@ export const EditTempo = ({selectedExercise,setShowEditTempoModal}:EditTempoType
     const formattedExerciseName = selectedExercise.name === selectedExercise.id ? d(nameTrimmer(selectedExercise.name)) : selectedExercise.name 
   return (
     <BlurBackgroundModal>
-        <div className={`flex flex-col gap-4 text-xl mx-5 mb-20 py-5 text-white rounded-md w-full`}>
+        <div className={`flex flex-col gap-4 text-xl mb-20 py-5 text-white rounded-md max-w-mobile w-mobile`}>
             <div className='text-center pb-2'>{formattedExerciseName}</div>
             <div className='flex flex-col gap-4'>
                 <div className='flex flex-col gap-4'>

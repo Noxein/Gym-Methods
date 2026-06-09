@@ -33,7 +33,7 @@ function DeleteLongTermPlanModal({planName,setShowDeleteTrainingModal}:DeleteLon
         setShowDeleteTrainingModal(false)
     }
     return ( 
-    <div onClick={e=>e.stopPropagation()} className="w-full mx-5">
+    <div onClick={e=>e.stopPropagation()} className="w-mobile max-w-mobile mx-5">
 
         <p className="text-center text-xl">{t("AreYouSureYouWannaDelete")} {planName}</p>
 
