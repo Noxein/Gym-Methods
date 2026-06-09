@@ -2,7 +2,6 @@ import Link from "next/link"
 import { Icon } from "../Icon"
 import { PlusIcon } from "@/app/ui/icons/ExpandIcon" 
 import { TempoType } from "@/app/types";
-import { ExerciseTempo } from "../ui/ExerciseTempo";
  
 type LinkToExerciseType = {
     text: string,
