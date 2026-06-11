@@ -7,6 +7,7 @@ import { getCroppedImg } from '@/app/lib/utils';
 import { PictureIcon } from '@/app/ui/icons/ExpandIcon';
 import { useTranslations } from 'next-intl';
 import { ErrorDiv } from '../ui/ErrorDiv';
+import { CenterComponent } from '../CenterComponent';
 
 type AvatarSelectorProps = {
     setCurrentStep: React.Dispatch<React.SetStateAction<'language' | 'setavatar' | 'purpose' | 'final'>>
@@ -87,7 +88,7 @@ function AvatarSelector({ setCurrentStep }: AvatarSelectorProps) {
 
 
     return ( 
-    <div >
+    <CenterComponent>
         <input type="file" accept='image/*' onChange={handleFileChange} ref={inputRef} className='invisible'/>
 
         <div className='flex items-center justify-center '>
@@ -119,7 +120,7 @@ function AvatarSelector({ setCurrentStep }: AvatarSelectorProps) {
             next={handleDoneCrop}
             loading={loading}
         />
-    </div> );
+    </CenterComponent> );
 }
 
 export default AvatarSelector;

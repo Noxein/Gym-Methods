@@ -22,9 +22,9 @@ function Puropse({setCurrentStep,purpose,setPurpose}:PurposeProps) {
     }
     return ( 
         <CenterComponent>
-            <div className="text-white mx-5 mb-20">
-                
-                    <h1 className="text-3xl font-medium mb-10 text-center">{t("PurposeQuestion")}</h1>
+            
+                <div className="flex flex-col items-center justify-center flex-1 mx-5" >
+                    <h1 className="text-3xl font-medium mb-10 text-center text-white">{t("PurposeQuestion")}</h1>
 
                     <Select 
                         labelName={t("UserType")}
@@ -33,12 +33,12 @@ function Puropse({setCurrentStep,purpose,setPurpose}:PurposeProps) {
                         onChange={handlePurposeChange}
                         value={purpose}                        
                         />
-
+                </div>
                     <Navigator 
                         prev={()=>setCurrentStep('setavatar')}
                         next={e=>{setCurrentStep('final');e.preventDefault()}}
                     />
-            </div> 
+             
     </CenterComponent>);
 }
 

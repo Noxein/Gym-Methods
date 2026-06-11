@@ -7,11 +7,11 @@ import { Button } from '@/app/components/ui/Button'
 import { ErrorDiv } from '@/app/components/ui/ErrorDiv'
 import { useTranslations } from 'next-intl'
 import { FirstSetupSelectedSteps } from '@/app/types'
-import { Mapper } from './Mapper'
 import { DefaultExercisesMap } from '../../ui/DefaultExercisesMap'
 import { Icon } from '../../Icon'
 import { PlusIcon } from '@/app/ui/icons/ExpandIcon'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 type StepTwoOutOfThree = {
     setCurrentStep:React.Dispatch<React.SetStateAction<FirstSetupSelectedSteps>>,
@@ -25,6 +25,7 @@ type StepTwoOutOfThree = {
 export const ExercisesSelector = ({setCurrentStep,favouriteExercises,setExercises,exercisesToDelete,data,isFav}:StepTwoOutOfThree) => {
     const[error,setError] = useState('')
     const { update } = useSession()
+    const router = useRouter()
 
     const ValidateData = async () => {
         const validData = await SecondStepDataValidation(favouriteExercises)
@@ -33,6 +34,7 @@ export const ExercisesSelector = ({setCurrentStep,favouriteExercises,setExercise
         const result = await FirstSetupFinish(data,favouriteExercises,exercisesToDelete)
         if(result && result.error) return setError(e(result.error))
         await update({ refresh: true })
+        router.push('/home')
     }
 
     const t = useTranslations("FirstSetup")
@@ -61,7 +63,7 @@ export const ExercisesSelector = ({setCurrentStep,favouriteExercises,setExercise
     const prevStep = () => isFav ? setCurrentStep('training-creator') : setCurrentStep('fav-exercises')
     
     return (
-    <div className='flex flex-col mx-5'>
+    <div className='flex flex-col mx-5 min-h-screen'>
         <h1 className='text-white font-bold text-xl text-center mt-20 mb-10'>
             {message}
         </h1>
@@ -79,7 +81,7 @@ export const ExercisesSelector = ({setCurrentStep,favouriteExercises,setExercise
         
         <ErrorDiv error={error}/>
 
-        <div className={`fixed bottom-0 left-0 right-0 flex gap-2 px-5 pb-5 bg-dark`}>
+        <div className={`sticky mt-auto bottom-5 flex gap-2 px-5 pb-5 `}>
             <Button className='flex-1 text-2xl' onClick={prevStep}>{t("Back")}</Button>
             <Button className='flex-1 text-2xl' onClick={nextStep} isPrimary >{t("Next")}</Button>
         </div>

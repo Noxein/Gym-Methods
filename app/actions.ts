@@ -321,6 +321,7 @@ export const FistStepDataValidation = async (data:dataType) => {
         error.isError = true
     }
     if(error.isError){
+        console.log(error)
         return { error }
     }
 
@@ -349,13 +350,13 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
     const userid = await userID()
     const validateData = await FistStepDataValidation(data)
     for(const [key,value] of Object.entries(data)){
-        if(typeof value !== 'string') return { error: "Something went wrong" }
+        if(typeof value !== 'string') return { success: false, error: "Something went wrong" }
     }
     if(validateData?.error){
-        return { error: 'Something went wrong in first step' }
+        return { success: false, error: 'Something went wrong in first step' }
     } 
     if(!Array.isArray(deleteExercises) || !Array.isArray(favourtiteExercises)){
-        return { error: 'Something went wrong' }
+        return { success: false, error: 'Something went wrong' }
     }
     try{
         await sql`
@@ -364,16 +365,31 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
             WHERE id = ${userid};
         `
         await createTrainingPlans(favourtiteExercises,deleteExercises,Number(data.daysexercising))
-        return
+        return { success: true, error: '' }
     }catch(e){
         isError = true
         console.log('Error occured FirstSetupFinish func actions.ts',e)
-        return { error : 'Something went wrong'}
+        return { success: false, error : 'Something went wrong'}
     }finally{
-        if(!isError) redirect('/home')
+        
     }
 }
 
+export const firstSetupOwnTraining = async (data:dataType) => {
+    const userid = await userID()
+
+    try{
+        await sql`
+            UPDATE gymusers
+            SET purpose = 'Casual', goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify([])}, notfavouriteexercises= ${JSON.stringify([])}, setupcompleted = true
+            WHERE id = ${userid};
+        `
+    }catch{
+        return { success: false, error : 'Something went wrong'}
+    }finally{
+        return { success: true, error: '' }
+    }
+}
 export const logout = async () => {
     await signOut({redirect:true,redirectTo:'/login'})
 }
@@ -895,7 +911,7 @@ export const GetUserTrainingByName = async (trainingname:string) => {
     }
 }
 
-export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay,exercisesuwu?:TrainingProgression[]) => {
+export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay,exercisesuwu?:TrainingProgression[],shouldRedirect: boolean = true) => {
     const userid = await userID()
     if(typeof trainingplanname !== 'string' || typeof weekday !== 'string' || (exercisesuwu && !Array.isArray(exercisesuwu))){
         return {error:'Something went wrong'}
@@ -928,9 +944,11 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
     }catch(e){
         console.log('Error occured CreateUserTraining func actions.ts',e)
         return { error: 'Something went wrong'}
+    }finally{
+        revalidatePath('/home/profile/my-training-plans')
+        shouldRedirect && redirect(`/home/profile/my-training-plans/${trainingplanname}`)
     }
-    revalidatePath('/home/profile/my-training-plans')
-    redirect(`/home/profile/my-training-plans/${trainingplanname}`)
+
 }
 
 export const EditUserTraining = async (trainingid:string,trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay) => {
@@ -1559,8 +1577,14 @@ const createTrainingPlans = async (fav:string[],notfav:string[],days:number) => 
             FilterTraining(Beginner4_7Lower_SecondVariation,fav,notfav)
         )
     }
+    let weekdays: WeekDay[] = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+    ]
 
-    plans.map(async(plan,index)=>{
+    const results = await Promise.all(plans.map(async(plan,index)=>{
         let name:string
         if(days<=2){
             name = `Trening całego ciała ${index+1}`
@@ -1568,8 +1592,15 @@ const createTrainingPlans = async (fav:string[],notfav:string[],days:number) => 
             name = index<=1?`Trening góry ${index+1}`:`Trening dołu ${index+1}`
         }
 
-        await CreateUserTraining(name,'Monday',plan)
-    })
+        const result = await CreateUserTraining(name,weekdays[index],plan,false)
+        if(result?.error) return { success: false, error: 'Something went wrong' }
+        return { success: true, error: '' }
+    }))
+
+    if(results.some(result=>!result.success)){
+        console.log('Error in creating training plans', results)
+        return { success: false, error: 'Something went wrong' }
+    }
 
 }
 
