@@ -361,7 +361,7 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
     try{
         await sql`
             UPDATE gymusers
-            SET purpose = 'Casual', goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
+            SET purpose = 'Casual', favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
             WHERE id = ${userid};
         `
         await createTrainingPlans(favourtiteExercises,deleteExercises,Number(data.daysexercising))
@@ -1391,7 +1391,7 @@ export const getAccountSettings = async () => {
 
     try{
         const setting = await sql`
-            SELECT showtempo, goal, advancmentlevel, daysexercising, favouriteexercises, notfavouriteexercises, settings FROM gymusers WHERE id = ${userid}
+            SELECT showtempo, favouriteexercises, notfavouriteexercises, settings FROM gymusers WHERE id = ${userid}
         `
         return setting.rows[0] as UserSettings
     }catch(e){
@@ -1403,26 +1403,13 @@ export const getAccountSettings = async () => {
 export const saveNewUserSetting = async (newSettings : UserSettings) => {
     const userid = await userID()
 
-    const daysexercisingArr = ['1' , '2' , '3' , '4' , '5' , '6' , '7']
-    const goalArr = ['Siła','Hipertrofia','Oba']
-    const advancmentlevelArr = ['Początkujący','Średniozaawansowany','Zaawansowany']
 
-    const { advancmentlevel, daysexercising, favouriteexercises, goal, notfavouriteexercises } = newSettings
+
+    const { favouriteexercises, notfavouriteexercises } = newSettings
 
     if(!Array.isArray(favouriteexercises) || !Array.isArray(notfavouriteexercises)){
         return { error: 'Something went wrong' }
     }
-    if(typeof goal !== 'string' || !goalArr.includes(goal)){
-        return { error: 'Wrong goal, correct goals are one of' }
-    } 
-
-    if(typeof advancmentlevel !== 'string' || !advancmentlevelArr.includes(advancmentlevel)){
-        return { error: 'Wrong advancment level, correct level is one of' }
-    } 
-
-    if(typeof daysexercising !== 'string' || !daysexercisingArr.includes(daysexercising)){
-        return { error: 'Training days a week should be between 1 and 7' }
-    } 
 
     if(favouriteexercises){
         for(let i = 0 ; i< favouriteexercises.length ; i++ ){
@@ -1437,7 +1424,7 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
     
     try{
         await sql`
-            UPDATE gymusers SET goal = ${goal}, advancmentlevel = ${advancmentlevel}, daysexercising = ${daysexercising}, favouriteexercises = ${JSON.stringify(favouriteexercises)}, notfavouriteexercises = ${JSON.stringify(notfavouriteexercises)}  WHERE id = ${userid}
+            UPDATE gymusers SET favouriteexercises = ${JSON.stringify(favouriteexercises)}, notfavouriteexercises = ${JSON.stringify(notfavouriteexercises)}  WHERE id = ${userid}
         `
     }catch(e){
         console.log('Error occured saveNewUserSetting func actions.ts',e)

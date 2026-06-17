@@ -20,17 +20,34 @@ export default async function page({params}:{params: Promise<{[key:string]:strin
 
     if(!traineeData) return <div className="text-white">{t("Trainee data not found")}</div>
 
-    // Merge custom exercises with allExercisesInOneArray
+    // Keep a stable id namespace for trainer custom exercises so selections and flags match.
     const customExercisesFormatted = customExercises.map(ex => ({
         id: `custom_${ex.id}`,
         exercisename: ex.exercise_name,
-        timemesure: false,
-        useshandle: false,
+        timemesure: ex.time_measure,
+        useshandle: ex.uses_handle,
     }))
+
     const mergedAllExercisesArray = [...allExercisesInOneArray, ...customExercisesFormatted]
+    const mergedAllExercises = {
+        ...allExercises,
+        userExercises: [...(allExercises.userExercises || []), ...customExercisesFormatted],
+    }
+    const mergedExercisesThatRequireTimeMesure = [
+        ...ExercisesThatRequireTimeMesure,
+        ...customExercisesFormatted
+            .filter(ex => ex.timemesure)
+            .map(ex => ({ id: ex.id, exercisename: ex.exercisename })),
+    ]
+    const mergedExercisesThatRequireHandle = [
+        ...ExercisesThatRequireHandle,
+        ...customExercisesFormatted
+            .filter(ex => ex.useshandle)
+            .map(ex => ({ id: ex.id, exercisename: ex.exercisename })),
+    ]
 
     return (
-        <TrainingContextProvider locale={locale} userData={traineeData} allHandles={allHandleTypes} allExercisesInOneArray={mergedAllExercisesArray} allExercises={allExercises} exercisesThatRequireTimeMesure={ExercisesThatRequireTimeMesure} exercisesThatRequireHandle={ExercisesThatRequireHandle}>
+        <TrainingContextProvider locale={locale} userData={traineeData} allHandles={allHandleTypes} allExercisesInOneArray={mergedAllExercisesArray} allExercises={mergedAllExercises} exercisesThatRequireTimeMesure={mergedExercisesThatRequireTimeMesure} exercisesThatRequireHandle={mergedExercisesThatRequireHandle}>
             <ConfirmModalProvider>
                 <CreateTraining />
             </ConfirmModalProvider>

@@ -173,9 +173,6 @@ export type ExerciseTypeWithHandle = ExerciseType & { handlename?: string }
 
 export type UserSettings = {
     showtempo: boolean,
-    goal:  'Siła' | 'Hipertrofia' | 'Oba',
-    advancmentlevel: 'Początkujący' | 'Średniozaawansowany' | 'Zaawansowany',
-    daysexercising: '1' | '2' | '3' | '4' | '5' | '6' | '7',
     favouriteexercises?: string[],
     notfavouriteexercises?: string[],
     settings?: Settings
