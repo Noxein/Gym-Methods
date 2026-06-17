@@ -151,6 +151,7 @@
         "CasualAccount": "Casual account",
         "MyTrainees": "My trainees",
         "TrainingSchemas": "Training schemas",
+        "CustomExercises": "Custom exercises",
         "ShowTempo": "Show exercise tempo"
     },
     "Home/Profile/Change-Password" : {
@@ -280,6 +281,34 @@
         "AreYouSureYouWantToSaveChanges": "Are you sure you want to save changes?",
         "NoTrainingsScheduled": "No trainings scheduled for this day.",
         "TrainingsForDate": "Trainings for date"
+    },
+    "Home/Profile/My-Trainees/Exercises":{
+        "CreateNewExercise": "Create New Exercise",
+        "ExerciseName": "Exercise Name",
+        "EnterExerciseName": "Enter exercise name",
+        "Description": "Description",
+        "EnterDescription": "Enter exercise description (optional)",
+        "Category": "Category",
+        "CategoryPlaceholder": "e.g., Chest, Legs, Back",
+        "CreateExercise": "Create Exercise",
+        "Creating": "Creating...",
+        "NoCustomExercises": "No custom exercises yet",
+        "CreateYourFirstExercise": "Create your first custom exercise to get started",
+        "ConfirmDeleteExercise": "Are you sure you want to delete this exercise?",
+        "CreatedOn": "Created on",
+        "Custom exercises": "Custom exercises"
+    },
+    "Home/Profile/My-Trainees/Handles":{
+        "CustomHandles": "Custom handles",
+        "CreateNewHandle": "Create New Handle",
+        "HandleName": "Handle Name",
+        "EnterHandleName": "Enter handle name",
+        "CreateHandle": "Create Handle",
+        "Creating": "Creating...",
+        "NoCustomHandles": "No custom handles yet",
+        "CreateYourFirstHandle": "Create your first custom handle to get started",
+        "ConfirmDeleteHandle": "Are you sure you want to delete this handle?",
+        "CreatedOn": "Created on"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Continue training",
@@ -535,7 +564,8 @@
         "First setup": "First login",
         "Login": "Login",
         "Login description": "App for gym",
-        "Register": "Register"
+        "Register": "Register",
+        "Custom exercises": "Custom exercises"
     },
     "Summary": {
         "Month": "Month",

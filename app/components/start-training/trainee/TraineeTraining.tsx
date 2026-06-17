@@ -22,6 +22,10 @@ function TraineeTraining() {
         setTimePassed,
     } = useContext(TimerContext)!
 
+    if(!training) {
+        return <div className="text-white text-center mt-20">Loading training...</div>
+    }
+
      const[showHistory,setShowHistory] = useState(false)
     const[historyCache,setHistoryCache] = useState<{ [key: string]: ExerciseType | null; } | undefined>({})
         

@@ -28,11 +28,15 @@ function TrainerProfile({username, purpose, trainercurrentaccounttype}:ProfileTy
           <PlanIcon width={width} height={height} fill='#fff'/>
         </LinkBtn>
 
-        <LinkBtn href='/home/profile/my-exercises' text={t("Exercises")}>
+        <LinkBtn text={t("CustomExercises")} href="/home/profile/my-trainees/exercises">
           <ExerciseIcon width={width} height={height} fill='#fff'/>
         </LinkBtn>
 
-        <LinkBtn href='/home/profile/my-handles' text={t("Handles")}>
+        <LinkBtn href='/home/profile/my-trainees/exercises' text={t("Exercises")}>
+          <ExerciseIcon width={width} height={height} fill='#fff'/>
+        </LinkBtn>
+
+        <LinkBtn href='/home/profile/my-trainees/handles' text={t("Handles")}>
           <HandleIcon width={width} height={height} fill='#fff'/>
         </LinkBtn>
 

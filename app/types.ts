@@ -511,3 +511,21 @@ export type TraineesWithoutPlans = {
 export type Settings = {
     showtempo: boolean,
 }
+
+export type CustomExercise = {
+    id: string,
+    trainer_id: string,
+    exercise_name: string,
+    description?: string,
+    category?: string,
+    created_at: Date,
+    uses_handle: boolean,
+    time_mesure: boolean,
+}
+
+export type CustomHandle = {
+    id: string,
+    trainer_id: string,
+    handle_name: string,
+    created_at: Date,
+}

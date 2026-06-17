@@ -6,6 +6,7 @@ import ConfirmModalContext from "./ConfirmModalContext";
 import { useRouter } from "next/navigation";
 import { TimerContext } from "./TimerContext";
 import { handleCloseTrainingSF } from "../traineeActions";
+import TraineeTrainingContext from "./TraineeTrainingContext";
 
 const TrainerJoinTrainingContext = createContext<contextType | null>(null)
 
@@ -201,7 +202,21 @@ export const TrainerJoinTrainingContextProvider = ({children,traineeId,userid,al
             handleChange,
             handleCloseTraining
              }}>
-            {children}
+            <TraineeTrainingContext.Provider value={{
+                training: trainingData as TraineeSingleTraining, 
+                setTrainingData: setTrainingData as React.Dispatch<React.SetStateAction<TraineeSingleTraining>>, 
+                handleInputChange,
+                sentFunc, 
+                currentExerciseIndex, 
+                setCurrentExerciseIndex, 
+                allHandles,
+                flipF,
+                flipT,
+                handleChange,
+                handleCloseTraining
+            }}>
+                {children}
+            </TraineeTrainingContext.Provider>
         </TrainerJoinTrainingContext.Provider>
      );
 }
