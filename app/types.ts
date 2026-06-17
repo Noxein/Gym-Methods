@@ -520,7 +520,7 @@ export type CustomExercise = {
     category?: string,
     created_at: Date,
     uses_handle: boolean,
-    time_mesure: boolean,
+    time_measure: boolean,
 }
 
 export type CustomHandle = {

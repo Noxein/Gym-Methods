@@ -220,7 +220,13 @@ export const getTraineeIdByTrainingId = async (trainingId: string) => {
     }
 }
 
-export const createCustomExercise = async (exerciseName: string, description?: string, category?: string) => {
+export const createCustomExercise = async (
+    exerciseName: string,
+    description?: string,
+    category?: string,
+    timeMesure: boolean = false,
+    usesHandle: boolean = false
+) => {
     const userid = await userID()
 
     if(typeof exerciseName !== 'string' || exerciseName.trim() === '') {
@@ -248,8 +254,8 @@ export const createCustomExercise = async (exerciseName: string, description?: s
         const createdAt = new Date()
         
         await sql`
-            INSERT INTO trainer_custom_exercises (id, trainer_id, exercise_name, description, category, created_at) 
-            VALUES (${id}, ${userid}, ${exerciseName.trim()}, ${description || null}, ${category || null}, ${JSON.stringify(createdAt)})
+            INSERT INTO trainer_custom_exercises (id, trainer_id, exercise_name, description, category, created_at, time_measure, uses_handle) 
+            VALUES (${id}, ${userid}, ${exerciseName.trim()}, ${description || null}, ${category || null}, ${JSON.stringify(createdAt)}, ${timeMesure}, ${usesHandle})
         `
         
         revalidatePath('/home/profile/my-trainees/schemas')
@@ -265,7 +271,7 @@ export const getTrainerCustomExercises = async () => {
 
     try {
         const response = await sql`
-            SELECT id, trainer_id, exercise_name, description, category, created_at 
+            SELECT id, trainer_id, exercise_name, description, category, created_at, uses_handle, time_measure 
             FROM trainer_custom_exercises 
             WHERE trainer_id = ${userid}
             ORDER BY created_at DESC

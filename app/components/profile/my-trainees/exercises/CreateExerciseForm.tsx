@@ -4,6 +4,7 @@ import { createCustomExercise } from '@/app/trainerActions'
 import { Button } from '@/app/components/ui/Button'
 import { Input } from '@/app/components/ui/Input'
 import { ErrorDiv } from '@/app/components/ui/ErrorDiv'
+import { CheckBox } from '@/app/components/ui/CheckBox'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 
@@ -15,6 +16,8 @@ export const CreateExerciseForm = ({ onSuccess }: CreateExerciseFormProps) => {
     const [exerciseName, setExerciseName] = useState('')
     const [description, setDescription] = useState('')
     const [category, setCategory] = useState('')
+    const [timeMesure, setTimeMesure] = useState(false)
+    const [usesHandle, setUsesHandle] = useState(false)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const router = useRouter()
@@ -25,7 +28,13 @@ export const CreateExerciseForm = ({ onSuccess }: CreateExerciseFormProps) => {
         setError('')
         setLoading(true)
 
-        const result = await createCustomExercise(exerciseName, description || undefined, category || undefined)
+        const result = await createCustomExercise(
+            exerciseName,
+            description || undefined,
+            category || undefined,
+            timeMesure,
+            usesHandle
+        )
         
         setLoading(false)
 
@@ -36,6 +45,8 @@ export const CreateExerciseForm = ({ onSuccess }: CreateExerciseFormProps) => {
         setExerciseName('')
         setDescription('')
         setCategory('')
+        setTimeMesure(false)
+        setUsesHandle(false)
         router.refresh()
         onSuccess?.()
     }
@@ -70,6 +81,20 @@ export const CreateExerciseForm = ({ onSuccess }: CreateExerciseFormProps) => {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 placeholder={t('CategoryPlaceholder')}
+                disabled={loading}
+            />
+
+            <CheckBox
+                labelText={t('IsTimingExercise')}
+                onChange={(e) => setTimeMesure(e.target.checked)}
+                checked={timeMesure}
+                disabled={loading}
+            />
+
+            <CheckBox
+                labelText={t('UsesHandleExercise')}
+                onChange={(e) => setUsesHandle(e.target.checked)}
+                checked={usesHandle}
                 disabled={loading}
             />
 

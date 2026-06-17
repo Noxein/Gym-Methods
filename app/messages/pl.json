@@ -290,6 +290,8 @@
         "EnterDescription": "Wpisz opis ćwiczenia (opcjonalnie)",
         "Category": "Kategoria",
         "CategoryPlaceholder": "np. Klatka, Nogi, Plecy",
+        "IsTimingExercise": "Czy jest to ćwiczenie w którym mierzy się czas? (np. Deska)",
+        "UsesHandleExercise": "Czy to ćwiczenie wykorzystuje uchwyty? (np. ćwiczenia na wyciągu)",
         "CreateExercise": "Utwórz ćwiczenie",
         "Creating": "Tworzenie...",
         "NoCustomExercises": "Brak niestandardowych ćwiczeń",

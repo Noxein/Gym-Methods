@@ -290,6 +290,8 @@
         "EnterDescription": "Enter exercise description (optional)",
         "Category": "Category",
         "CategoryPlaceholder": "e.g., Chest, Legs, Back",
+        "IsTimingExercise": "Is this a timing exercise? (i.e. Plank)",
+        "UsesHandleExercise": "Does this exercise require Handles? (i.e. Cable cross over machine)",
         "CreateExercise": "Create Exercise",
         "Creating": "Creating...",
         "NoCustomExercises": "No custom exercises yet",
