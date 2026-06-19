@@ -5,7 +5,7 @@ import { Settings } from "../types"
 export const getUser = async(email:string) => {
     
     let users = await sql`
-        SELECT id, password, email, showtempo, setupcompleted, goal, purpose, trainercurrentaccounttype, username, avatarurl FROM gymusers WHERE email = ${email}
+        SELECT id, password, email, showtempo, setupcompleted, purpose, trainercurrentaccounttype, username, avatarurl FROM gymusers WHERE email = ${email}
     `
     if(users.rowCount === 0) return null
 
@@ -13,7 +13,6 @@ export const getUser = async(email:string) => {
         id: users.rows[0].id,
         email: users.rows[0].email,
         setupcompleted: users.rows[0].setupcompleted,
-        goal: users.rows[0].goal,
         purpose: users.rows[0].purpose,
         trainercurrentaccounttype: users.rows[0].trainercurrentaccounttype,
         username: users.rows[0].username,

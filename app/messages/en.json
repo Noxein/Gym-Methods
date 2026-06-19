@@ -280,7 +280,12 @@
         "AreYouSureYouWantToCancel": "Are you sure you want to cancel? All unsaved changes will be lost",
         "AreYouSureYouWantToSaveChanges": "Are you sure you want to save changes?",
         "NoTrainingsScheduled": "No trainings scheduled for this day.",
-        "TrainingsForDate": "Trainings for date"
+        "TrainingsForDate": "Trainings for date",
+        "NoTrainingsEver": "This trainee has never had any trainings.",
+        "CreateTrainingLink": "Create first training",
+        "NoExercisesInTraining": "No exercises in this training.",
+        "ExercisesPreview": "Exercises",
+        "MoreExercises": "+{count} more"
     },
     "Home/Profile/My-Trainees/Exercises":{
         "CreateNewExercise": "Create New Exercise",
@@ -350,6 +355,7 @@
         "Current": "Current",
         "Previous": "Previous",
         "OfGoal": "of goal",
+        "ExerciseProgression": "Exercise progression",
         "Progressions": "Progressions",
         "NotEnoughData": "Not enough data"
     },

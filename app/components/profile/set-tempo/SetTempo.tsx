@@ -25,12 +25,13 @@ export const SetTempo = ({exercises,tempos,allExercisesInOneArray}:SetTempoType)
   return (<div className='mx-5 mt-10'>
     <ShowTempoSwitch />
 
+    <div className='mt-5'></div>
+    
     <Input 
-      labelName=''
+      labelName={u("Search")}
       value={searchField}
       placeholder={u("Search")}
       onChange={e=>setSearchField(e.target.value)}
-      className={`pl-2 w-full text-xl mt-5`}
       />
       
 

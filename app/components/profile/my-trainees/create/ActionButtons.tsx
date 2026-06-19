@@ -68,7 +68,7 @@ function ActionButtons() {
                 isOpen: true,
                 message: t("AreYouSureYouWantToCancel"),
                 onConfirm: () => {
-                    setModalState({isOpen: false, message: '', onConfirm: () => {}, onDecline: () => {} })
+                    setModalState({isOpen: false, message: '', onConfirm: () => {router.back()}, onDecline: () => {} })
                 },
                 onDecline: () => {
                     setModalState({isOpen: false, message: '', onConfirm: () => {}, onDecline: () => {} })
@@ -100,7 +100,7 @@ function ActionButtons() {
         })
     }
     return ( 
-        <div className="fixed left-0 bottom-[4.5rem] w-screen z-30 bg-darkLight py-5">
+        <div className="fixed mt-auto mx-auto max-w-mobile bottom-20 w-screen z-30 bg-darkLight py-5">
             {showSinglePlanModal ?
             <div className="flex gap-5 px-5">
                 <Button blue className="flex-1" onClick={handleCancelSave} disabled={loading}>{u('Cancel')}</Button>

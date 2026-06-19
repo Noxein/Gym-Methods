@@ -50,8 +50,8 @@ function SingleTrainingInfo({ plan, planIndex, isFocused }: SingleTrainingInfoPr
     const h = useTranslations("Home")
     return ( 
         <div className={`bg-darkLight rounded-lg p-4 transition-all duration-300 ${isFocused ? "opacity-100 scale-100 shadow-[0_0_40px_rgba(255,255,255,0.08)]" : "opacity-45 scale-[0.985]"}`}>
-            <Input labelName={u("Name")} value={plan.name} onChange={handleNameChange} className="mb-2" disabled={loading}/>
-            <Input labelName={u("Date")} type="date" value={plan.date.toISOString().split('T')[0]} onChange={handleDateChange} disabled={loading}/>
+            <Input labelName={u("Name")} value={plan.name} onChange={handleNameChange} className="mb-2 bg-dark" disabled={loading}/>
+            <Input labelName={u("Date")} type="date" value={plan.date.toISOString().split('T')[0]} className="bg-dark" onChange={handleDateChange} disabled={loading}/>
 
             <div className="text-left mt-2">
                 <p>{u("Exercises")}:</p>

@@ -15,8 +15,9 @@ type DisplayUserExercisesTypes = {
     handleSearch: () => void,
     dataLength: number,
     totalItems: number,
+    hasChildren: boolean,
 }
-export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
+export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,handleSearch,dataLength,totalItems,hasChildren}:DisplayUserExercisesTypes) => {
     const tempos = useExerciseTempos()
 
     const t = useTranslations("Home/Profile/Search")
@@ -41,7 +42,7 @@ export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,han
           style={{overflow:''}}
          >
             {fetchedExercises.map((exercise,index)=>(
-                <SingleExercise exercise={exercise} tempos={tempos} key={index}/>
+                <SingleExercise exercise={exercise} tempos={tempos} key={index} hasChildren={hasChildren}/>
             ))}
         </InfiniteScroll>
     </div>
@@ -51,14 +52,15 @@ export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,han
 type SingleExerciseTypes = {
     exercise: HistoryExercise,
     tempos: {[key: string]: {id: string, tempo: TempoType}},
+    hasChildren: boolean,
 }
-const SingleExercise = ({exercise,tempos}:SingleExerciseTypes) => {
+const SingleExercise = ({exercise,tempos,hasChildren}:SingleExerciseTypes) => {
     const u = useTranslations("Utils")
     const weeIndex = format(exercise.exercises[0].date!,'i') 
     const monthIndex = format(exercise.exercises[0].date!,'L')
     return(
         <div className='flex flex-col h-fit'>
-            <div className='sticky flex gap-1 top-[60px] h-fit bg-green font-bold text-black px-2'>
+            <div className={`sticky flex gap-1 ${hasChildren ? 'top-[165px]' : 'top-[60px]'} h-fit bg-green font-bold text-black px-2`}>
                 <span>{u("WeekFullName",{day: weeIndex})}</span>
                 <span>{format(exercise.exercises[0].date!,'dd')}</span>
                 <span>{u("MonthIndex",{index: monthIndex})}</span>
@@ -66,7 +68,7 @@ const SingleExercise = ({exercise,tempos}:SingleExerciseTypes) => {
             </div>
             <div className='flex flex-col my-1'>
                 {exercise.exercises.map(exercise=>(
-                    <ExercisesMap exercise={exercise} tempos={tempos} key={exercise.id}/>
+                    <ExercisesMap exercise={exercise} tempos={tempos} key={exercise.id} />
                 ))}
             </div>
         </div>

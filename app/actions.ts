@@ -64,20 +64,26 @@ export const handleSaveTrainerSetup = async () => {
 }
 export const LoginNoFormData = async (email:string,password:string) => {
     if(typeof email !== 'string' || typeof password !== 'string'){
+        console.log("error1")
         return { error: "Something went wrong"}
+
     }
     try{
         const response = await signIn('credentials',{
-            email: email.toLowerCase(),
+            email: email.trim().toLowerCase(),
             password,
             redirect: false,
         })
+        if (response?.error === 'CredentialsSignin' || response?.error === 'credentials') {
+            console.log("error2")
+            return { error: 'Wrong Login Or Password' }
+        }
         return response
        
     }catch(e){
         if(e instanceof AuthError){
-            // @ts-ignore
-           if(e.cause?.err!.code === 'credentials'){
+           if(e.type === 'CredentialsSignin' || e.name === 'CredentialsSignin'){
+            console.log("error3")
             return { error: 'Wrong Login Or Password'}
            }
            return { error: 'Something went wrong'}

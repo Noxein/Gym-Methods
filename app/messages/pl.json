@@ -280,7 +280,12 @@
         "AreYouSureYouWantToCancel": "Czy na pewno chcesz anulować zmiany? Wszystkie niezapisane zmiany zostaną utracone.",
         "AreYouSureYouWantToSaveChanges": "Czy na pewno chcesz zapisać zmiany?",
         "NoTrainingsScheduled": "Brak treningów zaplanowanych na ten dzień.",
-        "TrainingsForDate": "Treningi z dnia"
+        "TrainingsForDate": "Treningi z dnia",
+        "NoTrainingsEver": "Ten podopieczny nigdy nie miał żadnych treningów.",
+        "CreateTrainingLink": "Utwórz pierwszy trening",
+        "NoExercisesInTraining": "Brak ćwiczeń w tym treningu.",
+        "ExercisesPreview": "Ćwiczenia",
+        "MoreExercises": "+{count} więcej"
     },
     "Home/Profile/My-Trainees/Exercises":{
         "CreateNewExercise": "Utwórz nowe ćwiczenie",
@@ -350,6 +355,7 @@
         "Current": "Ostatnio",
         "Previous": "Poprzednio",
         "OfGoal": "z celu",
+        "ExerciseProgression": "Progres ćwiczeń",
         "Progressions": "Progresje",
         "NotEnoughData": "Za mało danych"
     },

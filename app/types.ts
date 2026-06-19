@@ -495,7 +495,8 @@ export type TraineesAndTrainings = {
     name: string,
     plan: TraineeSingleTraining[],
     lastedited: Date,
-    iscompleted: boolean
+    iscompleted: boolean,
+    skippedtrainingscount?: number
 }
 
 export type TraineesWithoutPlans = {

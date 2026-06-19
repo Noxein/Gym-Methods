@@ -6,6 +6,7 @@ import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
 import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
+import { Input } from './Input'
 
 type MapExercisesTypes = {
     exercisesObject:ExerciseTypes,
@@ -29,7 +30,7 @@ export const MapExercises = ({exercisesObject,allExercisesInOneArray,handleClose
                         >
                             <LeftAngle fill='#D9D9D9' width='40' height='40'/>
                         </button>
-                    <input type="text" placeholder={u("Search")} value={searchField} id={u("Search")} onChange={e=>setSearchField(e.target.value)} className={`flex-1 text-xl mx-2 py-2 px-2 bg-dark border-2 rounded-md border-borderInteractive text-white placeholder:text-gray-300`}/>
+                    <Input labelName={u("Search")} value={searchField} onChange={e=>setSearchField(e.target.value)}/>
                 </div>
                 {
                 searchField

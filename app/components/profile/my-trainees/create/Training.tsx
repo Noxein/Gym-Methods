@@ -19,7 +19,7 @@ function Training() {
     const t = useTranslations("Home/Profile/My-Trainees/Schemas/Create")
     return ( 
         <div className="text-white mx-5 mt-5 flex justify-center flex-col text-center">
-            <div className="bg-darkLight w-full">
+            <div className="w-full">
                 <Input labelName={t("TrainingName")} value={plan.name} onChange={handleNameChange} disabled={loading} />
             </div>
 

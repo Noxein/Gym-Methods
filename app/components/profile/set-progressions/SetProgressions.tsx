@@ -25,7 +25,7 @@ export const SetProgressions = ({exercises,progressions,allExercisesInOneArray}:
   return (
     <div className='mx-5 mt-10'>
       <Input type="text"
-      labelName=''
+      labelName={u("Search")}
       value={searchField}
       placeholder={u("Search")}
       onChange={e=>setSearchField(e.target.value)}

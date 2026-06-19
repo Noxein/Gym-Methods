@@ -107,7 +107,7 @@ export const getTraineePlans = async (traineeid: string) => {
 
     try{
         const response = await sql`
-            SELECT * FROM trainertraineeplans WHERE traineeid = ${traineeid} AND trainerid = ${userid} AND iscompleted = false ORDER BY lastedited DESC
+            SELECT * FROM trainertraineeplans WHERE traineeid = ${traineeid} AND trainerid = ${userid} ORDER BY lastedited DESC
         `
         return response.rows as TraineePlan[]
     }    catch(error){
@@ -158,8 +158,24 @@ export const getHomeScreenData = async () => {
         `
         let arrOfIds: string[] = []
         let oneNewestTrainingForEachTrainee:Map<string, TraineesAndTrainings> = new Map()
+        const skippedTrainingsCountByTrainee = new Map<string, number>()
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
         response.rows.forEach(row => { 
             if(!arrOfIds.includes(row.traineeid)) arrOfIds.push(row.traineeid) 
+
+            const rowPlan = (row.plan || []) as { date: Date | string, iscompleted: boolean }[]
+            const skippedInCurrentRow = rowPlan.filter((singleTraining) => {
+                if (singleTraining.iscompleted) return false
+                const trainingDate = new Date(singleTraining.date)
+                return !isNaN(trainingDate.getTime()) && trainingDate < today
+            }).length
+
+            skippedTrainingsCountByTrainee.set(
+                row.traineeid,
+                (skippedTrainingsCountByTrainee.get(row.traineeid) || 0) + skippedInCurrentRow
+            )
 
             if(!oneNewestTrainingForEachTrainee.has(row.traineeid)){
                 oneNewestTrainingForEachTrainee.set(row.traineeid, row as TraineesAndTrainings)   
@@ -174,7 +190,10 @@ export const getHomeScreenData = async () => {
             }
 
         })
-        const mapConvertedToArray = Array.from(oneNewestTrainingForEachTrainee.values())
+        const mapConvertedToArray = Array.from(oneNewestTrainingForEachTrainee.values()).map((training) => ({
+            ...training,
+            skippedtrainingscount: skippedTrainingsCountByTrainee.get(training.traineeid) || 0,
+        }))
 
         return {trainings: mapConvertedToArray, traineesWithoutPlans: traineesWithoutPlansResponse.rows as TraineesWithoutPlans[], error: null, allTraineesIDs: arrOfIds, userid}
     }catch(error){

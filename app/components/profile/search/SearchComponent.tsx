@@ -200,15 +200,23 @@ export const SearchComponent = ({exerciseList,exercises,traineeId,children}:Sear
                 </div>
 
                 <ErrorDiv error={error} className='flex-1 flex items-center'/>
-
+                <div >
+                    {children}
+                </div>
             </div>
         </div>
 
-        {children ? <div className={`mx-5 ${showSearch ? 'mt-52' : 'mt-28'} mb-4`}>{children}</div> : null}
+        <div className={`mt-48 mb-4`}>
+            {/* {children ? (
+                <div className={`sticky z-10 mx-5 mb-4 ${showSearch ? 'top-52' : 'top-28'}`}>
+                    {children}
+                </div>
+            ) : null} */}
 
-        <SmallLoaderDiv loading={loading} sClassParent='h-screen flex items-center mb-20'/>
-       
-        {!loading && <DisplayUserExercises loading={loading} fetchedExercises={fetchedExercises} manyExercises={selectedExercise===''} handleSearch={()=>handleSearch(false)} dataLength={getDataLenght()} totalItems={totalItems}/>}
+            <SmallLoaderDiv loading={loading} sClassParent='h-screen flex items-center mb-20'/>
+
+            {!loading && <DisplayUserExercises hasChildren={!!children} loading={loading} fetchedExercises={fetchedExercises} manyExercises={selectedExercise===''} handleSearch={()=>handleSearch(false)} dataLength={getDataLenght()} totalItems={totalItems}/>}
+        </div>
         
     </div>
     {showExerciseList && 

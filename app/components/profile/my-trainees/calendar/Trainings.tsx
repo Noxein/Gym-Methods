@@ -32,7 +32,7 @@ function Trainings({ selectedDate }: TrainingsProps) {
                     <TrainingOverview key={training.id} training={training} selectedDate={selectedDate}/>
                 ))
             )}
-            <AddTrainingBtn showAddTrainingModal={showAddTrainingModal} setShowAddTrainingModal={setShowAddTrainingModal} allTrainings={plans}/>
+            <AddTrainingBtn showAddTrainingModal={showAddTrainingModal} setShowAddTrainingModal={setShowAddTrainingModal} selectedDate={selectedDate} allTrainings={plans}/>
         </div>
      );
 }

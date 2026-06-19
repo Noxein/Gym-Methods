@@ -9,6 +9,7 @@ import { Button } from '../../ui/Button'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
 import  LocaleContext  from '@/app/context/LocaleContext'
+import { Input } from '../../ui/Input'
 
 type ExerciseListTypes = {
     exerciseList: (string | UserExercise)[],
@@ -44,7 +45,8 @@ export const ExerciseList = ({exerciseList,exercises,tempos}:ExerciseListTypes) 
                             <LeftAngle height='30' width='30' fill='#D9D9D9'/>
                         </Icon>
                     </button>
-                    <input type="text" placeholder={u("Search")} value={searchField} id={u("Search")} onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/>
+                    <Input labelName={u("Search")} value={searchField} onChange={e=>setSearchField(e.target.value)}/>
+                    {/* <input type="text" placeholder={u("Search")} value={searchField} id={u("Search")} onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/> */}
                 </div>
 
                 <Button className='mb-4 text-white bg-dark border-2 border-borderInteractive w-full' onClick={slectAllExercises}>
