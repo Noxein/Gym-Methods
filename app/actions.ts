@@ -65,7 +65,7 @@ export const handleSaveTrainerSetup = async () => {
 export const LoginNoFormData = async (email:string,password:string) => {
     if(typeof email !== 'string' || typeof password !== 'string'){
         console.log("error1")
-        return { error: "Something went wrong"}
+        return { error: "Something Went Wrong"}
 
     }
     try{
@@ -86,9 +86,9 @@ export const LoginNoFormData = async (email:string,password:string) => {
             console.log("error3")
             return { error: 'Wrong Login Or Password'}
            }
-           return { error: 'Something went wrong'}
+           return { error: 'Something Went Wrong'}
         }
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
     
 }
@@ -118,7 +118,7 @@ export const Register = async (email:string,userName:string,password:string,conf
         error.isError = true
     }
     if(typeof email !== 'string' || typeof password !== 'string' || typeof confirmpassword !== 'string'||typeof userName !== 'string'){
-        error.somethingWentWrong = "Something went wrong"
+        error.somethingWentWrong = "Something Went Wrong"
         error.isError = true
     }
     if(password !== confirmpassword){
@@ -164,15 +164,15 @@ const ComparePasswords = async (password:string,hasedPassword:string) => {
 }
 
 export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:{handleName:string,handleId:string},isLastExercise=false,date?:Date,originalTrainingId?: string,goal?: Progression) => {
-    if(typeof redirectUser !== 'boolean')                                          return { errors: "Something went wrong" }
-    if(!exerciseid || typeof exerciseid !== 'string')                              return { errors: "Something went wrong" }
-    if(!Array.isArray(sets))                                                       return { errors: "Something went wrong" }
-    if(typeof ispartoftraining !== 'boolean')                                      return { errors: "Something went wrong" }
-    if(trainingPlanId && typeof trainingPlanId !== 'string')                       return { errors: "Something went wrong" }
-    if(usesHandle && typeof usesHandle.handleId !== 'string')                      return { errors: "Something went wrong" }
-    if(usesHandle && typeof usesHandle.handleName !== 'string')                    return { errors: "Something went wrong" }
-    if(typeof isLastExercise !== 'boolean')                                        return { errors: "Something went wrong" }
-    if(date && Object.prototype.toString.call(new Date(date)) !== '[object Date]') return { errors: "Something went wrong" }
+    if(typeof redirectUser !== 'boolean')                                          return { errors: "Something Went Wrong" }
+    if(!exerciseid || typeof exerciseid !== 'string')                              return { errors: "Something Went Wrong" }
+    if(!Array.isArray(sets))                                                       return { errors: "Something Went Wrong" }
+    if(typeof ispartoftraining !== 'boolean')                                      return { errors: "Something Went Wrong" }
+    if(trainingPlanId && typeof trainingPlanId !== 'string')                       return { errors: "Something Went Wrong" }
+    if(usesHandle && typeof usesHandle.handleId !== 'string')                      return { errors: "Something Went Wrong" }
+    if(usesHandle && typeof usesHandle.handleName !== 'string')                    return { errors: "Something Went Wrong" }
+    if(typeof isLastExercise !== 'boolean')                                        return { errors: "Something Went Wrong" }
+    if(date && Object.prototype.toString.call(new Date(date)) !== '[object Date]') return { errors: "Something Went Wrong" }
 
     const userid = await userID()
 
@@ -209,7 +209,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
             }
         }
         return {
-            errors: 'Something went wrong'
+            errors: 'Something Went Wrong'
         }
     }
     let trainingid = null
@@ -244,7 +244,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     }catch(e){
         console.log('Error occured: AddExerciseAction func actions.ts ',e)
         return {
-            errors: 'Something went wrong'
+            errors: 'Something Went Wrong'
         }
     }
     if(redirectUser) redirect('/home/add-exercise')
@@ -252,13 +252,13 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
 
 export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:LocalStorageExercise[],trainingStartDate:Date,trainingGoalsExercises?:Progression[]) => {
     if(typeof trainingPlanId !== 'string'){
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
     if(!Array.isArray(exercises)){
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
     if(Object.prototype.toString.call(new Date(trainingStartDate)) !== '[object Date]'){
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
     const userid = await userID()
     let id = ''
@@ -268,7 +268,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     `
     id = dataID.rows[0].id
     }catch(e){
-        return { error : 'Something went wrong'}
+        return { error : 'Something Went Wrong'}
     }
 
     // if(trainingGoalsExercises){
@@ -291,7 +291,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
         const progression = trainingGoalsExercises?.find(x=>x.exerciseid === exercise.exerciseId)
 
         const data = await AddExerciseAction(false,exercise.exerciseName,exercise.sets,true,id,exercise.handle,false,exercise.date,trainingPlanId,progression)
-        if(data?.errors) return { error : 'Something went wrong'}
+        if(data?.errors) return { error : 'Something Went Wrong'}
         return { success: true }
     }))
 
@@ -312,7 +312,7 @@ export const FistStepDataValidation = async (data:dataType) => {
         isError: false
     }
     for(const [key,value] of Object.entries(data)){
-        if(typeof value !== 'string') error.somethinWentWrong = "Something went wrong"
+        if(typeof value !== 'string') error.somethinWentWrong = "Something Went Wrong"
     }
     if(!Goal.includes(data.goal)) {
         error.goal = 'Wrong goal chosen'
@@ -356,13 +356,13 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
     const userid = await userID()
     const validateData = await FistStepDataValidation(data)
     for(const [key,value] of Object.entries(data)){
-        if(typeof value !== 'string') return { success: false, error: "Something went wrong" }
+        if(typeof value !== 'string') return { success: false, error: "Something Went Wrong" }
     }
     if(validateData?.error){
-        return { success: false, error: 'Something went wrong in first step' }
+        return { success: false, error: 'Something Went Wrong in first step' }
     } 
     if(!Array.isArray(deleteExercises) || !Array.isArray(favourtiteExercises)){
-        return { success: false, error: 'Something went wrong' }
+        return { success: false, error: 'Something Went Wrong' }
     }
     try{
         await sql`
@@ -375,7 +375,7 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
     }catch(e){
         isError = true
         console.log('Error occured FirstSetupFinish func actions.ts',e)
-        return { success: false, error : 'Something went wrong'}
+        return { success: false, error : 'Something Went Wrong'}
     }finally{
         
     }
@@ -391,7 +391,7 @@ export const firstSetupOwnTraining = async (data:dataType) => {
             WHERE id = ${userid};
         `
     }catch{
-        return { success: false, error : 'Something went wrong'}
+        return { success: false, error : 'Something Went Wrong'}
     }finally{
         return { success: true, error: '' }
     }
@@ -486,7 +486,7 @@ const getBasicSummaryDataByUserId = async (userid: string) => {
         const parsedData = data.rows as SummaryDataFetched[]
         return {data: parsedData, error: ''}
     }catch{
-        return {data: [], error: 'Something went wrong'}
+        return {data: [], error: 'Something Went Wrong'}
     }
 }
 
@@ -507,13 +507,13 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
         return {error : 'Exercise name is too long'}
     }
     if(typeof timeExercise !== 'boolean'){
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
     if(typeof usesHandle !== 'boolean'){
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
     if( typeof exercisename !== 'string'){
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
     if(exercisesArr.map(x=>x.toLowerCase()).includes(exercisename.toLowerCase())){
         return {error: 'Exercise with this name already exist'}
@@ -525,7 +525,7 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
         revalidatePath('/home/profile/my-exercises')
     }catch(e){
         return {
-            error: 'Something went wrong'
+            error: 'Something Went Wrong'
         }
     }
 }
@@ -534,7 +534,7 @@ export const DeleteUserExercise = async (id:string) => {
     const userid = await userID()
     if(typeof id !== 'string'){
         return {
-            error :'Something went wrong'
+            error :'Something Went Wrong'
         }
     }
     const checkIfIdInTraining = (trainingExercises:TrainingExerciseType[]) => {
@@ -569,7 +569,7 @@ export const DeleteUserExercise = async (id:string) => {
         `
         }catch(e){
             console.log(e)
-            return { error: "Something went wrong"}
+            return { error: "Something Went Wrong"}
         }
 
         await sql`
@@ -591,13 +591,13 @@ export const EditUserExercise = async (exerciseid:string,newname:string,timeExer
         return {error :'Exercise name cant be empty'}
     }
     if(typeof exerciseid !== 'string' || typeof newname !== 'string'){
-        return {error :'Something went wrong'}
+        return {error :'Something Went Wrong'}
     }
     if(typeof timeExercise !== 'boolean') {
-        return {error :'Something went wrong'}
+        return {error :'Something Went Wrong'}
     }
     if(typeof usesHandle !== 'boolean') {
-        return {error :'Something went wrong'}
+        return {error :'Something Went Wrong'}
     }
 
     const userid = await userID()
@@ -617,7 +617,7 @@ export const EditUserExercise = async (exerciseid:string,newname:string,timeExer
         revalidatePath('/home/profile/my-exercises')
     }catch(e){
         return {
-            error :'Something went wrong'
+            error :'Something Went Wrong'
         }
     }
 }
@@ -658,10 +658,10 @@ export const getAllTempos = async () => {
 
 export const AddOrUpdateTempo = async (exerciceid:string,tempos:TempoType) => {
 
-    if(typeof exerciceid !== 'string') return { error: "Something went wrong" }
+    if(typeof exerciceid !== 'string') return { error: "Something Went Wrong" }
 
     const TempoError = checkTempoErrors(tempos)
-    if(TempoError) return { error: "Something went wrong" }
+    if(TempoError) return { error: "Something Went Wrong" }
 
     const userid = await userID()
 
@@ -769,7 +769,7 @@ const isNotEmptyString = (...strings:string[]) => {
     let error = ''
 
     strings.map(string=>{
-        if(typeof string !== 'string') error = 'Something went wrong' 
+        if(typeof string !== 'string') error = 'Something Went Wrong' 
         if(string === '') error = 'Name cant be empty'
     })
 
@@ -799,7 +799,7 @@ export const addNewUserHandle = async (handlename:string) => {
 
     }catch(e){
         redirectUser = false
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }finally{
         if(redirectUser){
             revalidatePath('/home/profile/my-handles')
@@ -821,7 +821,7 @@ export const deleteUserHandle = async (handleid:string,) => {
              DELETE FROM gymusershandles WHERE id = ${handleid} AND userid = ${userid}
         `
     }catch(e){
-        return{ error: 'Something went wrong'}
+        return{ error: 'Something Went Wrong'}
     }finally{
         if(redirectUser){
             revalidatePath('/home/profile/my-handles')
@@ -845,7 +845,7 @@ export const editUserHandle = async (handlename:string,handleid: string) => {
         `
     }catch(e){
         redirectUser = false
-        return{ error: 'Something went wrong'}
+        return{ error: 'Something Went Wrong'}
     }finally{
         if(redirectUser){
             revalidatePath('/home/profile/my-handles')
@@ -855,7 +855,7 @@ export const editUserHandle = async (handlename:string,handleid: string) => {
 
 const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay,userID:string) => {
     if(typeof trainingplanname !== 'string'){
-        return {error:'Something went wrong3'}
+        return {error:'Something Went Wrong3'}
     }
     if (trainingplanname.length > 255){
         return {error:'Training name is too long'}
@@ -876,7 +876,7 @@ const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExe
             unknownExercice = exercises[x].exerciseid
         }
     }
-    if(NotStringError) return { error: 'Something went wrong4'}
+    if(NotStringError) return { error: 'Something Went Wrong4'}
     if(UnknownExerciseError) return { error: `Unknown exercise in training plan`}
     if(!WeekDayArray.includes(weekday)) return { error: 'Wrong week day'}
 }
@@ -894,7 +894,7 @@ export const GetUserTrainings = async () => {
 }
 
 export const GetUserTrainingByName = async (trainingname:string) => {
-    if(typeof trainingname !== 'string') return { error: "Something went wrong"}
+    if(typeof trainingname !== 'string') return { error: "Something Went Wrong"}
     const userid = await userID()
 
     try{
@@ -913,14 +913,14 @@ export const GetUserTrainingByName = async (trainingname:string) => {
             error: ''
         }
     }catch(e){
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
 }
 
 export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay,exercisesuwu?:TrainingProgression[],shouldRedirect: boolean = true) => {
     const userid = await userID()
     if(typeof trainingplanname !== 'string' || typeof weekday !== 'string' || (exercisesuwu && !Array.isArray(exercisesuwu))){
-        return {error:'Something went wrong'}
+        return {error:'Something Went Wrong'}
     }
     if (trainingplanname.length > 255){
         return {error:'Training name is too long'}
@@ -937,7 +937,7 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
             return { error: 'Training with this name already exists'}
         }
     }catch(e){
-        return {error:'Something went wrong'}
+        return {error:'Something Went Wrong'}
     }
 
     const date = new Date()
@@ -949,7 +949,7 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
         `
     }catch(e){
         console.log('Error occured CreateUserTraining func actions.ts',e)
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }finally{
         revalidatePath('/home/profile/my-training-plans')
         shouldRedirect && redirect(`/home/profile/my-training-plans/${trainingplanname}`)
@@ -961,7 +961,7 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
     const userid = await userID()
 
     if(typeof trainingid !== 'string' || typeof trainingplanname !== 'string' || !Array.isArray(exercises) || typeof weekday !== 'string'){
-        return { error: "Something went wrong1" }
+        return { error: "Something Went Wrong1" }
     }
     const checkvalue = await checkTrainingFields(trainingplanname,exercises,weekday,userid as string)
     if(checkvalue?.error) return  checkvalue
@@ -975,14 +975,14 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
             `
     }catch(e){
         console.log('Error occured EditUserTraining func actions.ts',e)
-        return { error: 'Something went wrong1'}
+        return { error: 'Something Went Wrong1'}
     }
     revalidatePath('/home/profile/my-training-plans')
     redirect('/home/profile/my-training-plans')
 }
 
 export const DeleteUserTraining = async (trainingid:string) => {
-    if(typeof trainingid !== 'string') return { error: "Something went wrong"}
+    if(typeof trainingid !== 'string') return { error: "Something Went Wrong"}
     const userid = await userID()
 
     try{
@@ -1006,14 +1006,14 @@ export const DeleteUserTraining = async (trainingid:string) => {
             `
     }catch(e){
         console.log('Error occured DeleteUserTraining func actions.ts',e)
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
     revalidatePath('/home/profile/my-training-plans')
     redirect('/home/profile/my-training-plans')
 }
 
 export const getTrainingDataById = async (id:string) => {
-    if(typeof id !== 'string') return { error: "Something went wrong" }
+    if(typeof id !== 'string') return { error: "Something Went Wrong" }
     const userid = await userID()
 
     try{
@@ -1027,7 +1027,7 @@ export const getTrainingDataById = async (id:string) => {
         return {data: dataWithIds , error: ''}
     }catch(e){
         console.log(e)
-        return { error: 'Something went wrong' }
+        return { error: 'Something Went Wrong' }
     }
 }
 
@@ -1279,7 +1279,7 @@ const fetchExercisesCountByUserId = async (userid: string, from?:Date,to?:Date,e
         `
         return { error: '', data: count.rows[0].count as string }
     }catch{
-        return { error: 'Something went wrong', data: '0' }
+        return { error: 'Something Went Wrong', data: '0' }
     }
 }
 
@@ -1348,7 +1348,7 @@ const fetchExercisesByUserId = async (userid: string, from?:Date,to?:Date,exerci
         return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
     }catch(e){
         console.log('Error occured fetchUserExercises func actions.ts',e)
-        return { error: 'Something went wrong' }
+        return { error: 'Something Went Wrong' }
     }
 }
 
@@ -1359,7 +1359,7 @@ const trainerCanAccessTraineeHistory = async (traineeId: string) => {
         SELECT traineeid FROM trainertrainee WHERE trainerid = ${userid} AND traineeid = ${traineeId}
     `
 
-    if(trainee.rows.length === 0) return { error: 'Something went wrong', trainerId: null }
+    if(trainee.rows.length === 0) return { error: 'Something Went Wrong', trainerId: null }
 
     return { error: '', trainerId: userid }
 }
@@ -1375,7 +1375,7 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
 }
 
 export const fetchTraineeExercisesCount = async (traineeId: string, from?:Date,to?:Date,exerciseName?:string) => {
-    if(typeof traineeId !== 'string') return { error: 'Something went wrong', data: '0' }
+    if(typeof traineeId !== 'string') return { error: 'Something Went Wrong', data: '0' }
 
     const access = await trainerCanAccessTraineeHistory(traineeId)
     if(access.error) return { error: access.error, data: '0' }
@@ -1384,7 +1384,7 @@ export const fetchTraineeExercisesCount = async (traineeId: string, from?:Date,t
 }
 
 export const fetchTraineeExercises = async (traineeId: string, from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
-    if(typeof traineeId !== 'string') return { error: 'Something went wrong', data: [] }
+    if(typeof traineeId !== 'string') return { error: 'Something Went Wrong', data: [] }
 
     const access = await trainerCanAccessTraineeHistory(traineeId)
     if(access.error) return { error: access.error, data: [] }
@@ -1414,7 +1414,7 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
     const { favouriteexercises, notfavouriteexercises } = newSettings
 
     if(!Array.isArray(favouriteexercises) || !Array.isArray(notfavouriteexercises)){
-        return { error: 'Something went wrong' }
+        return { error: 'Something Went Wrong' }
     }
 
     if(favouriteexercises){
@@ -1435,7 +1435,7 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
     }catch(e){
         console.log('Error occured saveNewUserSetting func actions.ts',e)
         return {
-            error: 'Something went wrong'
+            error: 'Something Went Wrong'
         }
     }finally{
         revalidatePath('/home/profile/settings')
@@ -1445,7 +1445,7 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
 export const updateShowTempoSetting = async (showtempo: Settings['showtempo']) => {
     const userid = await userID()
 
-    if(typeof showtempo !== 'boolean') return { error: 'Something went wrong' }
+    if(typeof showtempo !== 'boolean') return { error: 'Something Went Wrong' }
 
     try{
         await sql`
@@ -1453,7 +1453,7 @@ export const updateShowTempoSetting = async (showtempo: Settings['showtempo']) =
         `
     }catch(e){
         console.log('Error occured updateShowTempoSetting func actions.ts',e)
-        return { error: 'Something went wrong' }
+        return { error: 'Something Went Wrong' }
     }finally{
         revalidatePath('/home')
         revalidatePath('/home/profile')
@@ -1490,10 +1490,10 @@ export const changePassword = async (password:string,newpassword:string,repeatne
         `
     userEncryptedPassword = userData.rowCount && userData.rowCount > 0 ? userData.rows[0].password : null
     }catch(e){
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
 
-    if(!userEncryptedPassword) return {error: 'Something went wrong'}
+    if(!userEncryptedPassword) return {error: 'Something Went Wrong'}
     const isPasswordCorrect = await ComparePasswords(password,userEncryptedPassword)
     if(!isPasswordCorrect) return {error: 'Wrong password'}
 
@@ -1503,7 +1503,7 @@ export const changePassword = async (password:string,newpassword:string,repeatne
             UPDATE gymusers SET password = ${hasedPassword} WHERE id = ${userid}
         `
     }catch{
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
 
 }
@@ -1586,13 +1586,13 @@ const createTrainingPlans = async (fav:string[],notfav:string[],days:number) => 
         }
 
         const result = await CreateUserTraining(name,weekdays[index],plan,false)
-        if(result?.error) return { success: false, error: 'Something went wrong' }
+        if(result?.error) return { success: false, error: 'Something Went Wrong' }
         return { success: true, error: '' }
     }))
 
     if(results.some(result=>!result.success)){
         console.log('Error in creating training plans', results)
-        return { success: false, error: 'Something went wrong' }
+        return { success: false, error: 'Something Went Wrong' }
     }
 
 }
@@ -1724,7 +1724,7 @@ export const AddOrUpdateProgression = async (data:Progression) => {
         }
         return { error: '' }
     }catch(e){
-        return { error: 'Something went wrong' }
+        return { error: 'Something Went Wrong' }
     }
 }
 
@@ -1756,7 +1756,7 @@ export const DeleteUserProgression = async (progressionid: string) => {
     }catch(e){
         console.log(e)
         return {
-            error: "Something went wrong"
+            error: "Something Went Wrong"
         }
     }
 }
@@ -1825,7 +1825,7 @@ export const GetProgressionsAndDeclines = async () => {
 
         return { goals, progressions, error: '' }
     }catch{
-        return { goals: {}, progressions: {}, error: 'Something went wrong' }
+        return { goals: {}, progressions: {}, error: 'Something Went Wrong' }
     }
 }
 
@@ -1846,7 +1846,7 @@ export const createNewLongTermPlan = async (name: string) => {
     const userid = await userID()
 
     if(name === '') return {error: "Name cant be empty"}
-    if(typeof name !== 'string') return { error: "Something went wrong"}
+    if(typeof name !== 'string') return { error: "Something Went Wrong"}
     try{
         const doesexist = await sql`
             SELECT 1 FROM bigtraining WHERE userid = ${userid} AND name = ${name}
@@ -1868,7 +1868,7 @@ export const createNewLongTermPlan = async (name: string) => {
     }catch(e){
         console.log(e)
         return {
-            error: "Something went wrong"
+            error: "Something Went Wrong"
         }
     }
 }
@@ -1911,7 +1911,7 @@ export const handleSaveLongTermPlan = async (plan: BigTrainingData,userDate: Dat
             UPDATE bigtraining SET name = ${plan.name}, subplans = ${JSON.stringify(plan.subplans)}, lastedited = ${JSON.stringify(userDate)} WHERE id = ${plan.id} AND userid = ${userid}
         `
     }catch{
-        return {error: "Something went wrong"}
+        return {error: "Something Went Wrong"}
     }
 }
 
@@ -1919,7 +1919,7 @@ export const handleDeleteLongTermPlan = async (planName:string) => {
     const userid = await userID()
 
     if(planName==='' || typeof planName !== 'string'){
-        return {error: "Something went wrong"}
+        return {error: "Something Went Wrong"}
     }
 
     try{
@@ -1927,7 +1927,7 @@ export const handleDeleteLongTermPlan = async (planName:string) => {
             DELETE FROM bigtraining WHERE userid = ${userid} AND name = ${planName}
         `
     }catch{
-        return {error: "Something went wrong"}
+        return {error: "Something Went Wrong"}
     }
     revalidatePath('/home/profile/long-term-plans')
 }
@@ -1973,7 +1973,7 @@ export const createStarterBigPlan = async (plan: BigTrainingData, userDate: Date
         
     }catch(e){
         console.log(e)
-        return{ error: "Something went wrong"}
+        return{ error: "Something Went Wrong"}
     }
     redirect(`/home/start-training/${id}`)
 }
@@ -2005,7 +2005,7 @@ export const updateBigPlan = async (planData: BigTrainingStarter, userDate: Date
             await AddExerciseAction(false,exercise.exerciseid,sets,false,undefined,handle,false,userDate)
         })
     }catch(error){
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
 
 
@@ -2089,7 +2089,7 @@ export const updateAvatar = async (secureUrl: string, publicId: string) => {
         `
     }catch(e){
         console.log(e)
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
 }
 
@@ -2131,7 +2131,7 @@ export const switchAccount = async () => {
         `
         if(result.rows.length === 0){
             console.log('User is not trainer',result.rows)
-            return {error: 'Something went wrong'}
+            return {error: 'Something Went Wrong'}
         }
         const currentType = result.rows[0].trainercurrentaccounttype
         const newType = currentType === 'Trener' ? 'Casual' : 'Trener'
@@ -2143,7 +2143,7 @@ export const switchAccount = async () => {
 
     }catch(e){
         console.log(e)
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }finally{
         revalidatePath('/home', 'layout')
         revalidatePath('/home/profile')
@@ -2165,7 +2165,7 @@ export const getTrainerSchemas = async () => {
         console.log(e)
         return {
             schemas: [],
-            error: 'Something went wrong'
+            error: 'Something Went Wrong'
         }
     }
 }
@@ -2186,7 +2186,7 @@ export const getSchemaData = async (schemaId: string) => {
         console.log(e)
         return {
             schema: null,
-            error: 'Something went wrong'
+            error: 'Something Went Wrong'
         }
     }
 }
