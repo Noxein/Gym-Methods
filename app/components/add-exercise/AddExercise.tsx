@@ -69,7 +69,7 @@ const updateInputsInMemory = (state:AddExerciceReducerType,exerciseName: string,
 
 export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType) => {
 
-    const { exerciseData, progressions, newExerciseName, twoRecentExercises, firstLoad, loading, setLoading, finishOneExercise } = useContext(ExerciseDataContext)!
+    const { exerciseData, progressions, newExerciseName, twoRecentExercises, firstLoad, loading, setLoading, finishOneExercise, allHandles } = useContext(ExerciseDataContext)!
     const tempos = useExerciseTempos()
 
     const[state,dispatch] = useReducer(AddExerciceReducer,initalData(exerciseData.name))
@@ -81,7 +81,6 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
 
     const pathname = usePathname()
     const params = useParams()
-
 
     const {setSeriesIndexesThatMetGoal} = useContext(SingleExerciseProgressionContext)!
 
@@ -98,7 +97,7 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
             dispatch({type:'DIFFICULTY',payload:parsedData.difficultyLevel})
             dispatch({type:'TIME',payload:parsedData.time})
             dispatch({type:"SETSERIESFROMMEMORY",payload:parsedData.series})
-            dispatch({type:"HANDLE", payload: parsedData.handle ? {id: parsedData.handle.id, handlename: parsedData.handle.handlename} as HandleType : undefined})
+            dispatch({type:"HANDLE", payload: parsedData.handle ? {id: parsedData.handle.id, handlename: parsedData.handle.handlename} as HandleType : {id: allHandles[0].id, handlename: allHandles[0].handlename}})
 
             const progression = progressions[paramsName]
             let indexes:ProgressedIndexesType = getProgressedSeriesIndexes(parsedData.series,progression)
@@ -382,10 +381,10 @@ const Handle = ({dispatch,state}:HandleTypes) => {
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Handle")}</label>
-            <select name="handle" id="side" className='bg-dark pl-3 text-marmur border-borderInteractive border-2 rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value) as {id:string, handlename: string})} >
+            <select name="handle" id="side" className='bg-dark pl-3 text-marmur border-borderInteractive border-2 rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value) as {id:string, handlename: string})} value={JSON.stringify(selectedHandle)}> 
                 {allHandles.map(handle=>{
                     const name = handleTypes.includes(handle.handlename) ? h(nameTrimmer(handle.handlename)) : handle.handlename 
-                    return <option value={JSON.stringify(handle)} key={handle.id} selected={name===selectedHandle.handlename}>{name}</option>
+                    return <option value={JSON.stringify(handle)} key={handle.id}>{name}</option>
                 })}
             </select>
         </div>
