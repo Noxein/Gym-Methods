@@ -58,7 +58,7 @@ export const Goal = ({setCurrentStep,data,setData,selectPurpose}:SetupOneOfThree
 
   return (
     <CenterComponent>
-        <form className='flex flex-col gap-4 mb-20 mx-5'>
+        <form className='flex flex-col gap-4 mb-20 mx-5 flex-1 justify-center'>
             <Select 
                 labelText={t("Goal")}
                 options={goal}
@@ -79,11 +79,12 @@ export const Goal = ({setCurrentStep,data,setData,selectPurpose}:SetupOneOfThree
                 setData={setData}/>
             <ErrorDiv error={error.somethinWentWrong}/>
             
+
+        </form>
             <Navigator 
                 prev={()=>selectPurpose('purpose')}
                 next={e=>{e.preventDefault();ValidateData()}}
             />
-        </form>
     </CenterComponent>
   )
 }

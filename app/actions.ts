@@ -3,7 +3,7 @@ import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
 import { redirect } from "next/navigation";
-import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsData, SetsDataStarter, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, Trainee, TrainerPlanSchema, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
+import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsData, SetsDataStarter, Settings, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, Trainee, TrainerPlanSchema, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/Casual/Goal";
 import { exerciseList, exercisesArr, handleTypes } from "./lib/exercise-list";
 import { signOut } from "@/auth";
@@ -64,25 +64,31 @@ export const handleSaveTrainerSetup = async () => {
 }
 export const LoginNoFormData = async (email:string,password:string) => {
     if(typeof email !== 'string' || typeof password !== 'string'){
-        return { error: "Something went wrong"}
+        console.log("error1")
+        return { error: "Something Went Wrong"}
+
     }
     try{
         const response = await signIn('credentials',{
-            email: email.toLowerCase(),
+            email: email.trim().toLowerCase(),
             password,
             redirect: false,
         })
+        if (response?.error === 'CredentialsSignin' || response?.error === 'credentials') {
+            console.log("error2")
+            return { error: 'Wrong Login Or Password' }
+        }
         return response
        
     }catch(e){
         if(e instanceof AuthError){
-            // @ts-ignore
-           if(e.cause?.err!.code === 'credentials'){
+           if(e.type === 'CredentialsSignin' || e.name === 'CredentialsSignin'){
+            console.log("error3")
             return { error: 'Wrong Login Or Password'}
            }
-           return { error: 'Something went wrong'}
+           return { error: 'Something Went Wrong'}
         }
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
     
 }
@@ -112,7 +118,7 @@ export const Register = async (email:string,userName:string,password:string,conf
         error.isError = true
     }
     if(typeof email !== 'string' || typeof password !== 'string' || typeof confirmpassword !== 'string'||typeof userName !== 'string'){
-        error.somethingWentWrong = "Something went wrong"
+        error.somethingWentWrong = "Something Went Wrong"
         error.isError = true
     }
     if(password !== confirmpassword){
@@ -158,15 +164,15 @@ const ComparePasswords = async (password:string,hasedPassword:string) => {
 }
 
 export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,sets:Series[],ispartoftraining:boolean,trainingPlanId?:string,usesHandle?:{handleName:string,handleId:string},isLastExercise=false,date?:Date,originalTrainingId?: string,goal?: Progression) => {
-    if(typeof redirectUser !== 'boolean')                                          return { errors: "Something went wrong" }
-    if(!exerciseid || typeof exerciseid !== 'string')                              return { errors: "Something went wrong" }
-    if(!Array.isArray(sets))                                                       return { errors: "Something went wrong" }
-    if(typeof ispartoftraining !== 'boolean')                                      return { errors: "Something went wrong" }
-    if(trainingPlanId && typeof trainingPlanId !== 'string')                       return { errors: "Something went wrong" }
-    if(usesHandle && typeof usesHandle.handleId !== 'string')                      return { errors: "Something went wrong" }
-    if(usesHandle && typeof usesHandle.handleName !== 'string')                    return { errors: "Something went wrong" }
-    if(typeof isLastExercise !== 'boolean')                                        return { errors: "Something went wrong" }
-    if(date && Object.prototype.toString.call(new Date(date)) !== '[object Date]') return { errors: "Something went wrong" }
+    if(typeof redirectUser !== 'boolean')                                          return { errors: "Something Went Wrong" }
+    if(!exerciseid || typeof exerciseid !== 'string')                              return { errors: "Something Went Wrong" }
+    if(!Array.isArray(sets))                                                       return { errors: "Something Went Wrong" }
+    if(typeof ispartoftraining !== 'boolean')                                      return { errors: "Something Went Wrong" }
+    if(trainingPlanId && typeof trainingPlanId !== 'string')                       return { errors: "Something Went Wrong" }
+    if(usesHandle && typeof usesHandle.handleId !== 'string')                      return { errors: "Something Went Wrong" }
+    if(usesHandle && typeof usesHandle.handleName !== 'string')                    return { errors: "Something Went Wrong" }
+    if(typeof isLastExercise !== 'boolean')                                        return { errors: "Something Went Wrong" }
+    if(date && Object.prototype.toString.call(new Date(date)) !== '[object Date]') return { errors: "Something Went Wrong" }
 
     const userid = await userID()
 
@@ -203,7 +209,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
             }
         }
         return {
-            errors: 'Something went wrong'
+            errors: 'Something Went Wrong'
         }
     }
     let trainingid = null
@@ -238,7 +244,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     }catch(e){
         console.log('Error occured: AddExerciseAction func actions.ts ',e)
         return {
-            errors: 'Something went wrong'
+            errors: 'Something Went Wrong'
         }
     }
     if(redirectUser) redirect('/home/add-exercise')
@@ -246,13 +252,13 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
 
 export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:LocalStorageExercise[],trainingStartDate:Date,trainingGoalsExercises?:Progression[]) => {
     if(typeof trainingPlanId !== 'string'){
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
     if(!Array.isArray(exercises)){
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
     if(Object.prototype.toString.call(new Date(trainingStartDate)) !== '[object Date]'){
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
     const userid = await userID()
     let id = ''
@@ -262,7 +268,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
     `
     id = dataID.rows[0].id
     }catch(e){
-        return { error : 'Something went wrong'}
+        return { error : 'Something Went Wrong'}
     }
 
     // if(trainingGoalsExercises){
@@ -285,7 +291,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
         const progression = trainingGoalsExercises?.find(x=>x.exerciseid === exercise.exerciseId)
 
         const data = await AddExerciseAction(false,exercise.exerciseName,exercise.sets,true,id,exercise.handle,false,exercise.date,trainingPlanId,progression)
-        if(data?.errors) return { error : 'Something went wrong'}
+        if(data?.errors) return { error : 'Something Went Wrong'}
         return { success: true }
     }))
 
@@ -306,7 +312,7 @@ export const FistStepDataValidation = async (data:dataType) => {
         isError: false
     }
     for(const [key,value] of Object.entries(data)){
-        if(typeof value !== 'string') error.somethinWentWrong = "Something went wrong"
+        if(typeof value !== 'string') error.somethinWentWrong = "Something Went Wrong"
     }
     if(!Goal.includes(data.goal)) {
         error.goal = 'Wrong goal chosen'
@@ -321,6 +327,7 @@ export const FistStepDataValidation = async (data:dataType) => {
         error.isError = true
     }
     if(error.isError){
+        console.log(error)
         return { error }
     }
 
@@ -349,37 +356,51 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
     const userid = await userID()
     const validateData = await FistStepDataValidation(data)
     for(const [key,value] of Object.entries(data)){
-        if(typeof value !== 'string') return { error: "Something went wrong" }
+        if(typeof value !== 'string') return { success: false, error: "Something Went Wrong" }
     }
     if(validateData?.error){
-        return { error: 'Something went wrong in first step' }
+        return { success: false, error: 'Something Went Wrong in first step' }
     } 
     if(!Array.isArray(deleteExercises) || !Array.isArray(favourtiteExercises)){
-        return { error: 'Something went wrong' }
+        return { success: false, error: 'Something Went Wrong' }
     }
     try{
         await sql`
             UPDATE gymusers
-            SET purpose = 'Casual', goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
+            SET purpose = 'Casual', favouriteexercises = ${JSON.stringify(favourtiteExercises)}, notfavouriteexercises= ${JSON.stringify(deleteExercises)}, setupcompleted = true
             WHERE id = ${userid};
         `
         await createTrainingPlans(favourtiteExercises,deleteExercises,Number(data.daysexercising))
-        return
+        return { success: true, error: '' }
     }catch(e){
         isError = true
         console.log('Error occured FirstSetupFinish func actions.ts',e)
-        return { error : 'Something went wrong'}
+        return { success: false, error : 'Something Went Wrong'}
     }finally{
-        if(!isError) redirect('/home')
+        
     }
 }
 
+export const firstSetupOwnTraining = async (data:dataType) => {
+    const userid = await userID()
+
+    try{
+        await sql`
+            UPDATE gymusers
+            SET purpose = 'Casual', goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify([])}, notfavouriteexercises= ${JSON.stringify([])}, setupcompleted = true
+            WHERE id = ${userid};
+        `
+    }catch{
+        return { success: false, error : 'Something Went Wrong'}
+    }finally{
+        return { success: true, error: '' }
+    }
+}
 export const logout = async () => {
     await signOut({redirect:true,redirectTo:'/login'})
 }
 
-export const getUserExercises = async () => {
-    const userid = await userID()
+const getUserExercisesByUserId = async (userid: string) => {
     let AllExercises = []
     try{
         const exercises = await sql`
@@ -391,6 +412,87 @@ export const getUserExercises = async () => {
         return []
     }
     return AllExercises as UserExercise[]
+}
+
+const getAllExercisesByUserId = async (userid: string) => {
+    try{
+        const userExercises = await getUserExercisesByUserId(userid)
+
+        return {...exerciseList,userExercises}
+    }catch(e){
+        return exerciseList as ExerciseTypes
+    }
+}
+
+const getAllExercisesInOneArrayByUserId = async (userid: string) => {
+    const userExercises = await getUserExercisesByUserId(userid)
+
+    return [...exercisesArr,...userExercises]
+}
+
+const getExercisesThatRequireHandlesOrTimeMesureByUserId = async (userid: string) => {
+    const ExercisesThatRequireTimeMesure:ExercisesThatRequireTimeMesureOrHandle[] = [...DefaultTimeMesureExercies]
+    const ExercisesThatRequireHandle:    ExercisesThatRequireTimeMesureOrHandle[] = [...DefaultHandleExercises]
+
+    try{
+        const userExercisesThatRequireTimeMesure = await sql`
+            SELECT id,exercisename,timemesure,useshandle FROM gymusersexercises WHERE userid = ${userid} AND (timemesure = true OR useshandle = true)
+        `
+
+        const userExercisesThatRequireEitherTimeMesureOrHandle = userExercisesThatRequireTimeMesure.rows as {id:string,exercisename:string,timemesure:boolean,useshandle:boolean}[]
+
+        userExercisesThatRequireEitherTimeMesureOrHandle.map(x=>{
+            if(x.timemesure) ExercisesThatRequireTimeMesure.push({id: x.id,exercisename:x.exercisename})
+            if(x.useshandle) ExercisesThatRequireHandle.push({id: x.id,exercisename:x.exercisename})
+        })
+        return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
+    }catch(e){
+        console.log(e,'Error occured actions.ts file function userExercisesThatRequireHandlesOrTimeMesure')
+        return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
+    }
+}
+
+const getSummaryDataByUserId = async (userid: string) => {
+    try{
+        const query = await sql`
+            SELECT * FROM gymexercises WHERE userid = ${userid}
+        `
+        const data = query.rows as GymExercise[]
+        const favourtieExercises = [] as { exercisename: string, number: number}[]
+
+        for(let i = 0; i < data.length; i++){
+            const index = favourtieExercises.findIndex(val=>val.exercisename === data[i].exercisename)
+            if( index >= 0){
+                favourtieExercises[index].number = favourtieExercises[index].number + 1
+            }else{
+                favourtieExercises.push({exercisename: data[i].exercisename,number: 1})
+            }
+        }
+
+        return {piechart: favourtieExercises.sort((a,b)=>{
+            if(a.number < b.number) return 1
+            return -1
+        }).slice(0,5)}
+    }catch{
+
+    }
+}
+
+const getBasicSummaryDataByUserId = async (userid: string) => {
+    try{
+        const data = await sql`
+            SELECT sets, exercisename, date FROM gymexercises WHERE userid = ${userid}
+        `
+        const parsedData = data.rows as SummaryDataFetched[]
+        return {data: parsedData, error: ''}
+    }catch{
+        return {data: [], error: 'Something Went Wrong'}
+    }
+}
+
+export const getUserExercises = async () => {
+    const userid = await userID()
+    return getUserExercisesByUserId(userid)
 }
 
 export const AddNewUserExercise = async (exercisename:string,timeExercise:boolean,usesHandle:boolean) => {
@@ -405,13 +507,13 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
         return {error : 'Exercise name is too long'}
     }
     if(typeof timeExercise !== 'boolean'){
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
     if(typeof usesHandle !== 'boolean'){
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
     if( typeof exercisename !== 'string'){
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
     if(exercisesArr.map(x=>x.toLowerCase()).includes(exercisename.toLowerCase())){
         return {error: 'Exercise with this name already exist'}
@@ -423,7 +525,7 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
         revalidatePath('/home/profile/my-exercises')
     }catch(e){
         return {
-            error: 'Something went wrong'
+            error: 'Something Went Wrong'
         }
     }
 }
@@ -432,7 +534,7 @@ export const DeleteUserExercise = async (id:string) => {
     const userid = await userID()
     if(typeof id !== 'string'){
         return {
-            error :'Something went wrong'
+            error :'Something Went Wrong'
         }
     }
     const checkIfIdInTraining = (trainingExercises:TrainingExerciseType[]) => {
@@ -467,7 +569,7 @@ export const DeleteUserExercise = async (id:string) => {
         `
         }catch(e){
             console.log(e)
-            return { error: "Something went wrong"}
+            return { error: "Something Went Wrong"}
         }
 
         await sql`
@@ -489,13 +591,13 @@ export const EditUserExercise = async (exerciseid:string,newname:string,timeExer
         return {error :'Exercise name cant be empty'}
     }
     if(typeof exerciseid !== 'string' || typeof newname !== 'string'){
-        return {error :'Something went wrong'}
+        return {error :'Something Went Wrong'}
     }
     if(typeof timeExercise !== 'boolean') {
-        return {error :'Something went wrong'}
+        return {error :'Something Went Wrong'}
     }
     if(typeof usesHandle !== 'boolean') {
-        return {error :'Something went wrong'}
+        return {error :'Something Went Wrong'}
     }
 
     const userid = await userID()
@@ -515,19 +617,14 @@ export const EditUserExercise = async (exerciseid:string,newname:string,timeExer
         revalidatePath('/home/profile/my-exercises')
     }catch(e){
         return {
-            error :'Something went wrong'
+            error :'Something Went Wrong'
         }
     }
 }
 
 export const getAllExercises = async () => {
-    try{
-        const userExercises = await getUserExercises()
-
-        return {...exerciseList,userExercises}
-    }catch(e){
-        return exerciseList as ExerciseTypes
-    }
+    const userid = await userID()
+    return getAllExercisesByUserId(userid)
 }
 
 const checkTempoErrors = (tempos:TempoType) => {
@@ -561,10 +658,10 @@ export const getAllTempos = async () => {
 
 export const AddOrUpdateTempo = async (exerciceid:string,tempos:TempoType) => {
 
-    if(typeof exerciceid !== 'string') return { error: "Something went wrong" }
+    if(typeof exerciceid !== 'string') return { error: "Something Went Wrong" }
 
     const TempoError = checkTempoErrors(tempos)
-    if(TempoError) return { error: "Something went wrong" }
+    if(TempoError) return { error: "Something Went Wrong" }
 
     const userid = await userID()
 
@@ -607,9 +704,8 @@ export const DeleteTempoFromDb = async (exerciceid:string) => {
 }
 
 export const AllExercisesInOneArray = async () => {
-    const userExercises = await getUserExercises()
-
-    return [...exercisesArr,...userExercises]
+    const userid = await userID()
+    return getAllExercisesInOneArrayByUserId(userid)
 }
 
 export const ArrayOfAllExercises = async () => {
@@ -624,26 +720,7 @@ export const ArrayOfAllExercises = async () => {
 
 export const userExercisesThatRequireHandlesOrTimeMesure = async () => {
     const userid = await userID()
-
-    const ExercisesThatRequireTimeMesure:ExercisesThatRequireTimeMesureOrHandle[] = [...DefaultTimeMesureExercies]
-    const ExercisesThatRequireHandle:    ExercisesThatRequireTimeMesureOrHandle[] = [...DefaultHandleExercises]
-
-    try{
-        const userExercisesThatRequireTimeMesure = await sql`
-            SELECT id,exercisename,timemesure,useshandle FROM gymusersexercises WHERE userid = ${userid} AND (timemesure = true OR useshandle = true)
-        `
-
-        const userExercisesThatRequireEitherTimeMesureOrHandle = userExercisesThatRequireTimeMesure.rows as {id:string,exercisename:string,timemesure:boolean,useshandle:boolean}[]
-
-        userExercisesThatRequireEitherTimeMesureOrHandle.map(x=>{
-            if(x.timemesure) ExercisesThatRequireTimeMesure.push({id: x.id,exercisename:x.exercisename})
-            if(x.useshandle) ExercisesThatRequireHandle.push({id: x.id,exercisename:x.exercisename})
-        })
-        return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
-    }catch(e){
-        console.log(e,'Error occured actions.ts file function userExercisesThatRequireHandlesOrTimeMesure')
-        return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
-    }
+    return getExercisesThatRequireHandlesOrTimeMesureByUserId(userid)
 }
 
 export const getUserHandles = async () => {
@@ -692,7 +769,7 @@ const isNotEmptyString = (...strings:string[]) => {
     let error = ''
 
     strings.map(string=>{
-        if(typeof string !== 'string') error = 'Something went wrong' 
+        if(typeof string !== 'string') error = 'Something Went Wrong' 
         if(string === '') error = 'Name cant be empty'
     })
 
@@ -722,7 +799,7 @@ export const addNewUserHandle = async (handlename:string) => {
 
     }catch(e){
         redirectUser = false
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }finally{
         if(redirectUser){
             revalidatePath('/home/profile/my-handles')
@@ -744,7 +821,7 @@ export const deleteUserHandle = async (handleid:string,) => {
              DELETE FROM gymusershandles WHERE id = ${handleid} AND userid = ${userid}
         `
     }catch(e){
-        return{ error: 'Something went wrong'}
+        return{ error: 'Something Went Wrong'}
     }finally{
         if(redirectUser){
             revalidatePath('/home/profile/my-handles')
@@ -768,7 +845,7 @@ export const editUserHandle = async (handlename:string,handleid: string) => {
         `
     }catch(e){
         redirectUser = false
-        return{ error: 'Something went wrong'}
+        return{ error: 'Something Went Wrong'}
     }finally{
         if(redirectUser){
             revalidatePath('/home/profile/my-handles')
@@ -778,7 +855,7 @@ export const editUserHandle = async (handlename:string,handleid: string) => {
 
 const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay,userID:string) => {
     if(typeof trainingplanname !== 'string'){
-        return {error:'Something went wrong3'}
+        return {error:'Something Went Wrong3'}
     }
     if (trainingplanname.length > 255){
         return {error:'Training name is too long'}
@@ -799,7 +876,7 @@ const checkTrainingFields = async (trainingplanname:string,exercises:TrainingExe
             unknownExercice = exercises[x].exerciseid
         }
     }
-    if(NotStringError) return { error: 'Something went wrong4'}
+    if(NotStringError) return { error: 'Something Went Wrong4'}
     if(UnknownExerciseError) return { error: `Unknown exercise in training plan`}
     if(!WeekDayArray.includes(weekday)) return { error: 'Wrong week day'}
 }
@@ -817,7 +894,7 @@ export const GetUserTrainings = async () => {
 }
 
 export const GetUserTrainingByName = async (trainingname:string) => {
-    if(typeof trainingname !== 'string') return { error: "Something went wrong"}
+    if(typeof trainingname !== 'string') return { error: "Something Went Wrong"}
     const userid = await userID()
 
     try{
@@ -836,14 +913,14 @@ export const GetUserTrainingByName = async (trainingname:string) => {
             error: ''
         }
     }catch(e){
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
 }
 
-export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay,exercisesuwu?:TrainingProgression[]) => {
+export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay,exercisesuwu?:TrainingProgression[],shouldRedirect: boolean = true) => {
     const userid = await userID()
     if(typeof trainingplanname !== 'string' || typeof weekday !== 'string' || (exercisesuwu && !Array.isArray(exercisesuwu))){
-        return {error:'Something went wrong'}
+        return {error:'Something Went Wrong'}
     }
     if (trainingplanname.length > 255){
         return {error:'Training name is too long'}
@@ -860,7 +937,7 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
             return { error: 'Training with this name already exists'}
         }
     }catch(e){
-        return {error:'Something went wrong'}
+        return {error:'Something Went Wrong'}
     }
 
     const date = new Date()
@@ -872,17 +949,19 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
         `
     }catch(e){
         console.log('Error occured CreateUserTraining func actions.ts',e)
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
+    }finally{
+        revalidatePath('/home/profile/my-training-plans')
+        shouldRedirect && redirect(`/home/profile/my-training-plans/${trainingplanname}`)
     }
-    revalidatePath('/home/profile/my-training-plans')
-    redirect(`/home/profile/my-training-plans/${trainingplanname}`)
+
 }
 
 export const EditUserTraining = async (trainingid:string,trainingplanname:string,exercises:TrainingExerciseType[],weekday:WeekDay) => {
     const userid = await userID()
 
     if(typeof trainingid !== 'string' || typeof trainingplanname !== 'string' || !Array.isArray(exercises) || typeof weekday !== 'string'){
-        return { error: "Something went wrong1" }
+        return { error: "Something Went Wrong1" }
     }
     const checkvalue = await checkTrainingFields(trainingplanname,exercises,weekday,userid as string)
     if(checkvalue?.error) return  checkvalue
@@ -896,14 +975,14 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
             `
     }catch(e){
         console.log('Error occured EditUserTraining func actions.ts',e)
-        return { error: 'Something went wrong1'}
+        return { error: 'Something Went Wrong1'}
     }
     revalidatePath('/home/profile/my-training-plans')
     redirect('/home/profile/my-training-plans')
 }
 
 export const DeleteUserTraining = async (trainingid:string) => {
-    if(typeof trainingid !== 'string') return { error: "Something went wrong"}
+    if(typeof trainingid !== 'string') return { error: "Something Went Wrong"}
     const userid = await userID()
 
     try{
@@ -927,14 +1006,14 @@ export const DeleteUserTraining = async (trainingid:string) => {
             `
     }catch(e){
         console.log('Error occured DeleteUserTraining func actions.ts',e)
-        return { error: 'Something went wrong'}
+        return { error: 'Something Went Wrong'}
     }
     revalidatePath('/home/profile/my-training-plans')
     redirect('/home/profile/my-training-plans')
 }
 
 export const getTrainingDataById = async (id:string) => {
-    if(typeof id !== 'string') return { error: "Something went wrong" }
+    if(typeof id !== 'string') return { error: "Something Went Wrong" }
     const userid = await userID()
 
     try{
@@ -948,7 +1027,7 @@ export const getTrainingDataById = async (id:string) => {
         return {data: dataWithIds , error: ''}
     }catch(e){
         console.log(e)
-        return { error: 'Something went wrong' }
+        return { error: 'Something Went Wrong' }
     }
 }
 
@@ -1200,7 +1279,7 @@ const fetchExercisesCountByUserId = async (userid: string, from?:Date,to?:Date,e
         `
         return { error: '', data: count.rows[0].count as string }
     }catch{
-        return { error: 'Something went wrong', data: '0' }
+        return { error: 'Something Went Wrong', data: '0' }
     }
 }
 
@@ -1219,57 +1298,57 @@ const fetchExercisesByUserId = async (userid: string, from?:Date,to?:Date,exerci
         //TODO MAKE SEPARATE FUNCTION FOR FETCHING COUNT
         if(from && to && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
 
         if(from && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date >= ${fromFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date >= ${fromFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
 
         if(to && exerciseName){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
         if(to && from){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date BETWEEN ${fromFormatted}::date AND ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
         if(to){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date <= ${toFormatted}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
 
         if(from){
             const exercises = await sql`
-                SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+                SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND date >= ${JSON.stringify(from)}::date ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
 
         if(exerciseName){
             const exercises = await sql`
-            SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+            SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} AND exercisename = ${exerciseName} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
             `
             return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
         }
         const exercises = await sql`
-            SELECT id,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
+            SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
         `
         return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
     }catch(e){
         console.log('Error occured fetchUserExercises func actions.ts',e)
-        return { error: 'Something went wrong' }
+        return { error: 'Something Went Wrong' }
     }
 }
 
@@ -1280,7 +1359,7 @@ const trainerCanAccessTraineeHistory = async (traineeId: string) => {
         SELECT traineeid FROM trainertrainee WHERE trainerid = ${userid} AND traineeid = ${traineeId}
     `
 
-    if(trainee.rows.length === 0) return { error: 'Something went wrong', trainerId: null }
+    if(trainee.rows.length === 0) return { error: 'Something Went Wrong', trainerId: null }
 
     return { error: '', trainerId: userid }
 }
@@ -1296,7 +1375,7 @@ export const fetchUserExercises = async (from?:Date,to?:Date,exerciseName?:strin
 }
 
 export const fetchTraineeExercisesCount = async (traineeId: string, from?:Date,to?:Date,exerciseName?:string) => {
-    if(typeof traineeId !== 'string') return { error: 'Something went wrong', data: '0' }
+    if(typeof traineeId !== 'string') return { error: 'Something Went Wrong', data: '0' }
 
     const access = await trainerCanAccessTraineeHistory(traineeId)
     if(access.error) return { error: access.error, data: '0' }
@@ -1305,7 +1384,7 @@ export const fetchTraineeExercisesCount = async (traineeId: string, from?:Date,t
 }
 
 export const fetchTraineeExercises = async (traineeId: string, from?:Date,to?:Date,exerciseName?:string,page?:number,limit?:number) => {
-    if(typeof traineeId !== 'string') return { error: 'Something went wrong', data: [] }
+    if(typeof traineeId !== 'string') return { error: 'Something Went Wrong', data: [] }
 
     const access = await trainerCanAccessTraineeHistory(traineeId)
     if(access.error) return { error: access.error, data: [] }
@@ -1318,7 +1397,7 @@ export const getAccountSettings = async () => {
 
     try{
         const setting = await sql`
-            SELECT showtempo, goal, advancmentlevel, daysexercising, favouriteexercises, notfavouriteexercises FROM gymusers WHERE id = ${userid}
+            SELECT showtempo, favouriteexercises, notfavouriteexercises, settings FROM gymusers WHERE id = ${userid}
         `
         return setting.rows[0] as UserSettings
     }catch(e){
@@ -1330,26 +1409,13 @@ export const getAccountSettings = async () => {
 export const saveNewUserSetting = async (newSettings : UserSettings) => {
     const userid = await userID()
 
-    const daysexercisingArr = ['1' , '2' , '3' , '4' , '5' , '6' , '7']
-    const goalArr = ['Siła','Hipertrofia','Oba']
-    const advancmentlevelArr = ['Początkujący','Średniozaawansowany','Zaawansowany']
 
-    const { advancmentlevel, daysexercising, favouriteexercises, goal, notfavouriteexercises } = newSettings
+
+    const { favouriteexercises, notfavouriteexercises } = newSettings
 
     if(!Array.isArray(favouriteexercises) || !Array.isArray(notfavouriteexercises)){
-        return { error: 'Something went wrong' }
+        return { error: 'Something Went Wrong' }
     }
-    if(typeof goal !== 'string' || !goalArr.includes(goal)){
-        return { error: 'Wrong goal, correct goals are one of' }
-    } 
-
-    if(typeof advancmentlevel !== 'string' || !advancmentlevelArr.includes(advancmentlevel)){
-        return { error: 'Wrong advancment level, correct level is one of' }
-    } 
-
-    if(typeof daysexercising !== 'string' || !daysexercisingArr.includes(daysexercising)){
-        return { error: 'Training days a week should be between 1 and 7' }
-    } 
 
     if(favouriteexercises){
         for(let i = 0 ; i< favouriteexercises.length ; i++ ){
@@ -1364,14 +1430,33 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
     
     try{
         await sql`
-            UPDATE gymusers SET goal = ${goal}, advancmentlevel = ${advancmentlevel}, daysexercising = ${daysexercising}, favouriteexercises = ${JSON.stringify(favouriteexercises)}, notfavouriteexercises = ${JSON.stringify(notfavouriteexercises)}  WHERE id = ${userid}
+            UPDATE gymusers SET favouriteexercises = ${JSON.stringify(favouriteexercises)}, notfavouriteexercises = ${JSON.stringify(notfavouriteexercises)}  WHERE id = ${userid}
         `
     }catch(e){
         console.log('Error occured saveNewUserSetting func actions.ts',e)
         return {
-            error: 'Something went wrong'
+            error: 'Something Went Wrong'
         }
     }finally{
+        revalidatePath('/home/profile/settings')
+    }
+}
+
+export const updateShowTempoSetting = async (showtempo: Settings['showtempo']) => {
+    const userid = await userID()
+
+    if(typeof showtempo !== 'boolean') return { error: 'Something Went Wrong' }
+
+    try{
+        await sql`
+            UPDATE gymusers SET settings = ${JSON.stringify( { showtempo } )}::jsonb WHERE id = ${userid}
+        `
+    }catch(e){
+        console.log('Error occured updateShowTempoSetting func actions.ts',e)
+        return { error: 'Something Went Wrong' }
+    }finally{
+        revalidatePath('/home')
+        revalidatePath('/home/profile')
         revalidatePath('/home/profile/settings')
     }
 }
@@ -1405,10 +1490,10 @@ export const changePassword = async (password:string,newpassword:string,repeatne
         `
     userEncryptedPassword = userData.rowCount && userData.rowCount > 0 ? userData.rows[0].password : null
     }catch(e){
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
 
-    if(!userEncryptedPassword) return {error: 'Something went wrong'}
+    if(!userEncryptedPassword) return {error: 'Something Went Wrong'}
     const isPasswordCorrect = await ComparePasswords(password,userEncryptedPassword)
     if(!isPasswordCorrect) return {error: 'Wrong password'}
 
@@ -1418,7 +1503,7 @@ export const changePassword = async (password:string,newpassword:string,repeatne
             UPDATE gymusers SET password = ${hasedPassword} WHERE id = ${userid}
         `
     }catch{
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
 
 }
@@ -1485,8 +1570,14 @@ const createTrainingPlans = async (fav:string[],notfav:string[],days:number) => 
             FilterTraining(Beginner4_7Lower_SecondVariation,fav,notfav)
         )
     }
+    let weekdays: WeekDay[] = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+    ]
 
-    plans.map(async(plan,index)=>{
+    const results = await Promise.all(plans.map(async(plan,index)=>{
         let name:string
         if(days<=2){
             name = `Trening całego ciała ${index+1}`
@@ -1494,8 +1585,15 @@ const createTrainingPlans = async (fav:string[],notfav:string[],days:number) => 
             name = index<=1?`Trening góry ${index+1}`:`Trening dołu ${index+1}`
         }
 
-        await CreateUserTraining(name,'Monday',plan)
-    })
+        const result = await CreateUserTraining(name,weekdays[index],plan,false)
+        if(result?.error) return { success: false, error: 'Something Went Wrong' }
+        return { success: true, error: '' }
+    }))
+
+    if(results.some(result=>!result.success)){
+        console.log('Error in creating training plans', results)
+        return { success: false, error: 'Something Went Wrong' }
+    }
 
 }
 
@@ -1567,43 +1665,38 @@ export const Last30DaysExercises = async () => {
 
 export const getSummaryData = async () => {
     const userid = await userID()
-
-    try{
-        const query = await sql`
-            SELECT * FROM gymexercises WHERE userid = ${userid}
-        `
-        const data = query.rows as GymExercise[]
-        const favourtieExercises = [] as { exercisename: string, number: number}[]
-
-        for(let i = 0; i < data.length; i++){
-            const index = favourtieExercises.findIndex(val=>val.exercisename === data[i].exercisename)
-            if( index >= 0){
-                favourtieExercises[index].number = favourtieExercises[index].number + 1
-            }else{
-                favourtieExercises.push({exercisename: data[i].exercisename,number: 1})
-            }
-        }
-
-        return {piechart: favourtieExercises.sort((a,b)=>{
-            if(a.number < b.number) return 1
-            return -1
-        }).slice(0,5)}
-    }catch{
-
-    }
+    return getSummaryDataByUserId(userid)
 }
 
 export const getBasicSummaryData = async () => {
     const userid = await userID()
+    return getBasicSummaryDataByUserId(userid)
+}
 
-    try{
-        const data = await sql`
-            SELECT sets, exercisename, date FROM gymexercises WHERE userid = ${userid}
-        `
-        const parsedData = data.rows as SummaryDataFetched[]
-        return {data: parsedData, error: ''}
-    }catch{
-        return {data: [], error: 'Something went wrong'}
+export const getSummaryPageData = async () => {
+    const userid = await userID()
+
+    return {
+        summaryData: await getSummaryDataByUserId(userid),
+        basicSummaryData: await getBasicSummaryDataByUserId(userid),
+        timeOrHandleExercises: await getExercisesThatRequireHandlesOrTimeMesureByUserId(userid),
+        allExercisesInOneArray: await getAllExercisesInOneArrayByUserId(userid),
+        allExercisesObject: await getAllExercisesByUserId(userid)
+    }
+}
+
+export const getTraineeSummaryPageData = async (traineeId: string) => {
+    if(typeof traineeId !== 'string') return null
+
+    const access = await trainerCanAccessTraineeHistory(traineeId)
+    if(access.error) return null
+
+    return {
+        summaryData: await getSummaryDataByUserId(traineeId),
+        basicSummaryData: await getBasicSummaryDataByUserId(traineeId),
+        timeOrHandleExercises: await getExercisesThatRequireHandlesOrTimeMesureByUserId(traineeId),
+        allExercisesInOneArray: await getAllExercisesInOneArrayByUserId(traineeId),
+        allExercisesObject: await getAllExercisesByUserId(traineeId)
     }
 }
 
@@ -1631,7 +1724,7 @@ export const AddOrUpdateProgression = async (data:Progression) => {
         }
         return { error: '' }
     }catch(e){
-        return { error: 'Something went wrong' }
+        return { error: 'Something Went Wrong' }
     }
 }
 
@@ -1663,7 +1756,7 @@ export const DeleteUserProgression = async (progressionid: string) => {
     }catch(e){
         console.log(e)
         return {
-            error: "Something went wrong"
+            error: "Something Went Wrong"
         }
     }
 }
@@ -1732,7 +1825,7 @@ export const GetProgressionsAndDeclines = async () => {
 
         return { goals, progressions, error: '' }
     }catch{
-        return { goals: {}, progressions: {}, error: 'Something went wrong' }
+        return { goals: {}, progressions: {}, error: 'Something Went Wrong' }
     }
 }
 
@@ -1753,7 +1846,7 @@ export const createNewLongTermPlan = async (name: string) => {
     const userid = await userID()
 
     if(name === '') return {error: "Name cant be empty"}
-    if(typeof name !== 'string') return { error: "Something went wrong"}
+    if(typeof name !== 'string') return { error: "Something Went Wrong"}
     try{
         const doesexist = await sql`
             SELECT 1 FROM bigtraining WHERE userid = ${userid} AND name = ${name}
@@ -1775,7 +1868,7 @@ export const createNewLongTermPlan = async (name: string) => {
     }catch(e){
         console.log(e)
         return {
-            error: "Something went wrong"
+            error: "Something Went Wrong"
         }
     }
 }
@@ -1818,7 +1911,7 @@ export const handleSaveLongTermPlan = async (plan: BigTrainingData,userDate: Dat
             UPDATE bigtraining SET name = ${plan.name}, subplans = ${JSON.stringify(plan.subplans)}, lastedited = ${JSON.stringify(userDate)} WHERE id = ${plan.id} AND userid = ${userid}
         `
     }catch{
-        return {error: "Something went wrong"}
+        return {error: "Something Went Wrong"}
     }
 }
 
@@ -1826,7 +1919,7 @@ export const handleDeleteLongTermPlan = async (planName:string) => {
     const userid = await userID()
 
     if(planName==='' || typeof planName !== 'string'){
-        return {error: "Something went wrong"}
+        return {error: "Something Went Wrong"}
     }
 
     try{
@@ -1834,7 +1927,7 @@ export const handleDeleteLongTermPlan = async (planName:string) => {
             DELETE FROM bigtraining WHERE userid = ${userid} AND name = ${planName}
         `
     }catch{
-        return {error: "Something went wrong"}
+        return {error: "Something Went Wrong"}
     }
     revalidatePath('/home/profile/long-term-plans')
 }
@@ -1880,7 +1973,7 @@ export const createStarterBigPlan = async (plan: BigTrainingData, userDate: Date
         
     }catch(e){
         console.log(e)
-        return{ error: "Something went wrong"}
+        return{ error: "Something Went Wrong"}
     }
     redirect(`/home/start-training/${id}`)
 }
@@ -1912,7 +2005,7 @@ export const updateBigPlan = async (planData: BigTrainingStarter, userDate: Date
             await AddExerciseAction(false,exercise.exerciseid,sets,false,undefined,handle,false,userDate)
         })
     }catch(error){
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
 
 
@@ -1996,7 +2089,7 @@ export const updateAvatar = async (secureUrl: string, publicId: string) => {
         `
     }catch(e){
         console.log(e)
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }
 }
 
@@ -2038,10 +2131,11 @@ export const switchAccount = async () => {
         `
         if(result.rows.length === 0){
             console.log('User is not trainer',result.rows)
-            return {error: 'Something went wrong'}
+            return {error: 'Something Went Wrong'}
         }
         const currentType = result.rows[0].trainercurrentaccounttype
         const newType = currentType === 'Trener' ? 'Casual' : 'Trener'
+        console.log(newType,'server')
         await sql`
             UPDATE gymusers SET trainercurrentaccounttype = ${newType} WHERE id = ${userid}
         `
@@ -2049,9 +2143,10 @@ export const switchAccount = async () => {
 
     }catch(e){
         console.log(e)
-        return {error: 'Something went wrong'}
+        return {error: 'Something Went Wrong'}
     }finally{
-        revalidatePath('/home')
+        revalidatePath('/home', 'layout')
+        revalidatePath('/home/profile')
     }
 }
 
@@ -2070,7 +2165,7 @@ export const getTrainerSchemas = async () => {
         console.log(e)
         return {
             schemas: [],
-            error: 'Something went wrong'
+            error: 'Something Went Wrong'
         }
     }
 }
@@ -2091,7 +2186,7 @@ export const getSchemaData = async (schemaId: string) => {
         console.log(e)
         return {
             schema: null,
-            error: 'Something went wrong'
+            error: 'Something Went Wrong'
         }
     }
 }

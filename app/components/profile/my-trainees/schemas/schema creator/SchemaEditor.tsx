@@ -10,7 +10,7 @@ type SchemaEditorProps = {
 function SchemaEditor({ }: SchemaEditorProps) {
     
     return ( 
-        <div className="mb-40 mt-5">
+        <div className="mb-40 mt-5 relative">
             <BasicData />
 
             <Plans/>

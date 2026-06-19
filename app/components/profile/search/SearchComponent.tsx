@@ -15,6 +15,7 @@ import { ErrorDiv } from '../../ui/ErrorDiv'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
 import { exercisesArr } from '@/app/lib/exercise-list'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
 
 type SearchComponentTypes = {
     exerciseList: (string | UserExercise)[],
@@ -39,6 +40,7 @@ export const SearchComponent = ({exerciseList,exercises,traineeId,children}:Sear
 
     const[loading,setLoading] = useState(true)
     const[error,setError] = useState('')
+    const tempos = useExerciseTempos()
 
     const handleShowExerciseList = () => {
         setShowExerciseList && setShowExerciseList(true)
@@ -159,7 +161,7 @@ export const SearchComponent = ({exerciseList,exercises,traineeId,children}:Sear
   return (
 <>
     <div className='text-white'>
-        <div className={`fixed z-20 left-0 pt-5 w-full ${showSearch?'top-0':'-top-[200px]'} transition-all bg-dark`}>
+        <div className={`fixed z-20 pt-5 max-w-mobile w-full mx-auto ${showSearch?'top-0':'-top-[200px]'} transition-all bg-dark`}>
             <div className='flex flex-col gap-4'>
                 <div className='flex gap-4 mx-5 relative'>
                     <Input labelName={t("From")} type='date' onChange={e=>handleDateChange(e.target.value,setFrom)} disabled={loading}/>
@@ -174,7 +176,7 @@ export const SearchComponent = ({exerciseList,exercises,traineeId,children}:Sear
                     <Button onClick={()=>handleSearch(true)}>{u("Search")}</Button>
                 </div>
             </div>
-            <div className={`w-full flex flex-col px-5 bg-darkLight mt-2 text-white border-green border-b-2 pt-2` }>
+            <div className={`w-full flex flex-col px-5 bg-darkLight mt-2 text-white pt-2` }>
                 <div className='w-full flex justify-between gap-10  '>
                     <button onClick={toggleSearchBar} className='flex-1'>
                         <Icon className='flex items-center'>
@@ -198,19 +200,27 @@ export const SearchComponent = ({exerciseList,exercises,traineeId,children}:Sear
                 </div>
 
                 <ErrorDiv error={error} className='flex-1 flex items-center'/>
-
+                <div >
+                    {children}
+                </div>
             </div>
         </div>
 
-        {children ? <div className={`mx-5 ${showSearch ? 'mt-52' : 'mt-28'} mb-4`}>{children}</div> : null}
+        <div className={`mt-48 mb-4`}>
+            {/* {children ? (
+                <div className={`sticky z-10 mx-5 mb-4 ${showSearch ? 'top-52' : 'top-28'}`}>
+                    {children}
+                </div>
+            ) : null} */}
 
-        <SmallLoaderDiv loading={loading} sClassParent='h-screen flex items-center mb-20'/>
-       
-        {!loading && <DisplayUserExercises loading={loading} fetchedExercises={fetchedExercises} manyExercises={selectedExercise===''} handleSearch={()=>handleSearch(false)} dataLength={getDataLenght()} totalItems={totalItems}/>}
+            <SmallLoaderDiv loading={loading} sClassParent='h-screen flex items-center mb-20'/>
+
+            {!loading && <DisplayUserExercises hasChildren={!!children} loading={loading} fetchedExercises={fetchedExercises} manyExercises={selectedExercise===''} handleSearch={()=>handleSearch(false)} dataLength={getDataLenght()} totalItems={totalItems}/>}
+        </div>
         
     </div>
     {showExerciseList && 
-        <ExerciseList exerciseList={exerciseList} exercises={exercises}/>
+        <ExerciseList exerciseList={exerciseList} exercises={exercises} tempos={tempos}/>
     }
 </>
   )

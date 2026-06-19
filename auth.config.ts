@@ -14,23 +14,30 @@ export default { providers: [
           },
         async authorize(credentials){
             try{
+                console.log("authorize called with credentials:", credentials)
                 if(credentials === null) return null
                 let user = null
     
                 const { email, password } = await LoginSchema.parseAsync(credentials)
+                const normalizedEmail = email.trim().toLowerCase()
         
-                const result = await getUser(email)
+                const result = await getUser(normalizedEmail)
                 if(!result){
+                    console.log("User not found")
                     throw new Error("Użytkownik nie znaleziony")
                 }
                 
                 user = result.user
                 
                 const correctPassword = await compare(password,result.password)
-                if(!correctPassword) throw new Error("Coś poszło nie tak")
+                if(!correctPassword) {
+                    console.log("Incorrect password", password, result.password)
+                    throw new Error("Coś poszło nie tak")
+                }
                 
                 return user
             }catch(error){
+                console.error("Error in authorize function:", error)
                 if (error instanceof ZodError) {
                     // Return `null` to indicate that the credentials are invalid
                     return null

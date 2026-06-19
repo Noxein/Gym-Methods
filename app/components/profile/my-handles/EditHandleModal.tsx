@@ -36,7 +36,7 @@ export const EditHanleModal = ({handle,hideModal}:EditHandleModal) => {
     const e = useTranslations("Errors")
 
   return (
-    <div className='flex flex-col gap-4 text-center text-xl w-full mx-5'>
+    <div className='flex flex-col gap-4 text-center text-xl w-mobile max-w-mobile mx-5'>
         
         <Input labelName={t("HandleName")} value={value} onChange={(e)=>setValue(e.target.value)}/>
         {loading && <SmallLoaderDiv loading={loading} />}

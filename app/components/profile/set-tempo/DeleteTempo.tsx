@@ -42,7 +42,7 @@ export const DeleteTempo = ({selectedExercise,setShowDeleteTempoModal}:DeleteTem
 
   return (
     <BlurBackgroundModal>
-        <div className={`flex flex-col gap-2 mx-5 mb-20 rounded-md text-xl text-white w-full`}>
+        <div className={`flex flex-col gap-2 mb-20 rounded-md text-xl text-white max-w-mobile w-mobile`}>
             
             <div className='text-center'>{t("AreYouSure")} <br/> <b>{formattedExerciseName}</b>?</div>
 

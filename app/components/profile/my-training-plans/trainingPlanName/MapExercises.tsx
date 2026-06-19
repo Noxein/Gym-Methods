@@ -5,6 +5,7 @@ import { ListExercisesTraining } from './ListExercisesTraining'
 import { LeftAngle } from '@/app/ui/icons/ExpandIcon'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { useTranslations } from 'next-intl'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
 
 type MapExercisesTypes = {
     exercisesObject:ExerciseTypes,
@@ -19,6 +20,7 @@ type MapExercisesTypes = {
 
 export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExercises,setShowAddExercise,isTrainingInProgressPage = false,setShowExerciseList,localStorageTrainingData,setLocalStorageTrainingData}:MapExercisesTypes) => {
     const[searchField,setSearchField] = useState('')
+    const tempos = useExerciseTempos()
     
     const CloseExercises = () => {
         setShowAddExercise && setShowAddExercise(false)
@@ -49,6 +51,7 @@ export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExer
                     setShowAddExercise={setShowAddExercise}
                     localStorageTrainingData={localStorageTrainingData}
                     setLocalStorageTrainingData={setLocalStorageTrainingData}
+                    tempos={tempos}
                     />
                 :
                 <ListExercisesTraining 
@@ -59,6 +62,7 @@ export const MapExercises = ({exercisesObject,allExercisesInOneArray,setPlanExer
                     setShowAddExercise={setShowAddExercise}
                     localStorageTrainingData={localStorageTrainingData}
                     setLocalStorageTrainingData={setLocalStorageTrainingData}
+                    tempos={tempos}
                     />
                 }
             </div>

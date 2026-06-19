@@ -33,7 +33,7 @@ export const DeleteModal = ({selectedExercise,setShowDeleteModal}:{selectedExerc
     
     return (
     <BlurBackgroundModal>
-        <div  className={`text-white px-5 py-6 rounded-md text-xl flex flex-col gap-2 w-full`}>
+        <div  className={`text-white px-5 py-6 rounded-md text-xl flex flex-col gap-2 max-w-mobile w-mobile mx-auto`}>
             <div className='text-center'>
                 {t("AreYouSure")} <br />
                 <strong>{selectedExercise.exercisename}</strong>

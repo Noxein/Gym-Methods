@@ -50,7 +50,14 @@
         "RepetitionsCount": "{count, plural, one {# powtórzenie} few {# powtórzenia} many {# powtórzeń} other {# powtórzenia}}",
         "addTraining": "Dodaj trening",
         "addNewTraining": "Dodaj nowy trening",
-        "close": "Zamknij"
+        "close": "Zamknij",
+        "Tempo": "Tempo",
+        "TempoInfoAria": "Otwórz informacje o tempie",
+        "TempoInfoTitle": "Szczegóły tempa",
+        "TempoInfoDescription": "To ćwiczenie używa następującego tempa:",
+        "TempoInfoOrder": "Liczby są pokazane w tej kolejności:",
+        "TempoInfoValues": "góra - zatrzymanie u góry - dół - zatrzymanie na dole",
+        "TempoInfoUnit": "Każda liczba oznacza sekundy."
     },
     "Login": {
         "Login": "Zaloguj",
@@ -143,7 +150,9 @@
         "TrainerAccount": "Konto trenera",
         "CasualAccount": "Konto treningowe",
         "MyTrainees": "Moi podopieczni",
-        "TrainingSchemas": "Schematy treningowe"
+        "TrainingSchemas": "Schematy treningowe",
+        "CustomExercises": "Niestandardowe ćwiczenia",
+        "ShowTempo": "Pokazuj tempo ćwiczeń"
     },
     "Home/Profile/Change-Password" : {
         "ChangePassword": "Zmień hasło",
@@ -238,7 +247,8 @@
         "TraineeAddedSuccessfully": "Podopieczny dodany pomyślnie!",
         "AcceptTraineeRequest": "Zaakceptuj prośbę o dołączenie od podopiecznego",
         "Accept": "Akceptuj",
-        "AddTrainee": "Dodaj podopiecznego"
+        "AddTrainee": "Dodaj podopiecznego",
+        "TrainingSummary": "Podsumowanie treningów"
     },
     "Home/Profile/My-Trainees/Schemas":{
         "AddNewSchema": "Stwórz nowy schemat treningowy",
@@ -270,7 +280,42 @@
         "AreYouSureYouWantToCancel": "Czy na pewno chcesz anulować zmiany? Wszystkie niezapisane zmiany zostaną utracone.",
         "AreYouSureYouWantToSaveChanges": "Czy na pewno chcesz zapisać zmiany?",
         "NoTrainingsScheduled": "Brak treningów zaplanowanych na ten dzień.",
-        "TrainingsForDate": "Treningi z dnia"
+        "TrainingsForDate": "Treningi z dnia",
+        "NoTrainingsEver": "Ten podopieczny nigdy nie miał żadnych treningów.",
+        "CreateTrainingLink": "Utwórz pierwszy trening",
+        "NoExercisesInTraining": "Brak ćwiczeń w tym treningu.",
+        "ExercisesPreview": "Ćwiczenia",
+        "MoreExercises": "+{count} więcej"
+    },
+    "Home/Profile/My-Trainees/Exercises":{
+        "CreateNewExercise": "Utwórz nowe ćwiczenie",
+        "ExerciseName": "Nazwa ćwiczenia",
+        "EnterExerciseName": "Wpisz nazwę ćwiczenia",
+        "Description": "Opis",
+        "EnterDescription": "Wpisz opis ćwiczenia (opcjonalnie)",
+        "Category": "Kategoria",
+        "CategoryPlaceholder": "np. Klatka, Nogi, Plecy",
+        "IsTimingExercise": "Czy jest to ćwiczenie w którym mierzy się czas? (np. Deska)",
+        "UsesHandleExercise": "Czy to ćwiczenie wykorzystuje uchwyty? (np. ćwiczenia na wyciągu)",
+        "CreateExercise": "Utwórz ćwiczenie",
+        "Creating": "Tworzenie...",
+        "NoCustomExercises": "Brak niestandardowych ćwiczeń",
+        "CreateYourFirstExercise": "Utwórz swoje pierwsze niestandardowe ćwiczenie, aby rozpocząć",
+        "ConfirmDeleteExercise": "Czy na pewno chcesz usunąć to ćwiczenie?",
+        "CreatedOn": "Utworzono",
+        "Custom exercises": "Niestandardowe ćwiczenia"
+    },
+    "Home/Profile/My-Trainees/Handles":{
+        "CustomHandles": "Niestandardowe uchwyty",
+        "CreateNewHandle": "Utwórz nowy uchwyt",
+        "HandleName": "Nazwa uchwytu",
+        "EnterHandleName": "Wpisz nazwę uchwytu",
+        "CreateHandle": "Utwórz uchwyt",
+        "Creating": "Tworzenie...",
+        "NoCustomHandles": "Brak niestandardowych uchwytów",
+        "CreateYourFirstHandle": "Utwórz pierwszy niestandardowy uchwyt, aby rozpocząć",
+        "ConfirmDeleteHandle": "Czy na pewno chcesz usunąć ten uchwyt?",
+        "CreatedOn": "Utworzono"
     },
     "Home/Start-Training": {
         "ContinueTraining": "Kontynuuj trening",
@@ -310,6 +355,7 @@
         "Current": "Ostatnio",
         "Previous": "Poprzednio",
         "OfGoal": "z celu",
+        "ExerciseProgression": "Progres ćwiczeń",
         "Progressions": "Progresje",
         "NotEnoughData": "Za mało danych"
     },
@@ -526,7 +572,8 @@
         "First setup": "Pierwsze logowanie",
         "Login": "Zaloguj",
         "Login description": "Aplikacja na siłownię",
-        "Register": "Zarejestruj"
+        "Register": "Zarejestruj",
+        "Custom exercises": "Ćwiczenia"
     },
     "Summary": {
         "Month": "Miesiąc",

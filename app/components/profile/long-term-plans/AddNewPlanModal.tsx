@@ -33,7 +33,7 @@ function AddNewPlanModal({flip}:AddNewPlanModalTypes) {
 
 
     return ( 
-        <div onClick={e=>e.stopPropagation()} className="w-full mx-5 flex flex-col gap-4">
+        <div onClick={e=>e.stopPropagation()} className=" mx-5 flex flex-col gap-4 max-w-mobile w-mobile">
 
             <Input labelName={u("Name")} value={planName} onChange={e=>setPlanName(e.target.value)} type="text"/>
 

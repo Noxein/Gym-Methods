@@ -35,7 +35,7 @@ export const DeleteHandleModal = ({handle,hideModal}:DeleteHandleModal) => {
     const e = useTranslations("Errors")
     
   return (
-    <div className='flex flex-col gap-4 text-center text-xl w-full mx-5'>
+    <div className='flex flex-col gap-4 text-center text-xl w-mobile max-w-mobile mx-5'>
         <p>{t("AreYouSure")} <br/> <b>{handle && handle.handlename}</b></p>
         {loading && <SmallLoaderDiv loading={loading}/>}
         <ErrorDiv error={error}/>

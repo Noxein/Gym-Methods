@@ -43,7 +43,7 @@ export const AddTrainingModal = ({setShowAddModal,trainingCount}:AddTrainingModa
     
   return (
     <BlurBackgroundModal>
-        <div className={`text-xl rounded-md px-5 py-5 mb-20 w-full`}>
+        <div className={`text-xl rounded-md px-5 py-5 mb-20 w-full max-w-mobile`}>
             <div className='flex flex-col gap-4'>
                 <Input labelName={t("TrainingName")} onChange={e=>setTrainingName(e.target.value)} value={trainingName} disabled={loading}/>
                 <Select onChange={e=>setWeekDay(e.target.value as WeekDay)} labelName={t("DayOfWeek")} value={weekday} valuesToLoop={WeekDayArray} disabled={loading}/>

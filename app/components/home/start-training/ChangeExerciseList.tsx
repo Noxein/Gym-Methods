@@ -9,6 +9,9 @@ import { localStorageSetter, nameTrimmer } from '@/app/lib/utils'
 import { ErrorDiv } from '../../ui/ErrorDiv'
 import { useTranslations } from 'next-intl'
 import { exercisesArr } from '@/app/lib/exercise-list'
+import { TempoType } from '@/app/types'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
+import { ExerciseTempo } from '../../ui/ExerciseTempo'
 
 type ChangeExerciseListTypes = {
     list2?: LocalStorageExercise[],
@@ -19,6 +22,7 @@ type ChangeExerciseListTypes = {
 export const ChangeExerciseList = ({list2,setLocalStorageTrainingData,localStorageTrainingData,setProgressedIndexes}:ChangeExerciseListTypes) => {
     const modalsContext = useContext(ModalContexts)
     const[error,setError] = useState('')
+    const tempos = useExerciseTempos()
 
     const handleChangeExercisesOrder = (exerciseIndexNumber:number) => {
 
@@ -68,7 +72,7 @@ export const ChangeExerciseList = ({list2,setLocalStorageTrainingData,localStora
         <h1 className='text-center text-xl text-white font-semibold mb-5'>{t("SelectExercise")}</h1>
 
             {list2?.map((exercise,index)=>(
-                <SingleExercise key={exercise.id} exerciseName={exercise.exerciseName} handleChangeExercisesOrder={handleChangeExercisesOrder} handleDeleteExercise={handleDeleteExercise} index={index}/>
+                <SingleExercise key={exercise.id} exerciseName={exercise.exerciseName} tempo={tempos[exercise.exerciseId]?.tempo} handleChangeExercisesOrder={handleChangeExercisesOrder} handleDeleteExercise={handleDeleteExercise} index={index}/>
             ))}
 
             <ErrorDiv error={error}/>
@@ -93,12 +97,13 @@ export const ChangeExerciseList = ({list2,setLocalStorageTrainingData,localStora
 
 type SingleExerciseTypes = {
     exerciseName: string,
+    tempo?: TempoType,
     handleChangeExercisesOrder: (number: number) => void,
     index: number,
     handleDeleteExercise: (index: number) => void 
 }
 
-const SingleExercise = ({exerciseName,handleChangeExercisesOrder,index,handleDeleteExercise}:SingleExerciseTypes) => {
+const SingleExercise = ({exerciseName,tempo,handleChangeExercisesOrder,index,handleDeleteExercise}:SingleExerciseTypes) => {
 
     const d = useTranslations("DefaultExercises")
 
@@ -106,7 +111,10 @@ const SingleExercise = ({exerciseName,handleChangeExercisesOrder,index,handleDel
     return(
         <div className='bg-borderInteractive p-[2px] rounded-lg flex items-center cursor-pointer' onClick={()=>handleChangeExercisesOrder(index)}>
             <div className='bg-dark text-white py-3 px-4 rounded-lg flex-1'>
-                {formattedExerciseName}
+                <div className='flex flex-col'>
+                    <span>{formattedExerciseName}</span>
+                    <ExerciseTempo tempo={tempo} className='mt-1'/>
+                </div>
             </div>
             <Icon onClick={(e)=>{e.stopPropagation();handleDeleteExercise(index)}}>
                 <TrashIcon width='25' height='25' fill='#fff'/>

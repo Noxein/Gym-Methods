@@ -6,19 +6,19 @@ import SwitchProfileButton from "./SwitchProfileButton";
 import { UserPurposeType } from "@/app/types";
 
 type ProfileTypes = {
-    email: string,
+    username: string,
     purpose: UserPurposeType
     trainercurrentaccounttype?: string | null
 }
 
-function TrainerProfile({email, purpose, trainercurrentaccounttype}:ProfileTypes) {
+function TrainerProfile({username, purpose, trainercurrentaccounttype}:ProfileTypes) {
   const width = '30px'
   const height = '30px'
 
   const t = useTranslations("Home/Profile")
   return ( 
     <div className='flex flex-col gap-2'>
-      <UserEmail email={email}/>
+      <UserEmail username={username}/>
       <div className='mx-5 flex flex-col gap-4 min-h-[calc(100dvh-100px)]'>
         <SwitchProfileButton text={t("CasualAccount")} purpose={purpose} trainercurrentaccounttype={trainercurrentaccounttype}>
           <ExerciseIcon width={width} height={height} fill='#fff'/>
@@ -28,20 +28,12 @@ function TrainerProfile({email, purpose, trainercurrentaccounttype}:ProfileTypes
           <PlanIcon width={width} height={height} fill='#fff'/>
         </LinkBtn>
 
-        <LinkBtn href='/home/profile/search' text={t("ExerciseHistory")}>
-          <CalendarIcon width={width} height={height} fill='#fff'/>
-        </LinkBtn>
-
-        <LinkBtn href='/home/profile/my-exercises' text={t("Exercises")}>
+        <LinkBtn text={t("CustomExercises")} href="/home/profile/my-trainees/exercises">
           <ExerciseIcon width={width} height={height} fill='#fff'/>
         </LinkBtn>
 
-        <LinkBtn href='/home/profile/my-handles' text={t("Handles")}>
+        <LinkBtn href='/home/profile/my-trainees/handles' text={t("Handles")}>
           <HandleIcon width={width} height={height} fill='#fff'/>
-        </LinkBtn>
-
-        <LinkBtn href='/home/profile/summary' text={t("Summary")}>
-          <PieChartIcon width={width} height={height} fill='#fff'/>
         </LinkBtn>
 
         <LinkBtn href='/home/profile/settings' text={t("AccountSettings")}>

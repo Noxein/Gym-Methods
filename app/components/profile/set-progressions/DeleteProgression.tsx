@@ -42,7 +42,7 @@ export const DeleteProgression = ({selectedExercise,setShowDeleteTempoModal}:Del
 
   return (
     <BlurBackgroundModal>
-        <div className={`flex flex-col gap-2 mx-5 mb-20 rounded-md text-xl text-white w-full`}>
+        <div className={`flex flex-col gap-2 mx-5 mb-20 rounded-md text-xl text-white w-mobile max-w-mobile`}>
             
             <div className='text-center'>{t("AreYouSure")} <br/> <b>{formattedExerciseName}</b>?</div>
 

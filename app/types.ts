@@ -163,6 +163,7 @@ export type GymExercisesDbResult = {
 
 export type ExerciseType = {
     id: string,
+    exerciseid?: string,
     exercisename: string,
     date?: Date,
     sets: Series[],
@@ -171,11 +172,10 @@ export type ExerciseType = {
 export type ExerciseTypeWithHandle = ExerciseType & { handlename?: string }
 
 export type UserSettings = {
-    goal:  'Siła' | 'Hipertrofia' | 'Oba',
-    advancmentlevel: 'Początkujący' | 'Średniozaawansowany' | 'Zaawansowany',
-    daysexercising: '1' | '2' | '3' | '4' | '5' | '6' | '7',
+    showtempo: boolean,
     favouriteexercises?: string[],
     notfavouriteexercises?: string[],
+    settings?: Settings
 }
 
 export type HistoryExercise = {
@@ -495,7 +495,8 @@ export type TraineesAndTrainings = {
     name: string,
     plan: TraineeSingleTraining[],
     lastedited: Date,
-    iscompleted: boolean
+    iscompleted: boolean,
+    skippedtrainingscount?: number
 }
 
 export type TraineesWithoutPlans = {
@@ -503,4 +504,26 @@ export type TraineesWithoutPlans = {
     username: string,   
     avatarurl: string,
     traineeid: string,
+}
+
+export type Settings = {
+    showtempo: boolean,
+}
+
+export type CustomExercise = {
+    id: string,
+    trainer_id: string,
+    exercise_name: string,
+    description?: string,
+    category?: string,
+    created_at: Date,
+    uses_handle: boolean,
+    time_measure: boolean,
+}
+
+export type CustomHandle = {
+    id: string,
+    trainer_id: string,
+    handle_name: string,
+    created_at: Date,
 }

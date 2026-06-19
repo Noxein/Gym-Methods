@@ -66,7 +66,7 @@ export const EditProgression = ({selectedExerciseProgression,setShowEditTempoMod
     }
   return (
     <BlurBackgroundModal>
-        <div className={`flex flex-col gap-4 text-xl mx-5 mb-20 py-5 text-white rounded-md w-full`}>
+        <div className={`flex flex-col gap-4 text-xl mx-5 mb-20 py-5 text-white rounded-md w-mobile max-w-mobile`}>
             <div className='text-center pb-2'>{formattedExerciseName}</div>
             <div className='flex flex-col gap-4'>
 

@@ -1,14 +1,16 @@
 import Link from "next/link"
 import { Icon } from "../Icon"
 import { PlusIcon } from "@/app/ui/icons/ExpandIcon" 
-
+import { TempoType } from "@/app/types";
+ 
 type LinkToExerciseType = {
     text: string,
     mLeft: string,
     isFirst: boolean,
     leadTo: string,
+    tempo?: TempoType,
 }
-export const LinkToExercise = ({text,mLeft,isFirst,leadTo}:LinkToExerciseType) => {
+export const LinkToExercise = ({text,mLeft,isFirst,leadTo,tempo}:LinkToExerciseType) => {
 
     return(
         <Link className={`relative text-left ml-${mLeft} bg-borderInteractive text-marmur border-borderInteractive border-[2px] rounded flex justify-between ${isFirst?'mt-2':null}`} href={`/home/add-exercise/${leadTo.trim()}`}>

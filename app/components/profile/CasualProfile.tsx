@@ -9,12 +9,12 @@ import { ButtonHTMLAttributes, DetailedHTMLProps } from 'react'
 import SwitchProfileButton from './SwitchProfileButton'
 
 type ProfileTypes = {
-  email: string,
+  username: string,
   trainercurrentaccounttype?: string | null
   purpose: UserPurposeType
 }
 
-export const CasualProfile = ({email, trainercurrentaccounttype, purpose}:ProfileTypes) => { 
+export const CasualProfile = ({username, trainercurrentaccounttype, purpose}:ProfileTypes) => { 
   const width = '30px'
   const height = '30px'
 
@@ -24,14 +24,14 @@ export const CasualProfile = ({email, trainercurrentaccounttype, purpose}:Profil
 
   return (
     <div className='flex flex-col gap-2'>
-      <UserEmail email={email}/>
+      <UserEmail username={username}/>
       <div className='mx-5 flex flex-col gap-4 min-h-[calc(100dvh-100px)]'>
         {trainercurrentaccounttype === 'Casual' && (
-        <SwitchProfileButton text={t("TrainerAccount")} purpose={purpose}>
+        <SwitchProfileButton text={t("TrainerAccount")} purpose={purpose} trainercurrentaccounttype={trainercurrentaccounttype}>
           <ExerciseIcon width={width} height={height} fill='#fff'/>
         </SwitchProfileButton>
         )}
-          <LinkBtn href='/home/profile/set-tempo' text={t("SetTempo")}>
+          <LinkBtn href='/home/profile/set-tempo'text={t("SetTempo")}>
             <TimerIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
           <LinkBtn href='/home/profile/search' text={t("ExerciseHistory")}>

@@ -24,18 +24,23 @@ export const ChoseLanguage = ({setCurrentStep,locale}:ChoseLanguageTypes) => {
 
   return (
     <CenterComponent>
-        <form className='flex flex-col gap-4 mb-20 mx-5'>
-            <Select 
-                labelName={t("ChooseLanguage")}
-                valuesToLoop={['en','pl']}
-                name='lang'
-                onChange={e=>setLang(e.target.value as Locale)}
-                value={locale}
-            />
-
-            <div className={`fixed bottom-0 left-0 right-0 flex mx-5 mb-5`}>
-                <Button className='flex-1 text-2xl' isPrimary onClick={e=>{e.preventDefault();setCurrentStep('setavatar')}}>{t("Next")}</Button>
+        <form className='flex flex-col gap-4 my-5 mx-5 h-full justify-center'>
+            <div className='flex-1'>
+                <div className='h-full flex flex-col gap-4 justify-end'>
+                    <Select 
+                        labelName={t("ChooseLanguage")}
+                        valuesToLoop={['en','pl']}
+                        name='lang'
+                        onChange={e=>setLang(e.target.value as Locale)}
+                        value={locale}
+                    />
+                </div>
             </div>
+            
+            <div className='flex-1 flex items-end'>
+                <Button className='text-2xl mt-auto w-full' isPrimary onClick={e=>{e.preventDefault();setCurrentStep('setavatar')}}>{t("Next")}</Button>
+            </div>
+
         </form>
     </CenterComponent>
   )

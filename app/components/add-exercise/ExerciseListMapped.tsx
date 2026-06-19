@@ -8,6 +8,8 @@ import { LinkToExercise } from './LinkToExercise'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
 import { exercisesArr } from '@/app/lib/exercise-list'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
+import { Input } from '../ui/Input'
 
 type ExerciseListMappedTypes = {
   exercises:ExerciseTypes,
@@ -16,6 +18,7 @@ type ExerciseListMappedTypes = {
 export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseListMappedTypes) => {
   const[searchField,setSearchField] = useState('')
   const[lastExercises,setLastExercises] = useState<string[]>([])
+  const tempos = useExerciseTempos()
   useEffect(()=>{
     const lastExercisesA = localStorage.getItem('twoRecentExercises')
     if(!lastExercisesA) return
@@ -33,8 +36,9 @@ export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseLi
         <h1 className='text-white text-center text-2xl'>{t('AddExercise')}</h1>
 
       <div className='flex gap-2 my-5 max-w-[100dvw] mx-5'>        
-        <input type="text" placeholder={u('Search')} value={searchField} id={u('Search')} onChange={e=>setSearchField(e.target.value)} className={`w-3/4 text-xl py-2 px-2 bg-dark border-2 rounded-md border-borderInteractive text-white placeholder:text-gray-300`}/>
-        <Link href={`/home/profile/my-exercises?showAddModal=true`} className='bg-green flex-1 text-white justify-center flex items-center px-4 rounded-lg'>
+        <Input labelName={u('Search')} value={searchField} onChange={e=>setSearchField(e.target.value)} />
+        
+        <Link href={`/home/profile/my-exercises?showAddModal=true`} className='bg-green flex-1 text-white justify-center flex items-center px-4 rounded-lg min-w-40'>
           {u('Add')}
         </Link>
 
@@ -43,19 +47,18 @@ export const ExerciseListMapped = ({exercises,allExercisesInOneArray}:ExerciseLi
           {
           searchField
           ?
-          <SearchExercises allExercisesInOneArray={allExercisesInOneArray} searchTerm={searchField}/>
+          <SearchExercises allExercisesInOneArray={allExercisesInOneArray} searchTerm={searchField} tempos={tempos}/>
           :
-          <ListExercises item={exercises}/>
+          <ListExercises item={exercises} tempos={tempos}/>
           }
           <div className='mt-20 flex flex-col gap-3 text-white text-center text-xl'>
             {t('LatestExercises')}
             {lastExercises.map((exercise,index)=>{
               const text = exercisesArr.includes(exercise) ? d(nameTrimmer(exercise)) : exercise
-              return <LinkToExercise isFirst={index===0} mLeft={'0'} key={index} text={text} leadTo={exercise}/>
+              return <LinkToExercise isFirst={index===0} mLeft={'0'} key={index} text={text} leadTo={exercise} tempo={tempos[exercise]?.tempo}/>
             })}
           </div>
       </div>
     </div>
   )
 }
-

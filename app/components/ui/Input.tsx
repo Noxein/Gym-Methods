@@ -1,19 +1,66 @@
-import { cn } from "@/app/lib/cn"
+'use client'
+import { cn } from '@/app/lib/cn'
+import { useState } from 'react'
 
-interface Input extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
-    labelName:string,
-    labelClass?: string,
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  labelName: string
+  labelClass?: string,
+  labelBackground?: 'bg-dark' | 'borderInteractive' | 'bg-transparent'
 }
 
-export const Input = ({labelName,labelClass,...rest}:Input) => {
+export const Input = ({ labelName, labelClass, value,labelBackground, ...rest }: InputProps) => {
+  const [isFocused, setIsFocused] = useState(false)
+  const hasValue = value && String(value).length > 0
+
   return (
-    <div className='relative w-full text-white'>
-        <label htmlFor={labelName} className='absolute -top-1/4 text-base left-4 px-1'>
-          <div className={cn('z-[11] relative text-sm', labelClass)}>{labelName}</div>
-          <div className='absolute h-1  w-[105%] bg-dark bottom-[6px] -left-1 text-base text-opacity-0 z-10'></div>
-        </label>
-        
-        <input type="text" id={labelName} {...rest} className={cn('bg-dark border-2 border-borderInteractive rounded-lg pl-2 py-2 w-full outline-none', rest.className)}/>
+    <div className="relative w-full">
+      <input
+        {...rest}
+        value={value}
+        onFocus={(e) => {
+          setIsFocused(true)
+          rest.onFocus?.(e)
+        }}
+        onBlur={(e) => {
+          setIsFocused(false)
+          rest.onBlur?.(e)
+        }}
+        className={cn(
+          'w-full px-4 py-2 border-2 bg-dark border-borderInteractive rounded-lg transition-colors',
+          'text-white outline-none',
+          'placeholder-transparent',
+          isFocused && 'border-green/50',
+          rest.className
+        )}
+        placeholder={labelName}
+      />
+      
+      {rest.type === 'date' ? 
+      <label
+        className={cn(
+          'absolute left-4 text-white transition-all duration-200 pointer-events-none',
+          'origin-top-left',
+          `top-0 text-xs scale-75 -translate-y-2 px-1 ${labelBackground || 'bg-dark'}`,
+          labelClass
+        )}
+      >
+        {labelName}
+      </label>
+       :     
+      <label
+        className={cn(
+          'absolute left-4 text-white transition-all duration-200 pointer-events-none',
+          'origin-top-left',
+          isFocused || hasValue
+            ? `top-0 text-xs scale-75 -translate-y-2 px-1 ${labelBackground || 'bg-dark'}`
+            : 'top-2.5 text-base',
+          labelClass
+        )}
+      >
+        {labelName}
+      </label>
+    }
+
     </div>
   )
 }

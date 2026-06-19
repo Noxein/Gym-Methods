@@ -41,7 +41,7 @@ export const DeleteTrainingModal = ({setShowDeleteModal,currentSelectedTraining}
   
   return (
     <BlurBackgroundModal>
-        <div className={`text-white px-5 py-6 rounded-md text-xl flex flex-col gap-4 mb-20 w-full`}>
+        <div className={`text-white px-5 py-6 rounded-md text-xl flex flex-col gap-4 mb-20 w-full max-w-mobile`}>
 
           <div className='text-center'>
             {t("AreYouSure")} <br />

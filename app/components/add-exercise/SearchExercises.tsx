@@ -1,15 +1,16 @@
 import { useContext } from 'react'
 import { FilteredExercises } from './FilteredExercises'
-import { UserExercise } from '@/app/types'
+import { TempoType, UserExercise } from '@/app/types'
 import  LocaleContext  from '@/app/context/LocaleContext'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
 
 type SearchExercisesTypes = {
     allExercisesInOneArray: (string | UserExercise)[],
-    searchTerm: string
+    searchTerm: string,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
-export const SearchExercises = ({allExercisesInOneArray,searchTerm}:SearchExercisesTypes) => {
+export const SearchExercises = ({allExercisesInOneArray,searchTerm,tempos}:SearchExercisesTypes) => {
   const context = useContext(LocaleContext)
   let filtered:(string | UserExercise)[] = []
 
@@ -36,6 +37,6 @@ export const SearchExercises = ({allExercisesInOneArray,searchTerm}:SearchExerci
   }
 
   return (
-    <FilteredExercises allExercisesInOneArray={filtered} />
+    <FilteredExercises allExercisesInOneArray={filtered} tempos={tempos}/>
   )
 }

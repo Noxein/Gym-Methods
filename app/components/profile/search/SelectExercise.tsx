@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { SelectedExerciseContext } from './SelectedExerciseContext'
+import { TempoType } from '@/app/types'
 
 type SelectExerciseType = {
     text: string,

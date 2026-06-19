@@ -10,14 +10,23 @@ function SingleProgression({progression, goal}:SingleProgressionTypes) {
     const t = useTranslations("Home/TraineeHome")
 
     const PrecentageIncreaseOrDecrease = () => {
-        const weightDifference = progression[0].set.weight - progression[1].set.weight
-        const percentage = (weightDifference / progression[1].set.weight) * 100
+        const currentWeight = progression[0].set.weight
+        const previousWeight = progression[1].set.weight
+        const weightDifference = currentWeight - previousWeight
+        const percentage = previousWeight > 0 ? (weightDifference / previousWeight) * 100 : 0
         // what if weightDifference is 0? then return 0
         if(weightDifference === 0) return{
             percentage: '0%',
             color: 'text-gray-400',
+            bg: 'bg-gray-400',
             icon: 'none'
         } 
+        if(previousWeight <= 0) return {
+            percentage: '0%',
+            color: 'text-gray-400',
+            bg: 'bg-gray-400',
+            icon: 'none'
+        }
         // what if weightDifference is negative? then return negative percentage
         if(weightDifference < 0) return {
             percentage: `- ${Math.abs(percentage).toFixed(2)}%`,
@@ -35,7 +44,8 @@ function SingleProgression({progression, goal}:SingleProgressionTypes) {
 
     const data = PrecentageIncreaseOrDecrease()
 
-    const goalProgressionPrecentage = progression[0].set.weight / parseInt(goal || '0') * 100
+    const parsedGoal = Number.parseInt(goal || '0', 10)
+    const goalProgressionPrecentage = parsedGoal > 0 ? progression[0].set.weight / parsedGoal * 100 : 0
 
     console.log(progression[0].set.weight,parseInt(goal!))
     return (            

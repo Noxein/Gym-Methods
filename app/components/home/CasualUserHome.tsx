@@ -16,7 +16,7 @@ type HomeTypes = {
 export const CasualUserHome = async ({useremail}:HomeTypes) => {
   const trainingList = await getStartedTrainingsList()
   return (
-    <div className='mb-20 w-full'>
+    <div className='mb-20 mt-5 w-full'>
       <Suspense fallback={<HomeWidgetSeleton />}>
         <ExerciseProgressionWidget />
       </Suspense>

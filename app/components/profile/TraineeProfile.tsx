@@ -4,20 +4,20 @@ import { SignOutBtn } from "./SignOutBtn";
 import { useTranslations } from "next-intl";
 
 type ProfileTypes = {
-  email: string,
+  username: string,
 }
 
-function TraineeProfile({ email }: ProfileTypes) {
+function TraineeProfile({ username }: ProfileTypes) {
     const width = '30px'
     const height = '30px'
 
     const t = useTranslations("Home/Profile")
     return ( 
             <div className='flex flex-col gap-2'>
-              <UserEmail email={email}/>
+              <UserEmail username={username}/>
               <div className='mx-5 flex flex-col gap-4 min-h-[calc(100dvh-100px)]'>
 
-                  <LinkBtn href='/home/profile/search' text={t("ExerciseHistory")}>
+                  <LinkBtn href='/home/profile/search'text={t("ExerciseHistory")}>
                     <CalendarIcon width={width} height={height} fill='#fff'/>
                   </LinkBtn>
 

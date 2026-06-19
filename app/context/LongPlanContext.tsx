@@ -11,9 +11,6 @@ type LongPlanContextTypes = {
     setCurrentExerciseIndex: React.Dispatch<React.SetStateAction<number>>,
     start: number,
     current: number,
-    totalwidth: number,
-    touchEnd: (e: React.TouchEvent<HTMLDivElement>) => void,
-    touchMove: (e: React.TouchEvent<HTMLDivElement>) => void,
     setCurrentLocalData: (currentPlan: SubPlanStarter) => void,
     deleteCurrentLocalData: () => void
 }
@@ -27,14 +24,10 @@ export const LongPlanContextProvider = ({children,trainingPlanData}:ModalContext
     const[planData, setPlanData] = useState(trainingPlanData)
     const[start,setStart] = useState(0)
     const[current,setCurrent] = useState(0)
-    const[totalwidth,setTotalWidth] = useState(0)
     const[currentExerciseIndex,setCurrentExerciseIndex] = useState(0)
 
     useEffect(()=>{
-        const elem = document.querySelector('.elementWidth')
-        if(elem){
-            setTotalWidth(elem?.clientWidth)
-        }
+
 
         const currentPlanLocalData = localStorage.getItem('currenPlanLocalData')
         if(currentPlanLocalData){
@@ -45,11 +38,6 @@ export const LongPlanContextProvider = ({children,trainingPlanData}:ModalContext
             setPlanData(planClone)
         }
     },[])
-
-    const touchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-        setCurrent(e.changedTouches[0].clientX)
-        if(!start) setStart(e.changedTouches[0].clientX)
-    }
     
     const setCurrentLocalData = (currentPlan: SubPlanStarter) => {
         localStorage.setItem('currenPlanLocalData',JSON.stringify(currentPlan))
@@ -58,27 +46,6 @@ export const LongPlanContextProvider = ({children,trainingPlanData}:ModalContext
     const deleteCurrentLocalData = () => {
         localStorage.removeItem('currenPlanLocalData')
     }
-
-    const touchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-        const end = e.changedTouches[0].clientX
-
-        if(Math.abs(start-end) < totalwidth/2 || start === 0){
-            setStart(0)
-            setCurrent(0)
-            return
-        } 
-        if(start < end){
-            // swipe to right
-            currentExerciseIndex > 0 && setCurrentExerciseIndex(currentExerciseIndex-1)
-        }else{
-            //swipe to left
-            currentExerciseIndex < planData.subplans[planData.currentplanindex].exercises.length - 1 && setCurrentExerciseIndex(currentExerciseIndex+1)
-        }
-        setStart(0)
-        setCurrent(0)
-
-    }
-
     
     return(
         <LongPlanContext.Provider value={{
@@ -88,9 +55,6 @@ export const LongPlanContextProvider = ({children,trainingPlanData}:ModalContext
             setCurrentExerciseIndex,
             start,
             current,
-            totalwidth,
-            touchEnd,
-            touchMove,
             setCurrentLocalData,
             deleteCurrentLocalData
             }}>

@@ -2,12 +2,13 @@
 
 import { sql } from "@vercel/postgres"
 import { userID } from "./actions"
-import { Trainee, TraineePlan, TraineesAndTrainings, TraineesWithoutPlans, TrainerPlanSchema, UserPurposeType } from "./types"
+import { Trainee, TraineePlan, TraineesAndTrainings, TraineesWithoutPlans, TrainerPlanSchema, UserPurposeType, CustomExercise, CustomHandle } from "./types"
 import { v4 } from "uuid"
 import { revalidatePath } from "next/cache"
 import { TraineePlanErrorChecker } from "./lib/utils"
 import { getLocale } from "next-intl/server"
 import { Locale } from "./i18n/config"
+import { handleTypes } from "./lib/exercise-list"
 
 export const createNewSchema = async (plan: TrainerPlanSchema) => {
     const userid = await userID()
@@ -106,7 +107,7 @@ export const getTraineePlans = async (traineeid: string) => {
 
     try{
         const response = await sql`
-            SELECT * FROM trainertraineeplans WHERE traineeid = ${traineeid} AND trainerid = ${userid} AND iscompleted = false ORDER BY lastedited DESC
+            SELECT * FROM trainertraineeplans WHERE traineeid = ${traineeid} AND trainerid = ${userid} ORDER BY lastedited DESC
         `
         return response.rows as TraineePlan[]
     }    catch(error){
@@ -157,8 +158,24 @@ export const getHomeScreenData = async () => {
         `
         let arrOfIds: string[] = []
         let oneNewestTrainingForEachTrainee:Map<string, TraineesAndTrainings> = new Map()
+        const skippedTrainingsCountByTrainee = new Map<string, number>()
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
         response.rows.forEach(row => { 
             if(!arrOfIds.includes(row.traineeid)) arrOfIds.push(row.traineeid) 
+
+            const rowPlan = (row.plan || []) as { date: Date | string, iscompleted: boolean }[]
+            const skippedInCurrentRow = rowPlan.filter((singleTraining) => {
+                if (singleTraining.iscompleted) return false
+                const trainingDate = new Date(singleTraining.date)
+                return !isNaN(trainingDate.getTime()) && trainingDate < today
+            }).length
+
+            skippedTrainingsCountByTrainee.set(
+                row.traineeid,
+                (skippedTrainingsCountByTrainee.get(row.traineeid) || 0) + skippedInCurrentRow
+            )
 
             if(!oneNewestTrainingForEachTrainee.has(row.traineeid)){
                 oneNewestTrainingForEachTrainee.set(row.traineeid, row as TraineesAndTrainings)   
@@ -173,7 +190,10 @@ export const getHomeScreenData = async () => {
             }
 
         })
-        const mapConvertedToArray = Array.from(oneNewestTrainingForEachTrainee.values())
+        const mapConvertedToArray = Array.from(oneNewestTrainingForEachTrainee.values()).map((training) => ({
+            ...training,
+            skippedtrainingscount: skippedTrainingsCountByTrainee.get(training.traineeid) || 0,
+        }))
 
         return {trainings: mapConvertedToArray, traineesWithoutPlans: traineesWithoutPlansResponse.rows as TraineesWithoutPlans[], error: null, allTraineesIDs: arrOfIds, userid}
     }catch(error){
@@ -217,4 +237,234 @@ export const getTraineeIdByTrainingId = async (trainingId: string) => {
         const e = err as Error
         return {traineeId: null, error: e.message}
     }
-} 
+}
+
+export const createCustomExercise = async (
+    exerciseName: string,
+    description?: string,
+    category?: string,
+    timeMesure: boolean = false,
+    usesHandle: boolean = false
+) => {
+    const userid = await userID()
+
+    if(typeof exerciseName !== 'string' || exerciseName.trim() === '') {
+        return { success: false, error: "Exercise name is required" }
+    }
+
+    if(exerciseName.length > 255) {
+        return { success: false, error: "Exercise name is too long" }
+    }
+
+    try {
+        const existingExercise = await sql`
+            SELECT id
+            FROM trainer_custom_exercises
+            WHERE trainer_id = ${userid}
+              AND LOWER(TRIM(exercise_name)) = LOWER(${exerciseName.trim()})
+            LIMIT 1
+        `
+
+        if(existingExercise.rows.length > 0) {
+            return { success: false, error: "Exercise with this name already exist" }
+        }
+
+        const id = v4()
+        const createdAt = new Date()
+        
+        await sql`
+            INSERT INTO trainer_custom_exercises (id, trainer_id, exercise_name, description, category, created_at, time_measure, uses_handle) 
+            VALUES (${id}, ${userid}, ${exerciseName.trim()}, ${description || null}, ${category || null}, ${JSON.stringify(createdAt)}, ${timeMesure}, ${usesHandle})
+        `
+        
+        revalidatePath('/home/profile/my-trainees/schemas')
+        return { success: true, error: null, id }
+    } catch(error) {
+        console.error("Error creating custom exercise:", error)
+        return { success: false, error: "Something went wrong" }
+    }
+}
+
+export const getTrainerCustomExercises = async () => {
+    const userid = await userID()
+
+    try {
+        const response = await sql`
+            SELECT id, trainer_id, exercise_name, description, category, created_at, uses_handle, time_measure 
+            FROM trainer_custom_exercises 
+            WHERE trainer_id = ${userid}
+            ORDER BY created_at DESC
+        `
+        
+        return response.rows as CustomExercise[]
+    } catch(error) {
+        console.error("Error fetching custom exercises:", error)
+        return []
+    }
+}
+
+export const deleteCustomExercise = async (exerciseId: string) => {
+    const userid = await userID()
+
+    if(typeof exerciseId !== 'string') {
+        return { success: false, error: "Invalid exercise ID" }
+    }
+
+    try {
+        const response = await sql`
+            DELETE FROM trainer_custom_exercises 
+            WHERE id = ${exerciseId} AND trainer_id = ${userid}
+        `
+        
+        revalidatePath('/home/profile/my-trainees/schemas')
+        return { success: true, error: null }
+    } catch(error) {
+        console.error("Error deleting custom exercise:", error)
+        return { success: false, error: "Something went wrong" }
+    }
+}
+
+export const updateCustomExercise = async (exerciseId: string, exerciseName: string, description?: string, category?: string) => {
+    const userid = await userID()
+
+    if(typeof exerciseId !== 'string') {
+        return { success: false, error: "Invalid exercise ID" }
+    }
+
+    if(typeof exerciseName !== 'string' || exerciseName.trim() === '') {
+        return { success: false, error: "Exercise name is required" }
+    }
+
+    if(exerciseName.length > 255) {
+        return { success: false, error: "Exercise name is too long" }
+    }
+
+    try {
+        await sql`
+            UPDATE trainer_custom_exercises 
+            SET exercise_name = ${exerciseName.trim()}, description = ${description || null}, category = ${category || null}
+            WHERE id = ${exerciseId} AND trainer_id = ${userid}
+        `
+        
+        revalidatePath('/home/profile/my-trainees/schemas')
+        return { success: true, error: null }
+    } catch(error) {
+        console.error("Error updating custom exercise:", error)
+        return { success: false, error: "Something went wrong" }
+    }
+}
+
+export const isValidExerciseId = async (exerciseId: string) => {
+    const userid = await userID()
+
+    if(typeof exerciseId !== 'string') {
+        return false
+    }
+
+    try {
+        const response = await sql`
+            SELECT id FROM trainer_custom_exercises 
+            WHERE id = ${exerciseId} AND trainer_id = ${userid}
+        `
+        
+        return response.rows.length > 0
+    } catch(error) {
+        console.error("Error validating exercise ID:", error)
+        return false
+    }
+}
+
+export const createTrainerCustomHandle = async (handleName: string) => {
+    const userid = await userID()
+
+    if(typeof handleName !== 'string' || handleName.trim() === '') {
+        return { success: false, error: 'Name cant be empty' }
+    }
+
+    if(handleName.trim().length > 255) {
+        return { success: false, error: 'Handle name is too long' }
+    }
+
+    try {
+        const existingHandle = await sql`
+            SELECT id
+            FROM trainer_custom_handles
+            WHERE trainer_id = ${userid}
+              AND LOWER(TRIM(handle_name)) = LOWER(${handleName.trim()})
+            LIMIT 1
+        `
+
+        if(existingHandle.rows.length > 0) {
+            return { success: false, error: 'That handle already exists' }
+        }
+
+        const id = v4()
+        const createdAt = new Date()
+
+        await sql`
+            INSERT INTO trainer_custom_handles (id, trainer_id, handle_name, created_at)
+            VALUES (${id}, ${userid}, ${handleName.trim()}, ${JSON.stringify(createdAt)})
+        `
+
+        revalidatePath('/home/profile/my-trainees/handles')
+        return { success: true, error: null, id }
+    } catch(error) {
+        console.error('Error creating trainer custom handle:', error)
+        return { success: false, error: 'Something went wrong' }
+    }
+}
+
+export const getTrainerCustomHandles = async () => {
+    const userid = await userID()
+
+    try {
+        const response = await sql`
+            SELECT id, trainer_id, handle_name, created_at
+            FROM trainer_custom_handles
+            WHERE trainer_id = ${userid}
+            ORDER BY created_at DESC
+        `
+
+        return response.rows as CustomHandle[]
+    } catch(error) {
+        console.error('Error fetching trainer custom handles:', error)
+        return []
+    }
+}
+
+export const deleteTrainerCustomHandle = async (handleId: string) => {
+    const userid = await userID()
+
+    if(typeof handleId !== 'string' || handleId.trim() === '') {
+        return { success: false, error: 'Handle id is needed' }
+    }
+
+    try {
+        await sql`
+            DELETE FROM trainer_custom_handles
+            WHERE id = ${handleId} AND trainer_id = ${userid}
+        `
+
+        revalidatePath('/home/profile/my-trainees/handles')
+        return { success: true, error: null }
+    } catch(error) {
+        console.error('Error deleting trainer custom handle:', error)
+        return { success: false, error: 'Something went wrong' }
+    }
+}
+
+export const getTrainerAllHandleTypes = async () => {
+    const customHandles = await getTrainerCustomHandles()
+
+    const normalizedCustomHandles = customHandles.map(handle => ({
+        id: handle.id,
+        handlename: handle.handle_name,
+    }))
+
+    const defaultHandles = handleTypes.map(handle => ({
+        id: handle,
+        handlename: handle,
+    }))
+
+    return [...normalizedCustomHandles, ...defaultHandles] as {id: string, handlename: string}[]
+}

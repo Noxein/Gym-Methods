@@ -15,12 +15,13 @@ export async function generateMetadata() {
 export default async function page() {
     const userData = await auth()
     const email = userData?.user?.email! 
+    const username = userData?.user?.username!
     const purpose = userData?.user?.purpose!
     const trainercurrentaccounttype = userData?.user?.trainercurrentaccounttype
 
-    if(purpose === 'Casual' || trainercurrentaccounttype === 'Casual') return <CasualProfile purpose={purpose} email={email} trainercurrentaccounttype={trainercurrentaccounttype}/>
+    if(purpose === 'Casual' || trainercurrentaccounttype === 'Casual') return <CasualProfile purpose={purpose} username={username} trainercurrentaccounttype={trainercurrentaccounttype}/>
 
-    if(purpose === 'Podopieczny trenera') return <TraineeProfile email={email}/>
+    if(purpose === 'Podopieczny trenera') return <TraineeProfile username={username}/>
 
-    return <TrainerProfile email={email} purpose={purpose} trainercurrentaccounttype={trainercurrentaccounttype}/>   
+    return <TrainerProfile username={username} purpose={purpose} trainercurrentaccounttype={trainercurrentaccounttype}/>   
 }

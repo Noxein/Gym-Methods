@@ -43,7 +43,7 @@ function DeleteSchemaOptions({ setShowDelete, selectedSchemasIds }: DeleteSchema
         setModalState({ ...modalState, isOpen: false })
     }
     return ( 
-        <div className="fixed bottom-24 w-full flex justify-center left-0 gap-4">
+        <div className="mb-48 w-full max-w-mobile mt-auto flex justify-center left-0 gap-4">
             <Button className="text-blue-400 border-blue-400 w-full ml-4" onClick={() => setShowDelete(false)}>{u("Cancel")}</Button>
             <Button className="bg-blue-400 text-white w-full mr-4" onClick={handleOpenModal}>{u("Delete")}</Button>
         </div>

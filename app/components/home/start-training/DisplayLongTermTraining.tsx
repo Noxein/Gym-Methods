@@ -2,24 +2,18 @@
 
 import { LongPlanContext } from "@/app/context/LongPlanContext";
 import { useContext, useEffect, useState } from "react";
-import SeriesDisplayer from "./SeriesDisplayer";
 import { ShowHistoryButton } from "../../add-exercise/ShowHistoryButton";
 import { PreviousExercise } from "./PreviousExercise";
 import { BigTrainingStarter, ExerciseType } from "@/app/types";
 import { Button } from "../../ui/Button";
-import { LeftAngle } from "@/app/ui/icons/ExpandIcon";
-import { Icon } from "../../Icon";
 import { BlurBackgroundModal } from "../../BlurBackgroundModal";
 import CloseTrainingModal from "./CloseTrainingModal";
 import { updateBigPlan } from "@/app/actions";
 import MediaMover from "./MediaMover";
-import { Timer } from "../../add-exercise/Timer";
-import { TimerContext } from "@/app/context/TimerContext";
 import TimerWrapper from "./TimerWrapper";
 import NextExerciseButton from "./NextExerciseButton";
 import PreviousExerciseButton from "./PreviousExerciseButton";
 import { useRouter } from "next/navigation";
-import { differenceInSeconds } from "date-fns";
 import { useTranslations } from "next-intl";
 
 type DisplayLongTermTrainingTypes = {
@@ -79,23 +73,27 @@ function DisplayLongTermTraining({allHandles}:DisplayLongTermTrainingTypes) {
 
         <MediaMover allHandles={allHandles}/>
 
-        <div className="">
+        <div className="z-10">
             <ShowHistoryButton isOpen={showHistory} setShowHistory={setShowHistory}/>
             {showHistory && <PreviousExercise exerciseid={currentExerciseId} historyCache={historyCache} setHistoryCache={setHistoryCache}/>}
         </div>
 
-        <div className="flex justify-center gap-2 fixed bottom-40 left-0 right-0 w-full z-50">
-            {planData.subplans[planData.currentplanindex].exercises.map((exercise,index)=>(
-                <div key={exercise.exerciseid} className={`w-2 h-2 border-1 rounded-full border-green ${index === currentExerciseIndex ? 'bg-green' : ''}`}></div>
-            ))}
-        </div>
 
-        <div className="flex gap-2 mt-2 fixed bottom-20 w-[calc(100vw-40px)]">
-            <PreviousExerciseButton />
 
-            <Button isPrimary className="flex-1 h-16" onClick={flip}>{t("CloseTraining")}</Button>
+        <div className="mt-5 fixed flex flex-col items-center gap-5 bottom-24 left-0 right-0 w-full z-50">
+            <div className="flex justify-center gap-2 bottom-40 left-0 right-0 max-w-mobile px-5 w-full z-50 ">
+                {planData.subplans[planData.currentplanindex].exercises.map((exercise,index)=>(
+                    <div key={exercise.exerciseid} className={`w-2 h-2 border-1 rounded-full border-green ${index === currentExerciseIndex ? 'bg-green' : ''}`}></div>
+                ))}
+            </div>
+            <div className="flex gap-2 mt-2 bottom-20 max-w-mobile px-5 w-full">
 
-            <NextExerciseButton />
+                <PreviousExerciseButton />
+
+                <Button isPrimary className="flex-1 h-16" onClick={flip}>{t("CloseTraining")}</Button>
+
+                <NextExerciseButton />
+            </div>
         </div>
         {showCloseTrainingModal && 
             <BlurBackgroundModal onClick={flip}>

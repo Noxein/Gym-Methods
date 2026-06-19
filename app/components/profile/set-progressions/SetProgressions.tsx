@@ -6,6 +6,7 @@ import { SearchProgressionList } from './SearchProgressionList'
 import { MappedProgressionExercises } from './MappedProgressionExercises'
 import { EditProgression } from './EditProgression'
 import { DeleteProgression } from './DeleteProgression'
+import { Input } from '../../ui/Input'
 
 type SetProgressionsTypes = {
   exercises:ExerciseTypes,
@@ -23,10 +24,12 @@ export const SetProgressions = ({exercises,progressions,allExercisesInOneArray}:
     console.log('hey',selectedExercise)
   return (
     <div className='mx-5 mt-10'>
-      <input type="text"
+      <Input type="text"
+      labelName={u("Search")}
+      value={searchField}
       placeholder={u("Search")}
       onChange={e=>setSearchField(e.target.value)}
-      className={`pl-2 w-full text-xl bg-dark border-marmur border-2 rounded-md py-2 text-marmur`}
+      className={`pl-2 w-full text-xl `}
       />
 
       {searchField ? 

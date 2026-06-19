@@ -1,4 +1,4 @@
-import { LocalStorageTraining, TrainingExerciseType, UserExercise } from '@/app/types'
+import { LocalStorageTraining, TempoType, TrainingExerciseType, UserExercise } from '@/app/types'
 import { AddExercise } from './AddSingleExercise'
 import  LocaleContext  from '@/app/context/LocaleContext'
 import { useContext } from 'react'
@@ -13,9 +13,10 @@ type SearchExercisesTypes = {
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
     localStorageTrainingData?: LocalStorageTraining,
-    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
+    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
-export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPlanExercises,localStorageTrainingData,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData}:SearchExercisesTypes) => {
+export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPlanExercises,localStorageTrainingData,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,setLocalStorageTrainingData,tempos}:SearchExercisesTypes) => {
     let filtered:(string | UserExercise)[] = []
 
       const context = useContext(LocaleContext)
@@ -50,6 +51,7 @@ export const SearchExercisesTraining = ({allExercisesInOneArray,searchTerm,setPl
         setShowAddExercise={setShowAddExercise}
         localStorageTrainingData={localStorageTrainingData}
         setLocalStorageTrainingData={setLocalStorageTrainingData}
+        tempos={tempos}
         />
   )
 }
@@ -61,9 +63,10 @@ type FilteredExercisesTypes = {
     setShowExerciseList?: React.Dispatch<React.SetStateAction<boolean>>,
     setShowAddExercise?: React.Dispatch<React.SetStateAction<boolean>>,
     localStorageTrainingData?: LocalStorageTraining,
-    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>
+    setLocalStorageTrainingData?: React.Dispatch<React.SetStateAction<LocalStorageTraining>>,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
-export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData}:FilteredExercisesTypes) => {
+export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData,tempos}:FilteredExercisesTypes) => {
     const d = useTranslations("DefaultExercises")
     return (
         <div className='flex flex-col gap-2 mx-3'>
@@ -82,6 +85,7 @@ export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTra
                             setShowAddExercise={setShowAddExercise}
                             localStorageTrainingData={localStorageTrainingData}
                             setLocalStorageTrainingData={setLocalStorageTrainingData}
+                            tempo={tempos[x.id]?.tempo}
                             />
                     )
                 }
@@ -99,6 +103,7 @@ export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTra
                             setShowAddExercise={setShowAddExercise}
                             localStorageTrainingData={localStorageTrainingData}
                             setLocalStorageTrainingData={setLocalStorageTrainingData}
+                            tempo={tempos[x]?.tempo}
                             />
                     )
                 }
@@ -106,4 +111,3 @@ export const FilteredExercises = ({allExercisesInOneArray,setPlanExercises,isTra
         </div>
       )
 }
-

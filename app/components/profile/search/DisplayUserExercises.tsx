@@ -1,10 +1,12 @@
 import { DifficultyArray, DifficultyArrayPL, MonthNamesArray, MonthNamesArrayPL, nameTrimmer, WeekDayArray, WeekDayArrayPL } from '@/app/lib/utils'
-import { ExerciseType, ExerciseTypeWithHandle, HistoryExercise, Series } from '@/app/types'
+import { ExerciseType, ExerciseTypeWithHandle, HistoryExercise, Series, TempoType } from '@/app/types'
 import { format } from 'date-fns'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useTranslations } from 'next-intl'
 import { exercisesArr } from '@/app/lib/exercise-list'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
+import { useExerciseTempos } from '@/app/lib/useExerciseTempos'
+import { ExerciseTempo } from '../../ui/ExerciseTempo'
 
 type DisplayUserExercisesTypes = {
     loading: boolean,
@@ -13,13 +15,15 @@ type DisplayUserExercisesTypes = {
     handleSearch: () => void,
     dataLength: number,
     totalItems: number,
+    hasChildren: boolean,
 }
-export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,handleSearch,dataLength,totalItems}:DisplayUserExercisesTypes) => {
+export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,handleSearch,dataLength,totalItems,hasChildren}:DisplayUserExercisesTypes) => {
+    const tempos = useExerciseTempos()
 
     const t = useTranslations("Home/Profile/Search")
     
   return (
-    <div className='mt-16 mx-5 mb-20'>
+    <div className='mt-20 mx-5 mb-20'>
          <InfiniteScroll
          dataLength={dataLength}
          hasMore={!(totalItems===dataLength)}
@@ -38,7 +42,7 @@ export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,han
           style={{overflow:''}}
          >
             {fetchedExercises.map((exercise,index)=>(
-                <SingleExercise exercise={exercise} key={index}/>
+                <SingleExercise exercise={exercise} tempos={tempos} key={index} hasChildren={hasChildren}/>
             ))}
         </InfiniteScroll>
     </div>
@@ -47,14 +51,16 @@ export const DisplayUserExercises = ({loading,fetchedExercises,manyExercises,han
 
 type SingleExerciseTypes = {
     exercise: HistoryExercise,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
+    hasChildren: boolean,
 }
-const SingleExercise = ({exercise}:SingleExerciseTypes) => {
+const SingleExercise = ({exercise,tempos,hasChildren}:SingleExerciseTypes) => {
     const u = useTranslations("Utils")
     const weeIndex = format(exercise.exercises[0].date!,'i') 
     const monthIndex = format(exercise.exercises[0].date!,'L')
     return(
         <div className='flex flex-col h-fit'>
-            <div className='sticky flex gap-1 top-[60px] h-fit bg-green font-bold text-black px-2'>
+            <div className={`sticky flex gap-1 ${hasChildren ? 'top-[165px]' : 'top-[60px]'} h-fit bg-green font-bold text-black px-2`}>
                 <span>{u("WeekFullName",{day: weeIndex})}</span>
                 <span>{format(exercise.exercises[0].date!,'dd')}</span>
                 <span>{u("MonthIndex",{index: monthIndex})}</span>
@@ -62,7 +68,7 @@ const SingleExercise = ({exercise}:SingleExerciseTypes) => {
             </div>
             <div className='flex flex-col my-1'>
                 {exercise.exercises.map(exercise=>(
-                    <ExercisesMap exercise={exercise} key={exercise.id}/>
+                    <ExercisesMap exercise={exercise} tempos={tempos} key={exercise.id} />
                 ))}
             </div>
         </div>
@@ -71,9 +77,10 @@ const SingleExercise = ({exercise}:SingleExerciseTypes) => {
 
 type ExercisesMapType = {
     exercise: ExerciseTypeWithHandle,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
 
-const ExercisesMap = ({exercise}:ExercisesMapType) => {
+const ExercisesMap = ({exercise,tempos}:ExercisesMapType) => {
 
     const d = useTranslations("DefaultExercises")
     const formattedName = exercisesArr.includes(exercise.exercisename) ? d(nameTrimmer(exercise.exercisename)) : exercise.exercisename
@@ -81,8 +88,11 @@ const ExercisesMap = ({exercise}:ExercisesMapType) => {
     return (
         <div className='bg-darkLight my-1 rounded-lg'>
             <div className={`text-marmur flex justify-between px-2 font-bold`}> 
-                <span className='mt-2 ml-2 text-l pb-2'>
-                    {formattedName} {exercise.handlename && "- " + exercise.handlename + " handle"}
+                <span className='mt-2 ml-2 text-l pb-2 flex flex-col'>
+                    <span>
+                        {formattedName} {exercise.handlename && "- " + exercise.handlename + " handle"}
+                    </span>
+                    <ExerciseTempo tempo={tempos[exercise.exerciseid || '']?.tempo} className='mt-1'/>
                 </span>
             </div>
 

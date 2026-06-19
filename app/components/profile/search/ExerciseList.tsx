@@ -1,4 +1,4 @@
-import { ExerciseTypes, UserExercise } from '@/app/types'
+import { ExerciseTypes, TempoType, UserExercise } from '@/app/types'
 import { useContext, useState } from 'react'
 import { ListExercises } from './ListExercises'
 import { SelectExercise } from './SelectExercise'
@@ -9,13 +9,15 @@ import { Button } from '../../ui/Button'
 import { useTranslations } from 'next-intl'
 import { nameTrimmer } from '@/app/lib/utils'
 import  LocaleContext  from '@/app/context/LocaleContext'
+import { Input } from '../../ui/Input'
 
 type ExerciseListTypes = {
     exerciseList: (string | UserExercise)[],
     exercises: ExerciseTypes,
+    tempos: {[key: string]: {id: string, tempo: TempoType}},
 }
 
-export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
+export const ExerciseList = ({exerciseList,exercises,tempos}:ExerciseListTypes) => {
     const [searchField,setSearchField] = useState('')
 
     const searchExercise = useContext(SelectedExerciseContext)
@@ -36,16 +38,18 @@ export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
 
   return (
         <div className='fixed min-h-screen left-0 top-0 w-screen z-20 backdrop-blur-sm flex flex-col overflow-auto bottom-20 px-5 bg-dark bg-opacity-50'>
+            <div className="max-w-mobile w-mobile mx-auto">
                 <div className='flex items-center my-5'>
                     <button className='flex justify-center px-2' onClick={hideList}>
                         <Icon className='flex justify-center items-center'>
                             <LeftAngle height='30' width='30' fill='#D9D9D9'/>
                         </Icon>
                     </button>
-                    <input type="text" placeholder={u("Search")} value={searchField} id={u("Search")} onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/>
+                    <Input labelName={u("Search")} value={searchField} onChange={e=>setSearchField(e.target.value)}/>
+                    {/* <input type="text" placeholder={u("Search")} value={searchField} id={u("Search")} onChange={e=>setSearchField(e.target.value)} className={`flex-1 w-full text-xl py-2 px-2 bg-dark border-2 rounded-md border-marmur text-marmur`}/> */}
                 </div>
 
-                <Button className='mb-4 text-white bg-dark border-2 border-borderInteractive' onClick={slectAllExercises}>
+                <Button className='mb-4 text-white bg-dark border-2 border-borderInteractive w-full' onClick={slectAllExercises}>
                     {t("AllExercises")}
                 </Button>
                
@@ -58,13 +62,14 @@ export const ExerciseList = ({exerciseList,exercises}:ExerciseListTypes) => {
                         <ListExercises item={exercises}/>
                     </div>
                 }
+                </div>
         </div>
   )
 }
 
 type SearchExercisesTypes = {
     allExercisesInOneArray: (string | UserExercise)[],
-    searchTerm: string
+    searchTerm: string,
 }
 
 export const SearchExercises = ({allExercisesInOneArray,searchTerm}:SearchExercisesTypes) => {
@@ -111,12 +116,12 @@ export const FilteredExercises = ({allExercisesInOneArray}:FilteredExercisesType
             {allExercisesInOneArray.map((x,i)=>{
                 if(typeof x === 'object'){
                     return (
-                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x.exercisename} translatedText={x.exercisename} key={i}/>
+                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x.exercisename} translatedText={x.exercisename} key={i} />
                     )
                 }
                 if(typeof x === 'string'){
                     return (
-                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x} translatedText={d(nameTrimmer(x))} key={i}/>
+                        <SelectExercise mLeft='ml-2' isFirst={i===0} text={x} translatedText={d(nameTrimmer(x))} key={i} />
                     )
                 }
             })}

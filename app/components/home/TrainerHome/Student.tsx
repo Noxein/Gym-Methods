@@ -18,13 +18,15 @@ function Student({ info }: Props) {
 
     const currentTrainingIndex = info.plan.findIndex(plan => plan.iscompleted === false)
     const currentTraining = currentTrainingIndex !== -1 ? info.plan[currentTrainingIndex] : null
+    const today = startOfDay(new Date())
+    const nextUpcomingTraining = info.plan
+        .filter(plan => !plan.iscompleted)
+        .filter(plan => startOfDay(new Date(plan.date)) >= today)
+        .sort((a, b) => startOfDay(new Date(a.date)).getTime() - startOfDay(new Date(b.date)).getTime())[0] ?? null
     const lastCompletedTrainingIndex = currentTrainingIndex - 1
     const lastCompletedTraining = lastCompletedTrainingIndex >= 0 ? info.plan[lastCompletedTrainingIndex] : null
     const progression = lastCompletedTraining ? GetOverallTraineeTrainingProgression(lastCompletedTraining) : null
-    const skippedTrainingsCount = info.plan.filter(plan => !plan.iscompleted && startOfDay(new Date(plan.date)) < startOfDay(new Date())).length
-    const shouldDisplayNextTraining = currentTraining
-        ? startOfDay(new Date(currentTraining.date)) >= startOfDay(new Date())
-        : false
+    const skippedTrainingsCount = info.skippedtrainingscount ?? info.plan.filter(plan => !plan.iscompleted && startOfDay(new Date(plan.date)) < today).length
 
 
     const { connectedTrainees } = useContext(TraineeHomeContext)!
@@ -49,7 +51,7 @@ function Student({ info }: Props) {
                {lastCompletedTraining?.date && <p>{t("LastTraining", {date: format(new Date(lastCompletedTraining.date), "dd/MM/yyyy")})}</p>}
 
                 {currentTraining && <p className="text-gray-400">{t("DayProgress", {trainingName: info.name, current: currentTrainingIndex + 1, total: info.plan.length})}</p>}
-                {shouldDisplayNextTraining && currentTraining?.date && <p className="text-gray-400">{t('NextTraining', {date: format(new Date(currentTraining.date), "dd.MM")})}</p>}
+                {nextUpcomingTraining?.date && <p className="text-gray-400">{t('NextTraining', {date: format(new Date(nextUpcomingTraining.date), "dd.MM")})}</p>}
                 {skippedTrainingsCount > 0 && <p className="text-red cursor-pointer hover:underline" onClick={redirectToTraineeCalendar}>{t("SkippedTrainings", {count: skippedTrainingsCount})}</p>}
             </div>
 

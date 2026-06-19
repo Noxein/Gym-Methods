@@ -75,7 +75,7 @@ function ActionsButtons() {
         setError(error)
     }
     return ( 
-        <div className="fixed bottom-16 pb-8 pt-4 border-t border-gray-700 bg-dark w-full px-5">
+        <div className="fixed max-w-mobile bottom-20 mt-auto  pb-8 pt-4 border-t border-gray-700 bg-dark w-full px-5">
             <div className="text-red-500 mb-2 text-center text-red">{error && e(error)}</div>
             <div className=" gap-4 flex z-20 bg-dark">
                 <Button className='flex-1' blue onClick={handleCancel} disabled={loading}>{u('Cancel')}</Button>

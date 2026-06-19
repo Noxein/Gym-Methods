@@ -1,4 +1,5 @@
-import { AllExercisesInOneArray, getAllExercises, getAllHandleTypes, getSchemaData } from "@/app/actions";
+import { AllExercisesInOneArray, getAllExercises } from "@/app/actions";
+import { getTrainerAllHandleTypes } from "@/app/trainerActions";
 import SchemaEditor from "@/app/components/profile/my-trainees/schemas/schema creator/SchemaEditor";
 import { TrainingSchemaContextProvider } from "@/app/context/TrainingSchemaContext";
 import { TrainerPlanSchema } from "@/app/types";
@@ -19,7 +20,7 @@ export default async function page() {
         ],
         lastedited: new Date()
     }
-    const handles = await getAllHandleTypes();
+    const handles = await getTrainerAllHandleTypes();
     const allExercises = await getAllExercises();
     const allExercisesInOneArray = await AllExercisesInOneArray()
 

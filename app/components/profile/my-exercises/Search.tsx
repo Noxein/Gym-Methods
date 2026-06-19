@@ -3,6 +3,7 @@ import { AddExercise } from './AddExercise'
 import { HideShowHTMLScrollbar } from '@/app/lib/utils'
 import { Button } from '../../ui/Button'
 import { useTranslations } from 'next-intl'
+import { Input } from '../../ui/Input'
 
 type SearchTypes = {
     setSearchValue: React.Dispatch<React.SetStateAction<string>>,
@@ -19,11 +20,8 @@ export const Search = ({setSearchValue,showAddModal}:SearchTypes) => {
     const u = useTranslations("Utils")
   return (
     <div className='flex gap-4'>
-        <input type="text" onChange={e=>setSearchValue(e.target.value)}
-            placeholder={u("Search")}
-            className={`px-2 py-2 bg-dark border-2 border-borderInteractive rounded-md w-3/4 text-white placeholder:text-gray-300`}
-        />
-        <Button isPrimary onClick={HandleShowModal} className='flex-1'>
+        <Input labelName={u("Search")} value={''} onChange={e=>setSearchValue(e.target.value)}/>
+        <Button isPrimary onClick={HandleShowModal} className='flex-1 min-w-40'>
             {u("Add")}
         </Button>
         {showModal && <AddExercise setShowModal={setShowModal}/>}

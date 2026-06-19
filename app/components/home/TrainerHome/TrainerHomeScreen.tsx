@@ -20,7 +20,7 @@ async function TrainerHomeScreen({ purpose }: { purpose: UserPurposeType }) {
     }
     return ( 
         <TrainerHomeContextProvidr ids={trainerData.allTraineesIDs} userid={trainerData.userid!} userPurpose={purpose}>
-            <div className="flex flex-col items-center w-full overflow-x-hidden px-5">
+            <div className="flex flex-col items-center w-full overflow-x-hidden ">
                 <Suspense fallback={<HomeWidgetSeleton />}>
                     <DaysWidget />
                 </Suspense>

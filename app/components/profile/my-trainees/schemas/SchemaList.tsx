@@ -16,7 +16,7 @@ function SchemaList({ schemas }: SchemaListProps) {
     const[selectedSchemasIds, setSelectedSchemasIds] = useState<string[]>([])
     
     return ( 
-        <div className="rounded-lg flex flex-col gap-4">
+        <div className="rounded-lg min-h-dvh flex flex-col gap-4">
             <>
                 {!showDelete && schemas.map((schema) => (
                     <div key={schema.id} className="text-white bg-darkLight rounded-lg">

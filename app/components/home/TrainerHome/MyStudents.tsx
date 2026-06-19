@@ -11,7 +11,7 @@ function MyStudents({ trainings }: MyStudentsProps) {
     console.log('trainings', trainings);
     
     return ( 
-        <div className="w-full text-white mt-10">
+        <div className="w-full text-white mt-10 px-5">
             <h1 className="text-center text-2xl font-semibold">{t("MyStudents")}</h1>
 
             <div className="flex flex-col gap-4">
