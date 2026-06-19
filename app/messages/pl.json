@@ -323,7 +323,9 @@
         "LatestTrainings":"Ostatnie treningi",
         "BasicTrainings": "Treningi podstawowe",
         "AdvancedTrainings": "Treningi zaawansowane",
-        "NoBasicTrainings": "Brak dostępnych treningów podstawowych. Utwórz nowy trening, aby rozpocząć!"
+        "NoBasicTrainings": "Brak dostępnych treningów podstawowych. Utwórz nowy trening, aby rozpocząć!",
+        "ShowMore": "Pokaż więcej",
+        "ShowLess": "Pokaż mniej"
     },
     "Home/Start-Training/[TrainingName]": {
         "AddSeries": "Dodaj serie",

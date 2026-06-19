@@ -323,7 +323,9 @@
         "LatestTrainings":"Latest trainings",
         "BasicTrainings": "Basic trainings",
         "AdvancedTrainings": "Advanced trainings",
-        "NoBasicTrainings": "No basic trainings available. Create a new training to get started!"
+        "NoBasicTrainings": "No basic trainings available. Create a new training to get started!",
+        "ShowMore": "Show more",
+        "ShowLess": "Show less"
     },
     "Home/Start-Training/[TrainingName]": {
         "AddSeries": "Add series",

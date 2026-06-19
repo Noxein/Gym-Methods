@@ -1,5 +1,6 @@
+'use client'
+
 import { BigTrainingStarter } from "@/app/types";
-import { Button } from "../../ui/Button";
 import { Icon } from "../../Icon";
 import { DoubleArrowIcon, ExpandIcon } from "@/app/ui/icons/ExpandIcon";
 import FinishedOf from "./FinishedOf";

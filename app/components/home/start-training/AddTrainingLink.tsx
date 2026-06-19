@@ -21,10 +21,10 @@ export const AddTrainingLink = ({LongTermTrainingList}:AddTrainingLinkTypes) => 
     }
 
   return (
-  <>
+  <div className='mb-5 mx-5'>
     <ButtonWithIcon 
       isPrimary
-      className='mx-5 text-xl'
+      className='w-full text-xl '
       buttonText={t("StartNewTraining")}
 
       childrenIcon={
@@ -39,6 +39,6 @@ export const AddTrainingLink = ({LongTermTrainingList}:AddTrainingLinkTypes) => 
       <BlurBackgroundModal onClick={flip}>
         <StartNewTrainingList LongTermTrainingList={LongTermTrainingList} flip={flip}/>
       </BlurBackgroundModal>}
-  </>
+  </div>
   )
 }
