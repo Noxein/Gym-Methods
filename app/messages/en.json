@@ -123,7 +123,9 @@
     },
     "Home/Add-Exercise": {
         "AddExercise":"Start exercise",
-        "LatestExercises": "LATEST TRAININGS"
+        "LatestExercises": "LATEST TRAININGS",
+        "NoExercises": "You do not have any exercises yet.",
+        "AddExerciseLink": "Add an exercise"
     },
     "Home/Add-Exercise/[Exercise-Name]": {
         "AddSeries": "Add set",

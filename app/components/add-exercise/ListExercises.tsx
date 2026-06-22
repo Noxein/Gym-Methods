@@ -6,6 +6,7 @@ import { Icon } from "../Icon"
 import { useTranslations } from "next-intl"
 import { nameTrimmer } from "@/app/lib/utils"
 import { TempoType } from "@/app/types"
+import Link from "next/link"
 
 type ListExercisesTypes = {
     item:any,
@@ -19,6 +20,21 @@ export const ListExercises = ({item,objectName,currentLevel=0,isLast=true,tempos
     const mLeft = `${currentLevel*3}`
 
     const d = useTranslations("DefaultExercises")
+    const t = useTranslations('Home/Add-Exercise')
+
+    if(objectName === 'userExercises' && Array.isArray(item) && item.length === 0){
+        return (<div className={`relative flex flex-col gap-1 font-bold`}>
+            <ExpandBtn text={d('TwojeCwiczenia')} isExpanded={showChildren} 
+                onClick={()=>setShowChildren(!showChildren)} mLeft={mLeft} currentLevel={currentLevel}
+                />
+            {showChildren && <div className='ml-6 mt-2 rounded-lg border border-borderInteractive bg-dark px-4 py-3 text-marmur'>
+                <p className='text-sm'>{t('NoExercises')}</p>
+                <Link href='/home/profile/my-exercises?showAddModal=true' className='mt-2 inline-flex text-green hover:underline'>
+                    {t('AddExerciseLink')}
+                </Link>
+            </div>}
+        </div>)
+    }
     
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`relative flex flex-col gap-1 font-bold`}>

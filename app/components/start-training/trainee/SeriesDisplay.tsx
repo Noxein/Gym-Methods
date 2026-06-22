@@ -25,10 +25,10 @@ function SeriesDisplay({handleInputChange, handleChange, flipT, flipF}: SeriesDi
 
     const currentExercise = training.exercises[currentExerciseIndex]
     return ( 
-            <div className="flex overflow-hidden touch-none">
+            <div className="flex max-w-mobile">
          
-            <div className="relative duration-75 w-[94vw]" >
-                <div className={`bg-darkLight rounded-lg px-5 h-[calc(50vh)] w-[94vw] mt-2`}>
+            <div className="relative duration-75 max-w-mobile w-full" >
+                <div className={`bg-darkLight rounded-lg px-5 h-[calc(50vh)] w-full mt-2`}>
                     <div className="text-center text-white text-2xl font-semibold sticky top-0  z-30">
                         <p className="bg-darkLight pt-5">{currentPlanName} - {currentExercise.exercisename}</p>
                         <ExerciseTempo tempo={tempos[currentExercise.exerciseid]?.tempo} className="justify-center bg-darkLight pb-2"/>
@@ -63,7 +63,7 @@ const ActuallSeries = ({exercise, allHandles, handleInputChange, handleChange, f
     const h = useTranslations("Handles")
 
     return(
-            <div className="flex flex-col gap-2 text-white ">
+            <div className="flex flex-col gap-2 text-white max-w-mobile">
         
                 {exercise.handle && <div className='flex gap-2'>
                     <div className='flex-1 flex flex-col text-lg relative'>
