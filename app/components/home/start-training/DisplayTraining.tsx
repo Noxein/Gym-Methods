@@ -32,19 +32,19 @@ type DisplayTrainingTypes = {
  export const DisplayTraining = ({trainingPlanData,exercisesObject,allExercisesInOneArray,allHandles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,useremail,progressions}:DisplayTrainingTypes) => {
     const modalsContext = useContext(ModalContexts)
 
-    const setProgressedIndexes = (index:number,localStorageTrainingDataArg:LocalStorageTraining) => {
+    const setProgressedIndexes = (index:number,localStorageTrainingDataArg:LocalStorageTraining,firstRender?:boolean) => {
         //const goal = trainingPlanData.exercises.find(x=>x.exercisename === localStorageTrainingDataArg.exercises[index].exerciseName)
         const goal = progressions.find(x=>x.exercisename === localStorageTrainingDataArg.exercises[index].exerciseName)
         let indexes:ProgressedIndexesType = getProgressedSeriesIndexes(localStorageTrainingDataArg.exercises[index].sets,goal)
         
-        modalsContext?.setSeriesIndexesThatMetGoal(indexes)
+        !firstRender && modalsContext?.setSeriesIndexesThatMetGoal(indexes)
     }
     
     const initializeLocalStorageData = (trainingName:string,exercises:TrainingProgression[],trainingid:string) => {
         const data = localStorage.getItem(trainingName+'training'+useremail)
         if(data){
             const parsedData = JSON.parse(data) as LocalStorageTraining
-            setProgressedIndexes(parsedData.currentExerciseIndex,parsedData)
+            setProgressedIndexes(parsedData.currentExerciseIndex,parsedData,true)
             return parsedData
         }
     
@@ -180,7 +180,7 @@ type DisplayTrainingTypes = {
         }
         {error && <div className='text-red'>{error}</div>}
 
-            <div className='mx-5 text-white flex gap-4 mt-auto pt-4'>
+            <div className='fixed mx-auto px-5 w-full max-w-mobile bottom-[75px] py-4 bg-dark text-white flex gap-4 mt-auto '>
                 <Button className={`px-3 ${localStorageTrainingData.currentExerciseIndex===0 ? 'border-gray-700':null}`} onClick={previousExercise}>
                     <LeftAngle fill={localStorageTrainingData.currentExerciseIndex===0 ? '#777':'#fff'} height='40' width='40'/>
                 </Button>

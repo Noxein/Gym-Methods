@@ -186,7 +186,8 @@
         "TrainingDontExist": "Nie znaleziono treningu o nazwie",
         "BackToTrainings": "Powrót do Treningów",
         "AddNewExercise": "Dodaj nowe ćwiczenie",
-        "YourExercises": "Twoje ćwiczenia"
+        "YourExercises": "Twoje ćwiczenia",
+        "NoExercises": "Nie masz jeszcze żadnych ćwiczeń."
 
     },
     "Home/Profile/Search": {
@@ -547,6 +548,7 @@
          "Exercise dont have an id": "Ćwiczenie nie ma id",
          "Name cant be empty": "Nazwa nie może być pusta",
          "There cant be any empty trainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie",
+         "There cant be any exercises without sets": "Każde ćwiczenie musi mieć conajmniej jedną serię",
          "Failed to upload avatar": "Nie udało się przesłać avatara",
          "SchemaNameCannotBeEmpty": "Nazwa schematu nie może być pusta",
          "ThereCantBeAnyEmptyTrainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie",

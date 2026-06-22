@@ -127,8 +127,25 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
 
     const handleSave = async () => {
         if(state === 'uploading') return
+
+        if(!planData) return
+
+        setError('')
+
+        const hasEmptySubplan = planData.subplans.some(subplan => subplan.exercises.length === 0)
+        if(hasEmptySubplan){
+            return setError(e('There cant be any empty trainings'))
+        }
+
+        const hasExerciseWithoutSets = planData.subplans.some(subplan =>
+            subplan.exercises.some(exercise => exercise.setgoals.length === 0)
+        )
+        if(hasExerciseWithoutSets){
+            return setError(e('There cant be any exercises without sets'))
+        }
+
         setState('uploading')
-        const result = await handleSaveLongTermPlan(planData!,new Date())
+        const result = await handleSaveLongTermPlan(planData,new Date())
         if(result?.error){
             setState('idle')
             return setError(e(result.error))

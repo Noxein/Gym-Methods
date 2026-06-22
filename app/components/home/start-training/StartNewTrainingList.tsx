@@ -16,7 +16,7 @@ function StartNewTrainingList({LongTermTrainingList,flip}:StartNewTrainingListTy
     const t = useTranslations("Home/Start-Training")
 
     return ( 
-        <div className="w-full mx-5 mb-20" onClick={e=>e.stopPropagation()}>
+        <div className="w-full max-w-mobile px-5 mb-20" onClick={e=>e.stopPropagation()}>
 
             <p className="text-center text-2xl mb-4">{t("StartNewTraining")}</p>
 

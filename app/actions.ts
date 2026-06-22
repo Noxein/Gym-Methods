@@ -1895,17 +1895,18 @@ export const getPlanData = async (planname: string) => {
 export const handleSaveLongTermPlan = async (plan: BigTrainingData,userDate: Date) => {
     const userid = await userID()
 
-    let emptyExercisesArrays = false
-
     for(let i = 0 ; i< plan.subplans.length; i++) {
         if(plan.subplans[i].exercises.length === 0){
-            emptyExercisesArrays = true
-            break
-        } 
+            return { error: "There cant be any empty trainings" }
+        }
+
+        for(let j = 0; j < plan.subplans[i].exercises.length; j++){
+            if(plan.subplans[i].exercises[j].setgoals.length === 0){
+                return { error: "There cant be any exercises without sets" }
+            }
+        }
     }
-    if(emptyExercisesArrays){
-        return { error: "There cant be any empty trainings" }
-    }
+
     try{
         await sql`
             UPDATE bigtraining SET name = ${plan.name}, subplans = ${JSON.stringify(plan.subplans)}, lastedited = ${JSON.stringify(userDate)} WHERE id = ${plan.id} AND userid = ${userid}

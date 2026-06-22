@@ -187,7 +187,8 @@
         "TrainingDontExist": "Training with this name does not exist",
         "BackToTrainings": "Back to trainings",
         "AddNewExercise": "Add new exercise",
-        "YourExercises": "Your exercises"
+        "YourExercises": "Your exercises",
+        "NoExercises": "You have no exercises yet."
     },
     "Home/Profile/Search": {
         "From": "From",
@@ -547,6 +548,7 @@
         "Exercise dont have an id": "Exercise dont have an id",
         "Name cant be empty": "Name cant be empty",
         "There cant be any empty trainings": "Each training has to have at least one exercise",
+        "There cant be any exercises without sets": "Each exercise has to have at least one set",
         "Failed to upload avatar": "Failed to upload avatar",
          "SchemaNameCannotBeEmpty": "Schema name cannot be empty",
          "ThereCantBeAnyEmptyTrainings": "Each training has to have at least one exercise",

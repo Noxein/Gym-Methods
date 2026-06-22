@@ -67,7 +67,7 @@ export const ChangeExerciseList = ({list2,setLocalStorageTrainingData,localStora
     const u = useTranslations("Utils")
 
   return (
-    <div className='fixed left-0 top-0 right-0 w-screen z-20 backdrop-blur-sm flex justify-center overflow-auto bottom-20'>
+    <div className='fixed w-full max-w-mobile top-0 min-h-screen mx-auto z-20 backdrop-blur-sm flex justify-center overflow-auto bottom-20'>
     <div className='bg-dark z-10 w-full pt-10 px-5 flex flex-col gap-2 overflow-y-auto'>
         <h1 className='text-center text-xl text-white font-semibold mb-5'>{t("SelectExercise")}</h1>
 

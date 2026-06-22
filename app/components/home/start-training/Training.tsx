@@ -10,6 +10,7 @@ type TrainingTypes = {
 }
 export const Training = async ({trainingPlanData}:TrainingTypes) => {
     const allHandles = await getAllHandleTypes()
+    console.log("trainingPlanData",trainingPlanData)
     return(
         <main>
             <LongPlanContextProvider trainingPlanData={trainingPlanData}>
