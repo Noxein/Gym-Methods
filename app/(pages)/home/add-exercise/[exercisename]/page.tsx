@@ -29,12 +29,14 @@ export default async function page(props:{params: Promise<{exercisename:string}>
       const isExerciseInTheList = allExercises.includes(exerciseName)
       if(isExerciseInTheList) shouldContinue = true
   }
+  const handles = await getAllHandleTypes()
+  const {ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure} = await userExercisesThatRequireHandlesOrTimeMesure()
 
   if(!shouldContinue) return <ExerciseNotFound />
 
   return (
 
-      <AddExerciseStateProvider name={exerciseName}/>
+      <AddExerciseStateProvider name={exerciseName} handles={handles} ExercisesThatRequireHandle={ExercisesThatRequireHandle} ExercisesThatRequireTimeMesure={ExercisesThatRequireTimeMesure} />
 
   )
 }

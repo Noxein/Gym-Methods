@@ -376,7 +376,7 @@ const Handle = ({dispatch,state}:HandleTypes) => {
     const h = useTranslations("Handles")
 
     const selectedHandle = exerciseData.requiresHandle && state.handle ? {id: state.handle.id, handlename: state.handle.handlename} : allHandles[0]
-    console.log('selected handle', selectedHandle)
+    
     return (
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
