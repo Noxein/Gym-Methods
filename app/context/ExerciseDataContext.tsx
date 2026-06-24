@@ -35,7 +35,15 @@ type AllHandlesType = {
     id: string;
     handlename: string;
 }[]
-export const ExerciseDataContextProvider = ({children,twoRecentExercises}:{children: React.ReactNode,twoRecentExercises:string[]}) => {
+
+type ExerciseDataContextProviderType = {
+    children: React.ReactNode,
+    handles: AllHandlesType,
+    ExercisesThatRequireHandle: ExercisesThatRequireTimeMesureOrHandle[],
+    ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[],
+    twoRecentExercises: string[],
+}
+export const ExerciseDataContextProvider = ({children,handles,ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure,twoRecentExercises}:ExerciseDataContextProviderType) => {
 
     const router = useRouter();
 
@@ -114,22 +122,16 @@ export const ExerciseDataContextProvider = ({children,twoRecentExercises}:{child
             requiresHandle: ExercisesHandle.some(exercise => exercise.exercisename === newExerciseName),
             exerciseProgression: progression,
         })
+        console.log('exerciseData changed to',newExerciseName)
         setLoading(false)
     }
 
-    const[ExercisesTimeMesure, setExercisesTimeMesure] = useState<ExercisesThatRequireTimeMesureOrHandle[]>([])
-    const[ExercisesHandle, setExercisesHandle] = useState<ExercisesThatRequireTimeMesureOrHandle[]>([])
-    const[allHandles, setAllHandles] = useState<AllHandlesType>([])
+    const[ExercisesTimeMesure, setExercisesTimeMesure] = useState<ExercisesThatRequireTimeMesureOrHandle[]>(ExercisesThatRequireTimeMesure)
+    const[ExercisesHandle, setExercisesHandle] = useState<ExercisesThatRequireTimeMesureOrHandle[]>(ExercisesThatRequireHandle)
+    const[allHandles, setAllHandles] = useState<AllHandlesType>(handles)
 
     useEffect(()=>{
         const func = async() => {
-            const handles = await getAllHandleTypes()   
-            const {ExercisesThatRequireHandle,ExercisesThatRequireTimeMesure} = await userExercisesThatRequireHandlesOrTimeMesure()
-
-            setAllHandles(handles)
-
-            setExercisesTimeMesure(ExercisesThatRequireTimeMesure)
-            setExercisesHandle(ExercisesThatRequireHandle)
 
             let exerciseProgression = {} as Progression
             let exerciseid = ''
@@ -166,10 +168,11 @@ export const ExerciseDataContextProvider = ({children,twoRecentExercises}:{child
             setExerciseData({
                 name: exerciseUrlName,
                 exerciseid: exerciseid,
-                showTimeMesure: ExercisesThatRequireTimeMesure.some(exercise => exercise.exercisename === recentExercises[0]),
-                requiresHandle: ExercisesThatRequireHandle.some(exercise => exercise.exercisename === recentExercises[0]),
+                showTimeMesure: ExercisesThatRequireTimeMesure.some(exercise => exercise.exercisename === exerciseUrlName),
+                requiresHandle: ExercisesThatRequireHandle.some(exercise => exercise.exercisename === exerciseUrlName),
                 exerciseProgression: exerciseProgression,
             })
+
             setExercisesIDsCache(prev=>({...prev,[exerciseUrlName]:exerciseid}))
             setFirstLoad(false)
         }

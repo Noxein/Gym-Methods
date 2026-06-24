@@ -527,3 +527,8 @@ export type CustomHandle = {
     handle_name: string,
     created_at: Date,
 }
+
+export type AllHandlesType = {
+    id: string;
+    handlename: string;
+}[]

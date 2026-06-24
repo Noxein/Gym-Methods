@@ -21,10 +21,24 @@ type ListExercisesTrainingTypes = {
 export const ListExercisesTraining = ({item,objectName,currentLevel=0,isLast=true,setPlanExercises,isTrainingInProgressPage=false,setShowExerciseList,setShowAddExercise,localStorageTrainingData,setLocalStorageTrainingData,tempos}:ListExercisesTrainingTypes) => {
     const[showChildren,setShowChildren] = useState(currentLevel===0)
     const mLeft = `ml-${currentLevel*2}`
-    
-    console.log(item)
+
     const t = useTranslations("Home/Profile/My-Training-Plans/[TrainingPlanName]")
     const d = useTranslations("DefaultExercises")
+
+    if(objectName === 'userExercises' && Array.isArray(item) && item.length === 0){
+        return (<div className={`flex flex-col gap-1 font-bold`}>
+            <ExpandBtn 
+                text={t("YourExercises")} 
+                isExpanded={showChildren} 
+                onClick={()=>setShowChildren(!showChildren)} 
+                mLeft={mLeft}
+            />
+
+            {showChildren && <div className='ml-10 mt-2 rounded-lg border border-borderInteractive bg-dark px-4 py-3 text-marmur'>
+                <p className='text-sm'>{t("NoExercises")}</p>
+            </div>}
+        </div>)
+    }
 
     if(objectName === 'userExercises' && Array.isArray(item)){
         return (<div className={`flex flex-col gap-1 font-bold`}>

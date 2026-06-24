@@ -4,6 +4,8 @@ import { AddExercise } from './AddExercise'
 import { TimerContextProvider } from '@/app/context/TimerContext'
 import { SingleExerciseProgressionProvider } from '@/app/context/SingleExerciseProgressionContext'
 import { ExerciseDataContextProvider } from '@/app/context/ExerciseDataContext'
+import { getAllHandleTypes, userExercisesThatRequireHandlesOrTimeMesure } from '@/app/actions'
+import { AllHandlesType, ExercisesThatRequireTimeMesureOrHandle } from '@/app/types'
 
 const init = {
     weight: 0,
@@ -16,11 +18,14 @@ const init = {
 
 type AddExerciseStateProviderTypes = {
     name: string,
+    handles: AllHandlesType,
+    ExercisesThatRequireHandle: ExercisesThatRequireTimeMesureOrHandle[],
+    ExercisesThatRequireTimeMesure: ExercisesThatRequireTimeMesureOrHandle[],
 }
 
 
 
-export const AddExerciseStateProvider = ({name}:AddExerciseStateProviderTypes) => {
+export const AddExerciseStateProvider = ({name, handles, ExercisesThatRequireHandle, ExercisesThatRequireTimeMesure}:AddExerciseStateProviderTypes) => {
   
   const func = () => {
       const data = localStorage.getItem('twoRecentExercises')
@@ -49,8 +54,9 @@ export const AddExerciseStateProvider = ({name}:AddExerciseStateProviderTypes) =
   const twoRecentExercises = useRef<string[]>(func())
 
 
+
   return (
-    <ExerciseDataContextProvider twoRecentExercises={twoRecentExercises.current}>
+    <ExerciseDataContextProvider twoRecentExercises={twoRecentExercises.current} handles={handles} ExercisesThatRequireHandle={ExercisesThatRequireHandle} ExercisesThatRequireTimeMesure={ExercisesThatRequireTimeMesure}>
       <TimerContextProvider>
         <SingleExerciseProgressionProvider>
           <AddExercise />

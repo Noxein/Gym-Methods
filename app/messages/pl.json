@@ -122,7 +122,9 @@
     },
     "Home/Add-Exercise": {
         "AddExercise": "Rozpocznij ćwiczenie",
-        "LatestExercises": "OSTATNIE ĆWICZENIA" 
+        "LatestExercises": "OSTATNIE ĆWICZENIA",
+        "NoExercises": "Nie masz jeszcze żadnych ćwiczeń.",
+        "AddExerciseLink": "Dodaj ćwiczenie"
     },
     "Home/Add-Exercise/[Exercise-Name]": {
         "AddSeries": "Dodaj serie",
@@ -184,7 +186,8 @@
         "TrainingDontExist": "Nie znaleziono treningu o nazwie",
         "BackToTrainings": "Powrót do Treningów",
         "AddNewExercise": "Dodaj nowe ćwiczenie",
-        "YourExercises": "Twoje ćwiczenia"
+        "YourExercises": "Twoje ćwiczenia",
+        "NoExercises": "Nie masz jeszcze żadnych ćwiczeń."
 
     },
     "Home/Profile/Search": {
@@ -323,7 +326,9 @@
         "LatestTrainings":"Ostatnie treningi",
         "BasicTrainings": "Treningi podstawowe",
         "AdvancedTrainings": "Treningi zaawansowane",
-        "NoBasicTrainings": "Brak dostępnych treningów podstawowych. Utwórz nowy trening, aby rozpocząć!"
+        "NoBasicTrainings": "Brak dostępnych treningów podstawowych. Utwórz nowy trening, aby rozpocząć!",
+        "ShowMore": "Pokaż więcej",
+        "ShowLess": "Pokaż mniej"
     },
     "Home/Start-Training/[TrainingName]": {
         "AddSeries": "Dodaj serie",
@@ -543,6 +548,7 @@
          "Exercise dont have an id": "Ćwiczenie nie ma id",
          "Name cant be empty": "Nazwa nie może być pusta",
          "There cant be any empty trainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie",
+         "There cant be any exercises without sets": "Każde ćwiczenie musi mieć conajmniej jedną serię",
          "Failed to upload avatar": "Nie udało się przesłać avatara",
          "SchemaNameCannotBeEmpty": "Nazwa schematu nie może być pusta",
          "ThereCantBeAnyEmptyTrainings": "Każdy trening musi mieć conajmniej jedno ćwiczenie",

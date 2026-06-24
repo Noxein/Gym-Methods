@@ -123,7 +123,9 @@
     },
     "Home/Add-Exercise": {
         "AddExercise":"Start exercise",
-        "LatestExercises": "LATEST TRAININGS"
+        "LatestExercises": "LATEST TRAININGS",
+        "NoExercises": "You do not have any exercises yet.",
+        "AddExerciseLink": "Add an exercise"
     },
     "Home/Add-Exercise/[Exercise-Name]": {
         "AddSeries": "Add set",
@@ -185,7 +187,8 @@
         "TrainingDontExist": "Training with this name does not exist",
         "BackToTrainings": "Back to trainings",
         "AddNewExercise": "Add new exercise",
-        "YourExercises": "Your exercises"
+        "YourExercises": "Your exercises",
+        "NoExercises": "You have no exercises yet."
     },
     "Home/Profile/Search": {
         "From": "From",
@@ -323,7 +326,9 @@
         "LatestTrainings":"Latest trainings",
         "BasicTrainings": "Basic trainings",
         "AdvancedTrainings": "Advanced trainings",
-        "NoBasicTrainings": "No basic trainings available. Create a new training to get started!"
+        "NoBasicTrainings": "No basic trainings available. Create a new training to get started!",
+        "ShowMore": "Show more",
+        "ShowLess": "Show less"
     },
     "Home/Start-Training/[TrainingName]": {
         "AddSeries": "Add series",
@@ -543,6 +548,7 @@
         "Exercise dont have an id": "Exercise dont have an id",
         "Name cant be empty": "Name cant be empty",
         "There cant be any empty trainings": "Each training has to have at least one exercise",
+        "There cant be any exercises without sets": "Each exercise has to have at least one set",
         "Failed to upload avatar": "Failed to upload avatar",
          "SchemaNameCannotBeEmpty": "Schema name cannot be empty",
          "ThereCantBeAnyEmptyTrainings": "Each training has to have at least one exercise",

@@ -77,7 +77,7 @@ function TraineeTraining() {
     }
 
     return ( 
-        <div className="mx-5 mb-44">
+        <div className="mx-5 mb-44 max-w-mobile">
 
         <div className="flex justify-between mt-2">
             <TrainingName />

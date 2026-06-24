@@ -30,7 +30,7 @@ export default async function page(props:{params: Promise<{trainingName:string}>
     return(
         <main className="text-white">
             <TimerContextProvider>
-                <ModalContextsProvider>
+                <ModalContextsProvider progressions={progressions} trainingName={planData!.trainingname}>
                     <DisplayTraining 
                         trainingPlanData={planData!}
                         ExercisesThatRequireHandle={ExercisesThatRequireHandle}
