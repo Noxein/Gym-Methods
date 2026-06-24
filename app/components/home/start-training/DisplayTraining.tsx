@@ -37,7 +37,11 @@ type DisplayTrainingTypes = {
         const goal = progressions.find(x=>x.exercisename === localStorageTrainingDataArg.exercises[index].exerciseName)
         let indexes:ProgressedIndexesType = getProgressedSeriesIndexes(localStorageTrainingDataArg.exercises[index].sets,goal)
         
-        !firstRender && modalsContext?.setSeriesIndexesThatMetGoal(indexes)
+        if(!firstRender){
+            modalsContext?.setSeriesIndexesThatMetGoal(indexes)
+            return
+        }
+
     }
     
     const initializeLocalStorageData = (trainingName:string,exercises:TrainingProgression[],trainingid:string) => {
