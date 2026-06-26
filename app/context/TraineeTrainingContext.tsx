@@ -43,7 +43,9 @@ export const TraineeTrainingContextProvider = ({children,training,userid,allHand
 
     const ws = useRef<WebSocket | null>(null);
     const[isTrainerConnected, setIsTrainerConnected] = useState(userPurpose=== 'Trener' ? true : false);
-    const[trainingData,setTrainingData] = useState<TraineeSingleTraining>(training.plan.find(x=>x.iscompleted===false)!)
+    const initialTraining = training.plan.find(x => !x.iscompleted && new Date(x.date).toDateString() === new Date().toDateString())
+        ?? training.plan.find(x=>x.iscompleted===false)!
+    const[trainingData,setTrainingData] = useState<TraineeSingleTraining>(initialTraining)
     const[currentExerciseIndex,setCurrentExerciseIndex] = useState(0)
     const JWTRef = useRef<string | null>(null);
     const { setModalState } = useContext(ConfirmModalContext)!

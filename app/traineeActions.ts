@@ -4,17 +4,30 @@ import { sql } from "@vercel/postgres"
 import { userID } from "./actions"
 import { Series, TraineePlan, TraineeSingleTraining } from "./types"
 import { revalidatePath } from "next/cache"
+import { formatTrainerTraineePlanDate, groupTrainerTraineePlanRows } from "./lib/trainerTraineePlans"
 
 export const getTraineeTrainings = async () => {
     const userid = await userID()
 
     const response = await sql`
-        SELECT * FROM trainertraineeplans WHERE traineeid = ${userid} AND iscompleted = false ORDER BY lastedited DESC
+                SELECT t.*, mp.name AS motherplanname
+                FROM trainertraineeplans AS t
+                LEFT JOIN "trainer-trainee-mother-plans" AS mp ON mp.id = t.motherplanid
+                WHERE t.traineeid = ${userid}
+                    AND (
+                        (t.motherplanid IS NOT NULL AND t.motherplanid IN (
+                                SELECT DISTINCT motherplanid
+                                FROM trainertraineeplans
+                                WHERE traineeid = ${userid}
+                                    AND iscompleted = false
+                                    AND motherplanid IS NOT NULL
+                        ))
+                        OR (t.motherplanid IS NULL AND t.iscompleted = false)
+                    )
+                ORDER BY t.lastedited DESC
     `
 
-    console.log(response.rows)
-
-    return response.rows as TraineePlan[]
+        return groupTrainerTraineePlanRows(response.rows as TraineePlan[])
 }
 
 export const getTraineeTrainingById = async (trainingId: string) => {
@@ -22,12 +35,15 @@ export const getTraineeTrainingById = async (trainingId: string) => {
 
     try {
         const response = await sql`
-            SELECT * FROM trainertraineeplans WHERE (traineeid = ${userid} OR trainerid = ${userid}) AND id = ${trainingId} 
+            SELECT t.*, mp.name AS motherplanname
+            FROM trainertraineeplans AS t
+            LEFT JOIN "trainer-trainee-mother-plans" AS mp ON mp.id = t.motherplanid
+            WHERE (t.traineeid = ${userid} OR t.trainerid = ${userid}) AND (t.motherplanid = ${trainingId} OR t.id = ${trainingId}) 
         `
 
         if(response.rows.length === 0) throw new Error("Nie można znaleźć treningu o podanym ID")
 
-        return {response: response.rows[0] as TraineePlan, error: null}
+        return {response: groupTrainerTraineePlanRows(response.rows as TraineePlan[])[0] ?? null, error: null}
     }catch(err) {
         console.log(err)
         const e = err as Error
@@ -91,13 +107,19 @@ export const handleCloseTrainingSF = async (training: TraineePlan) => {
             await saveCompletedTrainingExercises(latestCompletedTraining)
         }
 
-        const response = await sql`
-            UPDATE trainertraineeplans SET plan = ${JSON.stringify(training.plan)}, iscompleted = ${training.iscompleted}, lastedited = ${JSON.stringify(date)} WHERE traineeid = ${userid} AND id = ${training.id} RETURNING *
-        `
+        for (const singleTraining of training.plan) {
+            await sql`
+                UPDATE trainertraineeplans
+                SET plan = ${JSON.stringify(singleTraining.exercises)},
+                    iscompleted = ${singleTraining.iscompleted},
+                    lastedited = ${date.toISOString()},
+                    date = ${formatTrainerTraineePlanDate(singleTraining.date)},
+                    name = ${singleTraining.name}
+                WHERE traineeid = ${userid} AND id = ${singleTraining.id}
+            `
+        }
 
-        if(response.rows.length === 0) throw new Error("Nie można znaleźć treningu o podanym ID")
-
-        return {response: response.rows[0] as TraineePlan, error: null}
+        return {response: training, error: null}
     }catch(err){
         const e = err as Error
         return {response: null, error: e.message}

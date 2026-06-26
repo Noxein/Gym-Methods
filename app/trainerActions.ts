@@ -9,6 +9,7 @@ import { TraineePlanErrorChecker } from "./lib/utils"
 import { getLocale } from "next-intl/server"
 import { Locale } from "./i18n/config"
 import { handleTypes } from "./lib/exercise-list"
+import { formatTrainerTraineePlanDate, groupTrainerTraineePlanRows, type TrainerTraineePlanRow } from "./lib/trainerTraineePlans"
 
 export const createNewSchema = async (plan: TrainerPlanSchema) => {
     const userid = await userID()
@@ -90,9 +91,27 @@ export const handleAddTrainingForTrainee = async (plan: TraineePlan, traineeid: 
     }
 
     try{
-        const response = await sql`
-            INSERT INTO trainertraineeplans (id, trainerid, traineeid, name, plan, lastedited, iscompleted) VALUES (${v4()}, ${userid}, ${traineeid}, ${plan.name}, ${JSON.stringify(plan.plan)}, ${JSON.stringify(new Date())}, false)
-        `
+        const motherPlanId = v4()
+        const lastEdited = new Date()
+        const normalizedSubPlans = plan.plan.map((singlePlan) => ({
+            id: singlePlan.id,
+            name: singlePlan.name,
+            plan: singlePlan.exercises,
+            date: formatTrainerTraineePlanDate(singlePlan.date),
+            iscompleted: singlePlan.iscompleted,
+        }))
+
+        await sql.query(`
+            WITH new_mother_plan AS (
+                INSERT INTO "trainer-trainee-mother-plans" (id, trainerid, name)
+                VALUES ($1::uuid, $2::uuid, $3::text)
+                RETURNING id
+            )
+            INSERT INTO trainertraineeplans (id, trainerid, traineeid, name, plan, date, motherplanid, lastedited, iscompleted)
+            SELECT child.id, $2::uuid, $4::uuid, child.name, child.plan, child.date::date, (SELECT id FROM new_mother_plan), $5::timestamptz, child.iscompleted
+            FROM jsonb_to_recordset($6::jsonb) AS child(id uuid, name text, plan jsonb, date text, iscompleted boolean)
+        `, [motherPlanId, userid, plan.name, traineeid, lastEdited.toISOString(), JSON.stringify(normalizedSubPlans)])
+
         revalidatePath('/home/profile/my-trainees')
         return { success: true, error: null }
     }
@@ -107,9 +126,26 @@ export const getTraineePlans = async (traineeid: string) => {
 
     try{
         const response = await sql`
-            SELECT * FROM trainertraineeplans WHERE traineeid = ${traineeid} AND trainerid = ${userid} ORDER BY lastedited DESC
+                        SELECT t.*, mp.name AS motherplanname
+                        FROM trainertraineeplans AS t
+                        LEFT JOIN "trainer-trainee-mother-plans" AS mp ON mp.id = t.motherplanid
+                        WHERE t.traineeid = ${traineeid}
+                            AND t.trainerid = ${userid}
+                            AND (
+                                (t.motherplanid IS NOT NULL AND t.motherplanid IN (
+                                        SELECT DISTINCT motherplanid
+                                        FROM trainertraineeplans
+                                        WHERE traineeid = ${traineeid}
+                                            AND trainerid = ${userid}
+                                            AND iscompleted = false
+                                            AND motherplanid IS NOT NULL
+                                ))
+                                OR (t.motherplanid IS NULL AND t.iscompleted = false)
+                            )
+                        ORDER BY t.lastedited DESC
         `
-        return response.rows as TraineePlan[]
+
+                return groupTrainerTraineePlanRows(response.rows as TraineePlan[])
     }    catch(error){
         console.error("Error fetching trainee plans:", error);
         return []
@@ -119,19 +155,62 @@ export const getTraineePlans = async (traineeid: string) => {
 export const updateManyTraineePlan = async (plans: TraineePlan[], plansIds: string[]) => {
     const userid = await userID()
 
-    const plansFilteredAndSorted = plans.filter(plan => plansIds.includes(plan.id)).sort((a,b)=> a.id.localeCompare(b.id))
-    const idsSorted = plansIds.sort((a,b) => a.localeCompare(b))
-
-    const mappedPlans = plansFilteredAndSorted.map(pln => JSON.stringify(pln.plan))
-
     try{
+        const selectedPlans = plans.filter((plan) => plansIds.includes(plan.id))
+        const existingRowsResponse = await sql.query(
+            `
+                SELECT id, traineeid, motherplanid
+                FROM trainertraineeplans
+                WHERE trainerid = $1
+                  AND (motherplanid = ANY($2::uuid[]) OR id = ANY($2::uuid[]))
+            `,
+            [userid, plansIds]
+        )
+        const existingRows = existingRowsResponse.rows as { id: string, traineeid: string, motherplanid: string | null }[]
+        const lastEdited = new Date()
 
-        const result = await sql.query(`
-            UPDATE trainertraineeplans AS t
-            SET plan = data.plan, lastedited = $4
-            FROM UNNEST($1::json[], $2::uuid[]) AS data(plan, id)
-            WHERE t.id = data.id AND t.trainerid = $3
-        `,[mappedPlans, idsSorted, userid, JSON.stringify(new Date())])
+        for (const selectedPlan of selectedPlans) {
+            const relatedRows = existingRows.filter((row) => row.motherplanid === selectedPlan.id || row.id === selectedPlan.id)
+            const hasMotherPlanRows = relatedRows.some((row) => row.motherplanid === selectedPlan.id)
+
+            if (!hasMotherPlanRows && relatedRows.some((row) => row.id === selectedPlan.id && row.motherplanid == null)) {
+                await sql`
+                    UPDATE trainertraineeplans
+                    SET name = ${selectedPlan.name}, plan = ${JSON.stringify(selectedPlan.plan)}, lastedited = ${lastEdited.toISOString()}, iscompleted = ${selectedPlan.iscompleted}
+                    WHERE id = ${selectedPlan.id} AND trainerid = ${userid}
+                `
+                continue
+            }
+
+            const traineeId = selectedPlan.traineeid ?? relatedRows[0]?.traineeid
+
+            if (!traineeId) {
+                return { success: false, error: "Something went wrong" }
+            }
+
+            const existingSubPlanIds = new Set(relatedRows.map((row) => row.id))
+
+            for (const subPlan of selectedPlan.plan) {
+                if (existingSubPlanIds.has(subPlan.id)) {
+                    await sql`
+                        UPDATE trainertraineeplans
+                        SET name = ${subPlan.name},
+                            plan = ${JSON.stringify(subPlan.exercises)},
+                            date = ${formatTrainerTraineePlanDate(subPlan.date)},
+                            lastedited = ${lastEdited.toISOString()},
+                            iscompleted = ${subPlan.iscompleted}
+                        WHERE id = ${subPlan.id} AND trainerid = ${userid}
+                    `
+                    continue
+                }
+
+                await sql`
+                    INSERT INTO trainertraineeplans (id, trainerid, traineeid, name, plan, date, motherplanid, lastedited, iscompleted)
+                    VALUES (${subPlan.id}, ${userid}, ${traineeId}, ${subPlan.name}, ${JSON.stringify(subPlan.exercises)}, ${formatTrainerTraineePlanDate(subPlan.date)}, ${selectedPlan.id}, ${lastEdited.toISOString()}, ${subPlan.iscompleted})
+                `
+            }
+        }
+
         revalidatePath('/home/profile/my-trainees')
         return { success: true, error: null }
 
@@ -151,46 +230,94 @@ export const getHomeScreenData = async () => {
             WHERE gymusers.id = tt.traineeid AND tt.trainerid = ${userid} AND NOT EXISTS (SELECT 1 FROM trainertraineeplans t WHERE t.traineeid = gymusers.id AND t.trainerid = ${userid} AND t.iscompleted = false)
         `
         const response = await sql`
-            SELECT gymusers.purpose, gymusers.username, gymusers.avatarurl, tt.* , t.*  FROM gymusers 
+            SELECT gymusers.purpose, gymusers.username, gymusers.avatarurl, tt.* , t.*, mp.name AS motherplanname FROM gymusers 
             INNER JOIN trainertrainee AS tt ON gymusers.id = tt.traineeid
             INNER JOIN trainertraineeplans AS t ON t.traineeid = gymusers.id AND t.trainerid = ${userid} AND t.iscompleted = false
-            WHERE gymusers.id = tt.traineeid AND tt.trainerid = ${userid} AND t.iscompleted = false ORDER BY t.lastedited DESC
+            LEFT JOIN "trainer-trainee-mother-plans" AS mp ON mp.id = t.motherplanid
+            WHERE gymusers.id = tt.traineeid AND tt.trainerid = ${userid} AND (
+                (t.motherplanid IS NOT NULL AND t.motherplanid IN (
+                    SELECT DISTINCT motherplanid
+                    FROM trainertraineeplans
+                    WHERE trainerid = ${userid}
+                      AND traineeid = gymusers.id
+                      AND iscompleted = false
+                      AND motherplanid IS NOT NULL
+                ))
+                OR (t.motherplanid IS NULL AND t.iscompleted = false)
+            ) ORDER BY t.lastedited DESC
         `
         let arrOfIds: string[] = []
-        let oneNewestTrainingForEachTrainee:Map<string, TraineesAndTrainings> = new Map()
         const skippedTrainingsCountByTrainee = new Map<string, number>()
+        const groupedPlans = new Map<string, TraineesAndTrainings>()
         const today = new Date()
         today.setHours(0, 0, 0, 0)
 
         response.rows.forEach(row => { 
             if(!arrOfIds.includes(row.traineeid)) arrOfIds.push(row.traineeid) 
 
-            const rowPlan = (row.plan || []) as { date: Date | string, iscompleted: boolean }[]
-            const skippedInCurrentRow = rowPlan.filter((singleTraining) => {
-                if (singleTraining.iscompleted) return false
-                const trainingDate = new Date(singleTraining.date)
-                return !isNaN(trainingDate.getTime()) && trainingDate < today
-            }).length
+            const rowDate = row.date ? new Date(row.date) : null
+            const skippedInCurrentRow = !row.iscompleted && rowDate && !isNaN(rowDate.getTime()) && rowDate < today ? 1 : 0
 
             skippedTrainingsCountByTrainee.set(
                 row.traineeid,
                 (skippedTrainingsCountByTrainee.get(row.traineeid) || 0) + skippedInCurrentRow
             )
 
-            if(!oneNewestTrainingForEachTrainee.has(row.traineeid)){
-                oneNewestTrainingForEachTrainee.set(row.traineeid, row as TraineesAndTrainings)   
-            }
-            const training = oneNewestTrainingForEachTrainee.get(row.traineeid)
+            const groupId = row.motherplanid ?? row.id
+            const key = `${row.traineeid}:${groupId}`
 
-            if(!training) return
-            
-            if(training?.lastedited.getTime() < new Date().getTime()) return
-            if(training?.lastedited.getTime() > row.lastedited.getTime()){
-                oneNewestTrainingForEachTrainee.set(row.traineeid, row as TraineesAndTrainings) 
+            if (Array.isArray(row.plan) && (row.date === undefined || row.date === null) && row.motherplanid == null) {
+                groupedPlans.set(key, {
+                    ...(row as TraineesAndTrainings),
+                    plan: groupTrainerTraineePlanRows([row as TrainerTraineePlanRow])[0]?.plan ?? [],
+                    lastedited: new Date(row.lastedited),
+                })
+                return
             }
 
+            const existingGroup = groupedPlans.get(key)
+            const mappedSubPlan = groupTrainerTraineePlanRows([row as TrainerTraineePlanRow])[0]?.plan[0]
+
+            if (!mappedSubPlan) return
+
+            if (!existingGroup) {
+                groupedPlans.set(key, {
+                    purpose: row.purpose as UserPurposeType,
+                    username: row.username,
+                    avatarurl: row.avatarurl,
+                    traineeid: row.traineeid,
+                    trainerid: row.trainerid,
+                    pairedat: row.pairedat,
+                    id: groupId,
+                    name: row.motherplanname ?? row.name,
+                    plan: [mappedSubPlan],
+                    lastedited: new Date(row.lastedited),
+                    iscompleted: row.iscompleted,
+                })
+                return
+            }
+
+            existingGroup.plan.push(mappedSubPlan)
+            existingGroup.iscompleted = existingGroup.iscompleted && mappedSubPlan.iscompleted
+
+            if (new Date(existingGroup.lastedited).getTime() < new Date(row.lastedited).getTime()) {
+                existingGroup.lastedited = new Date(row.lastedited)
+            }
         })
-        const mapConvertedToArray = Array.from(oneNewestTrainingForEachTrainee.values()).map((training) => ({
+
+        const newestTrainingByTrainee = new Map<string, TraineesAndTrainings>()
+
+        Array.from(groupedPlans.values()).forEach((training) => {
+            training.plan.sort((left, right) => new Date(left.date).getTime() - new Date(right.date).getTime())
+
+            const existingTraining = newestTrainingByTrainee.get(training.traineeid)
+
+            if (!existingTraining || new Date(existingTraining.lastedited).getTime() < new Date(training.lastedited).getTime()) {
+                newestTrainingByTrainee.set(training.traineeid, training)
+            }
+        })
+
+        const mapConvertedToArray = Array.from(newestTrainingByTrainee.values()).map((training) => ({
             ...training,
             skippedtrainingscount: skippedTrainingsCountByTrainee.get(training.traineeid) || 0,
         }))
@@ -212,12 +339,15 @@ export const JoinTraining = async (trainingId: string) => {
 
     try {
         const response = await sql`
-            SELECT * FROM trainertraineeplans WHERE trainerid = ${userid} AND id = ${trainingId}
+            SELECT t.*, mp.name AS motherplanname
+            FROM trainertraineeplans AS t
+            LEFT JOIN "trainer-trainee-mother-plans" AS mp ON mp.id = t.motherplanid
+            WHERE trainerid = ${userid} AND (t.motherplanid = ${trainingId} OR t.id = ${trainingId})
         `
 
         if(response.rows.length === 0) throw new Error("Nie można znaleźć treningu o podanym ID")
 
-        return {response: response.rows[0] as TraineePlan, error: null}
+        return {response: groupTrainerTraineePlanRows(response.rows as TraineePlan[])[0] ?? null, error: null}
     }catch(err) {
         const e = err as Error
         return {response: null, error: e.message}
@@ -228,7 +358,7 @@ export const JoinTraining = async (trainingId: string) => {
 export const getTraineeIdByTrainingId = async (trainingId: string) => {
     try {
         const response = await sql`
-            SELECT traineeid FROM trainertraineeplans WHERE id = ${trainingId}
+            SELECT traineeid FROM trainertraineeplans WHERE motherplanid = ${trainingId} OR id = ${trainingId} LIMIT 1
         `
         if(response.rows.length === 0) throw new Error("Nie można znaleźć treningu o podanym ID")
 

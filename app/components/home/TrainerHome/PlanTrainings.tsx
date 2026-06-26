@@ -9,7 +9,8 @@ function PlanTrainings({ traineesWithoutPlans }: Props) {
     const t = useTranslations("Home/TrainerHome")
 
     return ( 
-        <div className="bg-darkLight p-4 rounded-lg mt-10 w-full text-white">
+        <div className="   mt-10 px-5 w-full max-w-mobile text-white">
+            <div className="bg-darkLight p-4 rounded-lg">
             <div className="flex justify-between">
                 <h2 className="text-2xl mb-4">{t("PlanTraining")}</h2>
 
@@ -23,6 +24,7 @@ function PlanTrainings({ traineesWithoutPlans }: Props) {
                 {traineesWithoutPlans.map(trainee => (
                     <StudentWithoutPlan key={trainee.username} trainee={trainee}/>
                 ))}
+            </div>
             </div>
         </div>
      );
