@@ -216,8 +216,11 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     if(trainingPlanId) trainingid = trainingPlanId
 
     let id = exerciseid
-    if(userExercises[userExercises.findIndex(x=>x.exercisename===exerciseid)]){
-        id = userExercises[userExercises.findIndex(x=>x.exercisename===exerciseid)].id
+    let exercisename = exerciseid
+    const matchingUserExercise = userExercises.find(x=>x.id === exerciseid || x.exercisename === exerciseid)
+    if(matchingUserExercise){
+        id = matchingUserExercise.id
+        exercisename = matchingUserExercise.exercisename
     }
 
     let parentTrainingPlanId = null
@@ -239,7 +242,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
             `
         }
         const returning = await sql`
-        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid,handlename,parenttrainingplan) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid},${HandleId},${HandleName},${parentTrainingPlanId})
+        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid,handlename,parenttrainingplan) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exercisename},${HandleId},${HandleName},${parentTrainingPlanId})
         `
     }catch(e){
         console.log('Error occured: AddExerciseAction func actions.ts ',e)
@@ -290,7 +293,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
 
         const progression = trainingGoalsExercises?.find(x=>x.exerciseid === exercise.exerciseId)
 
-        const data = await AddExerciseAction(false,exercise.exerciseName,exercise.sets,true,id,exercise.handle,false,exercise.date,trainingPlanId,progression)
+        const data = await AddExerciseAction(false,exercise.exerciseId,exercise.sets,true,id,exercise.handle,false,exercise.date,trainingPlanId,progression)
         if(data?.errors) return { error : 'Something Went Wrong'}
         return { success: true }
     }))

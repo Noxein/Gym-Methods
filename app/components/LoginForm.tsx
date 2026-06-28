@@ -45,7 +45,7 @@ export const LoginForm = () => {
 
         <Input labelName={u("Email")} onChange={e=>setEmail(e.target.value)} value={email} disabled={loading}/>
         
-        <InputGroup id='password' text={t("Password")} type={showPassword?'text':'password'} showPassword={showPassword} onChange={e=>setPassword(e.target.value)} setShowPassword={setShowPassword} disabled={loading}/>
+        <InputGroup id='password' text={t("Password")} value={password} type={showPassword?'text':'password'} showPassword={showPassword} onChange={e=>setPassword(e.target.value)} setShowPassword={setShowPassword} disabled={loading}/>
 
         <SmallLoaderDiv loading={loading}/>
         <ErrorDiv error={error}/>

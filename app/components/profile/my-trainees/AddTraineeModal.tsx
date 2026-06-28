@@ -72,7 +72,7 @@ function AddTraineeModal() {
         ws.current?.send(JSON.stringify({type:"CONFIRM_PAIRING",jwt: await getCookie('jwt'),code: key}));
     }
     return ( 
-        <div onClick={e=>e.stopPropagation()} className="w-full mx-5">
+        <div onClick={e=>e.stopPropagation()} className="w-full max-w-mobile mx-5">
             {processStep === 'generateKey' && <div>
                     <h1 className="text-3xl font-medium mb-10 text-center">{t("YourTrainerCode")}</h1>
                     {loadingKey && <SmallLoaderDiv loading />}

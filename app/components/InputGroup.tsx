@@ -14,7 +14,7 @@ type InputGroupTypes = {
 export const InputGroup = ({id,text,type='text',showPassword,setShowPassword,...rest}:InputGroupTypes) => {
   return (
     <div className='flex flex-col flex-1 relative text-white w-full'>
-        <Input labelName={text} type={type} id={id} name={id} {...rest} />
+        <Input alwaysActive={!!rest.value} labelName={text} type={type} id={id} name={id} {...rest} />
 
         {setShowPassword && <ShowPassword isOpen={showPassword!} onClick={()=>setShowPassword && setShowPassword(!showPassword)}/>}
     </div>

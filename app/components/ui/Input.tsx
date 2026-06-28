@@ -5,10 +5,11 @@ import { useState } from 'react'
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   labelName: string
   labelClass?: string,
-  labelBackground?: 'bg-dark' | 'borderInteractive' | 'bg-transparent'
+  labelBackground?: 'bg-dark' | 'borderInteractive' | 'bg-transparent',
+  alwaysActive?: boolean
 }
 
-export const Input = ({ labelName, labelClass, value,labelBackground, ...rest }: InputProps) => {
+export const Input = ({ labelName, labelClass, value,labelBackground, alwaysActive, ...rest }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false)
   const hasValue = value && String(value).length > 0
 
@@ -51,7 +52,7 @@ export const Input = ({ labelName, labelClass, value,labelBackground, ...rest }:
         className={cn(
           'absolute left-4 text-white transition-all duration-200 pointer-events-none',
           'origin-top-left',
-          isFocused || hasValue
+          alwaysActive || isFocused || hasValue
             ? `top-0 text-xs scale-75 -translate-y-2 px-1 ${labelBackground || 'bg-dark'}`
             : 'top-2.5 text-base',
           labelClass

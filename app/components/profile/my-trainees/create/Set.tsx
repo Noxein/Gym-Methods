@@ -77,17 +77,17 @@ function Set({ set, setIndex, exerciseIndex, planIndex, exercise }: SetProps) {
     return ( 
         <div className={`flex flex-col gap-2 p-2 ${setIndex % 2 === 0 ? 'bg-dark' : ''} rounded-lg`}>
             <div className="flex">
-                <Input labelClass="text-gray-300" labelName={u("Weight")} className={`py-1 ${setIndex % 2 === 1 ? 'bg-darkLight' : ''}`} value={minWeight} onChange={handleMinWeightChange} disabled={loading}/>
+                <Input alwaysActive labelClass="text-gray-300" labelName={u("Weight")} className={`py-1 ${setIndex % 2 === 1 ? 'bg-darkLight' : ''}`} value={minWeight} onChange={handleMinWeightChange} disabled={loading}/>
                 <Icon onClick={deleteSet}>
                     <TrashIcon fill="#d9d9d9"/>
                 </Icon>
             </div>
             <div className="flex gap-2">
-                <Input labelClass="text-gray-300" labelName={t("RepetitionsMin")} className={`py-1 ${setIndex % 2 === 1 ? 'bg-darkLight' : ''}`} value={set.goal.repetitionsgoalmin} onChange={handleMinRepsChange} disabled={loading}/>
-                <Input labelClass="text-gray-300" labelName={t("RepetitionsMax")} className={`py-1 ${setIndex % 2 === 1 ? 'bg-darkLight' : ''}`} value={set.goal.repetitionsgoalmax} onChange={handleMaxRepsChange} disabled={loading}/>
+                <Input alwaysActive labelClass="text-gray-300" labelName={t("RepetitionsMin")} className={`py-1 ${setIndex % 2 === 1 ? 'bg-darkLight' : ''}`} value={set.goal.repetitionsgoalmin} onChange={handleMinRepsChange} disabled={loading}/>
+                <Input alwaysActive labelClass="text-gray-300" labelName={t("RepetitionsMax")} className={`py-1 ${setIndex % 2 === 1 ? 'bg-darkLight' : ''}`} value={set.goal.repetitionsgoalmax} onChange={handleMaxRepsChange} disabled={loading}/>
             </div>
             <div className="flex gap-2">
-                {usesTimeMeasure && <Input labelClass="text-gray-300" labelName={t("TimeInSeconds")} className={`py-1 ${setIndex % 2 === 1 ? 'bg-darkLight' : ''}`} value={set.goal.timegoal} onChange={handleTimeChange} disabled={loading}/>}
+                {usesTimeMeasure && <Input alwaysActive labelClass="text-gray-300" labelName={t("TimeInSeconds")} className={`py-1 ${setIndex % 2 === 1 ? 'bg-darkLight' : ''}`} value={set.goal.timegoal} onChange={handleTimeChange} disabled={loading}/>}
                 {showSideSelection && <Select labelClass="text-gray-300" labelName={u("Side")} className={`py-1 ${setIndex % 2 === 1 ? 'bg-darkLight' : ''}`} value={set.goal.side} onChange={handleSideChange} valuesToLoop={["Left", "Right",'Both']} disabled={loading}/>}
             </div>
         </div>

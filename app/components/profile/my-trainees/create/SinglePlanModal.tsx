@@ -9,7 +9,7 @@ function SinglePlanModal() {
     const selectedPlan = plan.plan[latestPlanIndexClicked.current]
     return ( 
        
-            <div className="w-full h-screen backdrop-blur-sm p-5 z-10 text-white overflow-y-scroll pb-44">
+            <div className="w-full max-w-mobile h-screen backdrop-blur-sm p-5 z-10 overflow-y-scroll text-white pb-44">
                 <TrainingPlan training={selectedPlan} planIndex={latestPlanIndexClicked.current}/>
             </div>
 

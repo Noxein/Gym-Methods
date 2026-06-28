@@ -20,7 +20,7 @@ export const ConfirmEndTrainingModal = ({text,showModal,handleEnd}:ConfirmEndTra
     const u = useTranslations("Utils")
   return (
     <BlurBackgroundModal>
-        <div className='w-full mx-5 flex flex-col gap-4 text-white mb-20'>
+        <div className='w-full max-w-mobile mx-5 flex flex-col gap-4 text-white mb-20'>
             <h2 className='text-center text-2xl'>{text}</h2>
             <SmallLoaderDiv loading={loading}/>
             <div className='flex gap-4 text-xl'>
