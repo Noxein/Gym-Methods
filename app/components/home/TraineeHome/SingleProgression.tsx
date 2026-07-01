@@ -45,7 +45,8 @@ function SingleProgression({progression, goal}:SingleProgressionTypes) {
     const data = PrecentageIncreaseOrDecrease()
 
     const parsedGoal = Number.parseInt(goal || '0', 10)
-    const goalProgressionPrecentage = parsedGoal > 0 ? progression[0].set.weight / parsedGoal * 100 : 0
+    const hasGoal = Number.isFinite(parsedGoal) && parsedGoal > 0
+    const goalProgressionPrecentage = hasGoal ? progression[0].set.weight / parsedGoal * 100 : 0
 
     console.log(progression[0].set.weight,parseInt(goal!))
     return (            
@@ -71,14 +72,14 @@ function SingleProgression({progression, goal}:SingleProgressionTypes) {
                             {data.percentage}  
                         </div>
 
-                        <div className="flex flex-col text-right mt-auto">
+                        {hasGoal && <div className="flex flex-col text-right mt-auto">
                             <span className="text-xl">{goalProgressionPrecentage.toFixed(2)}%</span>
                             <span className="text-gray-400">{t("OfGoal")}</span>
-                        </div>
+                        </div>}
                     </div>
                 </div>
 
-                {goal && <div className={`h-3 bg-gray-700/50 mt-4 rounded-full w-full`}>
+                {hasGoal && <div className={`h-3 bg-gray-700/50 mt-4 rounded-full w-full`}>
                         <div className={`h-3 rounded-full ${data.bg}`} style={{width: `${goalProgressionPrecentage}%`}}></div>
                     </div>}
         </div>
