@@ -15,8 +15,8 @@ function Navigator({prev,next,hideNext,hidePrev,loading}:NavigatorProps) {
 
     return ( 
         <div className={`mt-auto flex mx-5 mb-5 gap-4`}>
-            {!hidePrev && <Button className='flex-1 text-2xl' onClick={prev} disabled={loading}>{t("Back")}</Button>}
-            {!hideNext && <Button className='flex-1 text-2xl' isPrimary onClick={next} disabled={loading}>{t("Next")}</Button>}
+            {!hidePrev && <Button className='flex-1 text-2xl' onClick={prev} loading={loading}>{t("Back")}</Button>}
+            {!hideNext && <Button className='flex-1 text-2xl' isPrimary onClick={next} loading={loading}>{t("Next")}</Button>}
         </div>
      );
 }

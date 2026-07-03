@@ -14,7 +14,7 @@ function AddExerciseButton({ planIndex }: { planIndex: number }) {
     
     const t = useTranslations('Home/Profile/My-Trainees/Schemas/Create')
     return ( 
-        <Button onClick={handleShowExerciseSelect} blue disabled={loading}>{t('AddExercise')}</Button>
+        <Button onClick={handleShowExerciseSelect} blue loading={loading}>{t('AddExercise')}</Button>
      );    
 }
 export default AddExerciseButton;

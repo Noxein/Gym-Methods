@@ -117,8 +117,8 @@ export const EditProgression = ({selectedExerciseProgression,setShowEditTempoMod
                 
             <div className='flex gap-4 mt-2'>
                 
-                <Button className='flex-1' onClick={HandleCloseModal} disabled={loading}>{u("Cancel")}</Button>
-                <Button className='flex-1' onClick={HandleUpdateProgression} isPrimary disabled={loading}>{u("Save")}</Button>
+                <Button className='flex-1' onClick={HandleCloseModal} loading={loading}>{u("Cancel")}</Button>
+                <Button className='flex-1' onClick={HandleUpdateProgression} isPrimary loading={loading}>{u("Save")}</Button>
                 
             </div>
             {error && <div className='text-red-600'>{e(error)}</div>}

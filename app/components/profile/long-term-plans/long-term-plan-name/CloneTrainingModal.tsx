@@ -35,18 +35,18 @@ function CloneTrainingModal() {
             <p className="text-center text-2xl mb-2">{t("WhichTrainingToClone")}</p>
             <div className="flex flex-col gap-2">
                 {userTrainings.current.map(training => (
-                    <Button key={training.id} onClick={()=>handleSelectTrainingToClone(training)} disabled={loading}>{training.name}</Button>
+                    <Button key={training.id} onClick={()=>handleSelectTrainingToClone(training)} loading={loading}>{training.name}</Button>
                 ))}
             </div>
 
-            <Button onClick={()=>setShowCloneTraingModal(false)} className="w-full mt-4" isPrimary disabled={loading}>{u("Close")}</Button>
+            <Button onClick={()=>setShowCloneTraingModal(false)} className="w-full mt-4" isPrimary loading={loading}>{u("Close")}</Button>
 
             {showConfirmModal && <BlurBackgroundModal>
                 <div className="w-full mx-5">
                     <p className="text-center text-2xl">{t("AreYouSureYouWantToCloneTraining")} <b>{selectedTraining?.name} </b>?</p>
                     <div className="flex gap-2">
-                        <Button className="flex-1" onClick={()=>setShowConfirmModal(false)} disabled={loading}>{u("Cancel")}</Button>
-                        <Button className="flex-1" isPrimary onClick={copyPlan} disabled={loading}>{u("Clone")}</Button>
+                        <Button className="flex-1" onClick={()=>setShowConfirmModal(false)} loading={loading}>{u("Cancel")}</Button>
+                        <Button className="flex-1" isPrimary onClick={copyPlan} loading={loading}>{u("Clone")}</Button>
                     </div>
                 </div>
             </BlurBackgroundModal>

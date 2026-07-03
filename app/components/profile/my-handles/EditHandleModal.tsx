@@ -43,8 +43,8 @@ export const EditHanleModal = ({handle,hideModal}:EditHandleModal) => {
         <ErrorDiv error={error}/>
         <div className='flex gap-2'>
 
-            <Button isPrimary={false} className='flex-1' onClick={handleHideModal} disabled={loading}>{u("Cancel")}</Button>
-            <Button isPrimary className='flex-1' onClick={handleEdit} disabled={loading}>{u("Save")}</Button>
+            <Button isPrimary={false} className='flex-1' onClick={handleHideModal} loading={loading}>{u("Cancel")}</Button>
+            <Button isPrimary className='flex-1' onClick={handleEdit} loading={loading}>{u("Save")}</Button>
 
         </div>
     </div>

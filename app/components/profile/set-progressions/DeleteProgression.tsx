@@ -52,8 +52,8 @@ export const DeleteProgression = ({selectedExercise,setShowDeleteTempoModal}:Del
 
             <div className='flex gap-2 mt-4'>
                 
-                <Button className='flex-1' onClick={HandleCloseModal} disabled={loading}>{u("Cancel")}</Button>
-                <Button className='flex-1' onClick={HandleDeleteProgression} isPrimary disabled={loading}>{u("Delete")}</Button>
+                <Button className='flex-1' onClick={HandleCloseModal} loading={loading}>{u("Cancel")}</Button>
+                <Button className='flex-1' onClick={HandleDeleteProgression} isPrimary loading={loading}>{u("Delete")}</Button>
                 
             </div>
             

@@ -67,15 +67,15 @@ export const SpecificTraining = ({training,exercises,allExercisesInOneArray}:Spe
         }
         isPrimary
         className='bg-green w-full'
-        disabled={loading}
+        loading={loading}
         />
 
         {planExercises && <ListedAddedExercises planExercises={planExercises} setPlanExercises={setPlanExercises}/>}
 
         <div className='bottom-24 text-white fixed flex right-5 left-5 gap-4'>
 
-          <Button className='flex-1' onClick={()=>router.push('/home/profile/my-training-plans')} disabled={loading}>{u("Cancel")}</Button>
-          <Button className='flex-1' isPrimary onClick={handleSave} disabled={loading}>{u("SaveChanges")}</Button>
+          <Button className='flex-1' onClick={()=>router.push('/home/profile/my-training-plans')} loading={loading}>{u("Cancel")}</Button>
+          <Button className='flex-1' isPrimary onClick={handleSave} loading={loading}>{u("SaveChanges")}</Button>
           
         </div>
 

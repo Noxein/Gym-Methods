@@ -40,8 +40,8 @@ function DeleteLongTermPlanModal({planName,setShowDeleteTrainingModal}:DeleteLon
         <ErrorDiv error={error}/>
 
         <div className="flex gap-2 mt-4">
-            <Button className="flex-1" onClick={()=>setShowDeleteTrainingModal(false)} disabled={loading}>{u('Cancel')}</Button>
-            <Button className="flex-1" isPrimary onClick={handleDeleteTraining} disabled={loading}>{u('Delete')}</Button>
+            <Button className="flex-1" onClick={()=>setShowDeleteTrainingModal(false)} loading={loading}>{u('Cancel')}</Button>
+            <Button className="flex-1" isPrimary onClick={handleDeleteTraining} loading={loading}>{u('Delete')}</Button>
         </div>
         
     </div> 

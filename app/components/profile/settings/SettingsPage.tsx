@@ -128,8 +128,8 @@ export const SettingsPage = ({settings}:SettingsPageTypes) => {
 
         <div className='fixed bottom-0 text-white mb-24 px-5 mx-auto w-full max-w-mobile flex right-5 left-5 gap-4'>
 
-            <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>{u("Cancel")}</Button>
-            <Button className='flex-1' onClick={handleSave} isPrimary disabled={loading}>{u("SaveChanges")}</Button>
+            <Button className='flex-1' onClick={()=>router.push('/home/profile')} loading={loading}>{u("Cancel")}</Button>
+            <Button className='flex-1' onClick={handleSave} isPrimary loading={loading}>{u("SaveChanges")}</Button>
 
         </div>
 

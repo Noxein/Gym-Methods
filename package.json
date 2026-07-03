@@ -31,6 +31,7 @@
     "react-easy-crop": "^5.5.6",
     "react-infinite-scroll-component": "^6.1.0",
     "react-minimal-pie-chart": "^9.1.0",
+    "recharts": "^3.9.1",
     "tailwind-merge": "^2.5.3",
     "uuid": "^10.0.0",
     "zod": "^3.23.8"

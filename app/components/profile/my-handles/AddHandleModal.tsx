@@ -39,8 +39,8 @@ export const AddHanleModal = ({hideModal}:DeleteHandleModal) => {
         <ErrorDiv error={error}/>
         <div className='flex gap-2 w-full'>
 
-            <Button isPrimary={false} className='flex-1' onClick={handleHideModal} disabled={loading}>{u("Cancel")}</Button>
-            <Button isPrimary className='flex-1' onClick={handleAdd} disabled={loading}>{u("Add")}</Button>
+            <Button isPrimary={false} className='flex-1' onClick={handleHideModal} loading={loading}>{u("Cancel")}</Button>
+            <Button isPrimary className='flex-1' onClick={handleAdd} loading={loading}>{u("Add")}</Button>
             
         </div>
     </div>

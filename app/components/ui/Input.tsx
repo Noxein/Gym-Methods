@@ -5,15 +5,33 @@ import { useState } from 'react'
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   labelName: string
   labelClass?: string,
-  labelBackground?: 'bg-dark' | 'borderInteractive' | 'bg-transparent'
+  labelBackground?: 'bg-dark' | 'borderInteractive' | 'bg-transparent',
+  alwaysActive?: boolean
 }
 
-export const Input = ({ labelName, labelClass, value,labelBackground, ...rest }: InputProps) => {
+export const Input = ({ labelName, labelClass, value,labelBackground, alwaysActive, ...rest }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false)
   const hasValue = value && String(value).length > 0
 
   return (
-    <div className="relative w-full">
+    <fieldset
+      className={cn(
+        'w-full border-2  rounded-lg transition-colors',
+        'border-borderInteractive bg-dark',
+        isFocused && 'border-green/50'
+      )}
+    >
+      <legend
+        className={cn(
+          'text-white transition-all duration-200 px-1',
+          alwaysActive || isFocused || hasValue || rest.type === 'date'
+            ? 'text-xs ml-4'
+            : 'text-xs ml-4 text-gray-400',
+          labelClass
+        )}
+      >
+        {labelName}
+      </legend>
       <input
         {...rest}
         value={value}
@@ -26,41 +44,14 @@ export const Input = ({ labelName, labelClass, value,labelBackground, ...rest }:
           rest.onBlur?.(e)
         }}
         className={cn(
-          'w-full px-4 py-2 border-2 bg-dark border-borderInteractive rounded-lg transition-colors',
+          'w-full px-4 pb-2 bg-dark rounded-lg transition-colors',
           'text-white outline-none',
           'placeholder-transparent',
-          isFocused && 'border-green/50',
+          'border-none',
           rest.className
         )}
         placeholder={labelName}
       />
-      
-      {rest.type === 'date' ? 
-      <label
-        className={cn(
-          'absolute left-4 text-white transition-all duration-200 pointer-events-none',
-          'origin-top-left',
-          `top-0 text-xs scale-75 -translate-y-2 px-1 ${labelBackground || 'bg-dark'}`,
-          labelClass
-        )}
-      >
-        {labelName}
-      </label>
-       :     
-      <label
-        className={cn(
-          'absolute left-4 text-white transition-all duration-200 pointer-events-none',
-          'origin-top-left',
-          isFocused || hasValue
-            ? `top-0 text-xs scale-75 -translate-y-2 px-1 ${labelBackground || 'bg-dark'}`
-            : 'top-2.5 text-base',
-          labelClass
-        )}
-      >
-        {labelName}
-      </label>
-    }
-
-    </div>
+    </fieldset>
   )
 }

@@ -2,7 +2,7 @@
 import { useTranslations } from 'next-intl'
 import { LinkBtn, UserEmail } from './LinkBtn'
 import { SignOutBtn } from './SignOutBtn'
-import { BookIcon, CalendarIcon, ExerciseIcon, HandleIcon, LockIcon, LogoutIcon, PieChartIcon, SettingsIcon, SummaryIcon, TimerIcon } from '@/app/ui/icons/ExpandIcon'
+import { BookIcon, CalendarIcon, ExerciseIcon, HandleIcon, LockIcon, LogoutIcon, PieChartIcon, SettingsIcon, StarIcon, SummaryIcon, TimerIcon } from '@/app/ui/icons/ExpandIcon'
 import { UserPurposeType } from '@/app/types'
 import { Icon } from '../Icon'
 import { ButtonHTMLAttributes, DetailedHTMLProps } from 'react'
@@ -49,6 +49,11 @@ export const CasualProfile = ({username, trainercurrentaccounttype, purpose}:Pro
           <LinkBtn href='/home/profile/summary' text={t("Summary")}>
             <PieChartIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>
+
+          <LinkBtn href='/home/profile/goals' text={t("Goals")}>
+            <StarIcon width={width} height={height} fill='#fff'/>
+          </LinkBtn>
+
           <LinkBtn href='/home/profile/set-progressions' text={t("SetProgressions")}>
             <SummaryIcon width={width} height={height} fill='#fff'/>
           </LinkBtn>

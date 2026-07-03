@@ -1,6 +1,6 @@
 'use client'
 import { TraineePlan } from "@/app/types";
-import { addDays, format, isSameDay, subDays } from "date-fns";
+import { addDays, format, isSameDay } from "date-fns";
 import { useState } from "react";
 import TodaysTraining from "./TodaysTraining";
 import { useTranslations } from "next-intl";
@@ -13,8 +13,10 @@ function NextTraining({ plan }: NextTrainingProps) {
     const t = useTranslations("Home/TraineeHome")
 
     const today = new Date()
-
     const[selectedDay, setSelectedDay] = useState<Date>(new Date())
+
+    const todaysTrainingIndex = plan.plan.findIndex(day => !day.iscompleted && isSameDay(new Date(day.date), today))
+    const todaysTraining = todaysTrainingIndex === -1 ? null : plan.plan[todaysTrainingIndex]
 
     const minTime2 = plan.plan.find(day => isSameDay(new Date(day.date), selectedDay))?.exercises.reduce((min, exercise) =>{
         return min + exercise.sets.length * 180
@@ -23,9 +25,7 @@ function NextTraining({ plan }: NextTrainingProps) {
     const timeInHoursWithPartial = Math.floor(minTime2 / 3600) + (minTime2 % 3600) / 3600
     
     const selectedDayPlan = plan.plan.find(day => isSameDay(new Date(day.date), selectedDay))
-
-    const todaysTraining = plan.plan.find(x => isSameDay(new Date(x.date), new Date()))
-    const isSelectedDayToday = isSameDay(selectedDay, new Date())
+    const isSelectedDayToday = isSameDay(selectedDay, today)
     return ( 
         <div>
             {/* <div className="text-gray-200">Dzisiaj nie masz treningu, ale masz zaplanowane treningi na kolejne dni.</div>  */}
@@ -43,7 +43,7 @@ function NextTraining({ plan }: NextTrainingProps) {
                     </div>
                 })}
             </div>
-            {isSelectedDayToday && todaysTraining ? <TodaysTraining training={plan} currentDay={plan.plan.findIndex(x=>x.iscompleted===false)!} planLength={plan.plan.length}/> :
+            {isSelectedDayToday && todaysTraining ? <TodaysTraining training={plan} currentDay={todaysTrainingIndex} planLength={plan.plan.length}/> :
             <div className="mt-5 text-gray-200">
                 {t("OnDate", {date: format(selectedDay, "dd/MM/yyyy")})}
                 {selectedDayPlan ?

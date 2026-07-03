@@ -251,6 +251,7 @@ export type SummaryDataFetched = {
 export type BasicSummaryDataType = {
     weight:{date:Date,value:number}[],
     repeats:{date:Date,value:number}[],
+    time:{date:Date,value:number}[],
 }
 
 type cachedType = {

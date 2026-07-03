@@ -41,10 +41,10 @@ export const TrainingCreator = ({setCurrentStep,exercisesToDelete,setExercisesTo
     return (
         <div className='flex flex-col text-white gap-8 mx-5 justify-center h-screen'>
             <div className='flex flex-1 flex-col gap-4 justify-center'>
-                <Button className='text-xl' onClick={myOwnTraining} isPrimary disabled={loading}>
+                <Button className='text-xl' onClick={myOwnTraining} isPrimary loading={loading}>
                     {t("WantMyOwnTraining")}
                 </Button>
-                <Button className='text-xl' onClick={()=>setCurrentStep('fav-exercises')} isPrimary disabled={loading}>
+                <Button className='text-xl' onClick={()=>setCurrentStep('fav-exercises')} isPrimary loading={loading}>
                     {t("WantReadyTraining")}
                 </Button>
 
@@ -54,7 +54,7 @@ export const TrainingCreator = ({setCurrentStep,exercisesToDelete,setExercisesTo
 
             
            
-            <Button className='text-xl mt-auto mb-5' onClick={()=>setCurrentStep('goal')} disabled={loading}>
+            <Button className='text-xl mt-auto mb-5' onClick={()=>setCurrentStep('goal')} loading={loading}>
                 {t("Back")}
             </Button>
           

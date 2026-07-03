@@ -14,7 +14,7 @@ function AddExercsieButton() {
 
     const t = useTranslations("Home/Profile/My-Trainees/Schemas/Create")
     return ( 
-        <Button className="w-fullz-20" blue onClick={handleClick} disabled={loading}>{t("AddExercise")}</Button>
+        <Button className="w-fullz-20" blue onClick={handleClick} loading={loading}>{t("AddExercise")}</Button>
      );
 }
 

@@ -25,8 +25,8 @@ function CloseTrainingModal({flip,handleCloseTraining,loading,error}:CloseTraini
         <p className="text-center text-2xl">{t("AreYouSureNamed", {name: planData.subplans[planData.currentplanindex].name})}</p>
         <div className="flex gap-2">
             {error && <ErrorDiv error={e(error)}/>}
-            <Button className="flex-1" onClick={flip} disabled={loading}>{u("Cancel")}</Button>
-            <Button className="flex-1" isPrimary onClick={()=>handleCloseTraining(planData)} disabled={loading}>{t("CloseTraining")}</Button>
+            <Button className="flex-1" onClick={flip} loading={loading}>{u("Cancel")}</Button>
+            <Button className="flex-1" isPrimary onClick={()=>handleCloseTraining(planData)} loading={loading}>{t("CloseTraining")}</Button>
         </div>
     </div> );
 }

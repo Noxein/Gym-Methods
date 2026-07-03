@@ -8,7 +8,7 @@ import { ErrorDiv } from '../../ui/ErrorDiv'
 import { Button } from '../../ui/Button'
 import { SmallLoaderDiv } from '../../ui/SmallLoaderDiv'
 import { useTranslations } from 'next-intl'
-import { Input as Input2 } from '../../ui/Input'
+import { Input } from '../../ui/Input'
 
 export const ChangePasswordPage = () => {
     const[password,setPassword] = useState('')
@@ -42,21 +42,15 @@ export const ChangePasswordPage = () => {
     <div className='pt-20 mx-5 flex flex-col gap-4 h-screen'>
         <h1 className='text-white text-center text-2xl'>{t("ChangePassword")}</h1>
         <div className='flex flex-col relative'>
-            <Input2 type={showPassword?'text':'password'} labelName={t("CurrentPassword")} id='password' value={password} onChange={e=>setPassword(e.target.value)} disabled={loading}/>
-            {/* <Label htmlFor='password'>{t("CurrentPassword")}</Label>
-            <Input type={showPassword?'text':'password'} id='password' value={password} onChange={e=>setPassword(e.target.value)} disabled={loading}/> */}
+            <Input alwaysActive type={showPassword?'text':'password'} labelName={t("CurrentPassword")} id='password' value={password} onChange={e=>setPassword(e.target.value)} disabled={loading}/>
             <ShowPassword isOpen={showPassword} onClick={()=>!loading && setShowPassword(!showPassword)}/>
         </div>
         <div className='flex flex-col relative'>
-            <Input2 type={showNewpassword?'text':'password'} labelName={t("NewPassword")} id='newpassword' value={newpassword} onChange={e=>setNewpassword(e.target.value)} disabled={loading}/>
-            {/* <Label htmlFor='newpassword'>{t("NewPassword")}</Label>
-            <Input type={showNewpassword?'text':'password'} id='newpassword' value={newpassword} onChange={e=>setNewpassword(e.target.value)} disabled={loading}/> */}
+            <Input alwaysActive type={showNewpassword?'text':'password'} labelName={t("NewPassword")} id='newpassword' value={newpassword} onChange={e=>setNewpassword(e.target.value)} disabled={loading}/>
             <ShowPassword isOpen={showNewpassword} onClick={()=>!loading && setShowNewpassword(!showNewpassword)}/>
         </div>
         <div className='flex flex-col relative'>
-            <Input2 type={showRepeatnewpassword?'text':'password'} labelName={t("RepeatNewPassword")} id='repeatnewpassword' value={repeatnewpassword} onChange={e=>setRepeatnewpassword(e.target.value)} disabled={loading}/>
-            {/* <Label htmlFor='repeatnewpassword'>{t("RepeatNewPassword")}</Label>
-            <Input type={showRepeatnewpassword?'text':'password'} id='repeatnewpassword' value={repeatnewpassword} onChange={e=>setRepeatnewpassword(e.target.value)} disabled={loading}/> */}
+            <Input alwaysActive type={showRepeatnewpassword?'text':'password'} labelName={t("RepeatNewPassword")} id='repeatnewpassword' value={repeatnewpassword} onChange={e=>setRepeatnewpassword(e.target.value)} disabled={loading}/>
             <ShowPassword isOpen={showRepeatnewpassword} onClick={()=>!loading && setShowRepeatnewpassword(!showRepeatnewpassword)}/>
         </div>
 
@@ -65,8 +59,8 @@ export const ChangePasswordPage = () => {
 
         <div className='mt-auto flex gap-4 mb-24'>
 
-            <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>{u("Cancel")}</Button>
-            <Button className=' flex-1' onClick={handleSave} isPrimary disabled={loading}>{u("Save")}</Button>
+            <Button className='flex-1' onClick={()=>router.push('/home/profile')} loading={loading}>{u("Cancel")}</Button>
+            <Button className=' flex-1' onClick={handleSave} isPrimary loading={loading}>{u("Save")}</Button>
 
         </div>
     </div>
@@ -79,30 +73,8 @@ type ShowPasswordTypes = {
 
 const ShowPassword = ({isOpen,...rest}:ShowPasswordTypes) => {
     return(
-        <Icon {...rest} className='absolute right-2 h-full flex items-center'>
+        <Icon {...rest} className='absolute right-2 h-full flex items-center mt-1'>
             <EyeIcon isOpen={isOpen}/>
         </Icon>
-    )
-}
-
-type InputType = {
-
-} & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
-
-const Input = ({...rest}:InputType) => {
-
-    return(
-        <input  className={` w-full text-marmur border-borderInteractive bg-dark border-2 min-h-10 text-lg rounded-lg pl-4 py-2 focus:outline-green `} {...rest} />
-    )
-}
-
-type LabelType = {
-    sClass?:string
-} & React.DetailedHTMLProps<React.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>
-
-const Label = ({sClass,...rest}:LabelType) => {
-
-    return(
-        <label htmlFor=""  className={`text-marmur font-light absolute -top-1/3 left-2 bg-dark px-2 ${sClass}`} {...rest}></label>
     )
 }

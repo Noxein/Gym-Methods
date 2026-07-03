@@ -77,7 +77,7 @@ function SingleTrainingInfo({ plan, planIndex, isFocused }: SingleTrainingInfoPr
 
             </div>
 
-            <Button className="w-full mt-4" blue onClick={updateLatestPlanIndexClicked} disabled={loading}>{t("EditTraining")}</Button>
+            <Button className="w-full mt-4" blue onClick={updateLatestPlanIndexClicked} loading={loading}>{t("EditTraining")}</Button>
         </div>
      );
 }

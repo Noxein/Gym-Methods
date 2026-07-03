@@ -40,8 +40,8 @@ function AddNewPlanModal({flip}:AddNewPlanModalTypes) {
             <ErrorDiv error={error}/>
 
             <div className="flex gap-2">
-                <Button className="flex-1" onClick={flip} disabled={loading}>{u("Back")}</Button>
-                <Button className="flex-1" isPrimary onClick={handleAddNewLongTermPlan} disabled={loading}>{u("Save")}</Button>
+                <Button className="flex-1" onClick={flip} loading={loading}>{u("Back")}</Button>
+                <Button className="flex-1" isPrimary onClick={handleAddNewLongTermPlan} loading={loading}>{u("Save")}</Button>
             </div>
 
         </div>)

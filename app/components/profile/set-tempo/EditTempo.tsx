@@ -49,10 +49,10 @@ export const EditTempo = ({selectedExercise,setShowEditTempoModal}:EditTempoType
             <div className='text-center pb-2'>{formattedExerciseName}</div>
             <div className='flex flex-col gap-4'>
                 <div className='flex flex-col gap-4'>
-                    <Input className='flex-1' labelName={t("TempoUp")} onChange={(e)=>handleTempoChange(Number(e.target.value),'up')} value={tempos.up}/>
-                    <Input className='flex-1' labelName={t("UpHold")} onChange={(e)=>handleTempoChange(Number(e.target.value),'uphold')} value={tempos.uphold}/>
-                    <Input className='flex-1' labelName={t("TempoDown")} onChange={(e)=>handleTempoChange(Number(e.target.value),'down')} value={tempos.down}/>
-                    <Input className='flex-1' labelName={t("DownHold")} onChange={(e)=>handleTempoChange(Number(e.target.value),'downhold')} value={tempos.downhold}/>
+                    <Input className='flex-1' alwaysActive labelName={t("TempoUp")} onChange={(e)=>handleTempoChange(Number(e.target.value),'up')} value={tempos.up}/>
+                    <Input className='flex-1' alwaysActive labelName={t("UpHold")} onChange={(e)=>handleTempoChange(Number(e.target.value),'uphold')} value={tempos.uphold}/>
+                    <Input className='flex-1' alwaysActive labelName={t("TempoDown")} onChange={(e)=>handleTempoChange(Number(e.target.value),'down')} value={tempos.down}/>
+                    <Input className='flex-1' alwaysActive labelName={t("DownHold")} onChange={(e)=>handleTempoChange(Number(e.target.value),'downhold')} value={tempos.downhold}/>
                 </div>
             </div>
             
@@ -60,8 +60,8 @@ export const EditTempo = ({selectedExercise,setShowEditTempoModal}:EditTempoType
                 
             <div className='flex gap-4 mt-2'>
                 
-                <Button className='flex-1' onClick={HandleCloseModal} disabled={loading}>{u("Cancel")}</Button>
-                <Button className='flex-1' onClick={HandleAddOrUpdateTempo} isPrimary disabled={loading}>{u("Save")}</Button>
+                <Button className='flex-1' onClick={HandleCloseModal} loading={loading}>{u("Cancel")}</Button>
+                <Button className='flex-1' onClick={HandleAddOrUpdateTempo} isPrimary loading={loading}>{u("Save")}</Button>
                 
             </div>
             {error && <div className='text-red-600'>{error}</div>}

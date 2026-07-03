@@ -437,3 +437,23 @@ export const TraineePlanErrorChecker = (plan : TraineePlan, locale: Locale) => {
      timer = setTimeout(() => fn(...args), delay);
    };
  }
+
+export const resolveExerciseName = (nameOrId: string, allExercisesObject?: any): string => {
+  // Check if it's a UUID (looks like a UUID pattern)
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(nameOrId)) {
+    // Try to find the exercise name from allExercisesObject
+    if (allExercisesObject) {
+      for (const category in allExercisesObject) {
+        const exercises = allExercisesObject[category]
+        if (Array.isArray(exercises)) {
+          const found = exercises.find((ex: any) => ex.id === nameOrId)
+          if (found) {
+            return found.exercisename || nameOrId
+          }
+        }
+      }
+    }
+    return 'Unknown Exercise'
+  }
+  return nameOrId
+}

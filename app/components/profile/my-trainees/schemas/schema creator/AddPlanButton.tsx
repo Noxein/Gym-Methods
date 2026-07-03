@@ -25,7 +25,7 @@ function AddPlanButton() {
     }
 
     return ( 
-    <Button onClick={handleAddPlan} blue disabled={loading}>{t('AddPlan')}</Button>
+    <Button onClick={handleAddPlan} blue loading={loading}>{t('AddPlan')}</Button>
  );
 }
 

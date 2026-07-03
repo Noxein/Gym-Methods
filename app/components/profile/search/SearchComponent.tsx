@@ -168,7 +168,7 @@ export const SearchComponent = ({exerciseList,exercises,traineeId,children}:Sear
                     <Input labelName={t("To")} type='date' onChange={e=>handleDateChange(e.target.value,setTo)} disabled={loading}/>
                 </div>
                 <div className='mx-5 flex gap-2 flex-col'>
-                    <Button className='w-full bg-dark border-borderInteractive border-2 flex justify-between px-5 items-center py-2' onClick={handleShowExerciseList} isPrimary disabled={loading}>{showSearch ? selectedExerciseFormatted(true) : selectedExerciseFormatted(false)} 
+                    <Button className='w-full bg-dark border-borderInteractive border-2 flex justify-between px-5 items-center py-2' onClick={handleShowExerciseList} isPrimary loading={loading}>{showSearch ? selectedExerciseFormatted(true) : selectedExerciseFormatted(false)} 
                         <Icon>
                             <MagnyfingGlass fill='#fff' width='20'/>
                         </Icon>

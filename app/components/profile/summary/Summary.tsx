@@ -20,8 +20,11 @@ export const Summary = async ({ traineeId }: SummaryProps) => {
     }
   return (
     <div className='mx-5 flex flex-col mb-24'>
-      <SummaryContextProvider initialData={pageData.basicSummaryData.data}>
-        <PieChart data={pageData.summaryData.piechart} showAddExerciseLink={!traineeId}/>
+      <SummaryContextProvider
+        initialData={pageData.basicSummaryData.data}
+        timeExercises={pageData.timeOrHandleExercises.ExercisesThatRequireTimeMesure.flatMap((exercise) => [exercise.id, exercise.exercisename])}
+      >
+        <PieChart data={pageData.summaryData.piechart} showAddExerciseLink={!traineeId} allExercisesObject={pageData.allExercisesObject}/>
         <Charts allExercisesInOneArray={pageData.allExercisesInOneArray} timeOrHandleExercises={pageData.timeOrHandleExercises} allExercisesObject={pageData.allExercisesObject}/>
       </SummaryContextProvider>
     </div>

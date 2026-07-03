@@ -12,8 +12,9 @@ type Props = {
 
 function TodaysTraining({ training, currentDay, planLength }: Props) {
     const t = useTranslations("Home/TraineeHome")
+    const currentTraining = training.plan[currentDay]
         
-    const minTime2 = training.plan[currentDay].exercises.reduce((min, exercise) =>{
+    const minTime2 = currentTraining.exercises.reduce((min, exercise) =>{
         return min + exercise.sets.length * 180
     },0)
 
@@ -28,7 +29,7 @@ function TodaysTraining({ training, currentDay, planLength }: Props) {
     return (                 
         <div key={training.id}>
             <div className="text-lg">
-                <p>{t("DayProgress", {trainingName: training.plan.find(x => x.iscompleted === false)!.name, current: currentDay + 1, total: planLength})}</p>
+                <p>{t("DayProgress", {trainingName: currentTraining.name, current: currentDay + 1, total: planLength})}</p>
                 <p className="text-gray-400">{t("TimeRange", {start: timeInHoursWithPartial, end: timeInHoursWithPartial + 0.5})}</p>
                 <Button isPrimary className="w-full mt-5" onClick={handleStart}>{t("StartTraining")}</Button>
             </div>

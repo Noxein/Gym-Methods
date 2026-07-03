@@ -118,12 +118,7 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
         )
     }
 
-
-
-
-    
     updateInputsInMemory(state,exerciseData.name,loading)
-
 
     const FinishExercise = async () => {
         if(!checked) return
@@ -222,7 +217,7 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
                 }
             </button>
 
-            <Button onClick={FinishExercise} disabled={loading} isPrimary className='w-full text-xl'>
+            <Button onClick={FinishExercise} loading={loading} isPrimary className='w-full text-xl'>
                 {loading? <SmallLoaderDiv loading={loading}/> : t("FinishExercise")}
             </Button>
         </div>
@@ -266,23 +261,12 @@ const WeightAndRepeatInputs = ({dispach,state}:{dispach:React.Dispatch<ActionTyp
         <div className='flex items-center gap-2'>
             <div className='flex flex-col flex-1 relative'>
                 <Label htmlFor='weight'>{u("Weight")}</Label>
-                {
-                loading ? 
-                <Input type="text" disabled id='weight' value={'...'}/> 
-                :
-                <Input type="number" id='weight' onChange={e=>weightChange(e.target.value)} value={state.weight} min={1}/>
-                }
+                <Input type="number" disabled={loading} id='weight' onChange={e=>weightChange(e.target.value)} value={state.weight} min={1}/>
             </div>
 
             <div className='flex flex-col flex-1 relative'>
                 <Label htmlFor='repeat'>{u("Repeat")}</Label>
-
-                {
-                loading ? 
-                <Input type="text" disabled id='weight' value={'...'}/> 
-                :
-                <Input type="number" id='repeat' onChange={e=>dispach({type:"REPEAT",payload:Number(e.target.value)})} value={state.repeat} min={1}/>
-                }
+                <Input type="number" disabled={loading} id='repeat' onChange={e=>dispach({type:"REPEAT",payload:Number(e.target.value)})} value={state.repeat} min={1}/>
             </div>
         </div>
     )
@@ -315,13 +299,7 @@ const DifficultyLevel = ({dispach,state}:{dispach:React.Dispatch<ActionTypes>,st
         {exerciseData.showTimeMesure &&             
             <div className='flex flex-col flex-1 relative'>
                 <Label htmlFor='time'>{u("TimeInSeconds")}</Label>
-                {
-                loading ? 
-                <Input type="text" disabled id='weight' value={'...'}/> 
-                :
-                <Input type="number" id='time' disabled={loading} onChange={e=>dispach({type:"TIME",payload:Number(e.target.value)})} value={state.time}/>
-                }
-                
+                <Input type="number" id='time' disabled={loading} onChange={e=>dispach({type:"TIME",payload:Number(e.target.value)})} value={state.time}/>          
             </div>}
         </div>)
 }
@@ -370,7 +348,7 @@ const Handle = ({dispatch,state}:HandleTypes) => {
         dispatch({type:"HANDLE", payload:{id: obj.id, handlename: obj.handlename} as HandleType})
     }
 
-    const { allHandles, exerciseData } = useContext(ExerciseDataContext)!
+    const { allHandles, exerciseData, loading } = useContext(ExerciseDataContext)!
 
     const u = useTranslations("Utils")
     const h = useTranslations("Handles")
@@ -381,7 +359,7 @@ const Handle = ({dispatch,state}:HandleTypes) => {
     <div className='flex gap-2'>
         <div className='flex-1 flex flex-col text-lg relative'>
             <label htmlFor='handle' className='text-marmur font-light text-sm px-2 absolute -top-1/3 left-2 bg-dark'>{u("Handle")}</label>
-            <select name="handle" id="side" className='bg-dark pl-3 text-marmur border-borderInteractive border-2 rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value) as {id:string, handlename: string})} value={JSON.stringify(selectedHandle)}> 
+            <select disabled={loading} name="handle" id="side" className='bg-dark pl-3 text-marmur border-borderInteractive border-2 rounded-md h-10' onChange={e=>handleChange(JSON.parse(e.target.value) as {id:string, handlename: string})} value={JSON.stringify(selectedHandle)}> 
                 {allHandles.map(handle=>{
                     const name = handleTypes.includes(handle.handlename) ? h(nameTrimmer(handle.handlename)) : handle.handlename 
                     return <option value={JSON.stringify(handle)} key={handle.id}>{name}</option>

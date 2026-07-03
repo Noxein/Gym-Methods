@@ -53,8 +53,8 @@ export const EditModal = ({selectedExercise,setShowEditModal}:EditModal) => {
 
             <div className='flex gap-4'>
 
-                <Button className='flex-1' onClick={HandleCloseModal} disabled={loading}>{u("Cancel")}</Button>
-                <Button isPrimary className='flex-1' onClick={editExercise} disabled={loading}>{u("Save")}</Button>
+                <Button className='flex-1' onClick={HandleCloseModal} loading={loading}>{u("Cancel")}</Button>
+                <Button isPrimary className='flex-1' onClick={editExercise} loading={loading}>{u("Save")}</Button>
                 
             </div>
 

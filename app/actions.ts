@@ -216,8 +216,11 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
     if(trainingPlanId) trainingid = trainingPlanId
 
     let id = exerciseid
-    if(userExercises[userExercises.findIndex(x=>x.exercisename===exerciseid)]){
-        id = userExercises[userExercises.findIndex(x=>x.exercisename===exerciseid)].id
+    let exercisename = exerciseid
+    const matchingUserExercise = userExercises.find(x=>x.id === exerciseid || x.exercisename === exerciseid)
+    if(matchingUserExercise){
+        id = matchingUserExercise.id
+        exercisename = matchingUserExercise.exercisename
     }
 
     let parentTrainingPlanId = null
@@ -239,7 +242,7 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
             `
         }
         const returning = await sql`
-        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid,handlename,parenttrainingplan) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exerciseid},${HandleId},${HandleName},${parentTrainingPlanId})
+        INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid,handlename,parenttrainingplan) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exercisename},${HandleId},${HandleName},${parentTrainingPlanId})
         `
     }catch(e){
         console.log('Error occured: AddExerciseAction func actions.ts ',e)
@@ -290,7 +293,7 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
 
         const progression = trainingGoalsExercises?.find(x=>x.exerciseid === exercise.exerciseId)
 
-        const data = await AddExerciseAction(false,exercise.exerciseName,exercise.sets,true,id,exercise.handle,false,exercise.date,trainingPlanId,progression)
+        const data = await AddExerciseAction(false,exercise.exerciseId,exercise.sets,true,id,exercise.handle,false,exercise.date,trainingPlanId,progression)
         if(data?.errors) return { error : 'Something Went Wrong'}
         return { success: true }
     }))
@@ -706,6 +709,315 @@ export const DeleteTempoFromDb = async (exerciceid:string) => {
 export const AllExercisesInOneArray = async () => {
     const userid = await userID()
     return getAllExercisesInOneArrayByUserId(userid)
+}
+
+type GoalRow = {
+    id: string
+    userid: string
+    exerciseid: string
+    goal: string | number
+}
+
+type GoalExerciseOption = {
+    id: string
+    name: string
+}
+
+type GoalExerciseData = {
+    exercisesObject: ExerciseTypes
+    allExercisesInOneArray: (string | UserExercise)[]
+}
+
+const getGoalsByUserId = async (userid: string) => {
+    try{
+        let goalsResult
+
+        try{
+            goalsResult = await sql`
+                SELECT id, userid, exerciseid, goal FROM gymgoals WHERE userid = ${userid} ORDER BY exerciseid
+            `
+        }catch{
+            goalsResult = await sql`
+                SELECT id, userid, exerciseid, goal FROM "gym-goals" WHERE userid = ${userid} ORDER BY exerciseid
+            `
+        }
+
+        const userExercises = await sql`
+            SELECT id, exercisename FROM gymusersexercises WHERE userid = ${userid}
+        `
+        const userExercisesRows = userExercises.rows as { id: string, exercisename: string }[]
+
+        const exerciseNamesById = new Map<string, string>()
+
+        exercisesArr.forEach((exerciseName) => {
+            exerciseNamesById.set(exerciseName, exerciseName)
+        })
+
+        userExercisesRows.forEach((exercise) => {
+            exerciseNamesById.set(exercise.id, exercise.exercisename)
+            exerciseNamesById.set(exercise.exercisename, exercise.exercisename)
+        })
+
+        return (goalsResult.rows as GoalRow[]).map((goal) => ({
+            ...goal,
+            exercisename: exerciseNamesById.get(goal.exerciseid) ?? goal.exerciseid,
+            goal: String(goal.goal),
+        }))
+    }catch(e){
+        console.log('Error occured getGoalsByUserId func actions.ts', e)
+        return [] as { id: string, userid: string, exerciseid: string, exercisename: string, goal: string }[]
+    }
+}
+
+export const getUserGoals = async () => {
+    const userid = await userID()
+    return getGoalsByUserId(userid)
+}
+
+export const getTraineeGoals = async (traineeId: string) => {
+    if(typeof traineeId !== 'string') return []
+
+    const access = await trainerCanAccessTraineeHistory(traineeId)
+    if(access.error) return []
+
+    return getGoalsByUserId(traineeId)
+}
+
+const getGoalExerciseOptionsByUserId = async (userid: string) => {
+    try{
+        const userExercises = await sql`
+            SELECT id, exercisename FROM gymusersexercises WHERE userid = ${userid}
+        `
+
+        return [
+            ...exercisesArr.map((exerciseName) => ({ id: exerciseName, name: exerciseName })),
+            ...(userExercises.rows as { id: string, exercisename: string }[]).map((exercise) => ({
+                id: exercise.id,
+                name: exercise.exercisename,
+            }))
+        ] satisfies GoalExerciseOption[]
+    }catch(e){
+        console.log('Error occured getGoalExerciseOptionsByUserId func actions.ts', e)
+        return exercisesArr.map((exerciseName) => ({ id: exerciseName, name: exerciseName })) satisfies GoalExerciseOption[]
+    }
+}
+
+export const getTraineeGoalExerciseOptions = async (traineeId: string) => {
+    if(typeof traineeId !== 'string') return []
+
+    return getGoalExerciseOptionsByUserId(traineeId)
+}
+
+export const getTraineeGoalExerciseData = async (traineeId: string) => {
+    if(typeof traineeId !== 'string') {
+        return {
+            exercisesObject: exerciseList,
+            allExercisesInOneArray: [...exercisesArr],
+        } satisfies GoalExerciseData
+    }
+
+    try{
+        const userExercisesQuery = await sql`
+            SELECT exercisename,id,timemesure,useshandle FROM gymusersexercises WHERE userid = ${traineeId}
+        `
+        const userExercises = userExercisesQuery.rows as UserExercise[]
+
+        return {
+            exercisesObject: {
+                ...exerciseList,
+                userExercises,
+            },
+            allExercisesInOneArray: [...exercisesArr, ...userExercises],
+        } satisfies GoalExerciseData
+    }catch(e){
+        console.log('Error occured getTraineeGoalExerciseData func actions.ts', e)
+        return {
+            exercisesObject: exerciseList,
+            allExercisesInOneArray: [...exercisesArr],
+        } satisfies GoalExerciseData
+    }
+}
+
+export const saveTraineeGoal = async (formData: FormData) => {
+    const traineeId = String(formData.get('traineeId') ?? '')
+    const exerciseid = String(formData.get('exerciseid') ?? '')
+    const goalRaw = String(formData.get('goal') ?? '')
+
+    if(!traineeId || !exerciseid || goalRaw.trim() === '') {
+        return { error: 'Something Went Wrong' }
+    }
+
+    const traineeData = await getTraineeData(traineeId)
+    if(!traineeData) {
+        return { error: 'Something Went Wrong' }
+    }
+
+    const goal = Number(goalRaw)
+    if(Number.isNaN(goal)) {
+        return { error: 'Something Went Wrong' }
+    }
+
+    try{
+        let existingGoal
+
+        try{
+            existingGoal = await sql`
+                SELECT id FROM gymgoals WHERE userid = ${traineeId} AND exerciseid = ${exerciseid}
+            `
+        }catch{
+            existingGoal = await sql`
+                SELECT id FROM "gym-goals" WHERE userid = ${traineeId} AND exerciseid = ${exerciseid}
+            `
+        }
+
+        if(existingGoal.rows.length > 0) {
+            try{
+                await sql`
+                    UPDATE gymgoals SET goal = ${goal} WHERE id = ${existingGoal.rows[0].id}
+                `
+            }catch{
+                await sql`
+                    UPDATE "gym-goals" SET goal = ${goal} WHERE id = ${existingGoal.rows[0].id}
+                `
+            }
+        } else {
+            try{
+                await sql`
+                    INSERT INTO gymgoals (id, userid, exerciseid, goal) VALUES (${v4()}, ${traineeId}, ${exerciseid}, ${goal})
+                `
+            }catch{
+                await sql`
+                    INSERT INTO "gym-goals" (id, userid, exerciseid, goal) VALUES (${v4()}, ${traineeId}, ${exerciseid}, ${goal})
+                `
+            }
+        }
+    }catch(e){
+        console.log('Error occured saveTraineeGoal func actions.ts', e)
+        return { error: 'Something Went Wrong' }
+    }
+
+    revalidatePath(`/home/profile/my-trainees/${traineeId}/goals`)
+    revalidatePath(`/home/profile/my-trainees/${traineeId}`)
+    return { error: '' }
+}
+
+export const deleteTraineeGoal = async (formData: FormData) => {
+    const traineeId = String(formData.get('traineeId') ?? '')
+    const exerciseid = String(formData.get('exerciseid') ?? '')
+
+    if(!traineeId || !exerciseid) {
+        return { error: 'Something Went Wrong' }
+    }
+
+    const traineeData = await getTraineeData(traineeId)
+    if(!traineeData) {
+        return { error: 'Something Went Wrong' }
+    }
+
+    try {
+        try {
+            await sql`
+                DELETE FROM gymgoals WHERE userid = ${traineeId} AND exerciseid = ${exerciseid}
+            `
+        } catch {
+            await sql`
+                DELETE FROM "gym-goals" WHERE userid = ${traineeId} AND exerciseid = ${exerciseid}
+            `
+        }
+    } catch(e) {
+        console.log('Error occured deleteTraineeGoal func actions.ts', e)
+        return { error: 'Something Went Wrong' }
+    }
+
+    revalidatePath(`/home/profile/my-trainees/${traineeId}/goals`)
+    revalidatePath(`/home/profile/my-trainees/${traineeId}`)
+    return { error: '' }
+}
+
+export const saveUserGoal = async (formData: FormData) => {
+    const userid = await userID()
+    const exerciseid = String(formData.get('exerciseid') ?? '')
+    const goalRaw = String(formData.get('goal') ?? '')
+
+    if(!userid || !exerciseid || goalRaw.trim() === '') {
+        return { error: 'Something Went Wrong' }
+    }
+
+    const goal = Number(goalRaw)
+    if(Number.isNaN(goal)) {
+        return { error: 'Something Went Wrong' }
+    }
+
+    try{
+        let existingGoal
+
+        try{
+            existingGoal = await sql`
+                SELECT id FROM gymgoals WHERE userid = ${userid} AND exerciseid = ${exerciseid}
+            `
+        }catch{
+            existingGoal = await sql`
+                SELECT id FROM "gym-goals" WHERE userid = ${userid} AND exerciseid = ${exerciseid}
+            `
+        }
+
+        if(existingGoal.rows.length > 0) {
+            try{
+                await sql`
+                    UPDATE gymgoals SET goal = ${goal} WHERE id = ${existingGoal.rows[0].id}
+                `
+            }catch{
+                await sql`
+                    UPDATE "gym-goals" SET goal = ${goal} WHERE id = ${existingGoal.rows[0].id}
+                `
+            }
+        } else {
+            try{
+                await sql`
+                    INSERT INTO gymgoals (id, userid, exerciseid, goal) VALUES (${v4()}, ${userid}, ${exerciseid}, ${goal})
+                `
+            }catch{
+                await sql`
+                    INSERT INTO "gym-goals" (id, userid, exerciseid, goal) VALUES (${v4()}, ${userid}, ${exerciseid}, ${goal})
+                `
+            }
+        }
+    }catch(e){
+        console.log('Error occured saveUserGoal func actions.ts', e)
+        return { error: 'Something Went Wrong' }
+    }
+
+    revalidatePath('/home/profile/goals')
+    revalidatePath('/home/profile')
+    return { error: '' }
+}
+
+export const deleteUserGoal = async (formData: FormData) => {
+    const userid = await userID()
+    const exerciseid = String(formData.get('exerciseid') ?? '')
+
+    if(!userid || !exerciseid) {
+        return { error: 'Something Went Wrong' }
+    }
+
+    try {
+        try {
+            await sql`
+                DELETE FROM gymgoals WHERE userid = ${userid} AND exerciseid = ${exerciseid}
+            `
+        } catch {
+            await sql`
+                DELETE FROM "gym-goals" WHERE userid = ${userid} AND exerciseid = ${exerciseid}
+            `
+        }
+    } catch(e) {
+        console.log('Error occured deleteUserGoal func actions.ts', e)
+        return { error: 'Something Went Wrong' }
+    }
+
+    revalidatePath('/home/profile/goals')
+    revalidatePath('/home/profile')
+    return { error: '' }
 }
 
 export const ArrayOfAllExercises = async () => {
@@ -1780,13 +2092,15 @@ export const GetProgressionsAndDeclines = async () => {
     const date = format(subDays(new Date(),30),'yyyy-MM-dd kk:mm:ss') // last month exercises
 
     try{
+        const fetchedGoals = await getGoalsByUserId(userid)
+        const goals = fetchedGoals.reduce((acc, goal) => {
+            acc[goal.exerciseid] = goal.goal
+            return acc
+        }, {} as { [key: string]: string })
+
         const result = await sql`
             SELECT id, exerciseid, exercisename, date, sets FROM gymexercises WHERE userid = ${userid} AND date >= ${date} ORDER BY date DESC
         `
-
-        const goals: { [key: string]: string } = {
-            'Wznosy bokiem': '100'
-        } // todo add and fetch goals for execises
         
         const allExercises = result.rows as ProgessionsDeclinesType[]
 
