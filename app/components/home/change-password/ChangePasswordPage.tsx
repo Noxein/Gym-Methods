@@ -73,7 +73,7 @@ type ShowPasswordTypes = {
 
 const ShowPassword = ({isOpen,...rest}:ShowPasswordTypes) => {
     return(
-        <Icon {...rest} className='absolute right-2 h-full flex items-center'>
+        <Icon {...rest} className='absolute right-2 h-full flex items-center mt-1'>
             <EyeIcon isOpen={isOpen}/>
         </Icon>
     )
