@@ -35,10 +35,12 @@ export default async function page({params}:{params: Promise<{[key:string]:strin
             goalLabel={t("Goal")}
             addGoalLabel={u("Add")}
             saveLabel={u("Save")}
+            deleteLabel={u("Delete")}
             selectExerciseLabel={u("AddExercise")}
             goals={goals}
             exercisesObject={exerciseData.exercisesObject}
             allExercisesInOneArray={exerciseData.allExercisesInOneArray}
+            traineeData={traineeData}
         />
     )
 }

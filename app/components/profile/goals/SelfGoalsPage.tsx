@@ -8,8 +8,9 @@ import { exercisesArr } from "@/app/lib/exercise-list"
 import { HideShowHTMLScrollbar } from "@/app/lib/utils"
 import { nameTrimmer } from "@/app/lib/utils"
 import { ExerciseTypes, UserExercise } from "@/app/types"
+import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState, useTransition } from "react"
 
 type GoalItem = {
     id: string
@@ -60,6 +61,9 @@ export const SelfGoalsPage = ({
     exercisesObject,
     allExercisesInOneArray,
 }: SelfGoalsPageProps) => {
+    const router = useRouter()
+    const [isPending, startTransition] = useTransition()
+    const formRef = useRef<HTMLFormElement>(null)
     const d = useTranslations("DefaultExercises")
     const initialExercise = useMemo(() => getInitialExercise(allExercisesInOneArray), [allExercisesInOneArray])
     const [showExerciseModal, setShowExerciseModal] = useState(false)
@@ -67,6 +71,15 @@ export const SelfGoalsPage = ({
     const [selectedExerciseName, setSelectedExerciseName] = useState(initialExercise.name)
     const [newGoalValue, setNewGoalValue] = useState('')
     const [goalsValues, setGoalsValues] = useState<Record<string, string>>({})
+
+    const handleFormAction = (action: (formData: FormData) => Promise<any>) => {
+        return async (formData: FormData) => {
+            startTransition(async () => {
+                await action(formData)
+                router.refresh()
+            })
+        }
+    }
 
     const translateExerciseName = (exerciseName: string) => {
         return exercisesArr.includes(exerciseName) ? d(nameTrimmer(exerciseName)) : exerciseName
@@ -84,7 +97,15 @@ export const SelfGoalsPage = ({
         }, {} as Record<string, string>)
 
         setGoalsValues(nextValues)
-    }, [goals])
+        
+        // Reset add goal form when goals update
+        if (formRef.current) {
+            formRef.current.reset()
+            setNewGoalValue('')
+            setSelectedExerciseId(initialExercise.id)
+            setSelectedExerciseName(initialExercise.name)
+        }
+    }, [goals, initialExercise.id, initialExercise.name])
 
     useEffect(() => {
         HideShowHTMLScrollbar(showExerciseModal ? 'hide' : 'show')
@@ -112,7 +133,7 @@ export const SelfGoalsPage = ({
 
             <section className="rounded-2xl border border-white/10 bg-darkLight p-4 shadow-[0_0_30px_rgba(0,0,0,0.18)]">
                 <p className="mb-4 text-lg font-semibold">{addGoalLabel}</p>
-                <form action={saveUserGoal} className="grid gap-3 md:grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)_auto] md:items-end">
+                <form ref={formRef} action={handleFormAction(saveUserGoal)} className="grid gap-3 md:grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)_auto] md:items-end">
                     <input type="hidden" name="exerciseid" value={selectedExerciseId} />
                     <div className="flex flex-col gap-2 text-sm text-gray-300">
                         <span>{exerciseLabel}</span>
@@ -154,6 +175,7 @@ export const SelfGoalsPage = ({
                         {goals.map((goal) => (
                             <form
                                 key={goal.id}
+                                action={handleFormAction(saveUserGoal)}
                                 className="grid gap-3 rounded-xl border border-white/10 bg-dark p-4 md:grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)_auto] md:items-end"
                             >
                                 <input type="hidden" name="exerciseid" value={goal.exerciseid} />
@@ -180,15 +202,15 @@ export const SelfGoalsPage = ({
                                     <Button
                                         isPrimary
                                         type="submit"
-                                        formAction={saveUserGoal}
+                                        formAction={handleFormAction(saveUserGoal)}
                                         disabled={(goalsValues[goal.id] ?? String(goal.goal)) === String(goal.goal)}
                                     >
                                         {saveLabel}
                                     </Button>
                                     <button
                                         type="submit"
-                                        formAction={deleteUserGoal}
-                                        className="rounded-lg border border-red-500/60 px-4 py-3 text-sm font-semibold text-red-300 transition-colors hover:bg-red-500/10"
+                                        formAction={handleFormAction(deleteUserGoal)}
+                                        className="rounded-lg border-2 bg-dark border-borderInteractive px-4 py-3 text-sm font-semibold text-green transition-colors hover:bg-red"
                                     >
                                         {deleteLabel}
                                     </button>
