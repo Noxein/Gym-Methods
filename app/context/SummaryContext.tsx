@@ -23,12 +23,12 @@ type SummaryContextType = {
     span: Span,
 }
 
-export const SummaryContextProvider = ({children,initialData}:{children: React.ReactNode, initialData: SummaryDataFetched[]}) => {
+export const SummaryContextProvider = ({children,initialData,timeExercises}:{children: React.ReactNode, initialData: SummaryDataFetched[], timeExercises: string[]}) => {
     const[selectedExercise,setSelectedExercise] = useState('Wyciskanie hantli na ławce płaskiej')
     const archRefs = useRef<ArcherContainerRef | null>(null)
     const[span,setSpan] = useState<Span>('year')
     const[data,setData] = useState<SummaryDataFetched[]>(initialData)
-    const[basicData,setBasicData] = useState<BasicSummaryDataType>({repeats:[],weight:[]})
+    const[basicData,setBasicData] = useState<BasicSummaryDataType>({repeats:[],weight:[],time:[]})
     const[exerciseData,setExerciseData] = useState<ExerciseSummaryType>({data:[]})
     const[status,setStatus] = useState<Status>('loading')
     const[error,setError] = useState('')
@@ -38,11 +38,15 @@ export const SummaryContextProvider = ({children,initialData}:{children: React.R
            
         
         const exerciseName =  exercisename ? exercisename : selectedExercise
+        const normalizedExerciseName = exerciseName.trim().toLowerCase()
+        const isTimeBasedSelectedExercise = timeExercises.some(
+            (value) => value.trim().toLowerCase() === normalizedExerciseName
+        )
         
         setSelectedExercise(exerciseName)
         setSpan(span)
 
-        let newBasicData:BasicSummaryDataType = {repeats:[],weight:[]}
+        let newBasicData:BasicSummaryDataType = {repeats:[],weight:[],time:[]}
         let newExerciseData:ExerciseSummaryType = {data:[]}
         
         const amount = span === 'month' ? 30 : span === 'quarter' ? 90 : span === 'year' ? 365 : undefined
@@ -54,14 +58,20 @@ export const SummaryContextProvider = ({children,initialData}:{children: React.R
         for(let i = 0 ; i < initData.length ; i ++ ){
             const date = initData[i].date
             if(initData[i].date.getTime() < start.getTime()) continue
-            let highestKG = initData[i].exercisename === exerciseName ? 0 : undefined
+            const isSelectedExercise = initData[i].exercisename === exerciseName
+
+            let highestKG = isSelectedExercise && !isTimeBasedSelectedExercise ? 0 : undefined
+            let highestTime = isSelectedExercise && isTimeBasedSelectedExercise ? 0 : undefined
             let totalKG = 0
             let totalSeries = 0
+            let totalTime = 0
 
             initData[i].sets.map(cb=>{
                 if(typeof highestKG === 'number') cb.weight > highestKG ? highestKG = cb.weight : null
+                if(typeof highestTime === 'number' && (cb.time ?? 0) > 0) cb.time! > highestTime ? highestTime = cb.time! : null
                 totalKG = totalKG + cb.weight
                 totalSeries = totalSeries + cb.repeat
+                if(cb.time) totalTime = totalTime + cb.time
             })
 
             const index = newBasicData.repeats.findIndex(cb=>format(cb.date,'yyyy-MM-dd') === format(date,'yyyy-MM-dd'))
@@ -69,16 +79,20 @@ export const SummaryContextProvider = ({children,initialData}:{children: React.R
 
             if(exerciseIndex>=0){
                 if( highestKG && newExerciseData.data[exerciseIndex].value < highestKG) newExerciseData.data[exerciseIndex] = {date: date,value:highestKG}
+                if( highestTime && newExerciseData.data[exerciseIndex].value < highestTime) newExerciseData.data[exerciseIndex] = {date: date,value:highestTime}
             }else{
                 if(typeof highestKG === 'number') newExerciseData.data.push({date: date,value:highestKG})
+                if(typeof highestTime === 'number' && highestTime > 0) newExerciseData.data.push({date: date,value:highestTime})
             }
         
             if(index>=0){
                 newBasicData.repeats[index] = {date:date ,value:totalSeries + newBasicData.repeats[index].value}
                 newBasicData.weight[index] = {date:date,value:totalKG + newBasicData.weight[index].value}
+                newBasicData.time[index] = {date:date,value:totalTime + newBasicData.time[index].value}
             }else{
                 newBasicData.repeats.push({date:date,value:totalSeries})
                 newBasicData.weight.push({date:date,value:totalKG})
+                newBasicData.time.push({date:date,value:totalTime})
             }
 
         }
