@@ -26,6 +26,7 @@ export default async function page() {
             goalLabel={t("Goal")}
             addGoalLabel={u("Add")}
             saveLabel={u("Save")}
+            deleteLabel={u("Delete")}
             selectExerciseLabel={u("AddExercise")}
             goals={goals}
             exercisesObject={exercisesObject}

@@ -49,8 +49,8 @@ export const AddExercise = ({setShowModal}:{setShowModal:React.Dispatch<React.Se
                 <SmallLoaderDiv loading={loading}/>
                 <div className='flex justify-around text-white gap-2'>
 
-                    <Button onClick={hideModal} className='flex-1' disabled={loading}>{u("Cancel")}</Button>
-                    <Button onClick={addExercise} isPrimary className='flex-1' disabled={loading}>{u("Add")}</Button>
+                    <Button onClick={hideModal} className='flex-1' loading={loading}>{u("Cancel")}</Button>
+                    <Button onClick={addExercise} isPrimary className='flex-1' loading={loading}>{u("Add")}</Button>
                     
                 </div>
 

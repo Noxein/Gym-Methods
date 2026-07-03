@@ -50,7 +50,7 @@ export const LoginForm = () => {
         <SmallLoaderDiv loading={loading}/>
         <ErrorDiv error={error}/>
 
-        <Button className='mt-4' isPrimary onClick={handleLogin} disabled={loading}>
+        <Button className='mt-4' isPrimary onClick={handleLogin} loading={loading}>
           {t("Login")}
         </Button>
       </FormWrapper>

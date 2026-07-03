@@ -14,8 +14,8 @@ function ActionButtons( { onSave, onCancel, loading }: ActionButtonsProps ) {
     return ( 
         <div className="fixed max-w-mobile bottom-20 mt-auto mx-auto w-screen z-30 bg-darkLight py-5">
             <div className="flex gap-5 px-5">
-                <Button blue className="flex-1" onClick={onCancel} disabled={loading}>{u('Cancel')}</Button>
-                <Button blue isPrimary className="flex-1" onClick={onSave} disabled={loading}>{u('Save')}</Button>
+                <Button blue className="flex-1" onClick={onCancel} loading={loading}>{u('Cancel')}</Button>
+                <Button blue isPrimary className="flex-1" onClick={onSave} loading={loading}>{u('Save')}</Button>
             </div>
         </div>
      );

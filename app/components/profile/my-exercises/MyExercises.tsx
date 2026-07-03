@@ -11,7 +11,7 @@ export const MyExercises = ({exercises,showAddModal}:{exercises:UserExercise[],s
   return (
     <div className='px-5 pt-10'>
       <h1 className='text-white mb-5 text-center text-2xl'>{t("MyExercises")}</h1>
-        <Search setSearchValue={setSearchValue} showAddModal={showAddModal}/>
+        <Search setSearchValue={setSearchValue} showAddModal={showAddModal} searchValue={searchValue}/>
         <ListExercises exercises={exercises.filter(x=>x.exercisename.toLowerCase().includes(searchValue.toLowerCase()))}/>
     </div>
   )

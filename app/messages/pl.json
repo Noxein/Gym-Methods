@@ -587,7 +587,9 @@
         "Login": "Zaloguj",
         "Login description": "Aplikacja na siłownię",
         "Register": "Zarejestruj",
-        "Custom exercises": "Ćwiczenia"
+        "Custom exercises": "Ćwiczenia",
+        "Goals": "Cele",
+        "My trainees": "Moi podopieczni"
     },
     "Summary": {
         "Month": "Miesiąc",

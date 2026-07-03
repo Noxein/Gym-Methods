@@ -59,8 +59,8 @@ export const ChangePasswordPage = () => {
 
         <div className='mt-auto flex gap-4 mb-24'>
 
-            <Button className='flex-1' onClick={()=>router.push('/home/profile')} disabled={loading}>{u("Cancel")}</Button>
-            <Button className=' flex-1' onClick={handleSave} isPrimary disabled={loading}>{u("Save")}</Button>
+            <Button className='flex-1' onClick={()=>router.push('/home/profile')} loading={loading}>{u("Cancel")}</Button>
+            <Button className=' flex-1' onClick={handleSave} isPrimary loading={loading}>{u("Save")}</Button>
 
         </div>
     </div>

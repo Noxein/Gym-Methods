@@ -103,12 +103,12 @@ function ActionButtons() {
         <div className="fixed mt-auto mx-auto max-w-mobile bottom-20 w-screen z-30 bg-darkLight py-5">
             {showSinglePlanModal ?
             <div className="flex gap-5 px-5">
-                <Button blue className="flex-1" onClick={handleCancelSave} disabled={loading}>{u('Cancel')}</Button>
-                <Button blue isPrimary className="flex-1" onClick={handleSinglePlanSave} disabled={loading}>{u('Save')}</Button>
+                <Button blue className="flex-1" onClick={handleCancelSave} loading={loading}>{u('Cancel')}</Button>
+                <Button blue isPrimary className="flex-1" onClick={handleSinglePlanSave} loading={loading}>{u('Save')}</Button>
             </div> : 
             <div className="flex gap-5 px-5">
-                <Button blue className="flex-1" onClick={handleCancel} disabled={loading}>{u('Cancel')}</Button>
-                <Button blue isPrimary className="flex-1" onClick={handleSave} disabled={loading}>{u('Save')}</Button>
+                <Button blue className="flex-1" onClick={handleCancel} loading={loading}>{u('Cancel')}</Button>
+                <Button blue isPrimary className="flex-1" onClick={handleSave} loading={loading}>{u('Save')}</Button>
             </div>
             }
         </div>

@@ -217,7 +217,7 @@ export const AddExercise = ({isTraining=false,isLoading = false}:AddExerciseType
                 }
             </button>
 
-            <Button onClick={FinishExercise} disabled={loading} isPrimary className='w-full text-xl'>
+            <Button onClick={FinishExercise} loading={loading} isPrimary className='w-full text-xl'>
                 {loading? <SmallLoaderDiv loading={loading}/> : t("FinishExercise")}
             </Button>
         </div>

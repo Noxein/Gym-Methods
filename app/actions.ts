@@ -959,6 +959,34 @@ export const saveUserGoal = async (formData: FormData) => {
     return { error: '' }
 }
 
+export const deleteUserGoal = async (formData: FormData) => {
+    const userid = await userID()
+    const exerciseid = String(formData.get('exerciseid') ?? '')
+
+    if(!userid || !exerciseid) {
+        return { error: 'Something Went Wrong' }
+    }
+
+    try {
+        try {
+            await sql`
+                DELETE FROM gymgoals WHERE userid = ${userid} AND exerciseid = ${exerciseid}
+            `
+        } catch {
+            await sql`
+                DELETE FROM "gym-goals" WHERE userid = ${userid} AND exerciseid = ${exerciseid}
+            `
+        }
+    } catch(e) {
+        console.log('Error occured deleteUserGoal func actions.ts', e)
+        return { error: 'Something Went Wrong' }
+    }
+
+    revalidatePath('/home/profile/goals')
+    revalidatePath('/home/profile')
+    return { error: '' }
+}
+
 export const ArrayOfAllExercises = async () => {
     const userExercises = await getUserExercises()
     let arr = [...exercisesArr]

@@ -41,8 +41,8 @@ export const DeleteHandleModal = ({handle,hideModal}:DeleteHandleModal) => {
         <ErrorDiv error={error}/>
         <div className='flex gap-2'>
 
-            <Button isPrimary={false} className='flex-1' onClick={handleHideModal} disabled={loading}>{u("Cancel")}</Button>
-            <Button isPrimary className='flex-1' onClick={handleDelete} disabled={loading}>{u("Delete")}</Button>
+            <Button isPrimary={false} className='flex-1' onClick={handleHideModal} loading={loading}>{u("Cancel")}</Button>
+            <Button isPrimary className='flex-1' onClick={handleDelete} loading={loading}>{u("Delete")}</Button>
             
         </div>
     </div>

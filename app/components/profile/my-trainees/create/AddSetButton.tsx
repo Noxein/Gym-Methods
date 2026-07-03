@@ -54,7 +54,7 @@ function AddSetButton({ planIndex, exerciseIndex }: AddSetButtonProps) {
 
     const t = useTranslations("Home/Profile/My-Trainees/Schemas/Create")
     return ( 
-        <Button className="w-full py-2" blue onClick={handleAddSet} disabled={loading}>{t("AddSet")}</Button>
+        <Button className="w-full py-2" blue onClick={handleAddSet} loading={loading}>{t("AddSet")}</Button>
      );
 }
 

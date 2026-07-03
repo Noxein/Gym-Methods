@@ -78,8 +78,8 @@ function ActionsButtons() {
         <div className="fixed max-w-mobile bottom-20 mt-auto  pb-8 pt-4 border-t border-gray-700 bg-dark w-full px-5">
             <div className="text-red-500 mb-2 text-center text-red">{error && e(error)}</div>
             <div className=" gap-4 flex z-20 bg-dark">
-                <Button className='flex-1' blue onClick={handleCancel} disabled={loading}>{u('Cancel')}</Button>
-                <Button className='flex-1' blue isPrimary onClick={handleSave} disabled={loading}>{u('Save')}</Button>
+                <Button className='flex-1' blue onClick={handleCancel} loading={loading}>{u('Cancel')}</Button>
+                <Button className='flex-1' blue isPrimary onClick={handleSave} loading={loading}>{u('Save')}</Button>
             </div>
         </div>
      );

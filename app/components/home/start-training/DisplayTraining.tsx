@@ -157,7 +157,7 @@ type DisplayTrainingTypes = {
                 <h1 className='text-2xl'>{trainingPlanData.trainingname}</h1>
             </div>
             <div className='text-gray-400 flex gap-2 items-center'>
-                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList} disabled={loading}>{u("Change")}</Button>
+                <Button className='py-0 px-2 border-0 rounded' isPrimary onClick={handleShowExerciseList} loading={loading}>{u("Change")}</Button>
                 <span className='text-nowrap'>{localStorageTrainingData.currentExerciseIndex + 1} {u("Of")} {totalExercises}</span>
             </div>
         </div>

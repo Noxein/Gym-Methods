@@ -52,8 +52,8 @@ export const DeleteTempo = ({selectedExercise,setShowDeleteTempoModal}:DeleteTem
 
             <div className='flex gap-2 mt-4'>
                 
-                <Button className='flex-1' onClick={HandleCloseModal} disabled={loading}>{u("Cancel")}</Button>
-                <Button className='flex-1' onClick={HandleDeleteTempo} isPrimary disabled={loading}>{u("Delete")}</Button>
+                <Button className='flex-1' onClick={HandleCloseModal} loading={loading}>{u("Cancel")}</Button>
+                <Button className='flex-1' onClick={HandleDeleteTempo} isPrimary loading={loading}>{u("Delete")}</Button>
                 
             </div>
             

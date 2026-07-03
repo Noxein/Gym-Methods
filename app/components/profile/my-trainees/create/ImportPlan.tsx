@@ -63,7 +63,7 @@ function ImportPlan({handleSettingsSave}: {handleSettingsSave: () => void}) {
     return ( 
         <div>
             <div className="mb-6 mt-5 flex gap-4">
-                <Button className="flex-1" blue onClick={handleClickImport} disabled={loading}>{t("importTemplate")}</Button>
+                <Button className="flex-1" blue onClick={handleClickImport} loading={loading}>{t("importTemplate")}</Button>
                 <Button className="flex-1" blue isPrimary onClick={handleSettingsSave}>Save</Button>
             </div>
             {showImport && (
@@ -75,13 +75,13 @@ function ImportPlan({handleSettingsSave}: {handleSettingsSave: () => void}) {
                                     {schemas.map((schema, index) => (
                                         <div key={index} className="p-4 bg-dark rounded-lg flex items-center justify-between gap-4 flex-col mb-4">
                                             <p className="font-bold">{schema.name}</p>
-                                            <Button className="w-full py-2" isPrimary blue onClick={() => handleImportSchema(schema)} disabled={loading}>{t("importThisTemplate")}</Button>
+                                            <Button className="w-full py-2" isPrimary blue onClick={() => handleImportSchema(schema)} loading={loading}>{t("importThisTemplate")}</Button>
                                         </div>
                                     ))}
 
                                 </div>
                             )}
-                            <Button className="w-full mt-4" blue onClick={() => setShowImport(false)} disabled={loading}>{u("Close")}</Button>
+                            <Button className="w-full mt-4" blue onClick={() => setShowImport(false)} loading={loading}>{u("Close")}</Button>
                         </div>
                 </BlurBackgroundModal>
             )}

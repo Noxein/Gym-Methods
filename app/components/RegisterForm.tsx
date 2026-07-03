@@ -66,7 +66,7 @@ export const RegisterForm = () => {
       
       <SmallLoaderDiv loading={loading}/>
 
-      <Button className='mt-4' isPrimary onClick={handleRegister} disabled={loading}>
+      <Button className='mt-4' isPrimary onClick={handleRegister} loading={loading}>
         {t("Register")}
       </Button>
     

@@ -49,8 +49,8 @@ function Trainer({setCurrentStep}: TrainerProps) {
                 <h1 className="text-3xl font-medium mb-10 text-center">{t("WhatNext")}</h1>
 
                 <div className="flex gap-4">
-                    <Button onClick={handleGoAddTrainee} disabled={loading} className="flex-1" isPrimary>{t("AddTrainee")}</Button>
-                    <Button onClick={handleGoHome} disabled={loading} className="flex-1" isPrimary>{u("Homepage")}</Button>
+                    <Button onClick={handleGoAddTrainee} loading={loading} className="flex-1" isPrimary>{t("AddTrainee")}</Button>
+                    <Button onClick={handleGoHome} loading={loading} className="flex-1" isPrimary>{u("Homepage")}</Button>
                 </div>
 
             </div>

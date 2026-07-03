@@ -587,7 +587,9 @@
         "Login": "Login",
         "Login description": "App for gym",
         "Register": "Register",
-        "Custom exercises": "Custom exercises"
+        "Custom exercises": "Custom exercises",
+        "Goals": "Goals",
+        "My trainees": "My trainees"
     },
     "Summary": {
         "Month": "Month",

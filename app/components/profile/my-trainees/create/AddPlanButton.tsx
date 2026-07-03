@@ -31,7 +31,7 @@ function AddPlanButton() {
     }
 
     return ( 
-        <Button className="w-full mt-10" blue onClick={handleClick} disabled={loading}> {t("AddPlan")} </Button>
+        <Button className="w-full mt-10" blue onClick={handleClick} loading={loading}> {t("AddPlan")} </Button>
      );
 }
 
