@@ -17,7 +17,7 @@ export const Input = ({ labelName, labelClass, value,labelBackground, alwaysActi
     <fieldset
       className={cn(
         'w-full border-2  rounded-lg transition-colors',
-        'border-borderInteractive',
+        'border-borderInteractive bg-dark',
         isFocused && 'border-green/50'
       )}
     >
