@@ -11,7 +11,6 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
-    Legend,
     ResponsiveContainer,
     ComposedChart,
 } from 'recharts'
@@ -74,10 +73,10 @@ export const Chart = ({ name, data, archRef, chartType = 'area' }: ChartProps) =
     }
 
     return (
-        <div className='gap-4 text-white border-b border-white/10 pb-6 mb-6'>
-            <div className='flex justify-between items-center mb-4'>
-                <h3 className='text-xl font-semibold'>{name}</h3>
-                <div className='flex gap-6 text-sm'>
+        <div className='gap-3 text-white border-b border-white/10 pb-5 mb-5 md:gap-4 md:pb-6 md:mb-6'>
+            <div className='flex flex-col gap-3 mb-3 md:mb-4 md:flex-row md:justify-between md:items-center'>
+                <h3 className='text-lg font-semibold leading-tight md:text-xl'>{name}</h3>
+                <div className='grid grid-cols-3 gap-2 text-xs md:flex md:gap-6 md:text-sm'>
                     <div>
                         <span className='text-gray-400'>Max: </span>
                         <span className='text-green font-semibold'>{maxValue.toFixed(2)}</span>
@@ -93,9 +92,9 @@ export const Chart = ({ name, data, archRef, chartType = 'area' }: ChartProps) =
                 </div>
             </div>
 
-            <ResponsiveContainer width='100%' height={300}>
+            <ResponsiveContainer width='100%' height={240} className='md:!h-[300px]'>
                 {chartType === 'area' ? (
-                    <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                         <defs>
                             <linearGradient id={`gradient-${name}`} x1='0' y1='0' x2='0' y2='1'>
                                 <stop offset='5%' stopColor='#3C9F65' stopOpacity={0.3} />
@@ -110,7 +109,6 @@ export const Chart = ({ name, data, archRef, chartType = 'area' }: ChartProps) =
                         />
                         <YAxis stroke='#9CA3AF' style={{ fontSize: '12px' }} />
                         <Tooltip content={<CustomTooltip />} />
-                        <Legend wrapperStyle={{ color: '#E5E7EB' }} />
                         <Area
                             type='monotone'
                             dataKey='value'
@@ -123,7 +121,7 @@ export const Chart = ({ name, data, archRef, chartType = 'area' }: ChartProps) =
                         />
                     </AreaChart>
                 ) : chartType === 'line' ? (
-                    <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <LineChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                         <CartesianGrid strokeDasharray='3 3' stroke='#374151' />
                         <XAxis 
                             dataKey='formattedDate' 
@@ -132,7 +130,6 @@ export const Chart = ({ name, data, archRef, chartType = 'area' }: ChartProps) =
                         />
                         <YAxis stroke='#9CA3AF' style={{ fontSize: '12px' }} />
                         <Tooltip content={<CustomTooltip />} />
-                        <Legend wrapperStyle={{ color: '#E5E7EB' }} />
                         <Line
                             type='monotone'
                             dataKey='value'
@@ -144,7 +141,7 @@ export const Chart = ({ name, data, archRef, chartType = 'area' }: ChartProps) =
                         />
                     </LineChart>
                 ) : (
-                    <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                         <CartesianGrid strokeDasharray='3 3' stroke='#374151' />
                         <XAxis 
                             dataKey='formattedDate' 
@@ -153,7 +150,6 @@ export const Chart = ({ name, data, archRef, chartType = 'area' }: ChartProps) =
                         />
                         <YAxis stroke='#9CA3AF' style={{ fontSize: '12px' }} />
                         <Tooltip content={<CustomTooltip />} />
-                        <Legend wrapperStyle={{ color: '#E5E7EB' }} />
                         <Line
                             type='monotone'
                             dataKey='value'

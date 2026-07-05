@@ -64,7 +64,7 @@ export const Charts = ({
 
     return (
         <div className='relative'>
-            <div className='flex gap-2 overflow-x-auto py-3 sticky top-0 z-50 bg-dark border-b border-white/10 px-2'>
+            <div className='flex gap-2 overflow-x-auto py-2 md:py-3 sticky top-0 z-50 bg-dark border-b border-white/10 px-1 md:px-2'>
                 <CustomButton
                     isSelected={span === 'month'}
                     text={t('Month')}
@@ -87,7 +87,7 @@ export const Charts = ({
                 />
             </div>
 
-            <div className='mt-8 space-y-8'>
+            <div className='mt-5 space-y-5 md:mt-8 md:space-y-8'>
                 <Chart
                     name={isTimeBasedExercise ? `${selectedExerciseTranslated} (${t('Time')})` : selectedExerciseTranslated}
                     data={exerciseData.data}
@@ -100,12 +100,12 @@ export const Charts = ({
                         setShowSelectExercise(true)
                         HideShowHTMLScrollbar('hide')
                     }}
-                    className='w-full py-3 font-semibold'
+                    className='w-full py-2.5 md:py-3 font-semibold text-sm md:text-base'
                 >
                     {t('SelectExercise')}
                 </Button>
 
-                <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-8'>
                     <Chart
                         name={t('Repeats')}
                         data={basicData?.repeats}
@@ -156,7 +156,7 @@ const CustomButton = ({ text, isSelected, ...rest }: CustomButtonTypes) => {
                 isSelected
                     ? 'border-green/50 border text-green bg-dark hover:bg-darkLight'
                     : 'border-gray-600 border text-gray-400 bg-dark hover:bg-darkLight'
-            } px-6 py-2 whitespace-nowrap font-semibold transition-colors`}
+            } px-4 md:px-6 py-2 whitespace-nowrap font-semibold text-xs md:text-sm transition-colors`}
             {...rest}
         >
             {text}
