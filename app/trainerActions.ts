@@ -10,6 +10,7 @@ import { getLocale } from "next-intl/server"
 import { Locale } from "./i18n/config"
 import { handleTypes } from "./lib/exercise-list"
 import { formatTrainerTraineePlanDate, groupTrainerTraineePlanRows, type TrainerTraineePlanRow } from "./lib/trainerTraineePlans"
+import { saveError } from "./lib/sql"
 
 export const createNewSchema = async (plan: TrainerPlanSchema) => {
     const userid = await userID()
@@ -31,7 +32,8 @@ export const createNewSchema = async (plan: TrainerPlanSchema) => {
         `
         revalidatePath('/home/profile/my-trainees/schemas')
         return { success: true, error: null }
-    }catch(error){
+    }catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error creating new schema:", error);
         return { success: false, error: "Something went wrong" }
     }
@@ -57,7 +59,8 @@ export const updateSchema = async (plan: TrainerPlanSchema) => {
         `
         revalidatePath('/home/profile/my-trainees/schemas')
         return { success: true, error: null }
-    }catch(error){
+    }catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error updating schema:", error);
         return { success: false, error: "Something went wrong" }
     }
@@ -74,7 +77,8 @@ export const deleteSchemas = async (ids: string[]) => {
         `,[ids,userid])
         revalidatePath('/home/profile/my-trainees/schemas')
         return { success: true, error: null }
-    }catch(error){
+    }catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error deleting schemas:", error);
         return { success: false, error: "Something went wrong" }
     }
@@ -115,7 +119,8 @@ export const handleAddTrainingForTrainee = async (plan: TraineePlan, traineeid: 
         revalidatePath('/home/profile/my-trainees')
         return { success: true, error: null }
     }
-    catch(error){
+    catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error adding training for trainee:", error);
         return { success: false, error: "Something went wrong" }
     }
@@ -146,7 +151,8 @@ export const getTraineePlans = async (traineeid: string) => {
         `
 
                 return groupTrainerTraineePlanRows(response.rows as TraineePlan[])
-    }    catch(error){
+    }    catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error fetching trainee plans:", error);
         return []
     }
@@ -214,7 +220,8 @@ export const updateManyTraineePlan = async (plans: TraineePlan[], plansIds: stri
         revalidatePath('/home/profile/my-trainees')
         return { success: true, error: null }
 
-    }catch(error){
+    }catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error updating trainee plans:", error);
         return { success: false, error: "Something went wrong" }
     }
@@ -323,7 +330,8 @@ export const getHomeScreenData = async () => {
         }))
 
         return {trainings: mapConvertedToArray, traineesWithoutPlans: traineesWithoutPlansResponse.rows as TraineesWithoutPlans[], error: null, allTraineesIDs: arrOfIds, userid}
-    }catch(error){
+    }catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error fetching home screen data:", error);
         return {trainings: [], traineesWithoutPlans: [], allTraineesIDs: [], error: "Something went wrong"}  
     }
@@ -349,6 +357,7 @@ export const JoinTraining = async (trainingId: string) => {
 
         return {response: groupTrainerTraineePlanRows(response.rows as TraineePlan[])[0] ?? null, error: null}
     }catch(err) {
+        void saveError(err).catch(() => {})
         const e = err as Error
         return {response: null, error: e.message}
     }
@@ -364,6 +373,7 @@ export const getTraineeIdByTrainingId = async (trainingId: string) => {
 
         return {traineeId: response.rows[0].traineeid as string, error: null}
     }catch(err) {
+        void saveError(err).catch(() => {})
         const e = err as Error
         return {traineeId: null, error: e.message}
     }
@@ -410,6 +420,7 @@ export const createCustomExercise = async (
         revalidatePath('/home/profile/my-trainees/schemas')
         return { success: true, error: null, id }
     } catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error creating custom exercise:", error)
         return { success: false, error: "Something went wrong" }
     }
@@ -428,6 +439,7 @@ export const getTrainerCustomExercises = async () => {
         
         return response.rows as CustomExercise[]
     } catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error fetching custom exercises:", error)
         return []
     }
@@ -449,6 +461,7 @@ export const deleteCustomExercise = async (exerciseId: string) => {
         revalidatePath('/home/profile/my-trainees/schemas')
         return { success: true, error: null }
     } catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error deleting custom exercise:", error)
         return { success: false, error: "Something went wrong" }
     }
@@ -479,6 +492,7 @@ export const updateCustomExercise = async (exerciseId: string, exerciseName: str
         revalidatePath('/home/profile/my-trainees/schemas')
         return { success: true, error: null }
     } catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error updating custom exercise:", error)
         return { success: false, error: "Something went wrong" }
     }
@@ -499,6 +513,7 @@ export const isValidExerciseId = async (exerciseId: string) => {
         
         return response.rows.length > 0
     } catch(error) {
+        void saveError(error).catch(() => {})
         console.error("Error validating exercise ID:", error)
         return false
     }
@@ -539,6 +554,7 @@ export const createTrainerCustomHandle = async (handleName: string) => {
         revalidatePath('/home/profile/my-trainees/handles')
         return { success: true, error: null, id }
     } catch(error) {
+        void saveError(error).catch(() => {})
         console.error('Error creating trainer custom handle:', error)
         return { success: false, error: 'Something went wrong' }
     }
@@ -557,6 +573,7 @@ export const getTrainerCustomHandles = async () => {
 
         return response.rows as CustomHandle[]
     } catch(error) {
+        void saveError(error).catch(() => {})
         console.error('Error fetching trainer custom handles:', error)
         return []
     }
@@ -578,6 +595,7 @@ export const deleteTrainerCustomHandle = async (handleId: string) => {
         revalidatePath('/home/profile/my-trainees/handles')
         return { success: true, error: null }
     } catch(error) {
+        void saveError(error).catch(() => {})
         console.error('Error deleting trainer custom handle:', error)
         return { success: false, error: 'Something went wrong' }
     }
@@ -598,3 +616,5 @@ export const getTrainerAllHandleTypes = async () => {
 
     return [...normalizedCustomHandles, ...defaultHandles] as {id: string, handlename: string}[]
 }
+
+
