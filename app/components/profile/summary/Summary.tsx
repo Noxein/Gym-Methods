@@ -19,7 +19,7 @@ export const Summary = async ({ traineeId }: SummaryProps) => {
         )
     }
   return (
-    <div className='mx-5 flex flex-col mb-24'>
+    <div className='mx-3 md:mx-5 flex flex-col mb-20 md:mb-24'>
       <SummaryContextProvider
         initialData={pageData.basicSummaryData.data}
         timeExercises={pageData.timeOrHandleExercises.ExercisesThatRequireTimeMesure.flatMap((exercise) => [exercise.id, exercise.exercisename])}

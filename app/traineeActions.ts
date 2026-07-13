@@ -5,6 +5,7 @@ import { userID } from "./actions"
 import { Series, TraineePlan, TraineeSingleTraining } from "./types"
 import { revalidatePath } from "next/cache"
 import { formatTrainerTraineePlanDate, groupTrainerTraineePlanRows } from "./lib/trainerTraineePlans"
+import { saveError } from "./lib/sql"
 
 export const getTraineeTrainings = async () => {
     const userid = await userID()
@@ -45,6 +46,7 @@ export const getTraineeTrainingById = async (trainingId: string) => {
 
         return {response: groupTrainerTraineePlanRows(response.rows as TraineePlan[])[0] ?? null, error: null}
     }catch(err) {
+        void saveError(err).catch(() => {})
         console.log(err)
         const e = err as Error
         return {response: null, error: e.message}
@@ -120,10 +122,13 @@ export const handleCloseTrainingSF = async (training: TraineePlan) => {
         }
 
         return {response: training, error: null}
-    }catch(err){
+    }catch(err) {
+        void saveError(err).catch(() => {})
         const e = err as Error
         return {response: null, error: e.message}
     }finally{
         revalidatePath('/home')
     }
 }
+
+

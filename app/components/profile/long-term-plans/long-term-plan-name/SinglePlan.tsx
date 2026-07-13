@@ -7,6 +7,7 @@ import SingleExercise from "./SingleExercise";
 import { Input } from "@/app/components/ui/Input";
 import { LongPlanEditorContext } from "@/app/context/LongPlanEditorContext";
 import { Button } from "@/app/components/ui/Button";
+import { exercisesArr } from "@/app/lib/exercise-list";
 import { HideShowHTMLScrollbar, nameTrimmer } from "@/app/lib/utils";
 import { useTranslations } from "next-intl";
 
@@ -23,7 +24,14 @@ function SinglePlan({plan, planIndex, allExercisesInOneArray}:SinglePlanType) {
     const d = useTranslations("DefaultExercises")
     const u = useTranslations("Utils")
     const t = useTranslations("Home/Profile/Long-Term-Plans")
-    const firstExerciseName = plan.exercises.length > 0 ? allExercisesInOneArray.includes(plan.exercises[0].exercisename) ? d(nameTrimmer(plan.exercises[0].exercisename)) : plan.exercises[0].exercisename : ''
+    const firstExercise = plan.exercises[0]
+    const firstUserExercise = allExercisesInOneArray.find(
+        item => typeof item === 'object' && firstExercise && (item.id === firstExercise.exerciseid || item.id === firstExercise.exercisename)
+    ) as UserExercise | undefined
+    const firstExerciseDisplayName = firstExercise ? (firstUserExercise?.exercisename ?? firstExercise.exercisename) : ''
+    const firstExerciseName = firstExerciseDisplayName && exercisesArr.includes(firstExerciseDisplayName)
+        ? d(nameTrimmer(firstExerciseDisplayName))
+        : firstExerciseDisplayName
     
     const flip = () => {
         if(state === 'uploading') return

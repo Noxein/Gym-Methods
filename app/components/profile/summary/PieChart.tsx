@@ -70,10 +70,10 @@ export const PieChart = ({ data, showAddExerciseLink = true, allExercisesObject 
 
     return (
         <>
-            <h1 className='text-white text-2xl text-center mt-5 font-semibold'>{t('FavouriteExercies')}</h1>
-            <div className='flex gap-8 justify-center mt-10 flex-wrap lg:flex-nowrap'>
-                <div className='flex-1 min-w-0'>
-                    <ResponsiveContainer width='100%' height={300}>
+            <h1 className='text-white text-xl md:text-2xl text-center mt-4 md:mt-5 font-semibold'>{t('FavouriteExercies')}</h1>
+            <div className='flex gap-5 md:gap-8 justify-center mt-5 md:mt-10 flex-wrap md:flex-nowrap'>
+                <div className='w-full lg:flex-1 min-w-0'>
+                    <ResponsiveContainer width='100%' height={250} className='md:!h-[300px]'>
                         <RechartsPieChart>
                             <Pie
                                 data={sortedData}
@@ -81,7 +81,7 @@ export const PieChart = ({ data, showAddExerciseLink = true, allExercisesObject 
                                 cy='50%'
                                 labelLine={false}
                                 label={({ percent }) => percent ? `${(percent * 100).toFixed(0)}%` : '0%'}
-                                outerRadius={80}
+                                outerRadius={70}
                                 fill='#8884d8'
                                 dataKey='number'
                                 onClick={(entry: any) => changeSpan(span, allData, entry.payload?.exercisename || entry.exercisename)}
@@ -100,7 +100,7 @@ export const PieChart = ({ data, showAddExerciseLink = true, allExercisesObject 
                     </ResponsiveContainer>
                 </div>
 
-                <ul className='flex-1 space-y-2'>
+                <ul className='w-full lg:flex-1 space-y-2'>
                     {sortedData.map((item, index) => {
                         const translatedName = exercisesArr.includes(item.displayName)
                             ? d(nameTrimmer(item.displayName))
@@ -113,7 +113,7 @@ export const PieChart = ({ data, showAddExerciseLink = true, allExercisesObject 
                                 onClick={() => changeSpan(span, allData, item.exercisename)}
                                 onMouseEnter={() => setHoveredExercise(item.exercisename)}
                                 onMouseLeave={() => setHoveredExercise(null)}
-                                className='p-3 rounded-lg border border-white/10 bg-darkLight cursor-pointer transition-all hover:border-green/50 hover:bg-dark'
+                                className='p-2.5 md:p-3 rounded-lg border border-white/10 bg-darkLight cursor-pointer transition-all hover:border-green/50 hover:bg-dark'
                             >
                                 <div className='flex items-center justify-between'>
                                     <div className='flex items-center gap-3'>
@@ -121,7 +121,7 @@ export const PieChart = ({ data, showAddExerciseLink = true, allExercisesObject 
                                             className='w-3 h-3 rounded-full'
                                             style={{ backgroundColor: item.fill }}
                                         ></div>
-                                        <span className='text-white font-semibold'>{translatedName}</span>
+                                        <span className='text-white font-semibold text-sm md:text-base'>{translatedName}</span>
                                     </div>
                                     <div className='text-right'>
                                         <p className='text-green text-sm font-semibold'>{item.number}</p>

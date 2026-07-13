@@ -7,7 +7,7 @@ import { TempoType } from '@/app/types'
 
 type ListExercisesTrainingTypes = {
     item:any,
-    handleSelect: (name:string) => void,
+    handleSelect: (id:string, name?:string) => void,
     objectName?:string,
     currentLevel?:number,
     isLast?:boolean,

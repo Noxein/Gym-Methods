@@ -68,27 +68,30 @@ function LongTermPlan({UserTrainings,allExercisesInOneArray,allExercises}:LongTe
         setPlanData(planDataCopy)
     }
 
-    const handleSelectExercise = (name:string) => {
+    const handleSelectExercise = (selectedId:string, selectedName?:string) => {
         if(state === 'uploading') return
         const planDataCopy = {...planData!}
+        const fallbackName = selectedName ?? selectedId
+        const matchingUserExercise = allExercises.userExercises?.find(
+            exe => exe.id === selectedId || exe.exercisename === fallbackName
+        )
 
-        if(allExercises.userExercises?.some(exe=>exe.exercisename === name)){
-            const userExercise = allExercises.userExercises.find(exe=>exe.exercisename === name)!
+        if(matchingUserExercise){
             //its exercise added by user
             planDataCopy.subplans[planIndexRef.current].exercises.push({
-                exerciseid: userExercise.id,
-                exercisename: userExercise.exercisename,
+                exerciseid: matchingUserExercise.id,
+                exercisename: matchingUserExercise.exercisename,
                 setgoals: [],
-                istimeexercise: userExercise.timemesure,
-                handle: userExercise.useshandle ? {handleid: handles![0].id,handlename: handles![0].handlename} : undefined
+                istimeexercise: matchingUserExercise.timemesure,
+                handle: matchingUserExercise.useshandle ? {handleid: handles![0].id,handlename: handles![0].handlename} : undefined
             })
         }else{
                 planDataCopy.subplans[planIndexRef.current].exercises.push({
-                exerciseid: name,
-                exercisename: name,
+                exerciseid: selectedId,
+                exercisename: fallbackName,
                 setgoals: [],
-                istimeexercise: handleAndTimeMesureExercises?.ExercisesThatRequireTimeMesure.some(exe=>exe.exercisename === name) ? true : false,
-                handle:    handleAndTimeMesureExercises?.ExercisesThatRequireHandle.some(exe=>exe.exercisename === name) ? {handleid: handles![0].id, handlename: handles![0].handlename} : undefined
+                istimeexercise: handleAndTimeMesureExercises?.ExercisesThatRequireTimeMesure.some(exe=>exe.exercisename === fallbackName) ? true : false,
+                handle:    handleAndTimeMesureExercises?.ExercisesThatRequireHandle.some(exe=>exe.exercisename === fallbackName) ? {handleid: handles![0].id, handlename: handles![0].handlename} : undefined
             })
         }
         updateToLocalStorage(planDataCopy)

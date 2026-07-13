@@ -2,6 +2,7 @@
 import { auth, signIn } from "@/auth";
 import { compare, hash } from 'bcryptjs'
 import { sql } from "@vercel/postgres";
+import { saveError } from "./lib/sql";
 import { redirect } from "next/navigation";
 import { BigTrainingData, BigTrainingStarter, ExercisesThatRequireTimeMesureOrHandle, ExerciseSubPlanStarter, ExerciseType, ExerciseTypes, ExerciseTypeWithHandle, GymExercise, GymExercisesDbResult, LastExerciseType, LocalStorageExercise, ProgessionsDeclinesType, Progression, Series, SetsData, SetsDataStarter, Settings, SholudAddWeightType, Span, SubPlanData, SubPlanStarter, SummaryDataFetched, TempoType, Trainee, TrainerPlanSchema, TrainingExerciseType, TrainingProgression, UserExercise, UserExerciseTempo, UserPurposeType, UserSettings, UserTrainingInProgress, UserTrainingPlan, WeekDay, WeekDayPL, WidgetHomeDaysSum, WidgetHomeTypes } from "@/app/types";
 import { dataType } from "./components/first-setup/Casual/Goal";
@@ -47,7 +48,8 @@ export const updateTraineeInfo = async () => {
 
         await sql`UPDATE gymusers SET purpose = 'Podopieczny trenera', setupcompleted = true WHERE id = ${userid}`
         return
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         
     }
 }
@@ -58,7 +60,8 @@ export const handleSaveTrainerSetup = async () => {
     try{
         const result  = await sql`UPDATE gymusers SET purpose = 'Trener', setupcompleted = true WHERE id = ${userid}`
         console.log(result)
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
     }
 }
@@ -80,7 +83,8 @@ export const LoginNoFormData = async (email:string,password:string) => {
         }
         return response
        
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         if(e instanceof AuthError){
            if(e.type === 'CredentialsSignin' || e.name === 'CredentialsSignin'){
             console.log("error3")
@@ -244,7 +248,8 @@ export const AddExerciseAction = async (redirectUser:boolean,exerciseid:string,s
         const returning = await sql`
         INSERT INTO gymexercises (userid,exerciseid,date,sets,ispartoftraining,trainingid,exercisename,handleid,handlename,parenttrainingplan) VALUES (${userid},${id},${stringDate},${JSON.stringify(sets)},${ispartoftraining},${trainingid},${exercisename},${HandleId},${HandleName},${parentTrainingPlanId})
         `
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured: AddExerciseAction func actions.ts ',e)
         return {
             errors: 'Something Went Wrong'
@@ -270,7 +275,8 @@ export const SaveTrainingToDatabase = async (trainingPlanId:string,exercises:Loc
         INSERT INTO gymuserstrainings (userid, iscompleted, trainingid, datetime) VALUES (${userid},true,${trainingPlanId},${JSON.stringify(trainingStartDate)}) RETURNING id;
     `
     id = dataID.rows[0].id
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return { error : 'Something Went Wrong'}
     }
 
@@ -375,7 +381,8 @@ export const FirstSetupFinish = async(data:dataType,deleteExercises:string[],fav
         `
         await createTrainingPlans(favourtiteExercises,deleteExercises,Number(data.daysexercising))
         return { success: true, error: '' }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         isError = true
         console.log('Error occured FirstSetupFinish func actions.ts',e)
         return { success: false, error : 'Something Went Wrong'}
@@ -410,7 +417,8 @@ const getUserExercisesByUserId = async (userid: string) => {
         SELECT exercisename,id,timemesure,useshandle FROM gymusersexercises WHERE userid = ${userid}
         `
         AllExercises = [...exercises.rows]
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured getUserExercises func actions.ts',e)
         return []
     }
@@ -422,7 +430,8 @@ const getAllExercisesByUserId = async (userid: string) => {
         const userExercises = await getUserExercisesByUserId(userid)
 
         return {...exerciseList,userExercises}
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return exerciseList as ExerciseTypes
     }
 }
@@ -449,7 +458,8 @@ const getExercisesThatRequireHandlesOrTimeMesureByUserId = async (userid: string
             if(x.useshandle) ExercisesThatRequireHandle.push({id: x.id,exercisename:x.exercisename})
         })
         return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e,'Error occured actions.ts file function userExercisesThatRequireHandlesOrTimeMesure')
         return {ExercisesThatRequireTimeMesure,ExercisesThatRequireHandle}
     }
@@ -526,7 +536,8 @@ export const AddNewUserExercise = async (exercisename:string,timeExercise:boolea
             INSERT INTO gymusersexercises (userid,exercisename,timemesure,useshandle) VALUES (${userid},${exercisename},${timeExercise},${usesHandle})
         `
         revalidatePath('/home/profile/my-exercises')
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return {
             error: 'Something Went Wrong'
         }
@@ -570,7 +581,8 @@ export const DeleteUserExercise = async (id:string) => {
             await sql`
             UPDATE gymexercises SET exerciseid = null WHERE exerciseid = ${id} AND userid = ${userid}
         `
-        }catch(e){
+        }catch(e) {
+        void saveError(e).catch(() => {})
             console.log(e)
             return { error: "Something Went Wrong"}
         }
@@ -579,7 +591,8 @@ export const DeleteUserExercise = async (id:string) => {
             DELETE FROM gymusersexercises WHERE id = ${id} AND userid = ${userid};
         `
        
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured DeleteUserExercise func actions.ts',e)
         return {
             error :'Coś poszło nie tak'
@@ -618,7 +631,8 @@ export const EditUserExercise = async (exerciseid:string,newname:string,timeExer
             WHERE exerciseid = ${exerciseid} AND userid = ${userid};
         `
         revalidatePath('/home/profile/my-exercises')
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return {
             error :'Something Went Wrong'
         }
@@ -654,7 +668,8 @@ export const getAllTempos = async () => {
         })
 
         return temposObject as {[key: string]:{id:string,tempo:TempoType}}
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return {} as {[key: string]:{id:string,tempo:TempoType}}
     }
 }
@@ -685,7 +700,8 @@ export const AddOrUpdateTempo = async (exerciceid:string,tempos:TempoType) => {
                 INSERT INTO gymuserstempos (userid,exerciseid,tempo) VALUES (${userid},${exerciceid},${JSON.stringify(tempos)})
             `
         }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured AddOrUpdateTempo func actions.ts',e)
         return { error: "Coś poszło nie tak" }
     }
@@ -700,7 +716,8 @@ export const DeleteTempoFromDb = async (exerciceid:string) => {
         await sql`
             DELETE FROM gymuserstempos WHERE userid = ${userid} AND exerciseid = ${exerciceid};
         `
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return { error: 'Somethind went wrong' }
     }
     revalidatePath('/home/profile/set-tempo')
@@ -763,7 +780,8 @@ const getGoalsByUserId = async (userid: string) => {
             exercisename: exerciseNamesById.get(goal.exerciseid) ?? goal.exerciseid,
             goal: String(goal.goal),
         }))
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured getGoalsByUserId func actions.ts', e)
         return [] as { id: string, userid: string, exerciseid: string, exercisename: string, goal: string }[]
     }
@@ -796,7 +814,8 @@ const getGoalExerciseOptionsByUserId = async (userid: string) => {
                 name: exercise.exercisename,
             }))
         ] satisfies GoalExerciseOption[]
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured getGoalExerciseOptionsByUserId func actions.ts', e)
         return exercisesArr.map((exerciseName) => ({ id: exerciseName, name: exerciseName })) satisfies GoalExerciseOption[]
     }
@@ -829,7 +848,8 @@ export const getTraineeGoalExerciseData = async (traineeId: string) => {
             },
             allExercisesInOneArray: [...exercisesArr, ...userExercises],
         } satisfies GoalExerciseData
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured getTraineeGoalExerciseData func actions.ts', e)
         return {
             exercisesObject: exerciseList,
@@ -891,7 +911,8 @@ export const saveTraineeGoal = async (formData: FormData) => {
                 `
             }
         }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured saveTraineeGoal func actions.ts', e)
         return { error: 'Something Went Wrong' }
     }
@@ -925,6 +946,7 @@ export const deleteTraineeGoal = async (formData: FormData) => {
             `
         }
     } catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured deleteTraineeGoal func actions.ts', e)
         return { error: 'Something Went Wrong' }
     }
@@ -982,7 +1004,8 @@ export const saveUserGoal = async (formData: FormData) => {
                 `
             }
         }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured saveUserGoal func actions.ts', e)
         return { error: 'Something Went Wrong' }
     }
@@ -1011,6 +1034,7 @@ export const deleteUserGoal = async (formData: FormData) => {
             `
         }
     } catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured deleteUserGoal func actions.ts', e)
         return { error: 'Something Went Wrong' }
     }
@@ -1042,7 +1066,8 @@ export const getUserHandles = async () => {
             SELECT id, handlename FROM gymusershandles WHERE userid = ${userid}
         `
         return data.rows as {id: string,handlename: string}[]
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e,'Error occured actions.ts file getUserHandles function')
         return [] as {id: string,handlename: string}[]
     }
@@ -1109,7 +1134,8 @@ export const addNewUserHandle = async (handlename:string) => {
             INSERT INTO gymusershandles  (userid,handlename) VALUES (${userid},${handlename})
         `
 
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         redirectUser = false
         return {error: 'Something Went Wrong'}
     }finally{
@@ -1132,7 +1158,8 @@ export const deleteUserHandle = async (handleid:string,) => {
         await sql`
              DELETE FROM gymusershandles WHERE id = ${handleid} AND userid = ${userid}
         `
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return{ error: 'Something Went Wrong'}
     }finally{
         if(redirectUser){
@@ -1155,7 +1182,8 @@ export const editUserHandle = async (handlename:string,handleid: string) => {
             SET handlename = ${handlename}
             WHERE id = ${handleid} AND userid = ${userid};
         `
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         redirectUser = false
         return{ error: 'Something Went Wrong'}
     }finally{
@@ -1200,7 +1228,8 @@ export const GetUserTrainings = async () => {
             SELECT id,trainingname,date,exercises,weekday FROM gymuserstrainingplans WHERE userid = ${userid}
         `
         return UserTrainings.rows as UserTrainingPlan[]
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return []
     }
 }
@@ -1224,7 +1253,8 @@ export const GetUserTrainingByName = async (trainingname:string) => {
             training: Training.rows[0] as UserTrainingPlan,
             error: ''
         }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return { error: 'Something Went Wrong'}
     }
 }
@@ -1248,7 +1278,8 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
         if(userExercice.rows.length>0){
             return { error: 'Training with this name already exists'}
         }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return {error:'Something Went Wrong'}
     }
 
@@ -1259,7 +1290,8 @@ export const CreateUserTraining = async (trainingplanname:string,weekday:WeekDay
         await sql`
             INSERT INTO gymuserstrainingplans (userid,trainingname,date,weekday,exercises) VALUES (${userid},${trainingplanname},${JSON.stringify(date)},${weekday},${JSON.stringify(exercises)})
         `
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured CreateUserTraining func actions.ts',e)
         return { error: 'Something Went Wrong'}
     }finally{
@@ -1285,7 +1317,8 @@ export const EditUserTraining = async (trainingid:string,trainingplanname:string
             WHERE id = ${trainingid} AND userid = ${userid};
         
             `
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured EditUserTraining func actions.ts',e)
         return { error: 'Something Went Wrong1'}
     }
@@ -1316,7 +1349,8 @@ export const DeleteUserTraining = async (trainingid:string) => {
         await sql`
             DELETE FROM gymuserstrainingplans WHERE id = ${trainingid} AND userid = ${userid};
             `
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured DeleteUserTraining func actions.ts',e)
         return { error: 'Something Went Wrong'}
     }
@@ -1337,7 +1371,8 @@ export const getTrainingDataById = async (id:string) => {
         const dataWithIds = list.rows[0] as BigTrainingStarter
         
         return {data: dataWithIds , error: ''}
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return { error: 'Something Went Wrong' }
     }
@@ -1368,7 +1403,8 @@ export const createTraining = async (trainingPlanId:string) => {
             SELECT id FROM gymuserstrainings WHERE userid = ${userid} ORDER BY datetime DESC LIMIT 1;
         `
         return trainingID.rows[0].id
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured createTraining func actions.ts',e)
     }
 
@@ -1398,7 +1434,8 @@ export const getLastTrainigs = async (limit:number) => {
         WHERE gymuserstrainings.userid = ${userid} ORDER BY datetime DESC LIMIT ${limit};
         `
         return lastTrainings.rows as LastExerciseType[]
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured getLastTrainigs func actions.ts',e)
         return []
     }
@@ -1426,7 +1463,8 @@ export const fetchIncomingTrainings = async () => {
                 return - 1 
             }
         })
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured fetchIncomingTrainings func actions.ts',e)
         return []
     }
@@ -1482,7 +1520,8 @@ export const getTwoLatestTrainings = async () => {
             
         })
         return {newArr, trainingNames:lastTrainings.rows as {id: string, datetime:Date,trainingname:string}[]}
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured getTwoLatestTrainings func actions.ts',e)
         return {error: 'Coś poszło nie tak'}
     }
@@ -1658,7 +1697,8 @@ const fetchExercisesByUserId = async (userid: string, from?:Date,to?:Date,exerci
             SELECT id,exerciseid,exercisename,date,sets,handlename FROM gymexercises WHERE userid = ${userid} ORDER BY date DESC LIMIT ${limit} OFFSET ${page*limit}
         `
         return { error: '', data: exercises.rows as ExerciseTypeWithHandle[] }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured fetchUserExercises func actions.ts',e)
         return { error: 'Something Went Wrong' }
     }
@@ -1712,7 +1752,8 @@ export const getAccountSettings = async () => {
             SELECT showtempo, favouriteexercises, notfavouriteexercises, settings FROM gymusers WHERE id = ${userid}
         `
         return setting.rows[0] as UserSettings
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured getAccountSettings func actions.ts',e)
         return {} as UserSettings
     }
@@ -1744,7 +1785,8 @@ export const saveNewUserSetting = async (newSettings : UserSettings) => {
         await sql`
             UPDATE gymusers SET favouriteexercises = ${JSON.stringify(favouriteexercises)}, notfavouriteexercises = ${JSON.stringify(notfavouriteexercises)}  WHERE id = ${userid}
         `
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured saveNewUserSetting func actions.ts',e)
         return {
             error: 'Something Went Wrong'
@@ -1763,7 +1805,8 @@ export const updateShowTempoSetting = async (showtempo: Settings['showtempo']) =
         await sql`
             UPDATE gymusers SET settings = ${JSON.stringify( { showtempo } )}::jsonb WHERE id = ${userid}
         `
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured updateShowTempoSetting func actions.ts',e)
         return { error: 'Something Went Wrong' }
     }finally{
@@ -1783,7 +1826,8 @@ export const fetchPreviousExercise = async (exercisename:string) => {
         `
         if(result.rowCount === 0) return null
         return result.rows[0] as ExerciseType
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured fetchPreviousExercise func actions.ts',e)
         return null
     }
@@ -1801,7 +1845,8 @@ export const changePassword = async (password:string,newpassword:string,repeatne
             SELECT password FROM gymusers WHERE id = ${userid}
         `
     userEncryptedPassword = userData.rowCount && userData.rowCount > 0 ? userData.rows[0].password : null
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return {error: 'Something Went Wrong'}
     }
 
@@ -1970,7 +2015,8 @@ export const Last30DaysExercises = async () => {
             groupedDays
         }
         return returnObj
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('Error occured actions.ts file Last30DaysExercises function',e)
     }
 }
@@ -2035,7 +2081,8 @@ export const AddOrUpdateProgression = async (data:Progression) => {
             `
         }
         return { error: '' }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return { error: 'Something Went Wrong' }
     }
 }
@@ -2048,7 +2095,8 @@ export const getAllUserProgressions = async () => {
             SELECT * FROM gymprogressions WHERE userid = ${userid}
         `
         return data.rows as Progression[]
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return [] as Progression[]
     }
@@ -2065,7 +2113,8 @@ export const DeleteUserProgression = async (progressionid: string) => {
         return {
             error: ''
         }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return {
             error: "Something Went Wrong"
@@ -2151,7 +2200,8 @@ export const getAllUserLongTermPlans = async () => {
             SELECT * FROM bigtraining WHERE userid = ${userid}
         `
         return data.rows as BigTrainingData[]
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return []
     }
 }
@@ -2179,7 +2229,8 @@ export const createNewLongTermPlan = async (name: string) => {
             INSERT INTO bigtraining (id, userid, name, subplans) VALUES (${v4()}, ${userid}, ${name}, ${JSON.stringify(obj)})
         `
         revalidatePath('/home/profile/long-term-plans')
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return {
             error: "Something Went Wrong"
@@ -2200,7 +2251,8 @@ export const getPlanData = async (planname: string) => {
         } 
 
         return {data : data.rows[0] as BigTrainingData, error: '' }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log('bład',e)
         return { data: {} as BigTrainingData,  error: "Coś poszło nie tak" }
     }
@@ -2286,7 +2338,8 @@ export const createStarterBigPlan = async (plan: BigTrainingData, userDate: Date
         `
         id = retureningID.rows[0].id
         
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return{ error: "Something Went Wrong"}
     }
@@ -2319,7 +2372,8 @@ export const updateBigPlan = async (planData: BigTrainingStarter, userDate: Date
             }
             await AddExerciseAction(false,exercise.exerciseid,sets,false,undefined,handle,false,userDate)
         })
-    }catch(error){
+    }catch(error) {
+        void saveError(error).catch(() => {})
         return {error: 'Something Went Wrong'}
     }
 
@@ -2348,7 +2402,8 @@ export const updateBigPlan = async (planData: BigTrainingStarter, userDate: Date
             `
         }
 
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return 
     }
@@ -2364,7 +2419,8 @@ export const getStartedTrainingsList = async () => {
 
         return list.rows as BigTrainingStarter[]
 
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
     }
 }
@@ -2379,7 +2435,8 @@ export const getUserLongTrainigs = async () => {
 
         return list.rows as {id: string, name: string}[]
 
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         return []
     }
 }
@@ -2402,7 +2459,8 @@ export const updateAvatar = async (secureUrl: string, publicId: string) => {
         await sql`
             UPDATE gymusers SET avatarurl = ${secureUrl}, avatarpublicid = ${publicId} WHERE id = ${userid}
         `
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return {error: 'Something Went Wrong'}
     }
@@ -2417,7 +2475,8 @@ export const getTrainees = async () => {
         `
         console.log(result.rows)
         return result.rows as Trainee[]
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return []
     }
@@ -2431,7 +2490,8 @@ export const getTraineeData = async (traineeId: string) => {
             SELECT gymusers.username, gymusers.avatarurl, gymusers.id FROM trainertrainee INNER JOIN gymusers ON trainertrainee.traineeid = gymusers.id WHERE trainertrainee.trainerid = ${userid} AND trainertrainee.traineeid = ${traineeId}
         `
         return result.rows[0] as Trainee
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return null
     }
@@ -2456,7 +2516,8 @@ export const switchAccount = async () => {
         `
         // update session to new account type
 
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return {error: 'Something Went Wrong'}
     }finally{
@@ -2476,7 +2537,8 @@ export const getTrainerSchemas = async () => {
             schemas: result.rows as TrainerPlanSchema[],
             error: ''
         }
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return {
             schemas: [],
@@ -2497,7 +2559,8 @@ export const getSchemaData = async (schemaId: string) => {
             error: result.rows.length > 0 ? '' : 'Schema not found'
         }
 
-    }catch(e){
+    }catch(e) {
+        void saveError(e).catch(() => {})
         console.log(e)
         return {
             schema: null,
@@ -2505,3 +2568,6 @@ export const getSchemaData = async (schemaId: string) => {
         }
     }
 }
+
+
+

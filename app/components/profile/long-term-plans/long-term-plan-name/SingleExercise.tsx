@@ -2,6 +2,7 @@
 
 import { Icon } from "@/app/components/Icon";
 import { LongPlanEditorContext } from "@/app/context/LongPlanEditorContext";
+import { exercisesArr } from "@/app/lib/exercise-list";
 import { nameTrimmer } from "@/app/lib/utils";
 import { BigTrainingData, ExerciseSubPlanData, SetsData, Side, UserExercise } from "@/app/types";
 import { TrashIcon } from "@/app/ui/icons/ExpandIcon";
@@ -25,7 +26,11 @@ function SingleExercise({exercise,planIndex,exerciseIndex,selecedExerciseIndex,s
     const u = useTranslations("Utils")
     const d = useTranslations("DefaultExercises")
 
-    const newName = allExercisesInOneArray.includes(exercise.exercisename) ? d(nameTrimmer(exercise.exercisename)) : exercise.exercisename
+    const matchingUserExercise = allExercisesInOneArray.find(
+        item => typeof item === 'object' && (item.id === exercise.exerciseid || item.id === exercise.exercisename)
+    ) as UserExercise | undefined
+    const resolvedExerciseName = matchingUserExercise?.exercisename ?? exercise.exercisename
+    const newName = exercisesArr.includes(resolvedExerciseName) ? d(nameTrimmer(resolvedExerciseName)) : resolvedExerciseName
 
     const addSeries = () => {
         const eIndex = exerciseIndex
