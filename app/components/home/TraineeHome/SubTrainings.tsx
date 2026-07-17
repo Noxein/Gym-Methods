@@ -1,17 +1,16 @@
 import { TraineePlan } from "@/app/types";
-import TodaysTraining from "./TodaysTraining";
-import { isSameDay } from "date-fns";
 import NextTraining from "./NextTraining";
 
 type Props = {
-    plan: TraineePlan,
+    plans: TraineePlan[],
+    selectedDay: Date,
 }
 
-function SubTrainings({ plan }: Props) {
+function SubTrainings({ plans, selectedDay }: Props) {
 
     return ( 
         <div>
-            <NextTraining plan={plan} />
+            <NextTraining plans={plans} selectedDay={selectedDay} />
         </div>
      );
 }

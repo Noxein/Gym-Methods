@@ -116,6 +116,14 @@ export const TraineeTrainingContextProvider = ({children,training,userid,allHand
                 trainingDataRef.current = data.training;
             }
 
+            if(data.type === "TRAINING_COMPLETED"){
+                setModalState({
+                    isOpen: true,
+                    message: "Trening został zakończony przez podopiecznego. Zostaniesz przeniesiony na stronę główną.",
+                    onConfirm: () => {router.push('/home')},
+                    onDecline: () => {router.push('/home')}
+                })
+            }
         }
 
         return () => {
@@ -248,6 +256,7 @@ export const TraineeTrainingContextProvider = ({children,training,userid,allHand
             return
         }
 
+        ws.current!.send(JSON.stringify({type:"TRAINING_COMPLETED", training: trainingCopy.plan[planIndex]}));
         ws.current!.close()
         router.push('/home')
         
