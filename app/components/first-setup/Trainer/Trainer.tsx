@@ -23,24 +23,19 @@ function Trainer({setCurrentStep}: TrainerProps) {
         setCurrentStep('purpose');
     }
 
-    const handleFinish = async() => {
-        // Finalize setup for trainer
-        setLoading(true)
-        await handleSaveTrainerSetup();
-        await update({ refresh: true })
-    }
-
     const handleGoHome = async() => {
         setLoading(true)
-        await handleFinish();
-        navigator.push('/home');
+        
+         await handleSaveTrainerSetup();
+        await update({ refresh: true }).then(() => {navigator.push('/home')});
         setLoading(false)
     }
 
     const handleGoAddTrainee = async() => {
         setLoading(true)
-        await handleFinish();
-        navigator.push('/home/profile/my-trainees?shouldOpen=true');
+        await handleSaveTrainerSetup();
+        await update({ refresh: true }).then(() => {navigator.push('/home/profile/my-trainees?shouldOpen=true');});
+        setLoading(false)
     }
     
     return ( 

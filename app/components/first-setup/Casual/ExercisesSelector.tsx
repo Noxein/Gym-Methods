@@ -33,8 +33,8 @@ export const ExercisesSelector = ({setCurrentStep,favouriteExercises,setExercise
 
         const result = await FirstSetupFinish(data,favouriteExercises,exercisesToDelete)
         if(result && result.error) return setError(e(result.error))
-        await update({ refresh: true })
-        router.push('/home')
+        await update({ refresh: true }).then(() => {router.push('/home')})
+        
     }
 
     const t = useTranslations("FirstSetup")

@@ -397,7 +397,7 @@ export const firstSetupOwnTraining = async (data:dataType) => {
     try{
         await sql`
             UPDATE gymusers
-            SET purpose = 'Casual', goal = ${data.goal}, advancmentlevel = ${data.advancmentlevel}, daysexercising = ${data.daysexercising}, favouriteexercises = ${JSON.stringify([])}, notfavouriteexercises= ${JSON.stringify([])}, setupcompleted = true
+            SET purpose = 'Casual', favouriteexercises = ${JSON.stringify([])}, notfavouriteexercises= ${JSON.stringify([])}, setupcompleted = true
             WHERE id = ${userid};
         `
     }catch{

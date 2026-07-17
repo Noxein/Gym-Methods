@@ -30,8 +30,7 @@ export const TrainingCreator = ({setCurrentStep,exercisesToDelete,setExercisesTo
             setLoading(false)
             return setError(e('Something Went Wrong'))
         }
-        await update({ refresh: true })
-        router.push('/home/profile/my-training-plans?showAddModal=true')
+        await update({ refresh: true }).then(() => {router.push('/home/profile/my-training-plans?showAddModal=true')})
         setLoading(false)
     }
 
